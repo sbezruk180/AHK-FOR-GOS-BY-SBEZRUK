@@ -1,0 +1,5980 @@
+LawSearchDebug := 0
+LawCorpusCache := {}
+LawCorpusPages := {}
+LawCorpusLastError := ""
+LawCorpusPageMaxChars := 3200
+LawCorpusPageMaxLines := 34
+LawSearchCache := {}
+LawSearchCacheOrder := []
+LawSearchLevenshteinCache := {}
+LawSearchLevenshteinCacheCount := 0
+LawSearchFuzzyStartTick := 0
+LawSearchFuzzyBudgetMs := 180
+LawSearchFuzzyChecksLeft := 0
+LawSearchFuzzyBudgetHit := 0
+LawSearchAlgorithmVersion := 2
+LawSearchDistanceCache := {}
+LawSearchDistanceCacheCount := 0
+TerritoryMapGuiVisible := 0
+TerritoryMapViewVisible := 0
+TerritoryMapSelectedIndex := 1
+TerritoryMapCurrentGroup := 0
+TerritoryMapCurrentAsset := 1
+hTerritoryMapWnd := 0
+hTerritoryMapViewWnd := 0
+
+
+LawCorpus_SourceUrl(code)
+{
+    static urls := ""
+    if !IsObject(urls)
+    {
+        urls := {}
+        urls["VU"] := "https://forum.amazing-online.com/threads/vnutrennij-ustav-organov-vnutrennix-del.1027775/"
+        urls["FP"] := "https://forum.amazing-online.com/threads/federalnoe-postanovlenie.1027639/"
+        urls["KON"] := "https://forum.amazing-online.com/threads/konstitucija-nizhegorodskoj-oblasti.1031535/"
+        urls["FZOP"] := "https://forum.amazing-online.com/threads/federalnyj-zakon-o-policii.1027651/"
+        urls["TER"] := "https://forum.amazing-online.com/threads/federalnyj-zakon-o-territorijax-s-ogranichennym-dostupom.1027655/"
+        urls["TK"] := "https://forum.amazing-online.com/threads/trudovoj-kodeks.1027657/"
+        urls["ARG"] := "https://forum.amazing-online.com/threads/administrativnyj-reglament-gai.1027781/"
+        urls["UK"] := "https://forum.amazing-online.com/threads/ugolovnyj-kodeks.1027637/"
+        urls["VV"] := "https://forum.amazing-online.com/threads/federalnyj-konstitucionnyj-zakon-o-vertikali-vlasti.1027656/"
+        urls["KOAP"] := "https://forum.amazing-online.com/threads/kodeks-ob-administrativnyx-pravonarushenijax.1027635/"
+        urls["PDD"] := "https://forum.amazing-online.com/threads/pravila-dorozhnogo-dvizhenija.1027642/"
+        urls["ORUZH"] := "https://forum.amazing-online.com/threads/federalnyj-zakon-ob-oruzhii.1027647/"
+        urls["UPK"] := "https://forum.amazing-online.com/threads/ugolovno-processualnyj-kodeks.1033497/"
+        urls["KAS"] := "https://forum.amazing-online.com/threads/kodeks-administrativnogo-sudoproizvodstva.1033501/"
+        urls["FSB"] := "https://forum.amazing-online.com/threads/federalnyj-zakon-o-federalnoj-sluzhbe-bezopasnosti.1027654/"
+        urls["FSIN"] := "https://forum.amazing-online.com/threads/federalnyj-zakon-o-federalnoj-sluzhbe-ispolnenija-nakazanij.1027649/"
+        urls["VS"] := "https://forum.amazing-online.com/threads/federalnyj-zakon-o-voennoj-sluzhbe.1052585/"
+        urls["SUD"] := "https://forum.amazing-online.com/threads/federalnyj-konstitucionnyj-zakon-o-sudebnoj-sisteme-i-statuse-sudej.1035855/"
+        urls["ORD"] := "https://forum.amazing-online.com/threads/federalnyj-zakon-ob-operativno-rozysknoj-dejatelnosti.1033499/"
+        urls["GT"] := "https://forum.amazing-online.com/threads/federalnyj-konstitucionnyj-zakon-o-gosudarstvennoj-tajne.1033498/"
+    }
+    code := Trim(code)
+    StringUpper, code, code
+    return urls.HasKey(code) ? urls[code] : ""
+}
+
+LawCorpus_GetMetaByPrefix(prefix)
+{
+    global LawSearchDocCatalog
+    LawSearch_InitCatalog()
+    prefix := Trim(prefix)
+    StringLower, prefix, prefix
+    Loop % LawSearchDocCatalog.Length()
+    {
+        meta := LawSearchDocCatalog[A_Index]
+        if (meta.Prefix = prefix)
+            return meta
+    }
+    return ""
+}
+
+LawCorpus_GetText(prefix, forceReload := 0)
+{
+    global LawCorpusCache, LawCorpusPages, LawCorpusLastError
+    prefix := Trim(prefix)
+    StringLower, prefix, prefix
+    if (!forceReload && IsObject(LawCorpusCache) && LawCorpusCache.HasKey(prefix))
+        return LawCorpusCache[prefix]
+
+    meta := LawCorpus_GetMetaByPrefix(prefix)
+    if !IsObject(meta)
+    {
+        LawCorpusLastError := "Неизвестный документ: " . prefix
+        LawCorpus_LogError(LawCorpusLastError)
+        return ""
+    }
+
+    path := A_ScriptDir . "\laws\" . meta.FileName
+    if !FileExist(path)
+    {
+        LawCorpusLastError := "Отсутствует официальный файл: " . path
+        LawCorpus_LogError(LawCorpusLastError)
+        return ""
+    }
+
+    FileRead, text, %path%
+    if (ErrorLevel || Trim(text) = "")
+    {
+        LawCorpusLastError := "Не удалось прочитать официальный файл: " . path
+        LawCorpus_LogError(LawCorpusLastError)
+        return ""
+    }
+
+    StringReplace, text, text, `r`n, `n, All
+    StringReplace, text, text, `r, `n, All
+    StringReplace, text, text, `n, `r`n, All
+    text := RTrim(text, "`r`n")
+    LawCorpusCache[prefix] := text
+    if IsObject(LawCorpusPages)
+        LawCorpusPages.Delete(prefix)
+    LawCorpusLastError := ""
+    return text
+}
+
+LawCorpus_LogError(message)
+{
+    if IsFunc("LogError")
+    {
+        fn := Func("LogError")
+        fn.Call("LawCorpus", message, "ERROR")
+    }
+}
+
+LawCorpus_BuildPages(prefix)
+{
+    global LawCorpusPages, LawCorpusPageMaxChars, LawCorpusPageMaxLines
+    prefix := Trim(prefix)
+    StringLower, prefix, prefix
+    if (IsObject(LawCorpusPages) && LawCorpusPages.HasKey(prefix))
+        return LawCorpusPages[prefix]
+
+    text := LawCorpus_GetText(prefix)
+    pages := []
+    if (text = "")
+    {
+        LawCorpusPages[prefix] := pages
+        return pages
+    }
+
+    current := ""
+    lineCount := 0
+    Loop, Parse, text, `n, `r
+    {
+        line := A_LoopField
+        candidateLen := StrLen(current) + StrLen(line) + 2
+        if (current != "" && (candidateLen > LawCorpusPageMaxChars || lineCount >= LawCorpusPageMaxLines))
+        {
+            pages.Push(RTrim(current, "`r`n"))
+            current := ""
+            lineCount := 0
+        }
+
+        if (StrLen(line) > LawCorpusPageMaxChars)
+        {
+            remaining := line
+            while (StrLen(remaining) > LawCorpusPageMaxChars)
+            {
+                splitAt := LawCorpus_FindSplitPosition(remaining, LawCorpusPageMaxChars)
+                chunk := SubStr(remaining, 1, splitAt)
+                remaining := LTrim(SubStr(remaining, splitAt + 1))
+                if (current != "")
+                    pages.Push(RTrim(current, "`r`n"))
+                pages.Push(chunk)
+                current := ""
+                lineCount := 0
+            }
+            line := remaining
+        }
+
+        current .= line . "`r`n"
+        lineCount++
+    }
+    if (current != "")
+        pages.Push(RTrim(current, "`r`n"))
+    if (pages.Length() = 0)
+        pages.Push(text)
+
+    LawCorpusPages[prefix] := pages
+    return pages
+}
+
+LawCorpus_FindSplitPosition(text, limit)
+{
+    if (StrLen(text) <= limit)
+        return StrLen(text)
+    pos := limit
+    while (pos > Floor(limit * 0.65))
+    {
+        ch := SubStr(text, pos, 1)
+        if (ch = " " || ch = A_Tab)
+            return pos
+        pos--
+    }
+    return limit
+}
+
+LawCorpus_PageCount(prefix)
+{
+    pages := LawCorpus_BuildPages(prefix)
+    return IsObject(pages) ? pages.Length() : 0
+}
+
+LawCorpus_GetPage(prefix, page)
+{
+    pages := LawCorpus_BuildPages(prefix)
+    if !IsObject(pages) || pages.Length() = 0
+        return ""
+    page := Round(page)
+    if (page < 1)
+        page := 1
+    if (page > pages.Length())
+        page := pages.Length()
+    return pages[page]
+}
+
+LawCorpus_Reset()
+{
+    global LawCorpusCache, LawCorpusPages, SearchInitialized
+    LawCorpusCache := {}
+    LawCorpusPages := {}
+    SearchInitialized := 0
+}
+
+LawCorpus_Audit()
+{
+    global LawSearchDocCatalog
+    LawSearch_InitCatalog()
+    issues := []
+    totalChars := 0
+    if (LawSearchDocCatalog.Length() != 20)
+        issues.Push("Ожидалось 20 документов, найдено " . LawSearchDocCatalog.Length())
+    seenCodes := {}
+    seenFiles := {}
+    Loop % LawSearchDocCatalog.Length()
+    {
+        meta := LawSearchDocCatalog[A_Index]
+        if (seenCodes.HasKey(meta.Code))
+            issues.Push("Повтор кода: " . meta.Code)
+        if (seenFiles.HasKey(meta.FileName))
+            issues.Push("Повтор файла: " . meta.FileName)
+        seenCodes[meta.Code] := 1
+        seenFiles[meta.FileName] := 1
+        if (meta.SourceURL = "")
+            issues.Push(meta.Code . ": отсутствует официальный URL")
+        text := LawCorpus_GetText(meta.Prefix)
+        if (text = "")
+        {
+            issues.Push(meta.Code . ": пустой или отсутствующий файл")
+            continue
+        }
+        totalChars += StrLen(text)
+        if InStr(text, "Нажмите, чтобы раскрыть")
+            issues.Push(meta.Code . ": в corpus остался интерфейс спойлера")
+        if (LawCorpus_PageCount(meta.Prefix) < 1)
+            issues.Push(meta.Code . ": пагинация пуста")
+    }
+    return {Ok: issues.Length() = 0, Documents: LawSearchDocCatalog.Length()
+        , Characters: totalChars, Issues: issues}
+}
+
+LawDoc_ShowPage(prefix, page := 1)
+{
+    global LawDocCurrentPages
+    meta := LawCorpus_GetMetaByPrefix(prefix)
+    if !IsObject(meta)
+        return false
+    count := LawCorpus_PageCount(prefix)
+    if (count < 1)
+    {
+        MsgBox, 16, Ошибка законодательства, % "Не удалось открыть " . meta.Name . ". Проверьте папку laws."
+        return false
+    }
+    page := Round(page)
+    if (page < 1)
+        page := 1
+    if (page > count)
+        page := count
+    if !IsObject(LawDocCurrentPages)
+        LawDocCurrentPages := {}
+    LawDocCurrentPages[prefix] := page
+    title := meta.Name . " (" . page . "/" . count . ")"
+    LawGui_Show(1, title, LawCorpus_GetPage(prefix, page), 1, prefix)
+    return true
+}
+
+LawDoc_GetCurrentPage(prefix)
+{
+    global LawDocCurrentPages
+    if (IsObject(LawDocCurrentPages) && LawDocCurrentPages.HasKey(prefix))
+        return LawDocCurrentPages[prefix]
+    return 1
+}
+
+TerritoryMap_GetCatalog()
+{
+    static catalog := ""
+    if IsObject(catalog)
+        return catalog
+
+    p1 := "https://forum.amazing-online.com/threads/federalnyj-zakon-o-territorijax-s-ogranichennym-dostupom.1027655/#post-7449695"
+    p2 := "https://forum.amazing-online.com/threads/federalnyj-zakon-o-territorijax-s-ogranichennym-dostupom.1027655/#post-7449696"
+    p3 := "https://forum.amazing-online.com/threads/federalnyj-zakon-o-territorijax-s-ogranichennym-dostupom.1027655/#post-8194412"
+    catalog := []
+    catalog.Push({Id: "military_base", Name: "Красная зона воинской части", Files: "ter_01_military_base.jpg", ForumUrl: p1})
+    catalog.Push({Id: "aircraft_carrier", Name: "Военный авианосец", Files: "ter_02_aircraft_carrier.jpg", ForumUrl: p1})
+    catalog.Push({Id: "military_port", Name: "Военный порт", Files: "ter_03_military_port.jpg", ForumUrl: p1})
+    catalog.Push({Id: "fsin_kresty", Name: "ИК «Кресты»", Files: "ter_04_fsin_kresty.png", ForumUrl: p2})
+    catalog.Push({Id: "government", Name: "Правительство", Files: "ter_05_government_1.png|ter_06_government_2.png", ForumUrl: p2})
+    catalog.Push({Id: "emergency_service", Name: "ЕСС", Files: "ter_07_emergency_service_1.png|ter_08_emergency_service_2.png", ForumUrl: p2})
+    catalog.Push({Id: "draft_office", Name: "Военкомат", Files: "ter_09_draft_office_1.png|ter_10_draft_office_2.png", ForumUrl: p2})
+    catalog.Push({Id: "fsb", Name: "УФСБ", Files: "ter_11_fsb.jpg", ForumUrl: p3})
+    catalog.Push({Id: "umvd", Name: "УМВД", Files: "ter_12_umvd_1.jpg|ter_13_umvd_2.jpg", ForumUrl: p3})
+    catalog.Push({Id: "gai", Name: "ГАИ", Files: "ter_14_gai_1.jpg|ter_15_gai_2.jpg", ForumUrl: p3})
+    catalog.Push({Id: "court", Name: "Суд", Files: "ter_16_court_1.jpg|ter_17_court_2.jpg", ForumUrl: p3})
+    return catalog
+}
+
+TerritoryMap_GetModeDisplay()
+{
+    global TerritoryMapMode
+    return (TerritoryMapMode = "Forum") ? "Официальные ссылки форума" : "Локальные копии"
+}
+
+TerritoryMap_ShowCatalog(CtrlHwnd := "", GuiEvent := "", EventInfo := "", ErrLevel := "")
+{
+    global TerritoryMapGuiVisible, TerritoryMapSelectedIndex, hTerritoryMapWnd
+    catalog := TerritoryMap_GetCatalog()
+    items := ""
+    Loop % catalog.Length()
+        items .= (items = "" ? "" : "|") . A_Index . ". " . catalog[A_Index].Name
+
+    Gui, TerritoryMaps:Destroy
+    Gui, TerritoryMaps:New, +AlwaysOnTop +ToolWindow -MaximizeBox -MinimizeBox +HwndhTerritoryMapWnd, Карты территорий
+    Gui, TerritoryMaps:Margin, 14, 12
+    Gui, TerritoryMaps:Font, s10 Bold, Segoe UI
+    Gui, TerritoryMaps:Add, Text, w570, Карты территорий с ограниченным доступом
+    Gui, TerritoryMaps:Font, s9 Norm, Segoe UI
+    modeText := "Текущий режим: " . TerritoryMap_GetModeDisplay()
+    Gui, TerritoryMaps:Add, Text, y+8 w570, %modeText%
+    Gui, TerritoryMaps:Add, Text, y+6 w570 h58 +Wrap, Локальные копии — открываются внутри AHK FOR GOS BY SBEZRUK без интернета; режим по умолчанию.`nОфициальные ссылки — открывается соответствующий пост форума; нужный спойлер необходимо развернуть вручную.
+    Gui, TerritoryMaps:Add, ListBox, y+8 w570 r11 vTerritoryMapSelectedIndex AltSubmit Choose1, %items%
+    Gui, TerritoryMaps:Add, Button, y+10 w180 h30 Default gTerritoryMap_OpenSelected, Открыть
+    Gui, TerritoryMaps:Add, Button, x+12 yp w180 h30 gTerritoryMap_CloseCatalog, Закрыть
+    Gui, TerritoryMaps:Show, AutoSize Center
+    TerritoryMapSelectedIndex := 1
+    TerritoryMapGuiVisible := 1
+}
+
+TerritoryMap_OpenSelected(CtrlHwnd := "", GuiEvent := "", EventInfo := "", ErrLevel := "")
+{
+    global TerritoryMapMode, TerritoryMapSelectedIndex, TerritoryMapCurrentGroup, TerritoryMapCurrentAsset
+    Gui, TerritoryMaps:Submit, NoHide
+    catalog := TerritoryMap_GetCatalog()
+    idx := TerritoryMapSelectedIndex + 0
+    if (idx < 1 || idx > catalog.Length())
+        idx := 1
+    meta := catalog[idx]
+    if (TerritoryMapMode = "Forum")
+    {
+        if !TerritoryMap_IsOfficialUrl(meta.ForumUrl)
+        {
+            MsgBox, 16, Ошибка карт, Заблокирована недопустимая ссылка.
+            return false
+        }
+        Run, % meta.ForumUrl,, UseErrorLevel
+        if (ErrorLevel)
+        {
+            MsgBox, 48, Карты территорий, Не удалось открыть официальный пост форума.
+            return false
+        }
+        return true
+    }
+
+    TerritoryMapCurrentGroup := idx
+    TerritoryMapCurrentAsset := 1
+    return TerritoryMap_ShowLocal(idx, 1)
+}
+
+TerritoryMap_ShowLocal(groupIndex, assetIndex := 1)
+{
+    global TerritoryMapGuiVisible, TerritoryMapViewVisible, TerritoryMapCurrentGroup
+    global TerritoryMapCurrentAsset, hTerritoryMapViewWnd
+    catalog := TerritoryMap_GetCatalog()
+    if (groupIndex < 1 || groupIndex > catalog.Length())
+        return false
+    meta := catalog[groupIndex]
+    files := StrSplit(meta.Files, "|")
+    if (assetIndex < 1)
+        assetIndex := files.Length()
+    if (assetIndex > files.Length())
+        assetIndex := 1
+    path := A_ScriptDir . "\assets\law_maps\" . files[assetIndex]
+    if !FileExist(path)
+    {
+        MsgBox, 48, Карты территорий, % "Локальная карта отсутствует:`n" . path . "`nАвтоматический переход в интернет отключён."
+        return false
+    }
+
+    TerritoryMapCurrentGroup := groupIndex
+    TerritoryMapCurrentAsset := assetIndex
+    Gui, TerritoryMapView:Destroy
+    title := meta.Name . " (" . assetIndex . "/" . files.Length() . ")"
+    Gui, TerritoryMapView:New, +AlwaysOnTop +ToolWindow -MaximizeBox -MinimizeBox +HwndhTerritoryMapViewWnd, %title%
+    Gui, TerritoryMapView:Margin, 12, 10
+    Gui, TerritoryMapView:Font, s10 Bold, Segoe UI
+    Gui, TerritoryMapView:Add, Text, w960 Center, %title%
+    if TerritoryMap_IsThumbnail(files[assetIndex])
+    {
+        Gui, TerritoryMapView:Font, s8 Norm cA06000, Segoe UI
+        Gui, TerritoryMapView:Add, Text, y+4 w960 Center, Локально доступна официальная миниатюра; полный размер можно открыть в режиме форума.
+    }
+    Gui, TerritoryMapView:Add, Picture, y+8 w960 h-1, %path%
+    Gui, TerritoryMapView:Font, s9 Norm c000000, Segoe UI
+    Gui, TerritoryMapView:Add, Button, y+10 w150 h30 gTerritoryMap_PreviousAsset, Предыдущая
+    Gui, TerritoryMapView:Add, Button, x+10 yp w150 h30 gTerritoryMap_NextAsset, Следующая
+    Gui, TerritoryMapView:Add, Button, x+10 yp w150 h30 gTerritoryMap_CloseView, Закрыть карту
+    Gui, TerritoryMapView:Show, AutoSize Center
+    TerritoryMapViewVisible := 1
+    TerritoryMapGuiVisible := 1
+    return true
+}
+
+TerritoryMap_IsThumbnail(fileName)
+{
+    return RegExMatch(fileName, "i)^ter_(?:0[1-3]|1[2-7])_") > 0
+}
+
+TerritoryMap_PreviousAsset(CtrlHwnd := "", GuiEvent := "", EventInfo := "", ErrLevel := "")
+{
+    TerritoryMap_Navigate("prev")
+}
+
+TerritoryMap_NextAsset(CtrlHwnd := "", GuiEvent := "", EventInfo := "", ErrLevel := "")
+{
+    TerritoryMap_Navigate("next")
+}
+
+TerritoryMap_Navigate(direction)
+{
+    global TerritoryMapCurrentGroup, TerritoryMapCurrentAsset, TerritoryMapViewVisible
+    if (!TerritoryMapViewVisible || TerritoryMapCurrentGroup < 1)
+        return false
+    catalog := TerritoryMap_GetCatalog()
+    meta := catalog[TerritoryMapCurrentGroup]
+    files := StrSplit(meta.Files, "|")
+    next := TerritoryMapCurrentAsset + ((direction = "prev") ? -1 : 1)
+    if (next < 1)
+        next := files.Length()
+    if (next > files.Length())
+        next := 1
+    return TerritoryMap_ShowLocal(TerritoryMapCurrentGroup, next)
+}
+
+TerritoryMap_IsOfficialUrl(url)
+{
+    return RegExMatch(url, "i)^https://forum\.amazing-online\.com/threads/[a-z0-9._-]+/[#a-z0-9._-]*$") > 0
+}
+
+TerritoryMap_CloseCatalog(CtrlHwnd := "", GuiEvent := "", EventInfo := "", ErrLevel := "")
+{
+    global TerritoryMapGuiVisible, TerritoryMapViewVisible, hTerritoryMapWnd
+    Gui, TerritoryMaps:Destroy
+    hTerritoryMapWnd := 0
+    TerritoryMapGuiVisible := TerritoryMapViewVisible ? 1 : 0
+}
+
+TerritoryMap_CloseView(CtrlHwnd := "", GuiEvent := "", EventInfo := "", ErrLevel := "")
+{
+    global TerritoryMapGuiVisible, TerritoryMapViewVisible, hTerritoryMapViewWnd, hTerritoryMapWnd
+    Gui, TerritoryMapView:Destroy
+    hTerritoryMapViewWnd := 0
+    TerritoryMapViewVisible := 0
+    TerritoryMapGuiVisible := (hTerritoryMapWnd && WinExist("ahk_id " . hTerritoryMapWnd)) ? 1 : 0
+}
+
+TerritoryMap_CloseAll()
+{
+    global TerritoryMapGuiVisible, TerritoryMapViewVisible, hTerritoryMapWnd, hTerritoryMapViewWnd
+    Gui, TerritoryMaps:Destroy
+    Gui, TerritoryMapView:Destroy
+    hTerritoryMapWnd := 0
+    hTerritoryMapViewWnd := 0
+    TerritoryMapGuiVisible := 0
+    TerritoryMapViewVisible := 0
+}
+
+TerritoryMap_AuditCatalog()
+{
+    catalog := TerritoryMap_GetCatalog()
+    issues := []
+    seen := {}
+    if (catalog.Length() != 11)
+        issues.Push("Ожидалось 11 групп карт, найдено " . catalog.Length())
+    Loop % catalog.Length()
+    {
+        meta := catalog[A_Index]
+        if (seen.HasKey(meta.Id))
+            issues.Push("Повтор ID карты: " . meta.Id)
+        seen[meta.Id] := 1
+        if !TerritoryMap_IsOfficialUrl(meta.ForumUrl)
+            issues.Push("Недопустимая ссылка: " . meta.Id)
+        files := StrSplit(meta.Files, "|")
+        Loop % files.Length()
+        {
+            path := A_ScriptDir . "\assets\law_maps\" . files[A_Index]
+            if !FileExist(path)
+                issues.Push("Нет локального файла: " . files[A_Index])
+        }
+    }
+    return {Ok: issues.Length() = 0, Groups: catalog.Length(), Issues: issues}
+}
+
+
+
+LawGui_Close()
+{
+    Gui, 1:Destroy
+    TerritoryMap_CloseAll()
+}
+
+Helper_CloseChatAfterGui()
+{
+    ; The configured local hotkey can still be physically held when it fires.
+    ; Wait for release before sending Ctrl+A or Escape to the game.
+    KeyWait, F
+    KeyWait, LControl
+    KeyWait, RControl
+    KeyWait, LAlt
+    KeyWait, RAlt
+
+    SendInput, {LControl up}{RControl up}{LAlt up}{RAlt up}
+    Sleep, 30
+
+    if IsFunc("isInChat")
+    {
+        chatFn := Func("isInChat")
+        if (chatFn.Call() != 1)
+            return true
+    }
+
+    if IsFunc("ClearBindMenuChatLine")
+    {
+        clearFn := Func("ClearBindMenuChatLine")
+        clearFn.Call(true)
+    }
+    else
+    {
+        SendEvent, ^a
+        Sleep, 30
+        SendEvent, {Backspace}
+        Sleep, 30
+    }
+
+    started := A_TickCount
+    Loop
+    {
+        if IsFunc("isInChat")
+        {
+            chatFn := Func("isInChat")
+            if (chatFn.Call() != 1)
+                return true
+        }
+
+        ; Escape cancels the empty line. Enter and F6 are never used.
+        SendEvent, {Esc}
+        Sleep, 90
+
+        if (A_TickCount - started >= 900)
+            break
+    }
+
+    if IsFunc("isInChat")
+    {
+        chatFn := Func("isInChat")
+        return chatFn.Call() != 1
+    }
+    return true
+}
+
+
+LawGui_FormatBody(body, title := "")
+{
+    marker := "__LAWGUI_CURRENT_PAGE__"
+    prefix := LawGui_GetDocPrefixFromTitle(title, page)
+    if (prefix != "" && page > 1)
+    {
+        before := ""
+        prevCount := page - 1
+        Loop %prevCount%
+        {
+            fnName := "LawText_" . prefix . A_Index
+            if IsFunc(fnName)
+            {
+                fn := Func(fnName)
+                before .= fn.Call() . "`r`n"
+            }
+        }
+
+        formatted := LawGui_FormatBodyCore(before . marker . "`r`n" . body)
+        markerPos := InStr(formatted, marker)
+        if (markerPos > 0)
+            return Trim(SubStr(formatted, markerPos + StrLen(marker)), "`r`n")
+    }
+
+    return LawGui_FormatBodyCore(body)
+}
+
+LawGui_GetDocPrefixFromTitle(title, ByRef page)
+{
+    page := 1
+    if (RegExMatch(title, "\(([0-9]+)/[0-9]+\)", m))
+        page := m1 + 0
+
+    if (InStr(title, "Внутренний устав"))
+        return "vu"
+    if (InStr(title, "Федеральное постановление"))
+        return "fp"
+    if (InStr(title, "Конституция"))
+        return "kon"
+    if (InStr(title, "О полиции"))
+        return "fzop"
+    if (InStr(title, "территориях"))
+        return "ter"
+    if (InStr(title, "Трудовой"))
+        return "tk"
+    if (InStr(title, "Административный регламент"))
+        return "arg"
+    if (InStr(title, "Уголовный кодекс") && !InStr(title, "Уголовно-процессуальный"))
+        return "uk"
+    if (InStr(title, "вертикали власти"))
+        return "vv"
+    if (InStr(title, "административных правонарушениях"))
+        return "koap"
+    if (InStr(title, "Правила дорожного движения"))
+        return "pdd"
+    if (InStr(title, "Об оружии"))
+        return "oruzh"
+    if (InStr(title, "Уголовно-процессуальный"))
+        return "upk"
+    return ""
+}
+
+LawGui_FormatBodyCore(body)
+{
+    formatted := ""
+    article := ""
+    part := ""
+    point := ""
+    currentLevel := ""
+    currentText := ""
+    explainActive := 0
+    explainSubSeen := 0
+    explainAfterList := 0
+    explainArticle := ""
+    explainPart := ""
+    explainPoint := ""
+    subListActive := 0
+    subListSubSeen := 0
+    subListAfterList := 0
+    subListPoint := ""
+    subListPart := ""
+    subListArticle := ""
+
+    Loop, Parse, body, `n, `r
+    {
+        raw := A_LoopField
+        line := Trim(raw)
+        if (line = "")
+        {
+            formatted .= "`r`n"
+            continue
+        }
+        if (line = "__LAWGUI_CURRENT_PAGE__")
+        {
+            formatted .= line . "`r`n"
+            continue
+        }
+
+        if (!explainActive && !subListActive && currentLevel = "point" && LawSearch_TextEndsWithColon(currentText) && RegExMatch(line, "^\s*[0-9]+\)\s+"))
+        {
+            subListActive := 1
+            subListSubSeen := 0
+            subListAfterList := 0
+            subListPoint := point
+            subListPart := part
+            subListArticle := article
+        }
+
+        indent := LawGui_GetIndent(raw)
+        kind := ""
+        id := ""
+        title := ""
+        itemBody := ""
+        forceSubPoint := ((explainActive && !explainAfterList) || (subListActive && !subListAfterList))
+
+        if (LawSearch_ParseStructureLine(line, kind, id, title, itemBody, article, 0, part, point, forceSubPoint))
+        {
+            if (kind = "chapter")
+            {
+                article := ""
+                part := ""
+                point := ""
+                explainActive := 0
+                explainSubSeen := 0
+                explainAfterList := 0
+                subListActive := 0
+                subListSubSeen := 0
+                subListAfterList := 0
+            }
+            else if (kind = "article")
+            {
+                article := id
+                part := ""
+                point := ""
+                explainActive := 0
+                explainSubSeen := 0
+                explainAfterList := 0
+                subListActive := 0
+                subListSubSeen := 0
+                subListAfterList := 0
+            }
+            else if (kind = "part")
+            {
+                part := id
+                point := ""
+                explainActive := 0
+                explainSubSeen := 0
+                explainAfterList := 0
+                subListActive := 0
+                subListSubSeen := 0
+                subListAfterList := 0
+            }
+            else if (kind = "point")
+            {
+                point := id
+                explainActive := 0
+                explainSubSeen := 0
+                explainAfterList := 0
+                subListActive := 0
+                subListSubSeen := 0
+                subListAfterList := 0
+            }
+            else if (kind = "subpoint")
+            {
+                if (explainActive)
+                {
+                    if (explainArticle != "")
+                        article := explainArticle
+                    if (explainPart != "")
+                        part := explainPart
+                    if (explainPoint != "")
+                        point := explainPoint
+                    explainSubSeen := 1
+                }
+                if (subListActive)
+                {
+                    if (subListArticle != "")
+                        article := subListArticle
+                    if (subListPart != "")
+                        part := subListPart
+                    if (subListPoint != "")
+                        point := subListPoint
+                    subListSubSeen := 1
+                }
+            }
+
+            currentLevel := kind
+            currentText := itemBody
+            formatted .= indent . LawGui_FormatStructureDisplay(kind, id, title, itemBody) . "`r`n"
+            continue
+        }
+
+        if (LawSearch_DetectPointExplanation(line, expArticle, expPart, expPoint))
+        {
+            explainActive := 1
+            explainSubSeen := 0
+            explainAfterList := 0
+            explainArticle := expArticle
+            explainPart := expPart
+            explainPoint := expPoint
+            if (expArticle != "")
+                article := expArticle
+            if (expPart != "")
+                part := expPart
+            if (expPoint != "")
+                point := expPoint
+        }
+        else
+        {
+            if (explainActive && explainSubSeen)
+                explainAfterList := 1
+            if (subListActive && subListSubSeen)
+                subListAfterList := 1
+        }
+
+        if (currentLevel != "")
+            currentText .= " " . line
+        formatted .= raw . "`r`n"
+    }
+
+    return RTrim(formatted, "`r`n")
+}
+
+LawGui_GetIndent(raw)
+{
+    if (RegExMatch(raw, "^\s+", m))
+        return m
+    return ""
+}
+
+LawGui_FormatStructureDisplay(kind, id, title, body)
+{
+    if (kind = "chapter" || kind = "article")
+        return title
+
+    if (kind = "part")
+        prefix := "Ч. " . id
+    else if (kind = "point")
+        prefix := "П. " . id
+    else if (kind = "subpoint")
+        prefix := "ПП. " . id
+    else
+        prefix := title
+
+    body := Trim(body)
+    if (body != "")
+        return prefix . ". " . body
+    return prefix
+}
+
+LawGui_Show(state, title, body, officialExact := 0, docPrefix := "")
+{
+    global LawGuiTextColor, LawGuiBgColor, LawGuiTransparency
+
+    if (!state)
+    {
+        LawGui_Close()
+        return
+    }
+
+    if (!officialExact)
+        body := LawGui_FormatBody(body, title)
+
+    Gui, 1:Destroy
+
+    LawGuiX := 5
+    LawGuiY := 8
+    LawGuiW := Floor(A_ScreenWidth / 3)
+    if (LawGuiW < 620)
+        LawGuiW := 620
+    if (LawGuiW > 900)
+        LawGuiW := 900
+    maxLawW := A_ScreenWidth - 16
+    if (LawGuiW > maxLawW)
+        LawGuiW := maxLawW
+
+    LawGuiH := A_ScreenHeight - 26
+    if (LawGuiH < 600)
+        LawGuiH := 600
+    maxLawH := A_ScreenHeight - 16
+    if (LawGuiH > maxLawH)
+        LawGuiH := maxLawH
+
+    LawTextColor := LawGuiTextColor
+    if (LawTextColor = "")
+        LawTextColor := "FFFFFF"
+
+    LawBgColor := LawGuiBgColor
+    if (LawBgColor = "")
+        LawBgColor := "000000"
+
+    LawAlpha := LawGuiTransparency
+    if (LawAlpha = "")
+        LawAlpha := 222
+    if (LawAlpha < 200)
+        LawAlpha := 200
+    if (LawAlpha > 235)
+        LawAlpha := 235
+
+    LawBodyFontSize := 9
+    if (A_ScreenHeight >= 1300)
+        LawBodyFontSize := 10
+    LawTitleFontSize := LawBodyFontSize + 1
+    LawAccentColor := LawSearch_GetShellAccentColor()
+
+    ContentW := LawGuiW - 50
+    if (ContentW > 650)
+        ContentW := 650
+    if (ContentW < 550)
+        ContentW := LawGuiW - 24
+
+    LawHeaderTitle := title
+    LawHeaderPage := ""
+    if (RegExMatch(title, "^(.*) \(([^()]*)\)$", LawTitleMatch))
+    {
+        LawHeaderTitle := LawTitleMatch1
+        LawHeaderPage := LawTitleMatch2
+    }
+
+    HeaderPageW := 78
+    HeaderMapW := (docPrefix = "ter") ? 72 : 0
+    HeaderTitleW := ContentW - HeaderPageW - HeaderMapW - 16
+    if (LawHeaderPage = "")
+        HeaderTitleW := ContentW - HeaderMapW - (HeaderMapW ? 8 : 0)
+    HeaderH := 24
+    BodyH := LawGuiH - 48
+
+    Gui, 1:+LastFound +AlwaysOnTop -Caption +ToolWindow +Border +HwndLawGuiHwnd
+    Gui, 1:Color, %LawBgColor%, %LawBgColor%
+    Gui, 1:Margin, 10, 6
+    LawBorderRight := LawGuiW - 2
+    LawBorderBottom := LawGuiH - 2
+    Gui, 1:Add, Progress, x0 y0 w%LawGuiW% h2 Disabled Background%LawBgColor% c%LawAccentColor%, 100
+    Gui, 1:Add, Progress, x0 y%LawBorderBottom% w%LawGuiW% h2 Disabled Background%LawBgColor% c%LawAccentColor%, 100
+    Gui, 1:Add, Progress, x0 y0 w2 h%LawGuiH% Disabled Vertical Background%LawBgColor% c%LawAccentColor%, 100
+    Gui, 1:Add, Progress, x%LawBorderRight% y0 w2 h%LawGuiH% Disabled Vertical Background%LawBgColor% c%LawAccentColor%, 100
+
+    Gui, 1:Font, s%LawTitleFontSize% Bold c%LawTextColor%, Segoe UI
+    Gui, 1:Add, Text, xm ym w%HeaderTitleW% h%HeaderH% +0x200 BackgroundTrans, %LawHeaderTitle%
+    if (LawHeaderPage != "")
+    {
+        Gui, 1:Font, s%LawBodyFontSize% Bold c%LawAccentColor%, Segoe UI
+        Gui, 1:Add, Text, x+8 yp w%HeaderPageW% h%HeaderH% +0x200 Right BackgroundTrans, %LawHeaderPage%
+    }
+    if (docPrefix = "ter")
+    {
+        Gui, 1:Font, s%LawBodyFontSize% Bold c%LawTextColor%, Segoe UI
+        Gui, 1:Add, Button, x+8 yp w%HeaderMapW% h22 gTerritoryMap_ShowCatalog, Карты
+    }
+    Gui, 1:Add, Progress, xm y+3 w%ContentW% h1 Disabled Background%LawBgColor% c%LawAccentColor%, 100
+
+    Gui, 1:Font, s%LawBodyFontSize% c%LawTextColor%, Segoe UI
+    Gui, 1:Add, Text, xm y+3 w%ContentW% h%BodyH% BackgroundTrans, %body%
+
+    Gui, 1:Show, x%LawGuiX% y%LawGuiY% w%LawGuiW% h%LawGuiH% NoActivate, window.
+    WinSet, Transparent, %LawAlpha%, ahk_id %LawGuiHwnd%
+    LawSearch_ApplyShellRound(LawGuiHwnd)
+}
+
+vu1(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("vu", 1)
+}
+
+vu2(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("vu", 2)
+}
+
+vu3(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("vu", 3)
+}
+
+fp1(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("fp", 1)
+}
+
+fp2(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("fp", 2)
+}
+
+fp3(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("fp", 3)
+}
+
+fp4(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("fp", 4)
+}
+
+kon1(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("kon", 1)
+}
+
+kon2(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("kon", 2)
+}
+
+kon3(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("kon", 3)
+}
+
+kon4(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("kon", 4)
+}
+
+fzop1(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("fzop", 1)
+}
+
+fzop2(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("fzop", 2)
+}
+
+fzop3(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("fzop", 3)
+}
+
+fzop4(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("fzop", 4)
+}
+
+fzop5(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("fzop", 5)
+}
+
+fzop6(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("fzop", 6)
+}
+
+fzop7(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("fzop", 7)
+}
+
+fzop8(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("fzop", 8)
+}
+
+fzop9(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("fzop", 9)
+}
+
+fzop10(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("fzop", 10)
+}
+
+fzop11(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("fzop", 11)
+}
+
+fzop12(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("fzop", 12)
+}
+
+ter1(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("ter", 1)
+}
+
+ter2(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("ter", 2)
+}
+
+ter3(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("ter", 3)
+}
+
+ter4(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("ter", 4)
+}
+
+ter5(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("ter", 5)
+}
+
+ter6(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("ter", 6)
+}
+
+ter7(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("ter", 7)
+}
+
+tk1(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("tk", 1)
+}
+
+tk2(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("tk", 2)
+}
+
+tk3(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("tk", 3)
+}
+
+tk4(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("tk", 4)
+}
+
+tk5(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("tk", 5)
+}
+
+tk6(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("tk", 6)
+}
+
+arg1(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("arg", 1)
+}
+
+arg2(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("arg", 2)
+}
+
+arg3(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("arg", 3)
+}
+
+arg4(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("arg", 4)
+}
+
+uk1(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("uk", 1)
+}
+
+uk2(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("uk", 2)
+}
+
+uk3(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("uk", 3)
+}
+
+uk4(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("uk", 4)
+}
+
+uk5(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("uk", 5)
+}
+
+uk6(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("uk", 6)
+}
+
+uk7(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("uk", 7)
+}
+
+uk8(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("uk", 8)
+}
+
+uk9(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("uk", 9)
+}
+
+vv1(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("vv", 1)
+}
+
+vv2(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("vv", 2)
+}
+
+vv3(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("vv", 3)
+}
+
+vv4(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("vv", 4)
+}
+
+vv5(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("vv", 5)
+}
+
+koap1(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("koap", 1)
+}
+
+koap2(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("koap", 2)
+}
+
+koap3(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("koap", 3)
+}
+
+koap4(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("koap", 4)
+}
+
+koap5(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("koap", 5)
+}
+
+koap6(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("koap", 6)
+}
+
+koap7(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("koap", 7)
+}
+
+koap8(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("koap", 8)
+}
+
+pdd1(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("pdd", 1)
+}
+
+pdd2(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("pdd", 2)
+}
+
+pdd3(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("pdd", 3)
+}
+
+pdd4(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("pdd", 4)
+}
+
+pdd5(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("pdd", 5)
+}
+
+pdd6(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("pdd", 6)
+}
+
+pdd7(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("pdd", 7)
+}
+
+pdd8(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("pdd", 8)
+}
+
+pdd9(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("pdd", 9)
+}
+
+pdd10(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("pdd", 10)
+}
+
+oruzh1(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("oruzh", 1)
+}
+
+oruzh2(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("oruzh", 2)
+}
+
+oruzh3(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("oruzh", 3)
+}
+
+upk1(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("upk", 1)
+}
+
+upk2(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("upk", 2)
+}
+
+upk3(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("upk", 3)
+}
+
+upk4(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("upk", 4)
+}
+
+upk5(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("upk", 5)
+}
+
+upk6(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("upk", 6)
+}
+
+upk7(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("upk", 7)
+}
+
+upk8(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("upk", 8)
+}
+
+upk9(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("upk", 9)
+}
+
+upk10(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("upk", 10)
+}
+
+upk11(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("upk", 11)
+}
+
+upk12(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("upk", 12)
+}
+
+upk13(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("upk", 13)
+}
+
+upk14(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("upk", 14)
+}
+
+upk15(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("upk", 15)
+}
+
+upk16(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("upk", 16)
+}
+
+upk17(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("upk", 17)
+}
+
+upk18(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("upk", 18)
+}
+
+upk19(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("upk", 19)
+}
+
+upk20(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("upk", 20)
+}
+
+upk21(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("upk", 21)
+}
+
+upk22(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("upk", 22)
+}
+
+upk23(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("upk", 23)
+}
+
+upk24(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("upk", 24)
+}
+
+upk25(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("upk", 25)
+}
+
+upk26(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("upk", 26)
+}
+
+upk27(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("upk", 27)
+}
+
+upk28(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("upk", 28)
+}
+
+upk29(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("upk", 29)
+}
+
+upk30(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("upk", 30)
+}
+
+upk31(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("upk", 31)
+}
+
+upk32(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("upk", 32)
+}
+
+upk33(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("upk", 33)
+}
+
+upk34(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("upk", 34)
+}
+
+upk35(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("upk", 35)
+}
+
+upk36(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("upk", 36)
+}
+
+upk37(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("upk", 37)
+}
+
+upk38(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("upk", 38)
+}
+
+upk39(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("upk", 39)
+}
+
+upk40(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("upk", 40)
+}
+
+upk41(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("upk", 41)
+}
+
+LawText_vu1()
+{
+    return LawCorpus_GetPage("vu", 1)
+}
+
+LawText_vu2()
+{
+    return LawCorpus_GetPage("vu", 2)
+}
+
+LawText_vu3()
+{
+    return LawCorpus_GetPage("vu", 3)
+}
+
+LawText_fp1()
+{
+    return LawCorpus_GetPage("fp", 1)
+}
+
+LawText_fp2()
+{
+    return LawCorpus_GetPage("fp", 2)
+}
+
+LawText_fp3()
+{
+    return LawCorpus_GetPage("fp", 3)
+}
+
+LawText_fp4()
+{
+    return LawCorpus_GetPage("fp", 4)
+}
+
+LawText_kon1()
+{
+    return LawCorpus_GetPage("kon", 1)
+}
+
+LawText_kon2()
+{
+    return LawCorpus_GetPage("kon", 2)
+}
+
+LawText_kon3()
+{
+    return LawCorpus_GetPage("kon", 3)
+}
+
+LawText_kon4()
+{
+    return LawCorpus_GetPage("kon", 4)
+}
+
+LawText_fzop1()
+{
+    return LawCorpus_GetPage("fzop", 1)
+}
+
+LawText_fzop2()
+{
+    return LawCorpus_GetPage("fzop", 2)
+}
+
+LawText_fzop3()
+{
+    return LawCorpus_GetPage("fzop", 3)
+}
+
+LawText_fzop4()
+{
+    return LawCorpus_GetPage("fzop", 4)
+}
+
+LawText_fzop5()
+{
+    return LawCorpus_GetPage("fzop", 5)
+}
+
+LawText_fzop6()
+{
+    return LawCorpus_GetPage("fzop", 6)
+}
+
+LawText_fzop7()
+{
+    return LawCorpus_GetPage("fzop", 7)
+}
+
+LawText_fzop8()
+{
+    return LawCorpus_GetPage("fzop", 8)
+}
+
+LawText_fzop9()
+{
+    return LawCorpus_GetPage("fzop", 9)
+}
+
+LawText_fzop10()
+{
+    return LawCorpus_GetPage("fzop", 10)
+}
+
+LawText_fzop11()
+{
+    return LawCorpus_GetPage("fzop", 11)
+}
+
+LawText_fzop12()
+{
+    return LawCorpus_GetPage("fzop", 12)
+}
+
+LawText_ter1()
+{
+    return LawCorpus_GetPage("ter", 1)
+}
+
+LawText_ter2()
+{
+    return LawCorpus_GetPage("ter", 2)
+}
+
+LawText_ter3()
+{
+    return LawCorpus_GetPage("ter", 3)
+}
+
+LawText_ter4()
+{
+    return LawCorpus_GetPage("ter", 4)
+}
+
+LawText_ter5()
+{
+    return LawCorpus_GetPage("ter", 5)
+}
+
+LawText_ter6()
+{
+    return LawCorpus_GetPage("ter", 6)
+}
+
+LawText_ter7()
+{
+    return LawCorpus_GetPage("ter", 7)
+}
+
+LawText_tk1()
+{
+    return LawCorpus_GetPage("tk", 1)
+}
+
+LawText_tk2()
+{
+    return LawCorpus_GetPage("tk", 2)
+}
+
+LawText_tk3()
+{
+    return LawCorpus_GetPage("tk", 3)
+}
+
+LawText_tk4()
+{
+    return LawCorpus_GetPage("tk", 4)
+}
+
+LawText_tk5()
+{
+    return LawCorpus_GetPage("tk", 5)
+}
+
+LawText_tk6()
+{
+    return LawCorpus_GetPage("tk", 6)
+}
+
+LawText_arg1()
+{
+    return LawCorpus_GetPage("arg", 1)
+}
+
+LawText_arg2()
+{
+    return LawCorpus_GetPage("arg", 2)
+}
+
+LawText_arg3()
+{
+    return LawCorpus_GetPage("arg", 3)
+}
+
+LawText_arg4()
+{
+    return LawCorpus_GetPage("arg", 4)
+}
+
+LawText_uk1()
+{
+    return LawCorpus_GetPage("uk", 1)
+}
+
+LawText_uk2()
+{
+    return LawCorpus_GetPage("uk", 2)
+}
+
+LawText_uk3()
+{
+    return LawCorpus_GetPage("uk", 3)
+}
+
+LawText_uk4()
+{
+    return LawCorpus_GetPage("uk", 4)
+}
+
+LawText_uk5()
+{
+    return LawCorpus_GetPage("uk", 5)
+}
+
+LawText_uk6()
+{
+    return LawCorpus_GetPage("uk", 6)
+}
+
+LawText_uk7()
+{
+    return LawCorpus_GetPage("uk", 7)
+}
+
+LawText_uk8()
+{
+    return LawCorpus_GetPage("uk", 8)
+}
+
+LawText_uk9()
+{
+    return LawCorpus_GetPage("uk", 9)
+}
+
+LawText_vv1()
+{
+    return LawCorpus_GetPage("vv", 1)
+}
+
+LawText_vv2()
+{
+    return LawCorpus_GetPage("vv", 2)
+}
+
+LawText_vv3()
+{
+    return LawCorpus_GetPage("vv", 3)
+}
+
+LawText_vv4()
+{
+    return LawCorpus_GetPage("vv", 4)
+}
+
+LawText_vv5()
+{
+    return LawCorpus_GetPage("vv", 5)
+}
+
+LawText_koap1()
+{
+    return LawCorpus_GetPage("koap", 1)
+}
+
+LawText_koap2()
+{
+    return LawCorpus_GetPage("koap", 2)
+}
+
+LawText_koap3()
+{
+    return LawCorpus_GetPage("koap", 3)
+}
+
+LawText_koap4()
+{
+    return LawCorpus_GetPage("koap", 4)
+}
+
+LawText_koap5()
+{
+    return LawCorpus_GetPage("koap", 5)
+}
+
+LawText_koap6()
+{
+    return LawCorpus_GetPage("koap", 6)
+}
+
+LawText_koap7()
+{
+    return LawCorpus_GetPage("koap", 7)
+}
+
+LawText_koap8()
+{
+    return LawCorpus_GetPage("koap", 8)
+}
+
+LawText_pdd1()
+{
+    return LawCorpus_GetPage("pdd", 1)
+}
+
+LawText_pdd2()
+{
+    return LawCorpus_GetPage("pdd", 2)
+}
+
+LawText_pdd3()
+{
+    return LawCorpus_GetPage("pdd", 3)
+}
+
+LawText_pdd4()
+{
+    return LawCorpus_GetPage("pdd", 4)
+}
+
+LawText_pdd5()
+{
+    return LawCorpus_GetPage("pdd", 5)
+}
+
+LawText_pdd6()
+{
+    return LawCorpus_GetPage("pdd", 6)
+}
+
+LawText_pdd7()
+{
+    return LawCorpus_GetPage("pdd", 7)
+}
+
+LawText_pdd8()
+{
+    return LawCorpus_GetPage("pdd", 8)
+}
+
+LawText_pdd9()
+{
+    return LawCorpus_GetPage("pdd", 9)
+}
+
+LawText_pdd10()
+{
+    return LawCorpus_GetPage("pdd", 10)
+}
+
+LawText_oruzh1()
+{
+    return LawCorpus_GetPage("oruzh", 1)
+}
+
+LawText_oruzh2()
+{
+    return LawCorpus_GetPage("oruzh", 2)
+}
+
+LawText_oruzh3()
+{
+    return LawCorpus_GetPage("oruzh", 3)
+}
+
+LawText_upk1()
+{
+    return LawCorpus_GetPage("upk", 1)
+}
+
+LawText_upk2()
+{
+    return LawCorpus_GetPage("upk", 2)
+}
+
+LawText_upk3()
+{
+    return LawCorpus_GetPage("upk", 3)
+}
+
+LawText_upk4()
+{
+    return LawCorpus_GetPage("upk", 4)
+}
+
+LawText_upk5()
+{
+    return LawCorpus_GetPage("upk", 5)
+}
+
+LawText_upk6()
+{
+    return LawCorpus_GetPage("upk", 6)
+}
+
+LawText_upk7()
+{
+    return LawCorpus_GetPage("upk", 7)
+}
+
+LawText_upk8()
+{
+    return LawCorpus_GetPage("upk", 8)
+}
+
+LawText_upk9()
+{
+    return LawCorpus_GetPage("upk", 9)
+}
+
+LawText_upk10()
+{
+    return LawCorpus_GetPage("upk", 10)
+}
+
+LawText_upk11()
+{
+    return LawCorpus_GetPage("upk", 11)
+}
+
+LawText_upk12()
+{
+    return LawCorpus_GetPage("upk", 12)
+}
+
+LawText_upk13()
+{
+    return LawCorpus_GetPage("upk", 13)
+}
+
+LawText_upk14()
+{
+    return LawCorpus_GetPage("upk", 14)
+}
+
+LawText_upk15()
+{
+    return LawCorpus_GetPage("upk", 15)
+}
+
+LawText_upk16()
+{
+    return LawCorpus_GetPage("upk", 16)
+}
+
+LawText_upk17()
+{
+    return LawCorpus_GetPage("upk", 17)
+}
+
+LawText_upk18()
+{
+    return LawCorpus_GetPage("upk", 18)
+}
+
+LawText_upk19()
+{
+    return LawCorpus_GetPage("upk", 19)
+}
+
+LawText_upk20()
+{
+    return LawCorpus_GetPage("upk", 20)
+}
+
+LawText_upk21()
+{
+    return LawCorpus_GetPage("upk", 21)
+}
+
+LawText_upk22()
+{
+    return LawCorpus_GetPage("upk", 22)
+}
+
+LawText_upk23()
+{
+    return LawCorpus_GetPage("upk", 23)
+}
+
+LawText_upk24()
+{
+    return LawCorpus_GetPage("upk", 24)
+}
+
+LawText_upk25()
+{
+    return LawCorpus_GetPage("upk", 25)
+}
+
+LawText_upk26()
+{
+    return LawCorpus_GetPage("upk", 26)
+}
+
+LawText_upk27()
+{
+    return LawCorpus_GetPage("upk", 27)
+}
+
+LawText_upk28()
+{
+    return LawCorpus_GetPage("upk", 28)
+}
+
+LawText_upk29()
+{
+    return LawCorpus_GetPage("upk", 29)
+}
+
+LawText_upk30()
+{
+    return LawCorpus_GetPage("upk", 30)
+}
+
+LawText_upk31()
+{
+    return LawCorpus_GetPage("upk", 31)
+}
+
+LawText_upk32()
+{
+    return LawCorpus_GetPage("upk", 32)
+}
+
+LawText_upk33()
+{
+    return LawCorpus_GetPage("upk", 33)
+}
+
+LawText_upk34()
+{
+    return LawCorpus_GetPage("upk", 34)
+}
+
+LawText_upk35()
+{
+    return LawCorpus_GetPage("upk", 35)
+}
+
+LawText_upk36()
+{
+    return LawCorpus_GetPage("upk", 36)
+}
+
+LawText_upk37()
+{
+    return LawCorpus_GetPage("upk", 37)
+}
+
+LawText_upk38()
+{
+    return LawCorpus_GetPage("upk", 38)
+}
+
+LawText_upk39()
+{
+    return LawCorpus_GetPage("upk", 39)
+}
+
+LawText_upk40()
+{
+    return LawCorpus_GetPage("upk", 40)
+}
+
+LawText_upk41()
+{
+    return LawCorpus_GetPage("upk", 41)
+}
+
+
+
+LawSearch_Init()
+{
+    global SearchInitialized, SearchIndex, SearchIndexCounts, LawSearchDocCatalog
+    global LawSearchCache, LawSearchCacheOrder, LawSearchLevenshteinCache, LawSearchLevenshteinCacheCount
+
+    if (SearchInitialized)
+        return
+
+    LawSearchCache := {}
+    LawSearchCacheOrder := []
+    LawSearchLevenshteinCache := {}
+    LawSearchLevenshteinCacheCount := 0
+
+    LawSearch_InitCatalog()
+    SearchIndex := []
+    SearchIndexCounts := {}
+
+    Loop % LawSearchDocCatalog.Length()
+    {
+        doc := LawSearchDocCatalog[A_Index]
+        LawSearch_AddDocFromCorpus(doc.Code, doc.Name, doc.Prefix)
+    }
+
+    SearchInitialized := 1
+}
+
+LawSearch_PageCount(prefix)
+{
+    corpusCount := LawCorpus_PageCount(prefix)
+    if (corpusCount > 0)
+        return corpusCount
+
+    if IsFunc("LawDoc_PageCount")
+    {
+        pageCountFn := Func("LawDoc_PageCount")
+        return pageCountFn.Call(prefix)
+    }
+
+    if (prefix = "vu")
+        return 3
+    else if (prefix = "fp")
+        return 4
+    else if (prefix = "kon")
+        return 4
+    else if (prefix = "fzop")
+        return 12
+    else if (prefix = "ter")
+        return 7
+    else if (prefix = "tk")
+        return 6
+    else if (prefix = "arg")
+        return 4
+    else if (prefix = "uk")
+        return 9
+    else if (prefix = "vv")
+        return 5
+    else if (prefix = "koap")
+        return 8
+    else if (prefix = "pdd")
+        return 10
+    else if (prefix = "oruzh")
+        return 3
+    else if (prefix = "upk")
+        return 41
+    else if (prefix = "kas")
+        return 4
+    else if (prefix = "fsb")
+        return 3
+    else if (prefix = "fsin")
+        return 2
+    else if (prefix = "vs")
+        return 2
+    else if (prefix = "sud")
+        return 2
+    else if (prefix = "ord")
+        return 2
+    else if (prefix = "gt")
+        return 2
+    return 0
+}
+
+LawSearch_AddDocFromCorpus(docCode, docName, prefix)
+{
+    text := LawCorpus_GetText(prefix)
+    if (text = "")
+        return false
+    LawSearch_ParseAndAdd(docCode, docName, text)
+    return true
+}
+
+LawSearch_AddDocFromPages(docCode, docName, prefix, pageCount)
+{
+    text := ""
+    Loop %pageCount%
+    {
+        fnName := "LawText_" . prefix . A_Index
+        if IsFunc(fnName)
+        {
+            fn := Func(fnName)
+            text .= fn.Call() . "`r`n"
+        }
+    }
+    LawSearch_ParseAndAdd(docCode, docName, text)
+}
+
+LawSearch_AuditIndex()
+{
+    global LawSearchDocCatalog, SearchIndexCounts
+
+    LawSearch_Init()
+    failures := []
+    pageCount := 0
+    headingCount := 0
+    docCount := IsObject(LawSearchDocCatalog) ? LawSearchDocCatalog.Length() : 0
+    if (docCount != 20)
+        failures.Push("Ожидалось 20 документов, найдено " . docCount)
+
+    Loop % docCount
+    {
+        doc := LawSearchDocCatalog[A_Index]
+        if (!SearchIndexCounts.HasKey(doc.Code) || SearchIndexCounts[doc.Code] < 1)
+            failures.Push(doc.Code . ": индекс пуст")
+        corpusText := LawCorpus_GetText(doc.Prefix)
+        if (corpusText = "")
+        {
+            failures.Push(doc.Code . ": официальный corpus недоступен")
+            continue
+        }
+        pages := LawCorpus_PageCount(doc.Prefix)
+        if (pages < 1)
+            failures.Push(doc.Code . ": не объявлены страницы")
+        pageCount += pages
+        Loop, Parse, corpusText, `n, `r
+        {
+            line := Trim(A_LoopField)
+            if !LawSearch_GetArticleId(line, articleId)
+                continue
+            headingCount++
+            if !LawSearch_IndexHasArticle(doc.Code, articleId)
+                failures.Push(doc.Code . ": заголовок статьи " . articleId . " не попал в индекс")
+        }
+    }
+    return {Ok: failures.Length() = 0, Documents: docCount, Pages: pageCount
+        , Headings: headingCount, Failures: failures}
+}
+
+LawSearch_IndexHasArticle(docCode, articleId)
+{
+    global SearchIndex
+    wanted := LawSearch_NormalizeNumber(articleId)
+    Loop % SearchIndex.Length()
+    {
+        item := SearchIndex[A_Index]
+        if (item.DocCode = docCode && LawSearch_NormalizeNumber(item.Article) = wanted)
+            return true
+    }
+    return false
+}
+
+LawSearch_ParseAndAdd(docCode, docName, text)
+{
+    logical := []
+
+    Loop, Parse, text, `n, `r
+    {
+        raw := RTrim(A_LoopField)
+        line := Trim(raw)
+        if (line = "")
+            continue
+
+        if (SubStr(raw, 1, 4) = "    " && logical.Length() > 0 && !LawSearch_IsStructuralLine(line))
+            logical[logical.Length()] := logical[logical.Length()] . " " . line
+        else
+            logical.Push(line)
+    }
+
+    chapter := ""
+    chapterTitle := ""
+    article := ""
+    articleTitle := ""
+    part := ""
+    partTitle := ""
+    point := ""
+    pointTitle := ""
+    subPoint := ""
+    subPointTitle := ""
+
+    currentLevel := ""
+    currentId := ""
+    currentTitle := ""
+    currentText := ""
+    explainActive := 0
+    explainSubSeen := 0
+    explainAfterList := 0
+    explainArticle := ""
+    explainPart := ""
+    explainPoint := ""
+    subListActive := 0
+    subListSubSeen := 0
+    subListAfterList := 0
+    subListArticle := ""
+    subListPart := ""
+    subListPoint := ""
+
+    Loop % logical.Length()
+    {
+        line := logical[A_Index]
+        kind := ""
+        id := ""
+        title := ""
+        body := ""
+
+        if (!explainActive && !subListActive && currentLevel = "point" && LawSearch_TextEndsWithColon(currentText) && RegExMatch(line, "^\s*[0-9]+\)\s+"))
+        {
+            subListActive := 1
+            subListSubSeen := 0
+            subListAfterList := 0
+            subListArticle := article
+            subListPart := part
+            subListPoint := point
+        }
+
+        forceSubPoint := ((explainActive && !explainAfterList) || (subListActive && !subListAfterList))
+        if (LawSearch_ParseStructureLine(line, kind, id, title, body, article, 0, part, point, forceSubPoint))
+        {
+            LawSearch_FlushStructuredItem(docCode, docName, currentId, currentTitle, currentText, chapter, chapterTitle, article, articleTitle, part, partTitle, point, pointTitle, subPoint, subPointTitle, currentLevel)
+            currentLevel := ""
+            currentId := ""
+            currentTitle := ""
+            currentText := ""
+
+            if (kind = "chapter")
+            {
+                chapter := id
+                chapterTitle := title
+                article := ""
+                articleTitle := ""
+                part := ""
+                partTitle := ""
+                point := ""
+                pointTitle := ""
+                subPoint := ""
+                subPointTitle := ""
+                explainActive := 0
+                explainSubSeen := 0
+                explainAfterList := 0
+                subListActive := 0
+                subListSubSeen := 0
+                subListAfterList := 0
+                continue
+            }
+            else if (kind = "article")
+            {
+                article := id
+                articleTitle := title
+                part := ""
+                partTitle := ""
+                point := ""
+                pointTitle := ""
+                subPoint := ""
+                subPointTitle := ""
+                explainActive := 0
+                explainSubSeen := 0
+                explainAfterList := 0
+                subListActive := 0
+                subListSubSeen := 0
+                subListAfterList := 0
+            }
+            else if (kind = "part")
+            {
+                part := id
+                partTitle := title
+                point := ""
+                pointTitle := ""
+                subPoint := ""
+                subPointTitle := ""
+                explainActive := 0
+                explainSubSeen := 0
+                explainAfterList := 0
+                subListActive := 0
+                subListSubSeen := 0
+                subListAfterList := 0
+            }
+            else if (kind = "point")
+            {
+                point := id
+                pointTitle := title
+                subPoint := ""
+                subPointTitle := ""
+                explainActive := 0
+                explainSubSeen := 0
+                explainAfterList := 0
+                subListActive := 0
+                subListSubSeen := 0
+                subListAfterList := 0
+            }
+            else if (kind = "subpoint")
+            {
+                if (explainActive)
+                {
+                    if (explainArticle != "")
+                        article := explainArticle
+                    if (explainPart != "")
+                    {
+                        part := explainPart
+                        if (partTitle = "" || partTitle != "Ч. " . part)
+                            partTitle := "Ч. " . part
+                    }
+                    if (explainPoint != "")
+                    {
+                        point := explainPoint
+                        if (pointTitle = "" || pointTitle != "П. " . point)
+                            pointTitle := "П. " . point
+                    }
+                    explainSubSeen := 1
+                }
+                if (subListActive)
+                {
+                    if (subListArticle != "")
+                        article := subListArticle
+                    if (subListPart != "")
+                    {
+                        part := subListPart
+                        if (partTitle = "" || partTitle != "Ч. " . part)
+                            partTitle := "Ч. " . part
+                    }
+                    if (subListPoint != "")
+                    {
+                        point := subListPoint
+                        if (pointTitle = "" || pointTitle != "П. " . point)
+                            pointTitle := "П. " . point
+                    }
+                    subListSubSeen := 1
+                }
+                subPoint := id
+                subPointTitle := title
+            }
+
+            currentLevel := kind
+            currentId := id
+            currentTitle := title
+            currentText := body
+            continue
+        }
+
+        if (LawSearch_DetectPointExplanation(line, expArticle, expPart, expPoint))
+        {
+            explainActive := 1
+            explainSubSeen := 0
+            explainAfterList := 0
+            explainArticle := expArticle
+            explainPart := expPart
+            explainPoint := expPoint
+            if (expArticle != "")
+                article := expArticle
+            if (expPart != "")
+            {
+                part := expPart
+                if (partTitle = "")
+                    partTitle := "Ч. " . part
+            }
+            if (expPoint != "")
+            {
+                point := expPoint
+                if (pointTitle = "")
+                    pointTitle := "П. " . point
+            }
+        }
+        else
+        {
+            if (explainActive && explainSubSeen)
+                explainAfterList := 1
+            if (subListActive && subListSubSeen)
+                subListAfterList := 1
+        }
+
+        if (currentTitle = "")
+        {
+            currentLevel := "text"
+            currentTitle := chapterTitle != "" ? chapterTitle : line
+            currentId := chapter != "" ? chapter : ""
+            currentText := currentTitle = line ? "" : line . "`r`n"
+        }
+        else
+        {
+            currentText .= line . "`r`n"
+        }
+    }
+
+    LawSearch_FlushStructuredItem(docCode, docName, currentId, currentTitle, currentText, chapter, chapterTitle, article, articleTitle, part, partTitle, point, pointTitle, subPoint, subPointTitle, currentLevel)
+}
+
+LawSearch_FlushStructuredItem(docCode, docName, itemId, title, text, chapter, chapterTitle, article, articleTitle, part, partTitle, point, pointTitle, subPoint, subPointTitle, level)
+{
+    title := Trim(title)
+    text := Trim(text, " `t`r`n")
+    if (title = "" && text = "")
+        return
+    if (title = "")
+        title := SubStr(text, 1, 80)
+    LawSearch_Add(docCode, docName, itemId, title, text, chapter, chapterTitle, article, articleTitle, part, partTitle, point, pointTitle, subPoint, subPointTitle, level)
+}
+
+LawSearch_IsStructuralLine(line)
+{
+    kind := ""
+    id := ""
+    title := ""
+    body := ""
+    return LawSearch_ParseStructureLine(line, kind, id, title, body, "")
+}
+
+LawSearch_ParseStructureLine(line, ByRef kind, ByRef id, ByRef title, ByRef body, currentArticle := "", numericHasChildren := 0, currentPart := "", currentPoint := "", forceParenSubPoint := 0)
+{
+    line := Trim(line)
+    kind := ""
+    id := ""
+    title := ""
+    body := ""
+
+    if (RegExMatch(line, "^\s*(Раздел|раздел|РАЗДЕЛ|Глава|глава|ГЛАВА)\s+([0-9]+(\.[0-9]+)*)?\s*[\.:\-]?\s*(.*)$", m))
+    {
+        kind := "chapter"
+        id := m2
+        title := LawSearch_MakeHierarchyTitle("Гл.", id, m4)
+        return true
+    }
+
+    if (RegExMatch(line, "^\s*(Статья|статья|СТАТЬЯ|Ст\.|ст\.|СТ\.)\s*([0-9]+(\.[0-9]+)*)\.?\s*(.*)$", m))
+    {
+        kind := "article"
+        id := m2
+        title := LawSearch_MakeHierarchyTitle("Ст.", id, m4)
+        return true
+    }
+
+    if (RegExMatch(line, "^\s*(Часть|часть|ЧАСТЬ|ч\.|Ч\.)\s*([0-9]+(\.[0-9]+)*)\.?\s*(.*)$", m))
+    {
+        kind := "part"
+        id := m2
+        body := Trim(m4)
+        title := LawSearch_MakeHierarchyTitle("Ч.", id, "")
+        return true
+    }
+
+    if (RegExMatch(line, "i)^\s*(Подпункт|подпункт)\s*([0-9]+(\.[0-9]+)*|[a-zа-яё])\.?\s*(.*)$", m))
+    {
+        kind := "subpoint"
+        id := m2
+        body := Trim(m4)
+        title := LawSearch_MakeHierarchyTitle("ПП.", id, "")
+        return true
+    }
+
+    if (RegExMatch(line, "^\s*(Пункт|пункт|ПУНКТ|п\.|П\.)\s*([0-9]+(\.[0-9]+)*)\.?\s*(.*)$", m))
+    {
+        kind := "point"
+        id := m2
+        body := Trim(m4)
+        title := LawSearch_MakeHierarchyTitle("П.", id, "")
+        return true
+    }
+
+    if (RegExMatch(line, "^\s*([0-9]+(\.[0-9]+)*)([\.)])?\s+(.+)$", m))
+    {
+        id := m1
+        delim := m3
+        body := Trim(m4)
+        if (LawSearch_IsNumericAmountLine(id, body))
+            return false
+
+        levelCount := LawSearch_NumberLevelCount(id)
+        if (delim = ")")
+        {
+            if (forceParenSubPoint)
+                kind := "subpoint"
+            else
+                kind := "point"
+        }
+        else if (levelCount = 1 && currentArticle != "")
+            kind := "part"
+        else if (levelCount >= 3 && currentArticle != "")
+            kind := "subpoint"
+        else
+            kind := "point"
+
+        if (kind = "part")
+            title := LawSearch_MakeHierarchyTitle("Ч.", id, "")
+        else if (kind = "subpoint")
+            title := LawSearch_MakeHierarchyTitle("ПП.", id, "")
+        else
+            title := LawSearch_MakeHierarchyTitle("П.", id, "")
+        return true
+    }
+
+    if (RegExMatch(line, "i)^\s*([a-zа-яё])\)\s+(.+)$", m))
+    {
+        kind := "subpoint"
+        id := m1
+        body := Trim(m2)
+        title := LawSearch_MakeHierarchyTitle("ПП.", id, "")
+        return true
+    }
+
+    return false
+}
+
+LawSearch_MakeHierarchyTitle(prefix, id, caption)
+{
+    caption := Trim(caption)
+    if (id != "")
+        out := prefix . " " . id
+    else
+        out := prefix
+    if (caption != "")
+        out .= ". " . caption
+    return out
+}
+
+LawSearch_DetectPointExplanation(line, ByRef outArticle, ByRef outPart, ByRef outPoint)
+{
+    outArticle := ""
+    outPart := ""
+    outPoint := ""
+    if (RegExMatch(line, "i)Разъяснения\s+по\s+пункту\s+([0-9]+)\s+части\s+([0-9]+)\s+статьи\s+([0-9]+(\.[0-9]+)*)", m))
+    {
+        outPoint := m1
+        outPart := m2
+        outArticle := m3
+        return true
+    }
+    return false
+}
+
+LawSearch_TextEndsWithColon(text)
+{
+    text := Trim(text)
+    if (text = "")
+        return false
+    return RegExMatch(text, ":\s*$")
+}
+
+LawSearch_NumberLevelCount(id)
+{
+    if (id = "")
+        return 0
+    parts := StrSplit(id, ".")
+    return parts.Length()
+}
+
+LawSearch_NumericLineHasNestedChildren(ByRef logical, lineIndex, line, currentArticle)
+{
+    if (currentArticle = "")
+        return 0
+    line := Trim(line)
+    if (!RegExMatch(line, "^\s*([0-9]+)\.?\s+", m))
+        return 0
+
+    parentId := m1
+    parentNum := parentId + 0
+    nextSame := parentNum + 1
+    childPrefix := parentId . "."
+    total := logical.Length()
+    idx := lineIndex + 1
+    while (idx <= total)
+    {
+        nextLine := Trim(logical[idx])
+        if (nextLine = "")
+        {
+            idx++
+            continue
+        }
+        if (RegExMatch(nextLine, "i)^\s*(Раздел|Глава|Статья|Ст\.)\s+"))
+            break
+        if (RegExMatch(nextLine, "i)^\s*(Часть|ч\.|Ч\.)\s+"))
+            break
+        if (RegExMatch(nextLine, "^\s*" . childPrefix . "[0-9]+(\.[0-9]+)*[\.)]?\s+"))
+            return 1
+        if (RegExMatch(nextLine, "^\s*([0-9]+)\.?\s+", n))
+        {
+            nextNum := n1 + 0
+            if (nextNum >= nextSame)
+                break
+        }
+        idx++
+    }
+    return 0
+}
+
+LawSearch_IsNumericAmountLine(id, body)
+{
+    if (RegExMatch(id, "\.[0-9]{3,}"))
+        return true
+    if (RegExMatch(body, "i)^(руб|рубл)"))
+        return true
+    return false
+}
+
+LawSearch_FlushItem(docCode, docName, itemId, title, text)
+{
+    title := Trim(title)
+    text := Trim(text, " `t`r`n")
+    if (title = "" && text = "")
+        return
+    if (title = "")
+        title := SubStr(text, 1, 80)
+    LawSearch_Add(docCode, docName, itemId, title, text)
+}
+
+LawSearch_IsMajorHeading(line)
+{
+    return RegExMatch(line, "i)^\s*(Раздел|Глава|Часть)\s+")
+}
+
+LawSearch_IsItemStart(line, hasArticles)
+{
+    return LawSearch_IsStructuralLine(line)
+}
+
+LawSearch_GetArticleId(line, ByRef outId)
+{
+    if (RegExMatch(line, "^\s*(Статья|статья|СТАТЬЯ|Ст\.|ст\.|СТ\.)\s*([0-9]+(\.[0-9]+)*)", m))
+    {
+        outId := m2
+        return true
+    }
+    return false
+}
+
+LawSearch_GetPointId(line, ByRef outId)
+{
+    if (RegExMatch(line, "i)^\s*(Пункт|пункт|п\.)\s+([0-9]+(\.[0-9]+)*)", m))
+    {
+        outId := m2
+        return true
+    }
+    if (RegExMatch(line, "^\s*([0-9]+(\.[0-9]+)*)[\.)]", m))
+    {
+        outId := m1
+        return true
+    }
+    if (RegExMatch(line, "^\s*([a-zа-яё])\)", m))
+    {
+        outId := m1
+        return true
+    }
+    return false
+}
+
+LawSearch_Add(docCode, docName, itemId, title, itemText, chapter := "", chapterTitle := "", article := "", articleTitle := "", part := "", partTitle := "", point := "", pointTitle := "", subPoint := "", subPointTitle := "", level := "")
+{
+    global SearchIndex, SearchIndexCounts
+
+    docCode := Trim(docCode)
+    StringUpper, docCode, docCode
+
+    if (!IsObject(SearchIndex))
+        SearchIndex := []
+    if (!IsObject(SearchIndexCounts))
+        SearchIndexCounts := {}
+
+    meta := LawSearch_GetDocMeta(docCode)
+    if (IsObject(meta))
+        docName := meta.Name
+    title := RegExReplace(Trim(title), "\s+", " ")
+    itemText := Trim(itemText, " `t`r`n")
+    if (itemId = "")
+        itemId := SearchIndex.Length() + 1
+
+    searchTitle := LawSearch_BuildSearchTitle(title, chapterTitle, articleTitle, partTitle, pointTitle, subPointTitle)
+    item := {DocCode: docCode, DocName: docName, ItemId: itemId, Title: title, Text: itemText}
+    item.DocShort := IsObject(meta) ? meta.Short : docName
+    item.DocAliases := IsObject(meta) ? meta.Aliases : ""
+    item.DocOrder := IsObject(meta) && meta.HasKey("Order") ? meta.Order : 9999
+    item.IndexOrder := SearchIndex.Length() + 1
+    item.Level := level
+    item.Chapter := chapter
+    item.ChapterTitle := chapterTitle
+    item.Article := article
+    item.ArticleTitle := articleTitle
+    item.Part := part
+    item.PartTitle := partTitle
+    item.Point := point
+    item.PointTitle := pointTitle
+    item.SubPoint := subPoint
+    item.SubPointTitle := subPointTitle
+    item.SearchTitle := searchTitle
+    item.SearchText := searchTitle . " " . itemText
+    item.NormId := LawSearch_Normalize(itemId)
+    item.NormTitle := LawSearch_Normalize(searchTitle)
+    item.NormBody := LawSearch_Normalize(itemText)
+    item.NormText := item.NormBody
+    item.NormAll := LawSearch_Normalize(item.SearchText)
+    item.TitleTokens := LawSearch_BuildTokenSet(item.NormTitle)
+    item.BodyTokens := LawSearch_BuildTokenSet(item.NormBody)
+    item.AllTokens := LawSearch_MergeTokenSets(item.TitleTokens, item.BodyTokens)
+    item.TitleStems := LawSearch_BuildStemSet(item.TitleTokens)
+    item.BodyStems := LawSearch_BuildStemSet(item.BodyTokens)
+    item.AllStems := LawSearch_MergeTokenSets(item.TitleStems, item.BodyStems)
+    SearchIndex.Push(item)
+
+    if (!SearchIndexCounts.HasKey(docCode))
+        SearchIndexCounts[docCode] := 0
+    SearchIndexCounts[docCode] := SearchIndexCounts[docCode] + 1
+}
+
+LawSearch_BuildSearchTitle(title, chapterTitle, articleTitle, partTitle, pointTitle, subPointTitle)
+{
+    out := ""
+    LawSearch_AppendUniqueTitle(out, chapterTitle)
+    LawSearch_AppendUniqueTitle(out, articleTitle)
+    LawSearch_AppendUniqueTitle(out, partTitle)
+    LawSearch_AppendUniqueTitle(out, pointTitle)
+    LawSearch_AppendUniqueTitle(out, subPointTitle)
+    LawSearch_AppendUniqueTitle(out, title)
+    return out
+}
+
+LawSearch_AppendUniqueTitle(ByRef out, value)
+{
+    value := RegExReplace(Trim(value), "\s+", " ")
+    if (value = "")
+        return
+    if (InStr("`n" . out . "`n", "`n" . value . "`n"))
+        return
+    if (out != "")
+        out .= "`n"
+    out .= value
+}
+
+LawSearch_Normalize(text)
+{
+    out := text
+    StringReplace, out, out, Ё, Е, All
+    StringReplace, out, out, ё, е, All
+    StringLower, out, out
+    out := RegExReplace(out, "[^0-9A-Za-zА-Яа-я\.]+", " ")
+    out := RegExReplace(out, "(?<!\d)\.|\.(?!\d)", " ")
+    out := RegExReplace(out, "\s+", " ")
+    return Trim(out)
+}
+
+LawSearch_GetItemTitle(item)
+{
+    if (!IsObject(item))
+        return ""
+    if (item.HasKey("Title"))
+        return item.Title
+    return ""
+}
+
+LawSearch_GetItemBodyText(item)
+{
+    if (!IsObject(item))
+        return ""
+
+    body := ""
+    if (item.HasKey("Text"))
+        body .= " " . item.Text
+    if (item.HasKey("Body"))
+        body .= " " . item.Body
+    if (item.HasKey("Content"))
+        body .= " " . item.Content
+    if (item.HasKey("Raw"))
+        body .= " " . item.Raw
+    if (Trim(body) = "" && item.HasKey("SearchText"))
+        body .= " " . item.SearchText
+    return Trim(body, " `t`r`n")
+}
+
+LawSearch_GetItemNormTitle(item)
+{
+    if (!IsObject(item))
+        return ""
+    if (item.HasKey("NormTitle"))
+        return item.NormTitle
+    return LawSearch_Normalize(LawSearch_GetItemTitle(item))
+}
+
+LawSearch_GetItemNormBody(item)
+{
+    if (!IsObject(item))
+        return ""
+    if (item.HasKey("NormBody"))
+        return item.NormBody
+    if (item.HasKey("NormText"))
+        return item.NormText
+    return LawSearch_Normalize(LawSearch_GetItemBodyText(item))
+}
+
+LawSearch_SelectMode(docCode, docName, showNotice := true)
+{
+    global SearchModeActive, SearchDoc, SearchDocName, SearchResults, SearchCurrentIndex, SearchCurrentPart, SearchGuiVisible
+
+    LawSearch_Init()
+    docCode := Trim(docCode)
+    StringUpper, docCode, docCode
+    SearchModeActive := 1
+    SearchDoc := docCode
+    SearchDocName := docName
+    SearchResults := []
+    SearchCurrentIndex := 0
+    SearchCurrentPart := 1
+    SearchGuiVisible := 0
+    Gui, 16:Destroy
+    if (showNotice)
+        LawSearch_ShowNotice("Поиск по " . docName . " активен. Введите запрос в чат и нажмите назначенную клавишу поиска")
+}
+LawSearch_ModeHotstring(docCode, docName)
+{
+    LawSearch_SelectMode(docCode, docName)
+}
+
+LawSearch_WaitForQuery()
+{
+    LawSearch_ShowNotice("Введите запрос в чат и нажмите назначенную клавишу поиска")
+}
+LawSearch_RunActive(query)
+{
+    global SearchModeActive, SearchDoc, SearchDocName, SearchResults, SearchGuiVisible
+
+    if (!SearchModeActive || SearchDoc = "")
+    {
+        LawSearch_ShowNotice("Сначала выберите материал: !пкоап / !пук / !пвсе")
+        return
+    }
+
+    query := LawSearch_CleanQuery(query)
+    if (query = "")
+    {
+        SearchResults := []
+        SearchGuiVisible := 0
+        Gui, 16:Destroy
+        LawSearch_ShowNotice("Введите запрос")
+        return
+    }
+    if (LawSearch_IsModeCommand(query))
+    {
+        LawSearch_ShowNotice("Это команда поиска. Введите запрос в чат")
+        return
+    }
+
+    LawSearch_ShowNotice("Ищу по " . SearchDocName . ": " . query)
+    LawSearch_Run(SearchDoc, query)
+}
+
+LawSearch_RunActiveFromClipboard()
+{
+    LawSearch_RunActiveFromChat()
+}
+
+LawSearch_RunActiveFromChat()
+{
+    global SearchModeActive, SearchDoc, SearchResults, SearchGuiVisible
+
+    if (!SearchModeActive || SearchDoc = "")
+    {
+        LawSearch_ShowNotice("Сначала выберите материал: !пкоап / !пук / !пвсе")
+        return
+    }
+
+    if (!IsFunc("LawSearch_CaptureAndCancelChat"))
+    {
+        LawSearch_ShowNotice("Не удалось подключить безопасный захват запроса")
+        return
+    }
+
+    captureFn := Func("LawSearch_CaptureAndCancelChat")
+    capture := captureFn.Call()
+    if !IsObject(capture) || !capture.Ok
+    {
+        reason := IsObject(capture) ? capture.Reason : "Неизвестная ошибка захвата."
+        LawSearch_DebugQuery("", "", "", "chat-capture-failed")
+        LawSearch_ShowNotice(reason . " Поиск не запущен.")
+        return
+    }
+
+    rawQuery := capture.Query
+    if (rawQuery = "")
+    {
+        LawSearch_DebugQuery(rawQuery, "", "", "active-chat-empty")
+        LawSearch_ShowNotice("Введите запрос в игровой чат и используйте клавишу запуска поиска")
+        return
+    }
+
+    query := LawSearch_CleanQuery(rawQuery)
+    normQuery := LawSearch_Normalize(query)
+    LawSearch_DebugQuery(rawQuery, query, normQuery, "active-chat")
+    if (query = "")
+    {
+        SearchResults := []
+        SearchGuiVisible := 0
+        Gui, 16:Destroy
+        LawSearch_ShowNotice("Введите запрос")
+        return
+    }
+    if (LawSearch_IsModeCommand(query))
+    {
+        LawSearch_ShowNotice("Это команда выбора раздела. Введите поисковый запрос")
+        return
+    }
+
+    LawSearch_RunActive(query)
+}
+
+LawSearch_CleanQuery(query)
+{
+    query := LawSearch_ExtractQueryText(query)
+    query := LawSearch_SanitizeQueryText(query)
+    while (SubStr(query, 1, 1) = "!" || SubStr(query, 1, 1) = "/")
+        query := Trim(SubStr(query, 2))
+    query := LawSearch_SanitizeQueryText(query)
+    return query
+}
+
+LawSearch_ExtractQueryText(raw)
+{
+    raw := "" . raw
+    StringReplace, raw, raw, `r`n, `n, All
+    StringReplace, raw, raw, `r, `n, All
+
+    lines := StrSplit(raw, "`n")
+    candidate := ""
+    Loop % lines.Length()
+    {
+        idx := lines.Length() - A_Index + 1
+        line := LawSearch_SanitizeQueryText(lines[idx])
+        if (line != "")
+        {
+            candidate := line
+            break
+        }
+    }
+    if (candidate = "")
+        candidate := raw
+
+    ; Hotstring режима может оставить в поле ! перед самим запросом.
+    bangPos := LawSearch_LastCharPos(candidate, "!")
+    if (bangPos > 0 && bangPos < StrLen(candidate))
+        candidate := SubStr(candidate, bangPos + 1)
+    return LawSearch_SanitizeQueryText(candidate)
+}
+
+LawSearch_SanitizeQueryText(text)
+{
+    text := "" . text
+    nbsp := Chr(160)
+    StringReplace, text, text, %nbsp%, %A_Space%, All
+    StringReplace, text, text, `t, %A_Space%, All
+    StringReplace, text, text, `r, %A_Space%, All
+    StringReplace, text, text, `n, %A_Space%, All
+    text := RegExReplace(text, "[\x00-\x1F]+", " ")
+    text := RegExReplace(text, "\s+", " ")
+    return Trim(text)
+}
+
+LawSearch_LastCharPos(text, needle)
+{
+    lastPos := 0
+    startPos := 1
+    needleLen := StrLen(needle)
+    if (needleLen < 1)
+        return 0
+
+    Loop
+    {
+        pos := InStr(text, needle, false, startPos)
+        if (!pos)
+            break
+        lastPos := pos
+        startPos := pos + needleLen
+    }
+    return lastPos
+}
+
+LawSearch_DebugQuery(raw, cleaned, normalized, source)
+{
+    global LawSearchDebug
+
+    if (LawSearchDebug = "")
+        LawSearchDebug := 1
+    if (!LawSearchDebug)
+        return
+
+    FormatTime, stamp,, yyyy-MM-dd HH:mm:ss
+    logFile := A_ScriptDir . "\law_search_debug.log"
+    entry := "---- " . stamp . " ----`r`n"
+    entry .= "source=" . source . "`r`n"
+    entry .= "raw_len=" . StrLen(raw) . "`r`n"
+    entry .= "raw=[" . LawSearch_DebugEscape(raw) . "]`r`n"
+    entry .= "raw_codes=" . LawSearch_DebugCharCodes(raw, 10) . "`r`n"
+    entry .= "cleaned_len=" . StrLen(cleaned) . "`r`n"
+    entry .= "cleaned=[" . LawSearch_DebugEscape(cleaned) . "]`r`n"
+    entry .= "cleaned_codes=" . LawSearch_DebugCharCodes(cleaned, 10) . "`r`n"
+    entry .= "normalized=[" . normalized . "]`r`n"
+    entry .= "words=[" . LawSearch_DebugWords(normalized) . "]`r`n`r`n"
+    FileAppend, %entry%, %logFile%
+}
+
+LawSearch_DebugEscape(text)
+{
+    out := "" . text
+    StringReplace, out, out, `r, \r, All
+    StringReplace, out, out, `n, \n, All
+    StringReplace, out, out, `t, \t, All
+    if (StrLen(out) > 240)
+        out := SubStr(out, 1, 240) . "...(trimmed)"
+    return out
+}
+
+LawSearch_DebugCharCodes(text, maxChars)
+{
+    out := ""
+    len := StrLen(text)
+    if (len > maxChars)
+        len := maxChars
+    Loop % len
+    {
+        if (out != "")
+            out .= ","
+        out .= Asc(SubStr(text, A_Index, 1))
+    }
+    return out
+}
+
+LawSearch_DebugWords(normalized)
+{
+    words := LawSearch_GetMeaningfulWords(normalized)
+    out := ""
+    if (!IsObject(words))
+        return out
+    Loop % words.Length()
+    {
+        if (out != "")
+            out .= ","
+        out .= words[A_Index]
+    }
+    return out
+}
+
+LawSearch_IsModeCommand(query)
+{
+    cmd := LawSearch_Normalize(query)
+    if (cmd = "")
+        return false
+    if (cmd = "пвсе" || cmd = "пкоап" || cmd = "пук" || cmd = "пупк" || cmd = "ппдд")
+        return true
+    if (cmd = "пфзоп" || cmd = "птк" || cmd = "птер" || cmd = "парг" || cmd = "пву")
+        return true
+    if (cmd = "пвв" || cmd = "поружие" || cmd = "пкон" || cmd = "пнайти")
+        return true
+    if (cmd = "пкас" || cmd = "пфсб" || cmd = "пфсин" || cmd = "пвс" || cmd = "псуд" || cmd = "порд" || cmd = "пгт")
+        return true
+    return false
+}
+
+LawSearch_Run(docCode, query)
+{
+    global SearchResults, SearchCurrentIndex, SearchCurrentPart, SearchGuiVisible, SearchLastQuery, SearchModeActive
+    global SearchLastChecked, SearchLastPassed, SearchMinScore, SearchLastPossible
+
+    LawSearch_Init()
+    docCode := Trim(docCode)
+    StringUpper, docCode, docCode
+    if (docCode = "")
+    {
+        LawSearch_ShowNotice("Сначала выберите материал: !пкоап / !пук / !пвсе")
+        return
+    }
+    query := LawSearch_CleanQuery(query)
+    if (query = "")
+    {
+        SearchResults := []
+        SearchGuiVisible := 0
+        Gui, 16:Destroy
+        LawSearch_ShowNotice("Введите запрос")
+        return
+    }
+
+    SearchModeActive := 1
+    SearchLastQuery := query
+    package := LawSearch_Find(docCode, query, 30)
+    SearchResults := package.Results
+    SearchLastChecked := package.Checked
+    SearchLastPassed := package.Passed
+    SearchMinScore := package.MinScore
+    SearchLastPossible := package.Possible
+    SearchCurrentIndex := 1
+    SearchCurrentPart := 1
+
+    if (!IsObject(SearchResults) || SearchResults.Length() = 0)
+    {
+        SearchGuiVisible := 0
+        Gui, 16:Destroy
+        LawSearch_ShowNotice("Подходящие статьи не найдены. Укажите закон, статью или другие ключевые слова.")
+        return
+    }
+
+    if (SearchLastPossible)
+        LawSearch_ShowNotice("Найдены возможные совпадения.")
+    Search_ShowCurrentResult()
+}
+
+LawSearch_Score(item, query)
+{
+    q := LawSearch_ParseQuery(query)
+    detail := LawSearch_ScoreParsed(item, q)
+    return IsObject(detail) ? detail.Score : 0
+}
+
+LawSearch_MinScore(query)
+{
+    return LawSearch_MinScoreParsed(LawSearch_ParseQuery(query))
+}
+
+LawSearch_GetMeaningfulWords(q)
+{
+    parsed := LawSearch_ParseQuery(q)
+    out := []
+    Loop % parsed.Tokens.Length()
+        out.Push(parsed.Tokens[A_Index].Word)
+    return out
+}
+
+LawSearch_IsStopWord(word)
+{
+    return InStr("|и|в|во|на|по|с|со|к|ко|от|до|за|из|у|о|об|обо|а|но|или|либо|при|для|без|над|под|не|ни|же|то|это|его|ее|их|ли|бы|кто|что|как|где|когда|какой|какая|какие|можно|будет|есть|считается|два|раза|одно|один|одного|одну|одной|тот|самый|настоящий|настоящего|", "|" . word . "|") > 0
+}
+
+LawSearch_WordMatchScore(text, word, exactScore, stemScore)
+{
+    if (text = "" || word = "")
+        return 0
+
+    if (LawSearch_HasExactWord(text, word))
+        return exactScore
+
+    if (StrLen(word) < 4)
+        return 0
+
+    if (LawSearch_HasStemWord(text, word))
+        return stemScore
+
+    stems := LawSearch_BuildSafeStems(word)
+    Loop % stems.Length()
+    {
+        stem := stems[A_Index]
+        if (LawSearch_HasStemWord(text, stem))
+            return stemScore
+    }
+
+    return 0
+}
+
+LawSearch_HasExactWord(text, word)
+{
+    return InStr(" " . text . " ", " " . word . " ")
+}
+
+LawSearch_HasStemWord(text, stem)
+{
+    stem := Trim(stem)
+    if (StrLen(stem) < 4)
+        return false
+
+    parts := StrSplit(text, A_Space)
+    stemLen := StrLen(stem)
+    Loop % parts.Length()
+    {
+        token := parts[A_Index]
+        if (token = "")
+            continue
+        if (SubStr(token, 1, stemLen) = stem)
+            return true
+    }
+    return false
+}
+
+LawSearch_BuildSafeStems(word)
+{
+    stems := []
+    len := StrLen(word)
+    if (len < 5 || RegExMatch(word, "^\d+$"))
+        return stems
+
+    if (len > 6)
+        LawSearch_AddStem(stems, SubStr(word, 1, len - 2))
+    if (len > 7)
+        LawSearch_AddStem(stems, SubStr(word, 1, len - 3))
+
+    endings := "ость,ости,остью,ного,ному,ными,лого,ого,его,ому,ему,ыми,ими,ями,ами,ая,ое,ые,ый,ий,ой,ым,им,ых,их,ую,юю,ью,ие,ия,ь"
+    endingList := StrSplit(endings, ",")
+    Loop % endingList.Length()
+    {
+        ending := endingList[A_Index]
+        endingLen := StrLen(ending)
+        if (len > endingLen && SubStr(word, len - endingLen + 1) = ending)
+            LawSearch_AddStem(stems, SubStr(word, 1, len - endingLen))
+    }
+
+    return stems
+}
+
+LawSearch_AddStem(ByRef stems, stem)
+{
+    stem := Trim(stem)
+    if (StrLen(stem) < 4)
+        return
+
+    Loop % stems.Length()
+    {
+        if (stems[A_Index] = stem)
+            return
+    }
+    stems.Push(stem)
+}
+
+LawSearch_InsertResult(result)
+{
+    global SearchResults
+    LawSearch_InsertInto(SearchResults, result, 15)
+}
+
+Search_ShowNextResult()
+{
+    global SearchResults, SearchCurrentIndex, SearchCurrentPart
+
+    if (!IsObject(SearchResults) || SearchResults.Length() = 0)
+        return
+
+    partCount := LawSearch_GetCurrentPartCount()
+    if (SearchCurrentPart < partCount)
+        SearchCurrentPart++
+    else
+    {
+        SearchCurrentPart := 1
+        SearchCurrentIndex++
+        if (SearchCurrentIndex > SearchResults.Length())
+            SearchCurrentIndex := 1
+    }
+    Search_ShowCurrentResult()
+}
+
+Search_ShowPrevResult()
+{
+    global SearchResults, SearchCurrentIndex, SearchCurrentPart
+
+    if (!IsObject(SearchResults) || SearchResults.Length() = 0)
+        return
+
+    if (SearchCurrentPart > 1)
+        SearchCurrentPart--
+    else
+    {
+        SearchCurrentIndex--
+        if (SearchCurrentIndex < 1)
+            SearchCurrentIndex := SearchResults.Length()
+        SearchCurrentPart := LawSearch_GetCurrentPartCount()
+    }
+    Search_ShowCurrentResult()
+}
+
+LawSearch_GetShellAccentColor()
+{
+    global CustomBorderColor
+
+    accentColor := CustomBorderColor
+    if (accentColor = "")
+        accentColor := "BFD7FF"
+    return accentColor
+}
+
+LawSearch_GetShellAlpha()
+{
+    global LawGuiTransparency
+
+    alpha := LawGuiTransparency
+    if (alpha = "")
+        alpha := 228
+    if (alpha < 200)
+        alpha := 200
+    if (alpha > 235)
+        alpha := 235
+    return alpha
+}
+
+LawSearch_ApplyShellRound(hwnd)
+{
+    global UIRoundness
+
+    if (!hwnd || !IsFunc("ApplyRoundedCorners"))
+        return
+
+    radius := UIRoundness
+    if (radius = "")
+        radius := 18
+    if (radius < 0)
+        radius := 0
+    if (radius > 45)
+        radius := 45
+
+    roundFn := Func("ApplyRoundedCorners")
+    roundFn.Call(hwnd, radius)
+}
+
+Search_Close(showNotice := 1)
+{
+    global SearchModeActive, SearchGuiVisible, SearchResults, SearchCurrentIndex, SearchCurrentPart
+
+    SearchModeActive := 0
+    SearchGuiVisible := 0
+    SearchResults := []
+    SearchCurrentIndex := 0
+    SearchCurrentPart := 1
+    Gui, 16:Destroy
+    Gui, 17:Destroy
+    if (showNotice)
+        LawSearch_ShowNotice("Поиск закрыт")
+}
+
+Search_ShowCurrentResult()
+{
+    global SearchResults, SearchCurrentIndex, SearchCurrentPart, SearchGuiVisible, SearchLastQuery, SearchDoc
+    global SearchLastChecked, SearchLastPassed, SearchMinScore
+    global LawGuiTextColor, LawGuiBgColor
+
+    if (!IsObject(SearchResults) || SearchResults.Length() = 0)
+        return
+
+    if (SearchCurrentIndex < 1)
+        SearchCurrentIndex := 1
+    if (SearchCurrentIndex > SearchResults.Length())
+        SearchCurrentIndex := SearchResults.Length()
+
+    result := SearchResults[SearchCurrentIndex]
+    item := result.Item
+    body := LawSearch_GetResultPartText(item, SearchCurrentPart, partCount)
+    headerDoc := item.DocName
+    showDocLine := 0
+    if (SearchDoc = "ALL")
+    {
+        headerDoc := "ВСЕ"
+        showDocLine := 1
+    }
+
+    foundText := SearchResults.Length()
+    if (SearchLastPassed > SearchResults.Length())
+        foundText := SearchResults.Length() . "/" . SearchLastPassed
+    header := "[" . headerDoc . "] Найдено: " . foundText . " | Результат " . SearchCurrentIndex . "/" . SearchResults.Length()
+    if (partCount > 1)
+        header .= " | Текст " . SearchCurrentPart . "/" . partCount
+
+    meta := "Запрос: " . SearchLastQuery
+    if (SearchMinScore != "")
+        meta .= " | score>=" . SearchMinScore
+
+    hierarchy := LawSearch_GetResultHierarchy(item, showDocLine)
+    if (hierarchy = "")
+        hierarchy := item.Title
+
+    textColor := LawGuiTextColor
+    if (textColor = "")
+        textColor := "FFFFFF"
+    bgColor := LawGuiBgColor
+    if (bgColor = "")
+        bgColor := "000000"
+    accentColor := LawSearch_GetShellAccentColor()
+    alpha := LawSearch_GetShellAlpha()
+
+    SearchGuiW := 680
+    if (SearchGuiW > A_ScreenWidth - 20)
+        SearchGuiW := A_ScreenWidth - 20
+    SearchGuiH := 392
+    if (SearchGuiH > A_ScreenHeight - 110)
+        SearchGuiH := A_ScreenHeight - 110
+    if (SearchGuiH < 320)
+        SearchGuiH := 320
+    SearchGuiX := 5
+    SearchGuiY := A_ScreenHeight - SearchGuiH - 20
+    if (SearchGuiY < 80)
+        SearchGuiY := 80
+    MarginX := 14
+    MarginY := 10
+    ContentW := SearchGuiW - (MarginX * 2)
+    HierarchyLines := LawSearch_CountDisplayLines(hierarchy)
+    HierarchyH := (HierarchyLines * 18) + 4
+    if (HierarchyH < 24)
+        HierarchyH := 24
+    if (HierarchyH > 102)
+        HierarchyH := 102
+    BodyH := SearchGuiH - HierarchyH - 124
+    if (BodyH < 160)
+        BodyH := 160
+    borderSize := 2
+    rightX := SearchGuiW - borderSize
+    bottomY := SearchGuiH - borderSize
+
+    Gui, 16:Destroy
+    Gui, 16:+LastFound +AlwaysOnTop -Caption +ToolWindow +Border +HwndSearchGuiHwnd
+    Gui, 16:Color, %bgColor%, %bgColor%
+    Gui, 16:Margin, %MarginX%, %MarginY%
+    Gui, 16:Add, Progress, x0 y0 w%SearchGuiW% h%borderSize% Disabled Background%bgColor% c%accentColor%, 100
+    Gui, 16:Add, Progress, x0 y%bottomY% w%SearchGuiW% h%borderSize% Disabled Background%bgColor% c%accentColor%, 100
+    Gui, 16:Add, Progress, x0 y0 w%borderSize% h%SearchGuiH% Disabled Vertical Background%bgColor% c%accentColor%, 100
+    Gui, 16:Add, Progress, x%rightX% y0 w%borderSize% h%SearchGuiH% Disabled Vertical Background%bgColor% c%accentColor%, 100
+    Gui, 16:Font, s10 Bold c%textColor%, Segoe UI
+    Gui, 16:Add, Text, xm ym w%ContentW% h22 +0x200 BackgroundTrans, %header%
+    Gui, 16:Font, s8 c%accentColor%, Segoe UI
+    Gui, 16:Add, Text, xm y+0 w%ContentW% h18 +0x200 BackgroundTrans, %meta%
+    Gui, 16:Add, Progress, xm y+4 w%ContentW% h1 Disabled Background%bgColor% c%accentColor%, 100
+    Gui, 16:Font, s9 Bold c%accentColor%, Segoe UI
+    Gui, 16:Add, Text, xm y+7 w%ContentW% h%HierarchyH% BackgroundTrans, %hierarchy%
+    Gui, 16:Add, Progress, xm y+5 w%ContentW% h1 Disabled Background%bgColor% c%accentColor%, 100
+    Gui, 16:Font, s9 c%textColor%, Segoe UI
+    Gui, 16:Add, Text, xm y+6 w%ContentW% h%BodyH% BackgroundTrans, %body%
+    Gui, 16:Show, x%SearchGuiX% y%SearchGuiY% w%SearchGuiW% h%SearchGuiH% NoActivate, law search
+    WinSet, Transparent, %alpha%, ahk_id %SearchGuiHwnd%
+    LawSearch_ApplyShellRound(SearchGuiHwnd)
+    SearchGuiVisible := 1
+}
+
+LawSearch_GetResultHierarchy(item, showDocLine := 0)
+{
+    out := ""
+    if (!IsObject(item))
+        return out
+    if (showDocLine && item.HasKey("DocName"))
+        LawSearch_AppendHierarchyLine(out, item.DocName)
+    if (item.HasKey("ChapterTitle"))
+        LawSearch_AppendHierarchyLine(out, item.ChapterTitle)
+    if (item.HasKey("ArticleTitle"))
+        LawSearch_AppendHierarchyLine(out, item.ArticleTitle)
+    if (item.HasKey("PartTitle"))
+        LawSearch_AppendHierarchyLine(out, item.PartTitle)
+    if (item.HasKey("PointTitle"))
+        LawSearch_AppendHierarchyLine(out, item.PointTitle)
+    if (item.HasKey("SubPointTitle"))
+        LawSearch_AppendHierarchyLine(out, item.SubPointTitle)
+    if (out = "" && item.HasKey("Title"))
+        LawSearch_AppendHierarchyLine(out, item.Title)
+    return out
+}
+
+LawSearch_AppendHierarchyLine(ByRef out, value)
+{
+    value := RegExReplace(Trim(value), "\s+", " ")
+    if (value = "")
+        return
+    if (InStr("`n" . out . "`n", "`n" . value . "`n"))
+        return
+    if (out != "")
+        out .= "`r`n"
+    out .= value
+}
+
+LawSearch_CountDisplayLines(text)
+{
+    count := 0
+    Loop, Parse, text, `n, `r
+    {
+        if (Trim(A_LoopField) != "")
+            count++
+    }
+    if (count < 1)
+        count := 1
+    return count
+}
+
+
+LawSearch_GetCurrentPartCount()
+{
+    global SearchResults, SearchCurrentIndex, SearchCurrentPart
+
+    if (!IsObject(SearchResults) || SearchResults.Length() = 0)
+        return 1
+    result := SearchResults[SearchCurrentIndex]
+    LawSearch_GetResultPartText(result.Item, SearchCurrentPart, partCount)
+    return partCount
+}
+
+LawSearch_GetResultPartText(item, part, ByRef partCount)
+{
+    display := LawSearch_GetItemBodyText(item)
+    if (display = "")
+        display := LawSearch_GetItemTitle(item)
+
+    lines := LawSearch_WrapDisplayText(display, 74)
+    linesPerPart := 12
+    partCount := Ceil(lines.Length() / linesPerPart)
+    if (partCount < 1)
+        partCount := 1
+    if (part < 1)
+        part := 1
+    if (part > partCount)
+        part := partCount
+
+    startIdx := (part - 1) * linesPerPart + 1
+    endIdx := startIdx + linesPerPart - 1
+    out := ""
+    Loop % lines.Length()
+    {
+        if (A_Index < startIdx)
+            continue
+        if (A_Index > endIdx)
+            break
+        if (out != "")
+            out .= "`r`n"
+        out .= lines[A_Index]
+    }
+    return out
+}
+
+LawSearch_WrapDisplayText(text, width)
+{
+    lines := []
+    Loop, Parse, text, `n, `r
+    {
+        LawSearch_WrapLineToArray(A_LoopField, width, lines)
+    }
+    if (lines.Length() = 0)
+        lines.Push("")
+    return lines
+}
+
+LawSearch_WrapLineToArray(line, width, ByRef lines)
+{
+    line := Trim(line)
+    if (line = "")
+    {
+        lines.Push("")
+        return
+    }
+    if (StrLen(line) <= width)
+    {
+        lines.Push(line)
+        return
+    }
+
+    current := ""
+    words := StrSplit(line, A_Space)
+    Loop % words.Length()
+    {
+        word := words[A_Index]
+        if (word = "")
+            continue
+        candidate := current = "" ? word : current . " " . word
+        if (StrLen(candidate) <= width)
+            current := candidate
+        else
+        {
+            if (current != "")
+                lines.Push(current)
+            current := word
+        }
+    }
+    if (current != "")
+        lines.Push(current)
+}
+
+LawSearch_ShowNotice(text)
+{
+    global LawGuiTextColor, LawGuiBgColor
+
+    textColor := LawGuiTextColor
+    if (textColor = "")
+        textColor := "FFFFFF"
+    bgColor := LawGuiBgColor
+    if (bgColor = "")
+        bgColor := "000000"
+    accentColor := LawSearch_GetShellAccentColor()
+    alpha := LawSearch_GetShellAlpha()
+
+    NoticeW := 590
+    if (NoticeW > A_ScreenWidth - 20)
+        NoticeW := A_ScreenWidth - 20
+    NoticeH := 58
+    NoticeX := 5
+    NoticeY := 46
+    MarginX := 12
+    MarginY := 8
+    TextW := NoticeW - (MarginX * 2)
+    borderSize := 2
+    rightX := NoticeW - borderSize
+    bottomY := NoticeH - borderSize
+
+    Gui, 17:Destroy
+    Gui, 17:+LastFound +AlwaysOnTop -Caption +ToolWindow +Border +HwndSearchNoticeHwnd
+    Gui, 17:Color, %bgColor%, %bgColor%
+    Gui, 17:Margin, %MarginX%, %MarginY%
+    Gui, 17:Add, Progress, x0 y0 w%NoticeW% h%borderSize% Disabled Background%bgColor% c%accentColor%, 100
+    Gui, 17:Add, Progress, x0 y%bottomY% w%NoticeW% h%borderSize% Disabled Background%bgColor% c%accentColor%, 100
+    Gui, 17:Add, Progress, x0 y0 w%borderSize% h%NoticeH% Disabled Vertical Background%bgColor% c%accentColor%, 100
+    Gui, 17:Add, Progress, x%rightX% y0 w%borderSize% h%NoticeH% Disabled Vertical Background%bgColor% c%accentColor%, 100
+    Gui, 17:Font, s9 Bold c%textColor%, Segoe UI
+    Gui, 17:Add, Text, xm ym w%TextW% h38 +0x200 BackgroundTrans, %text%
+    Gui, 17:Show, x%NoticeX% y%NoticeY% w%NoticeW% h%NoticeH% NoActivate, law search notice
+    WinSet, Transparent, %alpha%, ahk_id %SearchNoticeHwnd%
+    LawSearch_ApplyShellRound(SearchNoticeHwnd)
+    SetTimer, LawSearch_HideNoticeLabel, -2400
+}
+
+; ===== Added from current build: missing legislation and compatible search index =====
+
+kas1(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("kas", 1)
+}
+
+kas2(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("kas", 2)
+}
+
+kas3(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("kas", 3)
+}
+
+kas4(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("kas", 4)
+}
+
+fsb1(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("fsb", 1)
+}
+
+fsb2(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("fsb", 2)
+}
+
+fsb3(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("fsb", 3)
+}
+
+fsin1(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("fsin", 1)
+}
+
+fsin2(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("fsin", 2)
+}
+
+vs1(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("vs", 1)
+}
+
+vs2(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("vs", 2)
+}
+
+sud1(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("sud", 1)
+}
+
+sud2(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("sud", 2)
+}
+
+ord1(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("ord", 1)
+}
+
+ord2(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("ord", 2)
+}
+
+gt1(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("gt", 1)
+}
+
+gt2(State1)
+{
+    if (!State1)
+    {
+        LawGui_Close()
+        return
+    }
+    return LawDoc_ShowPage("gt", 2)
+}
+
+LawText_kas1()
+{
+    return LawCorpus_GetPage("kas", 1)
+}
+
+LawText_kas2()
+{
+    return LawCorpus_GetPage("kas", 2)
+}
+
+LawText_kas3()
+{
+    return LawCorpus_GetPage("kas", 3)
+}
+
+LawText_kas4()
+{
+    return LawCorpus_GetPage("kas", 4)
+}
+
+LawText_fsb1()
+{
+    return LawCorpus_GetPage("fsb", 1)
+}
+
+LawText_fsb2()
+{
+    return LawCorpus_GetPage("fsb", 2)
+}
+
+LawText_fsb3()
+{
+    return LawCorpus_GetPage("fsb", 3)
+}
+
+LawText_fsin1()
+{
+    return LawCorpus_GetPage("fsin", 1)
+}
+
+LawText_fsin2()
+{
+    return LawCorpus_GetPage("fsin", 2)
+}
+
+LawText_vs1()
+{
+    return LawCorpus_GetPage("vs", 1)
+}
+
+LawText_vs2()
+{
+    return LawCorpus_GetPage("vs", 2)
+}
+
+LawText_sud1()
+{
+    return LawCorpus_GetPage("sud", 1)
+}
+
+LawText_sud2()
+{
+    return LawCorpus_GetPage("sud", 2)
+}
+
+LawText_ord1()
+{
+    return LawCorpus_GetPage("ord", 1)
+}
+
+LawText_ord2()
+{
+    return LawCorpus_GetPage("ord", 2)
+}
+
+LawText_gt1()
+{
+    return LawCorpus_GetPage("gt", 1)
+}
+
+LawText_gt2()
+{
+    return LawCorpus_GetPage("gt", 2)
+}
+
+LawSearch_InitCatalog()
+{
+    global LawSearchDocCatalog, LawSearchDocByCode
+
+    if (IsObject(LawSearchDocCatalog) && LawSearchDocCatalog.Length() > 0)
+        return
+
+    LawSearchDocCatalog := []
+    LawSearchDocByCode := {}
+    LawSearch_RegisterDoc("VU", "ВУ", "Внутренний устав органов внутренних дел", "vu", "ву|внутренний устав|устав органов внутренних дел|устав овд")
+    LawSearch_RegisterDoc("FP", "ФП", "Федеральное постановление", "fp", "фп|федеральное постановление|постановление")
+    LawSearch_RegisterDoc("KON", "Конституция", "Конституция Нижегородской области", "kon", "конституция|конституция нижегородской области|конституция но")
+    LawSearch_RegisterDoc("FZOP", "ФЗОП", "Федеральный закон «О полиции»", "fzop", "фзоп|фз о полиции|федеральный закон о полиции|закон о полиции|полиция")
+    LawSearch_RegisterDoc("TER", "ФЗОТОД", "Федеральный закон «О территориях с ограниченным доступом»", "ter", "фзотод|отод|фз о территориях с ограниченным доступом|территории с ограниченным доступом|ограниченный доступ|территории")
+    LawSearch_RegisterDoc("TK", "ТК", "Трудовой кодекс", "tk", "тк|трудовой кодекс|трудовое законодательство")
+    LawSearch_RegisterDoc("ARG", "АРГ", "Административный регламент ГАИ", "arg", "арг|административный регламент|административный регламент гаи|регламент гаи")
+    LawSearch_RegisterDoc("UK", "УК", "Уголовный кодекс", "uk", "ук|ук но|уголовный кодекс|уголовный кодекс нижегородской области")
+    LawSearch_RegisterDoc("VV", "ФКЗОВВ", "Федеральный конституционный закон «О вертикали власти»", "vv", "фкзовв|фкз о вертикали власти|федеральный конституционный закон о вертикали власти|закон о вертикали|вертикаль власти|вертикаль")
+    LawSearch_RegisterDoc("KOAP", "КоАП", "Кодекс об административных правонарушениях", "koap", "коап|коап но|кодекс об административных правонарушениях|административный кодекс")
+    LawSearch_RegisterDoc("PDD", "ПДД", "Правила дорожного движения", "pdd", "пдд|правила дорожного движения|дорожные правила")
+    LawSearch_RegisterDoc("ORUZH", "ФЗОО", "Федеральный закон «Об оружии»", "oruzh", "фзоо|фз об оружии|федеральный закон об оружии|закон об оружии|оружие")
+    LawSearch_RegisterDoc("UPK", "УПК", "Уголовно-процессуальный кодекс", "upk", "упк|упк но|уголовно процессуальный кодекс|уголовно-процессуальный кодекс")
+    LawSearch_RegisterDoc("KAS", "КАС", "Кодекс административного судопроизводства", "kas", "кас|кас но|кодекс административного судопроизводства|административное судопроизводство")
+    LawSearch_RegisterDoc("FSB", "ФЗОФСБ", "Федеральный закон «О Федеральной службе безопасности»", "fsb", "фзофсб|фз о фсб|фз о федеральной службе безопасности|фсб|федеральная служба безопасности")
+    LawSearch_RegisterDoc("FSIN", "ФЗОФСИН", "Федеральный закон «О Федеральной службе исполнения наказаний»", "fsin", "фзофсин|фз о фсин|фз о федеральной службе исполнения наказаний|фсин|федеральная служба исполнения наказаний")
+    LawSearch_RegisterDoc("VS", "ФЗОВС", "Федеральный закон «О военной службе»", "vs", "фзовс|фз о военной службе|военная служба|военнослужащие")
+    LawSearch_RegisterDoc("SUD", "ФКЗОСС", "Федеральный конституционный закон «О судебной системе и статусе судей»", "sud", "фкзосс|судебная система|статус судей|закон о судебной системе")
+    LawSearch_RegisterDoc("ORD", "ФЗООРД", "Федеральный закон «Об оперативно-розыскной деятельности»", "ord", "фзоорд|фз об орд|орд|оперативно розыскная деятельность|оперативно-розыскная деятельность")
+    LawSearch_RegisterDoc("GT", "ФКЗОГТ", "Федеральный конституционный закон «О государственной тайне»", "gt", "фкзогт|фз о государственной тайне|государственная тайна|гостайна")
+}
+
+LawSearch_RegisterDoc(code, shortName, fullName, prefix, aliases)
+{
+    global LawSearchDocCatalog, LawSearchDocByCode
+
+    meta := {Code: code, Short: shortName, Name: fullName, Prefix: prefix, Aliases: aliases
+        , FileName: code . ".txt", SourceURL: LawCorpus_SourceUrl(code), SourceRevision: "2026-07-27"
+        , Order: LawSearchDocCatalog.Length() + 1}
+    LawSearchDocCatalog.Push(meta)
+    LawSearchDocByCode[code] := meta
+}
+
+LawSearch_GetDocMeta(code)
+{
+    global LawSearchDocByCode
+
+    LawSearch_InitCatalog()
+    code := Trim(code)
+    StringUpper, code, code
+    if (IsObject(LawSearchDocByCode) && LawSearchDocByCode.HasKey(code))
+        return LawSearchDocByCode[code]
+    return ""
+}
+
+LawSearch_GetDocName(code, shortName := 0)
+{
+    meta := LawSearch_GetDocMeta(code)
+    if (!IsObject(meta))
+        return code
+    return shortName ? meta.Short : meta.Name
+}
+
+LawSearch_BuildTokenSet(normText)
+{
+    set := {}
+    parts := StrSplit(normText, A_Space)
+    Loop % parts.Length()
+    {
+        token := LawSearch_CanonicalToken(parts[A_Index])
+        if (token != "")
+            set[token] := 1
+    }
+    return set
+}
+
+LawSearch_BuildStemSet(tokenSet)
+{
+    stems := {}
+    if (!IsObject(tokenSet))
+        return stems
+    for token, unused in tokenSet
+    {
+        variants := LawSearch_BuildStemVariants(token)
+        Loop % variants.Length()
+        {
+            stem := variants[A_Index]
+            if (StrLen(stem) >= 3)
+                stems[stem] := 1
+        }
+    }
+    return stems
+}
+
+LawSearch_MergeTokenSets(first, second)
+{
+    merged := {}
+    if (IsObject(first))
+        for token, unused in first
+            merged[token] := 1
+    if (IsObject(second))
+        for token, unused in second
+            merged[token] := 1
+    return merged
+}
+
+LawSearch_CanonicalToken(word)
+{
+    static forms := ""
+
+    word := Trim(word)
+    if (word = "")
+        return ""
+    word := LawSearch_FixMixedCyrillic(word)
+    if (!IsObject(forms))
+    {
+        forms := {}
+        LawSearch_AddWordForms(forms, "сотрудник", "сотрудник|сотрудника|сотруднику|сотрудником|сотрудники|сотрудников|сотрудникам|сотрудниками")
+        LawSearch_AddWordForms(forms, "полиция", "полиция|полиции|полицию|полицией|полицейский|полицейского|полицейским|полицейские|полицейских")
+        LawSearch_AddWordForms(forms, "территория", "территория|территории|территорию|территорией|территорий|территориях")
+        LawSearch_AddWordForms(forms, "задержание", "задержание|задержания|задержать|задержан|задержанный|задержанного|задержанным|задержанному")
+        LawSearch_AddWordForms(forms, "осуждение", "осудить|осужден|осуждён|осуждение|осуждения|осужденный|осуждённый|осужденного")
+        LawSearch_AddWordForms(forms, "нарушение", "нарушение|нарушения|нарушением|нарушений|нарушитель|нарушителя|нарушители")
+        LawSearch_AddWordForms(forms, "правонарушение", "правонарушение|правонарушения|правонарушением|правонарушений")
+        LawSearch_AddWordForms(forms, "гражданин", "гражданин|гражданина|гражданину|гражданином|граждане|граждан|гражданами")
+        LawSearch_AddWordForms(forms, "лицо", "лицо|лица|лицу|лицом|лиц")
+        LawSearch_AddWordForms(forms, "желтый", "желтый|желтая|желтое|желтые|желтой|желтую|желтых|желтом")
+        LawSearch_AddWordForms(forms, "зона", "зона|зоны|зону|зоной|зоне|зонах|зон")
+        LawSearch_AddWordForms(forms, "закрытый", "закрытый|закрытая|закрытое|закрытые|закрытой|закрытую|закрытых|закрытом")
+        LawSearch_AddWordForms(forms, "ограниченный", "ограниченный|ограниченная|ограниченное|ограниченные|ограниченной|ограниченную|ограниченных")
+        LawSearch_AddWordForms(forms, "служебный", "служебный|служебная|служебное|служебные|служебной|служебную|служебных")
+        LawSearch_AddWordForms(forms, "государственный", "государственный|государственная|государственное|государственные|государственной|государственную|государственных")
+        LawSearch_AddWordForms(forms, "исполнительный", "исполнительный|исполнительная|исполнительной|исполнительную|исполнительные|исполнительных")
+        LawSearch_AddWordForms(forms, "судебный", "судебный|судебная|судебной|судебную|судебные|судебных")
+        LawSearch_AddWordForms(forms, "законодательный", "законодательный|законодательная|законодательной|законодательную|законодательные|законодательных")
+    }
+    if (forms.HasKey(word))
+        return forms[word]
+    return word
+}
+
+LawSearch_AddWordForms(ByRef forms, canonical, list)
+{
+    entries := StrSplit(list, "|")
+    Loop % entries.Length()
+        forms[entries[A_Index]] := canonical
+}
+
+LawSearch_StemToken(word)
+{
+    word := LawSearch_CanonicalToken(word)
+    if (word = "" || RegExMatch(word, "^[0-9]+(?:\.[0-9]+)*$"))
+        return word
+
+    snowball := LawSearch_RussianStem(word)
+    if (snowball != "" && StrLen(snowball) >= 3)
+        return snowball
+    return LawSearch_LightStem(word)
+}
+
+LawSearch_Find(docCode, query, maxResults := 30)
+{
+    global LawSearchCache, LawSearchCacheOrder, LawSearchAlgorithmVersion
+
+    LawSearch_Init()
+    docCode := Trim(docCode)
+    StringUpper, docCode, docCode
+    maxResults := Round(maxResults)
+    if (maxResults < 1)
+        maxResults := 1
+    else if (maxResults > 30)
+        maxResults := 30
+
+    queryKey := LawSearch_Normalize(query)
+    cacheKey := LawSearchAlgorithmVersion . "|" . docCode . "|" . maxResults . "|" . queryKey
+    if !IsObject(LawSearchCache)
+        LawSearchCache := {}
+    if !IsObject(LawSearchCacheOrder)
+        LawSearchCacheOrder := []
+
+    if LawSearchCache.HasKey(cacheKey)
+        return LawSearch_ClonePackage(LawSearchCache[cacheKey])
+
+    package := LawSearch_Find_Real(docCode, query, maxResults)
+    ; Не сохраняем неполный результат, если нечёткий поиск остановлен бюджетом.
+    if (!package.FuzzyBudgetHit)
+    {
+        while (LawSearchCacheOrder.Length() >= 100)
+        {
+            oldestKey := LawSearchCacheOrder.RemoveAt(1)
+            if LawSearchCache.HasKey(oldestKey)
+                LawSearchCache.Delete(oldestKey)
+        }
+        LawSearchCache[cacheKey] := LawSearch_ClonePackage(package)
+        LawSearchCacheOrder.Push(cacheKey)
+    }
+    return package
+}
+
+LawSearch_ClonePackage(package)
+{
+    if !IsObject(package)
+        return package
+    clone := {}
+    for key, value in package
+    {
+        if (key != "Results")
+            clone[key] := value
+    }
+    clone.Results := []
+    if IsObject(package.Results)
+    {
+        Loop % package.Results.Length()
+        {
+            sourceResult := package.Results[A_Index]
+            resultCopy := {}
+            for resultKey, resultValue in sourceResult
+                resultCopy[resultKey] := resultValue
+            clone.Results.Push(resultCopy)
+        }
+    }
+    return clone
+}
+
+LawSearch_Find_Real(docCode, query, maxResults := 30)
+{
+    global SearchIndex
+    global LawSearchFuzzyStartTick, LawSearchFuzzyBudgetMs, LawSearchFuzzyChecksLeft, LawSearchFuzzyBudgetHit
+
+    LawSearch_Init()
+    docCode := Trim(docCode)
+    StringUpper, docCode, docCode
+    q := LawSearch_ParseQuery(query)
+    maxResults := Round(maxResults)
+    if (maxResults < 1)
+        maxResults := 1
+    else if (maxResults > 30)
+        maxResults := 30
+    results := []
+    checked := 0
+    passed := 0
+    minScore := LawSearch_MinScoreParsed(q)
+
+    ; Более мягкий поиск требует чуть большего бюджета, но остаётся ограниченным.
+    LawSearchFuzzyStartTick := A_TickCount
+    LawSearchFuzzyChecksLeft := 3500
+    LawSearchFuzzyBudgetHit := 0
+
+    Loop % SearchIndex.Length()
+    {
+        item := SearchIndex[A_Index]
+        if (docCode != "ALL" && item.DocCode != docCode)
+            continue
+        checked++
+
+        if (Mod(checked, 24) = 0)
+            Sleep, -1
+
+        detail := LawSearch_ScoreParsed(item, q)
+        if (!IsObject(detail) || detail.Score < minScore)
+            continue
+        passed++
+        result := {Score: detail.Score, Coverage: detail.Coverage, ExactRank: detail.ExactRank, Approx: detail.Approx, Item: item}
+        result.Key := LawSearch_ResultKey(item, q)
+        LawSearch_InsertInto(results, result, maxResults)
+    }
+
+    possible := 0
+    if (results.Length() > 0)
+    {
+        top := results[1]
+        possible := top.Approx && top.ExactRank < 2
+    }
+    budgetHit := LawSearchFuzzyBudgetHit ? 1 : 0
+    LawSearchFuzzyStartTick := 0
+    LawSearchFuzzyChecksLeft := 0
+    return {Results: results, Checked: checked, Passed: passed, MinScore: minScore, Possible: possible, Query: q, FuzzyBudgetHit: budgetHit}
+}
+
+LawSearch_ParseQuery(query)
+{
+    q := {Raw: query, Norm: LawSearch_Normalize(query), Chapter: "", Article: "", Part: "", Point: ""}
+    q.Structured := 0
+    q.NumberOnly := 0
+    q.DocOnly := 0
+    q.HasStrongDoc := 0
+    q.DocMatches := LawSearch_MatchDocCodes(q.Norm)
+
+    if RegExMatch(q.Norm, "(^| )(?:глава|гл)\s*([0-9]+(?:\.[0-9]+)*)( |$)", m)
+        q.Chapter := m2
+    if RegExMatch(q.Norm, "(^| )(?:статья|ст)\s*([0-9]+(?:\.[0-9]+)*)( |$)", m)
+        q.Article := m2
+    if RegExMatch(q.Norm, "(^| )(?:часть|ч)\s*([0-9]+(?:\.[0-9]+)*)( |$)", m)
+        q.Part := m2
+    if RegExMatch(q.Norm, "(^| )(?:пункт|п)\s*([0-9]+(?:\.[0-9]+)*)( |$)", m)
+        q.Point := m2
+
+    if (q.Article = "")
+    {
+        if RegExMatch(q.Norm, "(^| )([0-9]+(?:\.[0-9]+){1,2})( |$)", n)
+        {
+            number := n2
+            levels := StrSplit(number, ".")
+            if (levels.Length() >= 3)
+            {
+                q.Article := levels[1] . "." . levels[2]
+                if (q.Part = "")
+                    q.Part := levels[3]
+            }
+            else
+                q.Article := number
+        }
+        else if (RegExMatch(q.Norm, "^[0-9]+$", n))
+            q.Article := n
+        else if (LawSearch_ObjectCount(q.DocMatches) > 0 && RegExMatch(q.Norm, "(^| )([0-9]+)( |$)", n))
+            q.Article := n2
+    }
+
+    if (q.Chapter != "" || q.Article != "" || q.Part != "" || q.Point != "")
+        q.Structured := 1
+    for code, strength in q.DocMatches
+    {
+        if (strength >= 3)
+            q.HasStrongDoc := 1
+        if (strength = 4 && !q.Structured)
+            q.DocOnly := 1
+    }
+
+    q.Tokens := []
+    q.SyntheticTokens := []
+    LawSearch_BuildQueryTokens(q)
+    if (q.Article != "" && q.Tokens.Length() = 0 && !q.DocOnly)
+        q.NumberOnly := 1
+    q.SemanticPhrase := LawSearch_QueryPhrase(q.Tokens)
+    return q
+}
+
+LawSearch_MatchDocCodes(norm)
+{
+    global LawSearchDocCatalog
+
+    matches := {}
+    LawSearch_InitCatalog()
+    Loop % LawSearchDocCatalog.Length()
+    {
+        meta := LawSearchDocCatalog[A_Index]
+        aliases := StrSplit(meta.Aliases, "|")
+        Loop % aliases.Length()
+        {
+            aliasNorm := LawSearch_Normalize(aliases[A_Index])
+            if (aliasNorm = "" || !LawSearch_HasPhrase(norm, aliasNorm))
+                continue
+            if (norm = aliasNorm)
+                strength := 4
+            else if (!InStr(aliasNorm, " ") && StrLen(aliasNorm) <= 12)
+                strength := 3
+            else
+                strength := 2
+            if (!matches.HasKey(meta.Code) || strength > matches[meta.Code])
+                matches[meta.Code] := strength
+        }
+    }
+    return matches
+}
+
+LawSearch_HasPhrase(text, phrase)
+{
+    if (text = "" || phrase = "")
+        return false
+    return InStr(" " . text . " ", " " . phrase . " ") > 0
+}
+
+LawSearch_BuildQueryTokens(ByRef q)
+{
+    seen := {}
+    parts := StrSplit(q.Norm, A_Space)
+    Loop % parts.Length()
+    {
+        raw := Trim(parts[A_Index])
+        if (raw = "" || RegExMatch(raw, "^[0-9]+(?:\.[0-9]+)*$") || LawSearch_IsReferenceLabel(raw))
+            continue
+        if (LawSearch_IsStopWord(raw) || LawSearch_IsDocAbbreviation(raw))
+            continue
+
+        ; Если слово набрано в английской раскладке, используем русскую раскладку
+        ; как основной вариант. Аббревиатуры документов отсеиваются выше.
+        layoutWord := LawSearch_KeyboardToRussian(raw)
+        if (layoutWord != "")
+            raw := layoutWord
+
+        word := LawSearch_CanonicalToken(raw)
+        if (word = "" || seen.HasKey(word))
+            continue
+        weight := LawSearch_IsCommonWord(word) ? 0.32 : 1.0
+        if (StrLen(word) = 3)
+            weight *= 0.72
+        q.Tokens.Push({Word: word, Weight: weight, Original: 1})
+        seen[word] := 1
+    }
+
+    ; Связанные термины добавляют баллы, но не заменяют исходные слова.
+    Loop % q.Tokens.Length()
+    {
+        word := q.Tokens[A_Index].Word
+        synonyms := LawSearch_GetSynonyms(word)
+        Loop % synonyms.Length()
+            LawSearch_AddSyntheticToken(q, synonyms[A_Index], 0.42)
+    }
+
+    norm := q.Norm
+    if (LawSearch_HasPhrase(norm, "два раза") || LawSearch_HasPhrase(norm, "одно и то же") || LawSearch_HasPhrase(norm, "за одно нарушение"))
+        LawSearch_AddSyntheticToken(q, "повторно", 0.72)
+    if (LawSearch_HasPhrase(norm, "закрытая территория") || LawSearch_HasPhrase(norm, "закрытой территории"))
+    {
+        LawSearch_AddSyntheticToken(q, "территория", 0.65)
+        LawSearch_AddSyntheticToken(q, "ограниченный", 0.60)
+        LawSearch_AddSyntheticToken(q, "доступ", 0.60)
+    }
+    if (LawSearch_HasPhrase(norm, "желтая зона"))
+    {
+        LawSearch_AddSyntheticToken(q, "служебный", 0.45)
+        LawSearch_AddSyntheticToken(q, "территория", 0.45)
+        LawSearch_AddSyntheticToken(q, "покинуть", 0.35)
+    }
+    if (LawSearch_HasPhrase(norm, "ветви власти") || LawSearch_HasPhrase(norm, "виды государственной власти"))
+    {
+        LawSearch_AddSyntheticToken(q, "исполнительный", 0.62)
+        LawSearch_AddSyntheticToken(q, "судебный", 0.62)
+        LawSearch_AddSyntheticToken(q, "законодательный", 0.62)
+        LawSearch_AddSyntheticToken(q, "вертикаль", 0.45)
+    }
+}
+
+LawSearch_AddSyntheticToken(ByRef q, word, weight)
+{
+    word := LawSearch_CanonicalToken(LawSearch_Normalize(word))
+    if (word = "" || InStr(word, " "))
+        return
+    Loop % q.Tokens.Length()
+        if (q.Tokens[A_Index].Word = word)
+            return
+    Loop % q.SyntheticTokens.Length()
+    {
+        if (q.SyntheticTokens[A_Index].Word = word)
+        {
+            if (weight > q.SyntheticTokens[A_Index].Weight)
+                q.SyntheticTokens[A_Index].Weight := weight
+            return
+        }
+    }
+    q.SyntheticTokens.Push({Word: word, Weight: weight, Original: 0})
+}
+
+LawSearch_GetSynonyms(word)
+{
+    static map := ""
+    if (!IsObject(map))
+    {
+        map := {}
+        LawSearch_AddSynonymGroup(map, "дважды|повторно|неоднократно")
+        LawSearch_AddSynonymGroup(map, "наказать|наказание|привлечь|осуждение|осудить")
+        LawSearch_AddSynonymGroup(map, "нарушение|правонарушение|преступление")
+        LawSearch_AddSynonymGroup(map, "полицейский|полиция|сотрудник")
+        LawSearch_AddSynonymGroup(map, "обыск|досмотр|личный")
+        LawSearch_AddSynonymGroup(map, "арест|задержание|стража")
+        LawSearch_AddSynonymGroup(map, "машина|автомобиль|транспорт|транспортный")
+        LawSearch_AddSynonymGroup(map, "выгнать|покинуть|выпроводить|выдворение")
+        LawSearch_AddSynonymGroup(map, "закрытый|ограниченный|служебный")
+        LawSearch_AddSynonymGroup(map, "удостоверение|документ")
+    }
+    word := LawSearch_CanonicalToken(word)
+    return map.HasKey(word) ? map[word] : []
+}
+
+LawSearch_AddSynonymGroup(ByRef map, groupText)
+{
+    words := StrSplit(groupText, "|")
+    Loop % words.Length()
+    {
+        source := LawSearch_CanonicalToken(words[A_Index])
+        related := []
+        Loop % words.Length()
+        {
+            target := LawSearch_CanonicalToken(words[A_Index])
+            if (target != source)
+                related.Push(target)
+        }
+        map[source] := related
+    }
+}
+
+LawSearch_IsReferenceLabel(word)
+{
+    return InStr("|глава|статья|часть|пункт|подпункт|гл|ст|ч|п|", "|" . word . "|") > 0
+}
+
+LawSearch_IsDocAbbreviation(word)
+{
+    return InStr("|ву|фп|фзоп|фзотод|отод|тк|арг|ук|фкзовв|коап|пдд|фзоо|упк|кас|фзофсб|фсб|фзофсин|фсин|фзовс|фкзосс|фзоорд|орд|фкзогт|", "|" . word . "|") > 0
+}
+
+LawSearch_IsCommonWord(word)
+{
+    return InStr("|лицо|право|закон|сотрудник|гражданин|может|должен|область|государственный|орган|", "|" . word . "|") > 0
+}
+
+LawSearch_QueryHasWord(q, expected)
+{
+    Loop % q.Tokens.Length()
+        if (q.Tokens[A_Index].Word = expected)
+            return true
+    Loop % q.SyntheticTokens.Length()
+        if (q.SyntheticTokens[A_Index].Word = expected)
+            return true
+    return false
+}
+
+LawSearch_QueryPhrase(tokens)
+{
+    phrase := ""
+    Loop % tokens.Length()
+    {
+        if (phrase != "")
+            phrase .= " "
+        phrase .= tokens[A_Index].Word
+    }
+    return phrase
+}
+
+LawSearch_ScoreParsed(item, q)
+{
+    score := 0
+    exactRank := 0
+    matchedOriginal := 0
+    originalWeight := 0.0
+    matchedWeight := 0.0
+    approximate := 0
+    strongMatches := 0
+    fuzzyMatches := 0
+    bestOriginalValue := 0
+
+    for code, strength in q.DocMatches
+    {
+        if (code = item.DocCode)
+        {
+            score += q.DocOnly ? 2600 : 520 + (strength * 70)
+            exactRank += q.DocOnly ? 4 : 2
+            docMatched := 1
+            break
+        }
+    }
+    if (q.DocOnly && !docMatched)
+        return ""
+    if (q.HasStrongDoc && q.Structured && !docMatched)
+        return ""
+
+    if (q.Article != "")
+    {
+        if (LawSearch_NormalizeNumber(item.Article) != LawSearch_NormalizeNumber(q.Article))
+            return ""
+        score += 2200
+        exactRank += 5
+    }
+    if (q.Chapter != "")
+    {
+        if (LawSearch_NormalizeNumber(item.Chapter) != LawSearch_NormalizeNumber(q.Chapter))
+            return ""
+        score += 850
+        exactRank += 2
+    }
+    if (q.Part != "")
+    {
+        if (LawSearch_NormalizeNumber(item.Part) != LawSearch_NormalizeNumber(q.Part))
+            return ""
+        score += 1250
+        exactRank += 3
+    }
+    if (q.Point != "")
+    {
+        if (LawSearch_NormalizeNumber(item.Point) != LawSearch_NormalizeNumber(q.Point))
+            return ""
+        score += 950
+        exactRank += 2
+    }
+    if (q.Article != "" && q.Part != "")
+        score += 450
+    if (q.Article != "" && docMatched)
+        score += 350
+
+    Loop % q.Tokens.Length()
+    {
+        token := q.Tokens[A_Index]
+        originalWeight += token.Weight
+        match := LawSearch_MatchItemToken(item, token.Word, 1)
+        if (!IsObject(match))
+            continue
+        matchedOriginal++
+        matchedWeight += token.Weight
+        addition := Round(match.Value * token.Weight)
+        score += addition
+        if (addition > bestOriginalValue)
+            bestOriginalValue := addition
+        if (match.Kind = "fuzzy")
+        {
+            approximate := 1
+            fuzzyMatches++
+        }
+        else
+        {
+            strongMatches++
+            if (match.Kind = "prefix")
+                approximate := 1
+        }
+        if (StrLen(token.Word) >= 8 && match.Kind = "exact")
+            score += 24
+    }
+
+    syntheticScore := 0
+    Loop % q.SyntheticTokens.Length()
+    {
+        token := q.SyntheticTokens[A_Index]
+        match := LawSearch_MatchItemToken(item, token.Word, 0)
+        if (!IsObject(match))
+            continue
+        addition := Round(match.Value * token.Weight)
+        if (addition > 75)
+            addition := 75
+        syntheticScore += addition
+    }
+    if (syntheticScore > 230)
+        syntheticScore := 230
+    score += syntheticScore
+
+    totalOriginal := q.Tokens.Length()
+    if (totalOriginal > 0)
+    {
+        coverage := matchedOriginal / totalOriginal
+        weightedCoverage := originalWeight > 0 ? matchedWeight / originalWeight : coverage
+        if (matchedOriginal = totalOriginal)
+        {
+            score += 280 + (totalOriginal * 35)
+            exactRank += strongMatches = totalOriginal ? 2 : 1
+        }
+        else if (coverage >= 0.66)
+            score += 135
+        else if (coverage >= 0.5)
+            score += 65
+
+        minimumMatches := Ceil(totalOriginal * 0.4)
+        if (minimumMatches < 1)
+            minimumMatches := 1
+        if (!q.Structured && !q.DocOnly && matchedOriginal < minimumMatches)
+            return ""
+
+        ; Раньше любой запрос из нескольких слов, найденный только по опечаткам,
+        ; безусловно отбрасывался. Теперь допускаем его при полном покрытии.
+        if (!q.Structured && !q.DocOnly && totalOriginal > 1 && strongMatches < 1)
+        {
+            if (matchedOriginal < totalOriginal || weightedCoverage < 0.82)
+                return ""
+        }
+        if (!q.Structured && !q.DocOnly && totalOriginal = 1 && matchedOriginal = 0 && syntheticScore < 70)
+            return ""
+        if (!q.Structured && !q.DocOnly && totalOriginal = 1 && matchedOriginal = 1 && bestOriginalValue < 42)
+            return ""
+    }
+    else
+    {
+        coverage := (q.Structured || q.DocOnly) ? 1.0 : 0.0
+        weightedCoverage := coverage
+    }
+
+    if (q.SemanticPhrase != "" && q.Tokens.Length() > 1)
+    {
+        if (LawSearch_HasPhrase(item.NormTitle, q.SemanticPhrase))
+        {
+            score += 900
+            exactRank += 4
+        }
+        else if (LawSearch_HasPhrase(item.NormBody, q.SemanticPhrase))
+        {
+            score += 650
+            exactRank += 3
+        }
+    }
+
+    if (q.DocOnly && item.Article != "")
+        score += LawSearch_ArticleSortBonus(item.Article)
+    return {Score: score, Coverage: weightedCoverage, ExactRank: exactRank, Approx: approximate && strongMatches = 0}
+}
+
+LawSearch_MatchItemToken(item, word, allowFuzzy := 1)
+{
+    if (IsObject(item.TitleTokens) && item.TitleTokens.HasKey(word))
+        return {Value: 210, Kind: "exact", Where: "title", Quality: 1.0}
+    if (IsObject(item.BodyTokens) && item.BodyTokens.HasKey(word))
+        return {Value: 132, Kind: "exact", Where: "body", Quality: 1.0}
+
+    stemMatch := LawSearch_FindStemMatch(item, word)
+    if (IsObject(stemMatch))
+        return stemMatch
+
+    prefixMatch := LawSearch_FindPrefixMatch(item, word)
+    if (IsObject(prefixMatch))
+        return prefixMatch
+
+    if (allowFuzzy && StrLen(word) >= 4)
+    {
+        maxDistance := LawSearch_MaxEditDistance(word)
+        fuzzy := LawSearch_FindFuzzyMatch(item, word, maxDistance)
+        if (IsObject(fuzzy))
+            return fuzzy
+    }
+    return ""
+}
+
+LawSearch_FindFuzzyToken(item, word, maxDistance)
+{
+    match := LawSearch_FindFuzzyMatch(item, word, maxDistance)
+    return IsObject(match) ? match.Token : ""
+}
+
+
+
+; ===== Law search v2: morphology, prefixes and typo tolerance =====
+LawSearch_FixMixedCyrillic(word)
+{
+    if (!RegExMatch(word, "[а-яё]") || !RegExMatch(word, "[a-z]"))
+        return word
+    pairs := "a=а|c=с|e=е|o=о|p=р|x=х|y=у"
+    Loop, Parse, pairs, |
+    {
+        pair := StrSplit(A_LoopField, "=")
+        StringReplace, word, word, % pair[1], % pair[2], All
+    }
+    return word
+}
+
+LawSearch_KeyboardToRussian(word)
+{
+    if (!RegExMatch(word, "^[a-z\[\];',\.]+$") || StrLen(word) < 3)
+        return ""
+    source := "qwertyuiop[]asdfghjkl;'zxcvbnm,."
+    target := "йцукенгшщзхъфывапролджэячсмитьбю"
+    out := ""
+    Loop, Parse, word
+    {
+        pos := InStr(source, A_LoopField, true)
+        if (!pos)
+            return ""
+        out .= SubStr(target, pos, 1)
+    }
+    return out
+}
+
+LawSearch_BuildStemVariants(word)
+{
+    variants := []
+    word := LawSearch_CanonicalToken(word)
+    if (word = "")
+        return variants
+    LawSearch_AddUniqueString(variants, word)
+
+    russian := LawSearch_RussianStem(word)
+    if (StrLen(russian) >= 3)
+        LawSearch_AddUniqueString(variants, russian)
+
+    light := LawSearch_LightStem(word)
+    if (StrLen(light) >= 3)
+        LawSearch_AddUniqueString(variants, light)
+
+    safe := LawSearch_BuildSafeStems(word)
+    Loop % safe.Length()
+        LawSearch_AddUniqueString(variants, safe[A_Index])
+    return variants
+}
+
+LawSearch_AddUniqueString(ByRef list, value)
+{
+    value := Trim(value)
+    if (value = "")
+        return
+    Loop % list.Length()
+    {
+        if (list[A_Index] = value)
+            return
+    }
+    list.Push(value)
+}
+
+LawSearch_LightStem(word)
+{
+    len := StrLen(word)
+    if (len < 5)
+        return word
+    endings := "иями|ями|ами|остью|остей|ение|ения|ений|енному|енными|енный|енная|енное|енные|анного|анному|анными|анный|анная|анное|анные|ировать|овать|евать|ного|ному|ными|ого|его|ому|ему|ыми|ими|ая|яя|ое|ее|ые|ие|ый|ий|ой|ым|им|ых|их|ую|юю|ам|ям|ах|ях|ов|ев|ей|ом|ем|ою|ею|а|я|ы|и|у|ю|е|о"
+    list := StrSplit(endings, "|")
+    Loop % list.Length()
+    {
+        ending := list[A_Index]
+        eLen := StrLen(ending)
+        if (len - eLen >= 4 && SubStr(word, len - eLen + 1) = ending)
+            return SubStr(word, 1, len - eLen)
+    }
+    return word
+}
+
+LawSearch_RussianStem(word)
+{
+    if (!RegExMatch(word, "^[а-яё]+$") || StrLen(word) < 4)
+        return word
+
+    original := word
+    rvStart := LawSearch_FindRVStart(word)
+    if (rvStart < 1 || rvStart > StrLen(word))
+        return word
+    r2Start := LawSearch_FindR2Start(word)
+    prefix := SubStr(word, 1, rvStart - 1)
+    rv := SubStr(word, rvStart)
+
+    if (!LawSearch_RemovePerfectiveGerund(rv))
+    {
+        LawSearch_RemoveSuffixList(rv, "ся|сь")
+        if (!LawSearch_RemoveAdjectival(rv))
+        {
+            if (!LawSearch_RemoveVerb(rv))
+                LawSearch_RemoveNoun(rv)
+        }
+    }
+
+    if (SubStr(rv, 0) = "и")
+        rv := SubStr(rv, 1, StrLen(rv) - 1)
+    result := prefix . rv
+
+    if (r2Start > 0)
+    {
+        if (SubStr(result, 0 - 3) = "ость" && StrLen(result) - 3 >= r2Start)
+            result := SubStr(result, 1, StrLen(result) - 4)
+        else if (SubStr(result, 0 - 2) = "ост" && StrLen(result) - 2 >= r2Start)
+            result := SubStr(result, 1, StrLen(result) - 3)
+    }
+
+    if (SubStr(result, 0 - 1) = "нн")
+        result := SubStr(result, 1, StrLen(result) - 1)
+    else
+    {
+        if (LawSearch_RemoveEndingFromWhole(result, "ейше|ейш"))
+        {
+            if (SubStr(result, 0 - 1) = "нн")
+                result := SubStr(result, 1, StrLen(result) - 1)
+        }
+        else if (SubStr(result, 0) = "ь")
+            result := SubStr(result, 1, StrLen(result) - 1)
+    }
+
+    if (StrLen(result) < 3 || !LawSearch_HasRussianVowel(result))
+        return original
+    return result
+}
+
+LawSearch_FindRVStart(word)
+{
+    Loop, Parse, word
+    {
+        if (InStr("аеиоуыэюя", A_LoopField))
+            return A_Index + 1
+    }
+    return 0
+}
+
+LawSearch_FindR2Start(word)
+{
+    r1 := LawSearch_FindRegionAfterVowelConsonant(word, 1)
+    if (!r1)
+        return 0
+    return LawSearch_FindRegionAfterVowelConsonant(word, r1)
+}
+
+LawSearch_FindRegionAfterVowelConsonant(word, startPos)
+{
+    len := StrLen(word)
+    seenVowel := 0
+    Loop % len - startPos + 1
+    {
+        pos := startPos + A_Index - 1
+        ch := SubStr(word, pos, 1)
+        isVowel := InStr("аеиоуыэюя", ch) > 0
+        if (!seenVowel)
+        {
+            if (isVowel)
+                seenVowel := 1
+            continue
+        }
+        if (!isVowel)
+            return pos + 1
+    }
+    return 0
+}
+
+LawSearch_HasRussianVowel(word)
+{
+    Loop, Parse, word
+    {
+        if (InStr("аеиоуыэюя", A_LoopField))
+            return true
+    }
+    return false
+}
+
+LawSearch_RemovePerfectiveGerund(ByRef rv)
+{
+    if (LawSearch_RemoveSuffixList(rv, "ившись|ывшись|ивши|ывши|ив|ыв"))
+        return true
+    return LawSearch_RemoveSuffixList(rv, "вшись|вши|в", 1)
+}
+
+LawSearch_RemoveAdjectival(ByRef rv)
+{
+    endings := "ими|ыми|его|ого|ему|ому|ее|ие|ые|ое|ей|ий|ый|ой|ем|им|ым|ом|их|ых|ую|юю|ая|яя|ою|ею"
+    if (!LawSearch_RemoveSuffixList(rv, endings))
+        return false
+    if (!LawSearch_RemoveSuffixList(rv, "ивш|ывш|ующ"))
+        LawSearch_RemoveSuffixList(rv, "ем|нн|вш|ющ|щ", 1)
+    return true
+}
+
+LawSearch_RemoveVerb(ByRef rv)
+{
+    if (LawSearch_RemoveSuffixList(rv, "ила|ыла|ена|ейте|уйте|ите|или|ыли|ило|ыло|ено|ей|уй|ил|ыл|им|ым|ен|ят|ует|уют|ит|ыт|ены|ить|ыть|ишь|ую|ю"))
+        return true
+    return LawSearch_RemoveSuffixList(rv, "ла|на|ете|йте|ли|ло|но|ет|ют|ны|ть|ешь|нно|й|л|ем|н", 1)
+}
+
+LawSearch_RemoveNoun(ByRef rv)
+{
+    return LawSearch_RemoveSuffixList(rv, "иями|ями|ами|ией|иям|ием|иях|ью|ия|ья|ие|ье|еи|ии|ей|ой|ий|ям|ем|ам|ом|ах|ях|ию|ев|ов|а|е|и|й|о|у|ы|ь|ю|я")
+}
+
+LawSearch_RemoveSuffixList(ByRef value, suffixes, requirePrevAY := 0)
+{
+    list := StrSplit(suffixes, "|")
+    len := StrLen(value)
+    Loop % list.Length()
+    {
+        suffix := list[A_Index]
+        sLen := StrLen(suffix)
+        if (sLen > len || SubStr(value, len - sLen + 1) != suffix)
+            continue
+        if (requirePrevAY)
+        {
+            prevPos := len - sLen
+            if (prevPos < 1)
+                continue
+            prev := SubStr(value, prevPos, 1)
+            if (prev != "а" && prev != "я")
+                continue
+        }
+        value := SubStr(value, 1, len - sLen)
+        return true
+    }
+    return false
+}
+
+LawSearch_RemoveEndingFromWhole(ByRef value, suffixes)
+{
+    return LawSearch_RemoveSuffixList(value, suffixes)
+}
+
+LawSearch_FindStemMatch(item, word)
+{
+    variants := LawSearch_BuildStemVariants(word)
+    Loop % variants.Length()
+    {
+        stem := variants[A_Index]
+        if (StrLen(stem) < 3)
+            continue
+        if (IsObject(item.TitleStems) && item.TitleStems.HasKey(stem))
+            return {Value: 166, Kind: "stem", Where: "title", Quality: 0.92}
+        if (IsObject(item.BodyStems) && item.BodyStems.HasKey(stem))
+            return {Value: 102, Kind: "stem", Where: "body", Quality: 0.88}
+    }
+    return ""
+}
+
+LawSearch_FindPrefixMatch(item, word)
+{
+    title := LawSearch_FindPrefixInSet(item.TitleTokens, word)
+    if (IsObject(title))
+        return {Value: 112 + Round(title.Quality * 58), Kind: "prefix", Where: "title", Quality: title.Quality, Token: title.Token}
+    body := LawSearch_FindPrefixInSet(item.BodyTokens, word)
+    if (IsObject(body))
+        return {Value: 63 + Round(body.Quality * 42), Kind: "prefix", Where: "body", Quality: body.Quality, Token: body.Token}
+    return ""
+}
+
+LawSearch_FindPrefixInSet(tokenSet, word)
+{
+    if (!IsObject(tokenSet) || StrLen(word) < 3)
+        return ""
+    bestQuality := 0.0
+    bestToken := ""
+    for token, unused in tokenSet
+    {
+        quality := LawSearch_PrefixQuality(word, token)
+        if (quality > bestQuality)
+        {
+            bestQuality := quality
+            bestToken := token
+        }
+    }
+    return bestToken != "" ? {Token: bestToken, Quality: bestQuality} : ""
+}
+
+LawSearch_PrefixQuality(queryWord, token)
+{
+    qLen := StrLen(queryWord)
+    tLen := StrLen(token)
+    if (qLen < 3 || tLen < 3)
+        return 0
+
+    if (SubStr(token, 1, qLen) = queryWord)
+    {
+        ratio := qLen / tLen
+        if (qLen = 3 && ratio < 0.48)
+            return 0
+        return 0.70 + (ratio * 0.30)
+    }
+    if (SubStr(queryWord, 1, tLen) = token && tLen >= 4 && qLen - tLen <= 3)
+        return 0.64 + ((tLen / qLen) * 0.28)
+
+    ; Родственные формы часто расходятся после общей основы:
+    ; эваку-ация / эваку-ировать, преследован-ие / преследован-и.
+    common := LawSearch_CommonPrefixLength(queryWord, token)
+    shorter := qLen < tLen ? qLen : tLen
+    if (common >= 5 && common / shorter >= 0.62)
+        return 0.72 + ((common / Max(qLen, tLen)) * 0.22)
+    return 0
+}
+
+LawSearch_MaxEditDistance(word)
+{
+    len := StrLen(word)
+    if (len >= 10)
+        return 3
+    if (len >= 6)
+        return 2
+    return 1
+}
+
+LawSearch_FindFuzzyMatch(item, word, maxDistance)
+{
+    title := LawSearch_FindFuzzyInSet(item.TitleTokens, word, maxDistance)
+    if (IsObject(title))
+        return {Value: 64 + Round(title.Quality * 58), Kind: "fuzzy", Where: "title", Quality: title.Quality, Token: title.Token}
+    body := LawSearch_FindFuzzyInSet(item.BodyTokens, word, maxDistance)
+    if (IsObject(body))
+        return {Value: 38 + Round(body.Quality * 44), Kind: "fuzzy", Where: "body", Quality: body.Quality, Token: body.Token}
+    return ""
+}
+
+LawSearch_FindFuzzyInSet(tokenSet, word, maxDistance)
+{
+    global LawSearchFuzzyStartTick, LawSearchFuzzyBudgetMs, LawSearchFuzzyChecksLeft, LawSearchFuzzyBudgetHit
+    if (!IsObject(tokenSet))
+        return ""
+    if (LawSearchFuzzyStartTick > 0 && A_TickCount - LawSearchFuzzyStartTick > LawSearchFuzzyBudgetMs)
+    {
+        LawSearchFuzzyBudgetHit := 1
+        return ""
+    }
+
+    bestQuality := 0.0
+    bestToken := ""
+    for token, unused in tokenSet
+    {
+        if (LawSearchFuzzyChecksLeft <= 0)
+        {
+            LawSearchFuzzyBudgetHit := 1
+            break
+        }
+        if (LawSearchFuzzyStartTick > 0 && A_TickCount - LawSearchFuzzyStartTick > LawSearchFuzzyBudgetMs)
+        {
+            LawSearchFuzzyBudgetHit := 1
+            break
+        }
+        if (RegExMatch(token, "^[0-9]+(?:\.[0-9]+)*$") || Abs(StrLen(token) - StrLen(word)) > maxDistance)
+            continue
+        if (!LawSearch_QuickFuzzyGate(word, token, maxDistance))
+            continue
+
+        LawSearchFuzzyChecksLeft--
+        distance := LawSearch_DamerauDistanceWithin(word, token, maxDistance)
+        if (distance < 0)
+            continue
+        quality := 1.0 - (distance / Max(StrLen(word), StrLen(token)))
+        if (quality > bestQuality)
+        {
+            bestQuality := quality
+            bestToken := token
+        }
+    }
+    return bestToken != "" ? {Token: bestToken, Quality: bestQuality} : ""
+}
+
+
+LawSearch_CommonPrefixLength(first, second)
+{
+    limit := StrLen(first) < StrLen(second) ? StrLen(first) : StrLen(second)
+    count := 0
+    Loop % limit
+    {
+        if (SubStr(first, A_Index, 1) != SubStr(second, A_Index, 1))
+            break
+        count++
+    }
+    return count
+}
+
+LawSearch_QuickFuzzyGate(first, second, maxDistance)
+{
+    if (Abs(StrLen(first) - StrLen(second)) > maxDistance)
+        return false
+    if (SubStr(first, 1, 1) = SubStr(second, 1, 1))
+        return true
+    if (SubStr(first, 2, 1) = SubStr(second, 2, 1) || SubStr(first, 3, 1) = SubStr(second, 3, 1))
+        return true
+    return LawSearch_CommonBigramCount(first, second, 1) >= 1
+}
+
+LawSearch_CommonBigramCount(first, second, stopAfter := 2)
+{
+    if (StrLen(first) < 2 || StrLen(second) < 2)
+        return 0
+    count := 0
+    seen := {}
+    Loop % StrLen(first) - 1
+    {
+        pair := SubStr(first, A_Index, 2)
+        if (seen.HasKey(pair))
+            continue
+        seen[pair] := 1
+        if (InStr(second, pair))
+        {
+            count++
+            if (count >= stopAfter)
+                return count
+        }
+    }
+    return count
+}
+
+LawSearch_DamerauDistanceWithin(first, second, maxDistance)
+{
+    global LawSearchDistanceCache, LawSearchDistanceCacheCount
+
+    maxDistance := Round(maxDistance)
+    if (maxDistance < 0)
+        return -1
+    if (first = second)
+        return 0
+    lenA := StrLen(first)
+    lenB := StrLen(second)
+    if (Abs(lenA - lenB) > maxDistance)
+        return -1
+
+    if (first < second)
+        cacheKey := maxDistance . "|" . first . "|" . second
+    else
+        cacheKey := maxDistance . "|" . second . "|" . first
+    if IsObject(LawSearchDistanceCache) && LawSearchDistanceCache.HasKey(cacheKey)
+        return LawSearchDistanceCache[cacheKey]
+
+    prev2 := []
+    prev := []
+    Loop % lenB + 1
+        prev[A_Index] := A_Index - 1
+
+    finalDistance := -1
+    Loop % lenA
+    {
+        i := A_Index
+        curr := []
+        curr[1] := i
+        rowMin := curr[1]
+        Loop % lenB
+        {
+            j := A_Index
+            cost := SubStr(first, i, 1) = SubStr(second, j, 1) ? 0 : 1
+            deletion := prev[j + 1] + 1
+            insertion := curr[j] + 1
+            substitution := prev[j] + cost
+            value := deletion < insertion ? deletion : insertion
+            if (substitution < value)
+                value := substitution
+            if (i > 1 && j > 1 && SubStr(first, i, 1) = SubStr(second, j - 1, 1) && SubStr(first, i - 1, 1) = SubStr(second, j, 1))
+            {
+                transposition := prev2[j - 1] + 1
+                if (transposition < value)
+                    value := transposition
+            }
+            curr[j + 1] := value
+            if (value < rowMin)
+                rowMin := value
+        }
+        if (rowMin > maxDistance)
+        {
+            LawSearch_DistanceCacheStore(cacheKey, -1)
+            return -1
+        }
+        prev2 := prev
+        prev := curr
+    }
+    finalDistance := prev[lenB + 1]
+    if (finalDistance > maxDistance)
+        finalDistance := -1
+    LawSearch_DistanceCacheStore(cacheKey, finalDistance)
+    return finalDistance
+}
+
+LawSearch_DistanceCacheStore(cacheKey, value)
+{
+    global LawSearchDistanceCache, LawSearchDistanceCacheCount
+    if !IsObject(LawSearchDistanceCache)
+    {
+        LawSearchDistanceCache := {}
+        LawSearchDistanceCacheCount := 0
+    }
+    if (!LawSearchDistanceCache.HasKey(cacheKey))
+    {
+        if (LawSearchDistanceCacheCount >= 5000)
+        {
+            LawSearchDistanceCache := {}
+            LawSearchDistanceCacheCount := 0
+        }
+        LawSearchDistanceCacheCount++
+    }
+    LawSearchDistanceCache[cacheKey] := value
+}
+; ===== end Law search v2 =====
+
+LawSearch_LevenshteinCacheStore(cacheKey, value)
+{
+    global LawSearchLevenshteinCache, LawSearchLevenshteinCacheCount
+    if !IsObject(LawSearchLevenshteinCache)
+    {
+        LawSearchLevenshteinCache := {}
+        LawSearchLevenshteinCacheCount := 0
+    }
+    if (!LawSearchLevenshteinCache.HasKey(cacheKey))
+    {
+        if (LawSearchLevenshteinCacheCount >= 3000)
+        {
+            LawSearchLevenshteinCache := {}
+            LawSearchLevenshteinCacheCount := 0
+        }
+        LawSearchLevenshteinCacheCount++
+    }
+    LawSearchLevenshteinCache[cacheKey] := value ? 1 : 0
+    return value ? true : false
+}
+
+LawSearch_LevenshteinWithin(first, second, maxDistance)
+{
+    return LawSearch_DamerauDistanceWithin(first, second, maxDistance) >= 0
+}
+
+LawSearch_NormalizeNumber(number)
+{
+    number := Trim(number)
+    number := RegExReplace(number, "[^0-9\.]", "")
+    return number
+}
+
+LawSearch_ArticleSortBonus(article)
+{
+    if (!RegExMatch(article, "^([0-9]+)", m))
+        return 0
+    value := m1 + 0
+    bonus := 80 - value
+    return bonus > 0 ? bonus : 0
+}
+
+LawSearch_MinScoreParsed(q)
+{
+    if (q.Structured || q.DocOnly)
+        return 500
+    if (q.Tokens.Length() = 1)
+    {
+        word := q.Tokens[1].Word
+        if (LawSearch_IsCommonWord(word))
+            return 35
+        if (StrLen(word) <= 4)
+            return 48
+        return 72
+    }
+    return 120
+}
+
+LawSearch_ObjectCount(obj)
+{
+    count := 0
+    if (IsObject(obj))
+        for unusedKey, unusedValue in obj
+            count++
+    return count
+}
+
+LawSearch_ResultKey(item, q)
+{
+    article := item.Article != "" ? item.Article : item.ItemId
+    if ((q.NumberOnly || q.DocOnly) && q.Part = "")
+        return item.DocCode . "|" . article
+    return item.DocCode . "|" . article . "|" . item.Part . "|" . item.Point . "|" . item.SubPoint . "|" . item.Level
+}
+
+LawSearch_InsertInto(ByRef results, result, maxResults)
+{
+    if (!IsObject(results))
+        results := []
+
+    if (result.Key != "")
+    {
+        Loop % results.Length()
+        {
+            if (results[A_Index].Key = result.Key)
+            {
+                if (LawSearch_ResultBefore(result, results[A_Index]))
+                {
+                    results.RemoveAt(A_Index)
+                    break
+                }
+                return
+            }
+        }
+    }
+
+    inserted := 0
+    Loop % results.Length()
+    {
+        if (LawSearch_ResultBefore(result, results[A_Index]))
+        {
+            results.InsertAt(A_Index, result)
+            inserted := 1
+            break
+        }
+    }
+    if (!inserted)
+        results.Push(result)
+    if (results.Length() > maxResults)
+        results.RemoveAt(maxResults + 1)
+}
+
+LawSearch_ResultBefore(first, second)
+{
+    if (first.Score != second.Score)
+        return first.Score > second.Score
+    if (first.Coverage != second.Coverage)
+        return first.Coverage > second.Coverage
+    if (first.Item.DocOrder != second.Item.DocOrder)
+        return first.Item.DocOrder < second.Item.DocOrder
+    hierarchyFirst := LawSearch_HierarchyKey(first.Item)
+    hierarchySecond := LawSearch_HierarchyKey(second.Item)
+    if (hierarchyFirst != hierarchySecond)
+        return hierarchyFirst < hierarchySecond
+    return first.Item.IndexOrder < second.Item.IndexOrder
+}
+
+LawSearch_HierarchyKey(item)
+{
+    key := LawSearch_NumberHierarchyKey(item.Article)
+    key .= "|" . LawSearch_NumberHierarchyKey(item.Part)
+    key .= "|" . LawSearch_NumberHierarchyKey(item.Point)
+    key .= "|" . LawSearch_NumberHierarchyKey(item.SubPoint)
+    return key
+}
+
+LawSearch_NumberHierarchyKey(value)
+{
+    value := Trim(value)
+    if (value = "")
+        return "999999.999999.999999.999999"
+    key := ""
+    parts := StrSplit(value, ".")
+    Loop, 4
+    {
+        part := A_Index <= parts.Length() ? parts[A_Index] : 0
+        if RegExMatch(part, "^\d+$")
+            encoded := Format("{:06}", part + 0)
+        else
+            encoded := "999998" . LawSearch_Normalize(part)
+        key .= (key = "" ? "" : ".") . encoded
+    }
+    return key
+}
+
+LawSearch_CheckExpected(query, docCode, expectedDoc, expectedArticle := "", expectedPart := "", topN := 3)
+{
+    package := LawSearch_Find(docCode, query, 15)
+    results := package.Results
+    Loop % results.Length()
+    {
+        if (A_Index > topN)
+            break
+        item := results[A_Index].Item
+        if (item.DocCode != expectedDoc)
+            continue
+        if (expectedArticle != "" && item.Article != expectedArticle)
+            continue
+        if (expectedPart != "" && item.Part != expectedPart)
+            continue
+        return true
+    }
+    return false
+}
+
+LawSearch_CheckNoResults(query, docCode := "ALL")
+{
+    package := LawSearch_Find(docCode, query, 5)
+    return package.Results.Length() = 0
+}
+
+LawSearch_CheckScope(query, docCode)
+{
+    package := LawSearch_Find(docCode, query, 15)
+    if (package.Results.Length() = 0)
+        return false
+    Loop % package.Results.Length()
+        if (package.Results[A_Index].Item.DocCode != docCode)
+            return false
+    return true
+}
+
+LawSearch_CheckMultipleDocs(query)
+{
+    package := LawSearch_Find("ALL", query, 15)
+    docs := {}
+    Loop % package.Results.Length()
+        docs[package.Results[A_Index].Item.DocCode] := 1
+    return LawSearch_ObjectCount(docs) >= 2
+}

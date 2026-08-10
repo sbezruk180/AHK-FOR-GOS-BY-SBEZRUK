@@ -1,0 +1,19 @@
+# User configuration
+profiles.ini
+profiles_updated.ini
+themes.ini
+custom_functions.ini
+
+# Runtime logs and diagnostics
+error_log.txt
+*_report.txt
+context_assistant_test.txt
+logs/
+backups/
+*.log
+
+# Local caches / editor files
+.vscode/
+.idea/
+Thumbs.db
+Desktop.ini
