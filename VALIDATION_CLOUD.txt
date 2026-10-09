@@ -1,0 +1,83 @@
+Cloud validation: Linux, AutoHotkey 1.1.37.02 Unicode x64 under Wine.
+Only the architecture guard was removed in a disposable, game-free test copy.
+Shipped sources retain their ANSI x86 requirement.
+Windows GUI/OBS/game integration remains unverified.
+
+AHK audit behavioural regression
+Runtime=1.1.37.02 | Unicode=1 | PtrSize=8
+No game, physical input, capture verification, or game ABI test.
+PASS | F01 bracket chase selects second ID
+PASS | F01 ID fallback advances
+PASS | F01 single ID
+PASS | F01 absent ID
+PASS | F01 nickname skips own name
+PASS | F01 own nickname only terminates
+PASS | F02 -1 is retried, not counted as sent
+PASS | F02 exhausted refusal is failure
+PASS | F29 sent increments at transport completion
+PASS | F14 batch rejects without accepting prefix
+PASS | F14 RP action accepted
+PASS | F14 order includes command, menu, and RP after
+PASS | F14 failed batch cancels menu and RP after
+PASS | F13 cancellation preserves active sender ownership
+PASS | F13 StopAll cancels custom runner and evidence
+PASS | F16 mock keyboard sender
+PASS | F16 mock input and screenshot are simulations
+PASS | F16 mock does not touch clipboard
+PASS | F13 cancelled command refuses transport
+PASS | F13 cancelled paste refuses clipboard
+PASS | F13 cancelled epoch blocks input
+PASS | F18 injected write refusal rolls back
+PASS | F18 transaction lock released on failure
+PASS | F18 successful atomic commit
+PASS | F18 unknown keys preserved
+PASS | F20 exact codec roundtrip 1
+PASS | F20 exact codec roundtrip 2
+PASS | F20 exact codec roundtrip 3
+PASS | F20 exact codec roundtrip 4
+PASS | F20 exact codec roundtrip 5
+PASS | F20 exact codec roundtrip 6
+PASS | F20 exact codec roundtrip 7
+PASS | F20 exact codec roundtrip 8
+PASS | F20 exact codec roundtrip 9
+PASS | F20 exact codec roundtrip 10
+PASS | F20 missing key uses default
+PASS | F20 legacy decoder retained
+PASS | F18 newer schema opens read-only
+PASS | F11 partial line retains checkpoint
+PASS | F11 completed fragment dispatched exactly once
+PASS | F11 no duplicate line dispatch
+PASS | F30 replaced file establishes a new generation
+PASS | F30 in-place rewrite resets cursor and pending state
+PASS | F25 CNG SHA-256 known vector
+PASS | F25 missing path never runs a shell
+PASS | F09 legitimate zero float
+PASS | F09 infinity rejected
+PASS | F09 NaN rejected
+PASS | F09 unreadable address rejected
+PASS | F23 deadlines support uptime above 49.7 days
+PASS | F23 monotonic 64-bit clock
+PASS | F24 light override has readable text
+PASS | F24 dark override has readable text
+PASS | F19 hidden templates and flags preserved
+PASS | F28 repeated pattern allowed, new pattern capped
+PASS | F12 preview bounded
+PASS | F07 no reference build means no memory access
+PASS | F10 reader never truncates chatlog
+PASS | F21 official LAW corpus loaded
+PASS | search exact reference TER
+PASS | search compact KOAP reference
+PASS | search natural phrase
+PASS | search typo
+PASS | search nonsense does not invent results
+PASS | search quote and exclusion syntax
+PASS | search quotes required and exclusions enforced
+PASS | F21 missing text is not cached
+PASS | F21 missing pages are not cached
+PASS | F21 newly supplied document loads
+PASS | F21 query index follows corpus generation
+PASS | F24 settings fits work area
+SKIP | ANSI x86 game ABI, module enumeration and HANDLE lifecycle need Windows A32 integration
+SKIP | Real Windows GUI/DPI, OBS capture, game offsets, remote-thread stress and screenshot files require target integration
+
+Checks: 71 | Failed: 0 | Skipped integration groups: 2
