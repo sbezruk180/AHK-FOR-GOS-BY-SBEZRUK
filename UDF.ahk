@@ -65,7 +65,7 @@ global AZMP_GTA_PED_POOL_CACHE_SIZE := 0
 
 AZMP_TickElapsed(startTick, nowTick := "") {
     if (nowTick = "")
-        nowTick := A_TickCount
+        nowTick := TickNow()
     elapsed := nowTick - startTick
     if (elapsed < 0)
         elapsed += 4294967296
@@ -93,7 +93,7 @@ AZMP_CacheTarget(targetPed, playerId, playerInfo, playerPool) {
     Critical, 30
     AZMP_TARGET_CACHE_PED := targetPed
     AZMP_TARGET_CACHE_ID := playerId
-    AZMP_TARGET_CACHE_TICK := A_TickCount
+    AZMP_TARGET_CACHE_TICK := TickNow()
     AZMP_TARGET_CACHE_POOL := playerPool
     AZMP_TARGET_CACHE_INFO := playerInfo
     AZMP_TARGET_CACHE_PID := dwGTAPID
@@ -119,7 +119,7 @@ AZMP_TargetDiagSet(code, detail := "", isFailure := 1, forceLog := 0) {
             AZMP_TARGET_DIAG_STREAK += 1
         } else {
             AZMP_TARGET_DIAG_STREAK := 1
-            AZMP_TARGET_DIAG_FIRST_TICK := A_TickCount
+            AZMP_TARGET_DIAG_FIRST_TICK := TickNow()
         }
     } else {
         AZMP_TARGET_DIAG_STREAK := 0
@@ -127,13 +127,13 @@ AZMP_TargetDiagSet(code, detail := "", isFailure := 1, forceLog := 0) {
     }
     AZMP_TARGET_DIAG_CODE := code
     AZMP_TARGET_DIAG_DETAIL := detail
-    AZMP_TARGET_DIAG_TICK := A_TickCount
+    AZMP_TARGET_DIAG_TICK := TickNow()
 
     shouldLog := forceLog || AZMP_TARGET_DIAG_LAST_LOG_CODE != code
         || AZMP_TickElapsed(AZMP_TARGET_DIAG_LAST_LOG_TICK) >= 5000
     if (shouldLog) {
         AZMP_TARGET_DIAG_LAST_LOG_CODE := code
-        AZMP_TARGET_DIAG_LAST_LOG_TICK := A_TickCount
+        AZMP_TARGET_DIAG_LAST_LOG_TICK := TickNow()
         if IsFunc("LogError")
             Func("LogError").Call("AutoID/" . code, detail, isFailure ? "WARN" : "INFO")
     }
@@ -215,7 +215,7 @@ AZMP_TargetDiagGetText() {
 AZMP_TargetDiagSuccess(playerId, targetPed, layout, name := "") {
     global AZMP_TARGET_LAST_SUCCESS_TICK, AZMP_TARGET_LAST_SUCCESS_ID, AZMP_TARGET_LAST_SUCCESS_PED
     global AZMP_PED_LAYOUT_PREFERRED
-    AZMP_TARGET_LAST_SUCCESS_TICK := A_TickCount
+    AZMP_TARGET_LAST_SUCCESS_TICK := TickNow()
     AZMP_TARGET_LAST_SUCCESS_ID := playerId
     AZMP_TARGET_LAST_SUCCESS_PED := targetPed
     if (layout != "")
@@ -254,7 +254,7 @@ AZMP_TargetDiagMaybeRecover(code, detail := "", force := 0) {
     try {
         recoveryStarted := Func("MemoryInvalidateGameHandle").Call("Auto ID recovery " . code . ": " . detail)
         if (recoveryStarted) {
-            AZMP_TARGET_DIAG_LAST_RECOVER_TICK := A_TickCount
+            AZMP_TARGET_DIAG_LAST_RECOVER_TICK := TickNow()
             AZMP_TARGET_DIAG_RECOVER_COUNT += 1
             Sleep, 25
             handleOk := checkHandles()
@@ -296,7 +296,7 @@ AZMP_TargetDiagMaybeRefreshNotInPool(targetPed, playerPool, detail := "") {
         && AZMP_TickElapsed(AZMP_TARGET_DIAG_LAST_SOFT_REFRESH_TICK) < 10000)
         return false
 
-    AZMP_TARGET_DIAG_LAST_SOFT_REFRESH_TICK := A_TickCount
+    AZMP_TARGET_DIAG_LAST_SOFT_REFRESH_TICK := TickNow()
     AZMP_TARGET_DIAG_SOFT_REFRESH_COUNT += 1
     AZMP_ResetTargetCache("soft refresh after TARGET_NOT_IN_POOL")
     AZMP_ResetGtaPedPoolCache()
@@ -409,7 +409,7 @@ AZMP_GetGtaPedPoolInfo(ByRef poolPtr, ByRef objectsPtr, ByRef flagsPtr, ByRef po
         return false
     }
 
-    AZMP_GTA_PED_POOL_CACHE_TICK := A_TickCount
+    AZMP_GTA_PED_POOL_CACHE_TICK := TickNow()
     AZMP_GTA_PED_POOL_CACHE_PID := dwGTAPID
     AZMP_GTA_PED_POOL_CACHE_PTR := poolPtr
     AZMP_GTA_PED_POOL_CACHE_OBJECTS := objectsPtr
@@ -463,9 +463,8 @@ AZMP_IsValidGamePed(pedPtr) {
     matrixPtr := readDWORD(hGTA, pedPtr + 0x14)
     if (!IsLikelyPointer(matrixPtr) || Mod(matrixPtr, 4) != 0)
         return false
-    x := readFloat(hGTA, matrixPtr + 0x30)
-    y := readFloat(hGTA, matrixPtr + 0x34)
-    z := readFloat(hGTA, matrixPtr + 0x38)
+    if (!TryReadFloat(hGTA, matrixPtr + 0x30, x) || !TryReadFloat(hGTA, matrixPtr + 0x34, y) || !TryReadFloat(hGTA, matrixPtr + 0x38, z))
+        return false
     if (Abs(x) > 20000 || Abs(y) > 20000 || Abs(z) > 5000)
         return false
     return true
@@ -545,13 +544,17 @@ getPlayerCoordinates() {
     matrixPtr := readDWORD(hGTA, pedPtr + 0x14)
     if (!matrixPtr)
         return -1
-    return [readFloat(hGTA, matrixPtr + 0x30), readFloat(hGTA, matrixPtr + 0x34), readFloat(hGTA, matrixPtr + 0x38)]
+    if (!TryReadFloat(hGTA, matrixPtr + 0x30, x) || !TryReadFloat(hGTA, matrixPtr + 0x34, y) || !TryReadFloat(hGTA, matrixPtr + 0x38, z))
+        return -1
+    return [x, y, z]
 }
 
 getCameraCoordinates() {
     if (!checkHandles())
         return -1
-    return [readFloat(hGTA, 0xB6F9CC), readFloat(hGTA, 0xB6F9D0), readFloat(hGTA, 0xB6F9D4)]
+    if (!TryReadFloat(hGTA, 0xB6F9CC, x) || !TryReadFloat(hGTA, 0xB6F9D0, y) || !TryReadFloat(hGTA, 0xB6F9D4, z))
+        return -1
+    return [x, y, z]
 }
 
 SendChatMemory(text) {
@@ -599,6 +602,8 @@ addChatMessageEx(color, text) {
         }
 
         oldColor := readDWORD(hGTA, chatInfo + 0x4)
+        if (ErrorLevel)
+            return -1
         VarSetCapacity(colorData, 4, 0)
         NumPut(color + 0, colorData, 0, "UInt")
         if !writeRaw(hGTA, chatInfo + 0x4, &colorData, 4)
@@ -611,7 +616,10 @@ addChatMessageEx(color, text) {
         MemorySetStage("NOTIFY_OK", 0, "уведомление добавлено в игровой чат")
         return 1
     } finally {
-        if (colorChanged && IsLikelyPointer(chatInfo)) {
+        if (colorChanged && IsObject(g_RemoteOperation)) {
+            g_RemoteOperation.RestoreAddress := chatInfo + 0x4
+            g_RemoteOperation.RestoreValue := oldColor
+        } else if (colorChanged && IsLikelyPointer(chatInfo)) {
             VarSetCapacity(restoreData, 4, 0)
             NumPut(oldColor, restoreData, 0, "UInt")
             writeRaw(hGTA, chatInfo + 0x4, &restoreData, 4)
@@ -676,20 +684,18 @@ showDialog(style, caption, text, button1, button2 := "", id := 1) {
         NumPut(id, injectData, 36, "UInt")
         NumPut(0xE8, injectData, 40, "UChar")
         NumPut((dwSAMP + 0x6F8C0) - (pInjectFunc + 45), injectData, 41, "Int")
-        NumPut(0xC3, injectData, 45, "UChar")
+        NumPut(0xC2, injectData, 45, "UChar")
+        NumPut(4, injectData, 46, "UShort")
 
-        if !writeRaw(hGTA, pInjectFunc, &injectData, 46)
+        if !writeRaw(hGTA, pInjectFunc, &injectData, 48)
+            return -1
+        if !DllCall("FlushInstructionCache", "Ptr", hGTA, "Ptr", pInjectFunc, "UPtr", 48)
             return -1
         hThread := createRemoteThread(hGTA, 0, 0, pInjectFunc, 0, 0, 0)
         if (!hThread)
             return -1
-        waitForSingleObject(hThread, 0xFFFFFFFF)
-        waitError := ErrorLevel
-        closeProcess(hThread)
-        if (waitError != ERROR_OK) {
-            ErrorLevel := waitError
+        if !MemoryWaitRemote(hThread, hGTA, 2000)
             return -1
-        }
         MemorySetStage("DIALOG_OK", 0, "игровой диалог открыт")
         return 1
     } finally {
@@ -766,6 +772,7 @@ AZMP_ReadProcessString(processHandle, address, length) {
         return ""
 
     NumPut(0, buffer, bytesRead, "UChar")
+    VarSetCapacity(buffer, -1)
     if A_IsUnicode
         return StrGet(&buffer, bytesRead, "CP1251")
     return buffer
@@ -788,6 +795,7 @@ AZMP_ReadCString(address, maxLen := 192) {
         return ""
 
     NumPut(0, buffer, bytesRead, "UChar")
+    VarSetCapacity(buffer, -1)
     if A_IsUnicode
         value := StrGet(&buffer, bytesRead, "CP1251")
     else
@@ -903,7 +911,9 @@ AZMP_GetGamePedCoordinates(pedPtr) {
     matrixPtr := readDWORD(hGTA, pedPtr + 0x14)
     if !IsLikelyPointer(matrixPtr)
         return 0
-    return [readFloat(hGTA, matrixPtr + 0x30), readFloat(hGTA, matrixPtr + 0x34), readFloat(hGTA, matrixPtr + 0x38)]
+    if (!TryReadFloat(hGTA, matrixPtr + 0x30, x) || !TryReadFloat(hGTA, matrixPtr + 0x34, y) || !TryReadFloat(hGTA, matrixPtr + 0x38, z))
+        return -1
+    return [x, y, z]
 }
 
 ; Формирует единый вектор направления камеры. В отличие от игрового target-pointer,
@@ -1432,5 +1442,6 @@ isInChat() {
     inputInfoPtr := readDWORD(hGTA, dwSAMP + 0x26E8F4)
     if (!inputInfoPtr)
         return -1
-    return (readDWORD(hGTA, inputInfoPtr + 0x61) > 0) ? 1 : 0
+    state := readDWORD(hGTA, inputInfoPtr + 0x61)
+    return ErrorLevel ? -1 : (state > 0 ? 1 : 0)
 }

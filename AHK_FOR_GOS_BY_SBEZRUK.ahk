@@ -16,11 +16,13 @@ CoordMode, Mouse, Screen
 if (A_PtrSize != 4 || A_IsUnicode)
 {
     MsgBox, 16, Ошибка, Этот скрипт нужно запускать только через AutoHotkey 1.1 ANSI 32-bit.
-    ExitApp
+    ExitApp, 2
 }
 
 #Include %A_ScriptDir%
 #Include %A_ScriptDir%\UDF.ahk
+#Include %A_ScriptDir%\runtime_support.ahk
+#Include %A_ScriptDir%\tests\audit_regression.ahk
 ; ===== BEGIN EMBEDDED helper.ahk: territory map quality/forum patch =====
 LawSearchDebug := 0
 LawCorpusCache := {}
@@ -36,7 +38,7 @@ LawSearchFuzzyStartTick := 0
 LawSearchFuzzyBudgetMs := 180
 LawSearchFuzzyChecksLeft := 0
 LawSearchFuzzyBudgetHit := 0
-LawSearchAlgorithmVersion := 2
+LawSearchAlgorithmVersion := 3
 LawSearchDistanceCache := {}
 LawSearchDistanceCacheCount := 0
 TerritoryMapGuiVisible := 0
@@ -159,7 +161,6 @@ LawCorpus_BuildPages(prefix)
     pages := []
     if (text = "")
     {
-        LawCorpusPages[prefix] := pages
         return pages
     }
 
@@ -516,9 +517,9 @@ TerritoryMap_GetImageSize(path, ByRef width, ByRef height)
     width := 0
     height := 0
     imageType := ""
-    hImage := LoadPicture(path, "GDI+", imageType)
+    hImage := LoadPicture(path, "GDI+")
     if (!hImage)
-        hImage := LoadPicture(path, "", imageType)
+        hImage := LoadPicture(path)
     if (!hImage)
         return false
 
@@ -530,10 +531,7 @@ TerritoryMap_GetImageSize(path, ByRef width, ByRef height)
         height := Abs(NumGet(bitmapInfo, 8, "Int"))
     }
 
-    if (imageType = "Icon")
-        DllCall("DestroyIcon", "Ptr", hImage)
-    else
-        DllCall("DeleteObject", "Ptr", hImage)
+    DllCall("DeleteObject", "Ptr", hImage)
 
     return gotInfo && width > 0 && height > 0
 }
@@ -681,14 +679,17 @@ TerritoryMap_AuditCatalog()
 
 LawGui_Close()
 {
-    global ServiceCodesGuiVisible
+    global ServiceCodesGuiVisible, current_doc, last_doc
     Gui, 1:Destroy
     TerritoryMap_CloseAll()
     ServiceCodesGuiVisible := 0
+    current_doc := 0
+    last_doc := 0
 }
 
-Helper_CloseChatAfterGui()
+Helper_CloseChatAfterGui(inputEpoch := 0)
 {
+    inputEpoch := AutomationEpoch
     ; The configured local hotkey can still be physically held when it fires.
     ; Wait for release before sending Ctrl+A or Escape to the game.
     KeyWait, F
@@ -697,7 +698,7 @@ Helper_CloseChatAfterGui()
     KeyWait, LAlt
     KeyWait, RAlt
 
-    SendInput, {LControl up}{RControl up}{LAlt up}{RAlt up}
+    SafeSend("{LControl up}{RControl up}{LAlt up}{RAlt up}", "Input", inputEpoch)
     Sleep, 30
 
     if IsFunc("isInChat")
@@ -714,13 +715,13 @@ Helper_CloseChatAfterGui()
     }
     else
     {
-        SendEvent, ^a
+        SafeSend("^a", "Event", inputEpoch)
         Sleep, 30
-        SendEvent, {Backspace}
+        SafeSend("{Backspace}", "Event", inputEpoch)
         Sleep, 30
     }
 
-    started := A_TickCount
+    started := TickNow()
     Loop
     {
         if IsFunc("isInChat")
@@ -731,10 +732,10 @@ Helper_CloseChatAfterGui()
         }
 
         ; Escape cancels the empty line. Enter and F6 are never used.
-        SendEvent, {Esc}
+        SafeSend("{Esc}", "Event", inputEpoch)
         Sleep, 90
 
-        if (A_TickCount - started >= 900)
+        if (TickNow() - started >= 900)
             break
     }
 
@@ -2850,11 +2851,21 @@ LawText_upk41()
 
 LawSearch_Init()
 {
-    global SearchInitialized, SearchIndex, SearchIndexCounts, LawSearchDocCatalog
+    global SearchInitialized, SearchIndex, SearchIndexCounts, LawSearchDocCatalog, LawCorpusCache, LawCorpusPages
     global LawSearchCache, LawSearchCacheOrder, LawSearchLevenshteinCache, LawSearchLevenshteinCacheCount
 
-    if (SearchInitialized)
-        return
+    signature := LawSearch_CorpusFingerprint()
+    if (SearchInitialized && LawSearchCorpusSignature = signature)
+        return true
+    if (LawSearchBuildBusy)
+        return false
+    LawSearchBuildBusy := 1
+    previousCritical := A_IsCritical
+    Critical, On
+    try {
+    LawCorpusCache := {}
+    LawCorpusPages := {}
+    LawSearchMissingDocuments := []
 
     LawSearchCache := {}
     LawSearchCacheOrder := []
@@ -2868,10 +2879,18 @@ LawSearch_Init()
     Loop % LawSearchDocCatalog.Length()
     {
         doc := LawSearchDocCatalog[A_Index]
-        LawSearch_AddDocFromCorpus(doc.Code, doc.Name, doc.Prefix)
+        if !LawSearch_AddDocFromCorpus(doc.Code, doc.Name, doc.Prefix)
+            LawSearchMissingDocuments.Push(doc.Code)
     }
 
+    LawSearchVocabulary_Build()
+    LawSearchCorpusSignature := signature
     SearchInitialized := 1
+    } finally {
+        LawSearchBuildBusy := 0
+        Critical, %previousCritical%
+    }
+    return true
 }
 
 LawSearch_PageCount(prefix)
@@ -3642,7 +3661,8 @@ LawSearch_SelectMode(docCode, docName, showNotice := true)
 {
     global SearchModeActive, SearchDoc, SearchDocName, SearchResults, SearchCurrentIndex, SearchCurrentPart, SearchGuiVisible
 
-    LawSearch_Init()
+    if !LawSearch_Init()
+        return {Results: [], Checked: 0, Passed: 0, Busy: 1}
     docCode := Trim(docCode)
     StringUpper, docCode, docCode
     SearchModeActive := 1
@@ -3844,6 +3864,7 @@ LawSearch_DebugQuery(raw, cleaned, normalized, source)
     entry .= "cleaned_codes=" . LawSearch_DebugCharCodes(cleaned, 10) . "`r`n"
     entry .= "normalized=[" . normalized . "]`r`n"
     entry .= "words=[" . LawSearch_DebugWords(normalized) . "]`r`n`r`n"
+    RotateOwnedLog(logFile)
     FileAppend, %entry%, %logFile%
 }
 
@@ -3909,7 +3930,8 @@ LawSearch_Run(docCode, query)
     global SearchResults, SearchCurrentIndex, SearchCurrentPart, SearchGuiVisible, SearchLastQuery, SearchModeActive
     global SearchLastChecked, SearchLastPassed, SearchMinScore, SearchLastPossible
 
-    LawSearch_Init()
+    if !LawSearch_Init()
+        return {Results: [], Checked: 0, Passed: 0, Busy: 1}
     docCode := Trim(docCode)
     StringUpper, docCode, docCode
     if (docCode = "")
@@ -3930,6 +3952,12 @@ LawSearch_Run(docCode, query)
     SearchModeActive := 1
     SearchLastQuery := query
     package := LawSearch_Find(docCode, query, 30)
+    if (package.HasKey("Busy") && package.Busy) {
+        LawSearch_ShowNotice("Индекс обновляется. Повторите запрос.")
+        return
+    }
+    if (package.HasKey("MissingDocuments") && package.MissingDocuments.Length())
+        LawSearch_ShowNotice("Часть LAW-файлов недоступна: " . JoinStrings(package.MissingDocuments, ", "))
     SearchResults := package.Results
     SearchLastChecked := package.Checked
     SearchLastPassed := package.Passed
@@ -3974,7 +4002,7 @@ LawSearch_GetMeaningfulWords(q)
 
 LawSearch_IsStopWord(word)
 {
-    return InStr("|и|в|во|на|по|с|со|к|ко|от|до|за|из|у|о|об|обо|а|но|или|либо|при|для|без|над|под|не|ни|же|то|это|его|ее|их|ли|бы|кто|что|как|где|когда|какой|какая|какие|можно|будет|есть|считается|два|раза|одно|один|одного|одну|одной|тот|самый|настоящий|настоящего|", "|" . word . "|") > 0
+    return InStr("|и|в|во|на|по|с|со|к|ко|от|до|за|из|у|о|об|обо|а|но|или|либо|при|для|без|над|под|не|ни|же|то|это|его|ее|их|ли|бы|кто|что|как|где|когда|какой|какая|какие|можно|разрешено|будет|есть|считается|два|раза|одно|один|одного|одну|одной|тот|самый|настоящий|настоящего|", "|" . word . "|") > 0
 }
 
 LawSearch_WordMatchScore(text, word, exactScore, stemScore)
@@ -4335,7 +4363,7 @@ LawSearch_GetResultPartText(item, part, ByRef partCount)
         display := LawSearch_GetItemTitle(item)
 
     lines := LawSearch_WrapDisplayText(display, 74)
-    linesPerPart := 12
+    linesPerPart := 18
     partCount := Ceil(lines.Length() / linesPerPart)
     if (partCount < 1)
         partCount := 1
@@ -4822,6 +4850,8 @@ LawSearch_CanonicalToken(word)
     if (!IsObject(forms))
     {
         forms := {}
+        LawSearch_AddWordForms(forms, "применение", "применение|применения|применением|применять|применить|применяет|применяют|применяться")
+        LawSearch_AddWordForms(forms, "оружие", "оружие|оружия|оружием|оружию|оружии")
         LawSearch_AddWordForms(forms, "сотрудник", "сотрудник|сотрудника|сотруднику|сотрудником|сотрудники|сотрудников|сотрудникам|сотрудниками")
         LawSearch_AddWordForms(forms, "полиция", "полиция|полиции|полицию|полицией|полицейский|полицейского|полицейским|полицейские|полицейских")
         LawSearch_AddWordForms(forms, "территория", "территория|территории|территорию|территорией|территорий|территориях")
@@ -4869,7 +4899,8 @@ LawSearch_Find(docCode, query, maxResults := 30)
 {
     global LawSearchCache, LawSearchCacheOrder, LawSearchAlgorithmVersion
 
-    LawSearch_Init()
+    if !LawSearch_Init()
+        return {Results: [], Checked: 0, Passed: 0, MinScore: 0, Possible: 0, Query: "", FuzzyBudgetHit: 1, Busy: 1}
     docCode := Trim(docCode)
     StringUpper, docCode, docCode
     maxResults := Round(maxResults)
@@ -4878,7 +4909,8 @@ LawSearch_Find(docCode, query, maxResults := 30)
     else if (maxResults > 30)
         maxResults := 30
 
-    queryKey := LawSearch_Normalize(query)
+    queryKey := Trim(query)
+    StringLower, queryKey, queryKey
     cacheKey := LawSearchAlgorithmVersion . "|" . docCode . "|" . maxResults . "|" . queryKey
     if !IsObject(LawSearchCache)
         LawSearchCache := {}
@@ -4934,7 +4966,8 @@ LawSearch_Find_Real(docCode, query, maxResults := 30)
     global SearchIndex
     global LawSearchFuzzyStartTick, LawSearchFuzzyBudgetMs, LawSearchFuzzyChecksLeft, LawSearchFuzzyBudgetHit
 
-    LawSearch_Init()
+    if !LawSearch_Init()
+        return {Results: [], Checked: 0, Passed: 0, Busy: 1}
     docCode := Trim(docCode)
     StringUpper, docCode, docCode
     q := LawSearch_ParseQuery(query)
@@ -4949,27 +4982,39 @@ LawSearch_Find_Real(docCode, query, maxResults := 30)
     minScore := LawSearch_MinScoreParsed(q)
 
     ; Более мягкий поиск требует чуть большего бюджета, но остаётся ограниченным.
-    LawSearchFuzzyStartTick := A_TickCount
+    LawSearchFuzzyStartTick := TickNow()
     LawSearchFuzzyChecksLeft := 3500
     LawSearchFuzzyBudgetHit := 0
 
+    seen := {}
+    Loop, 2 {
+        pass := A_Index
+        q.AllowFuzzy := pass = 2 ? 1 : 0
+        if (pass = 2 && results.Length() >= maxResults)
+            break
+        if (pass = 2)
+            LawSearchFuzzyStartTick := TickNow()
     Loop % SearchIndex.Length()
     {
         item := SearchIndex[A_Index]
+        if (pass = 2 && seen.HasKey(A_Index))
+            continue
+        indexPosition := A_Index
         if (docCode != "ALL" && item.DocCode != docCode)
             continue
         checked++
 
-        if (Mod(checked, 24) = 0)
-            Sleep, -1
+
 
         detail := LawSearch_ScoreParsed(item, q)
         if (!IsObject(detail) || detail.Score < minScore)
             continue
         passed++
+        seen[indexPosition] := 1
         result := {Score: detail.Score, Coverage: detail.Coverage, ExactRank: detail.ExactRank, Approx: detail.Approx, Item: item}
         result.Key := LawSearch_ResultKey(item, q)
         LawSearch_InsertInto(results, result, maxResults)
+    }
     }
 
     possible := 0
@@ -4981,12 +5026,17 @@ LawSearch_Find_Real(docCode, query, maxResults := 30)
     budgetHit := LawSearchFuzzyBudgetHit ? 1 : 0
     LawSearchFuzzyStartTick := 0
     LawSearchFuzzyChecksLeft := 0
-    return {Results: results, Checked: checked, Passed: passed, MinScore: minScore, Possible: possible, Query: q, FuzzyBudgetHit: budgetHit}
+    return {MissingDocuments: LawSearchMissingDocuments.Clone(), Results: results, Checked: checked, Passed: passed, MinScore: minScore, Possible: possible, Query: q, FuzzyBudgetHit: budgetHit}
 }
 
 LawSearch_ParseQuery(query)
 {
+    syntax := LawSearch_QueryFilters(query)
+    query := syntax.SearchText
     q := {Raw: query, Norm: LawSearch_Normalize(query), Chapter: "", Article: "", Part: "", Point: ""}
+    q.RequiredPhrases := syntax.Phrases
+    q.ExcludedTokens := syntax.Excluded
+    q.AllowFuzzy := 1
     q.Structured := 0
     q.NumberOnly := 0
     q.DocOnly := 0
@@ -5057,6 +5107,8 @@ LawSearch_MatchDocCodes(norm)
             aliasNorm := LawSearch_Normalize(aliases[A_Index])
             if (aliasNorm = "" || !LawSearch_HasPhrase(norm, aliasNorm))
                 continue
+            if (norm != aliasNorm && InStr("|оружие|полиция|территории|постановление|вертикаль|", "|" . aliasNorm . "|"))
+                continue
             if (norm = aliasNorm)
                 strength := 4
             else if (!InStr(aliasNorm, " ") && StrLen(aliasNorm) <= 12)
@@ -5095,7 +5147,7 @@ LawSearch_BuildQueryTokens(ByRef q)
         if (layoutWord != "")
             raw := layoutWord
 
-        word := LawSearch_CanonicalToken(raw)
+        word := LawSearch_CorrectToken(LawSearch_CanonicalToken(raw))
         if (word = "" || seen.HasKey(word))
             continue
         weight := LawSearch_IsCommonWord(word) ? 0.32 : 1.0
@@ -5236,6 +5288,14 @@ LawSearch_QueryPhrase(tokens)
 
 LawSearch_ScoreParsed(item, q)
 {
+    for _, phrase in q.RequiredPhrases {
+        if !LawSearch_HasPhrase(item.NormTitle . " " . item.NormBody, phrase)
+            return ""
+    }
+    for _, excluded in q.ExcludedTokens {
+        if (LawSearch_HasExactWord(item.NormTitle, excluded) || LawSearch_HasExactWord(item.NormBody, excluded))
+            return ""
+    }
     score := 0
     exactRank := 0
     matchedOriginal := 0
@@ -5298,7 +5358,7 @@ LawSearch_ScoreParsed(item, q)
     {
         token := q.Tokens[A_Index]
         originalWeight += token.Weight
-        match := LawSearch_MatchItemToken(item, token.Word, 1)
+        match := LawSearch_MatchItemToken(item, token.Word, q.AllowFuzzy)
         if (!IsObject(match))
             continue
         matchedOriginal++
@@ -5391,6 +5451,14 @@ LawSearch_ScoreParsed(item, q)
         }
     }
 
+    ; Prefer a focused article heading over its broad inherited chapter heading.
+    articleWords := LawSearch_BuildTokenSet(LawSearch_Normalize(item.ArticleTitle))
+    articleMatches := 0
+    for _, token in q.Tokens
+        if articleWords.HasKey(token.Word)
+            articleMatches++
+    if (articleMatches > 0)
+        score += Round(500 * articleMatches / Max(1, LawSearch_ObjectCount(articleWords)))
     if (q.DocOnly && item.Article != "")
         score += LawSearch_ArticleSortBonus(item.Article)
     return {Score: score, Coverage: weightedCoverage, ExactRank: exactRank, Approx: approximate && strongMatches = 0}
@@ -5770,7 +5838,7 @@ LawSearch_FindFuzzyInSet(tokenSet, word, maxDistance)
     global LawSearchFuzzyStartTick, LawSearchFuzzyBudgetMs, LawSearchFuzzyChecksLeft, LawSearchFuzzyBudgetHit
     if (!IsObject(tokenSet))
         return ""
-    if (LawSearchFuzzyStartTick > 0 && A_TickCount - LawSearchFuzzyStartTick > LawSearchFuzzyBudgetMs)
+    if (LawSearchFuzzyStartTick > 0 && TickNow() - LawSearchFuzzyStartTick > LawSearchFuzzyBudgetMs)
     {
         LawSearchFuzzyBudgetHit := 1
         return ""
@@ -5785,7 +5853,7 @@ LawSearch_FindFuzzyInSet(tokenSet, word, maxDistance)
             LawSearchFuzzyBudgetHit := 1
             break
         }
-        if (LawSearchFuzzyStartTick > 0 && A_TickCount - LawSearchFuzzyStartTick > LawSearchFuzzyBudgetMs)
+        if (LawSearchFuzzyStartTick > 0 && TickNow() - LawSearchFuzzyStartTick > LawSearchFuzzyBudgetMs)
         {
             LawSearchFuzzyBudgetHit := 1
             break
@@ -6146,6 +6214,12 @@ LawSearch_CheckMultipleDocs(query)
     return LawSearch_ObjectCount(docs) >= 2
 }
 ; ===== END EMBEDDED helper.ahk =====
+if HasCommandLineArg("--audit-selftest")
+{
+    auditPassed := RunAuditSelfTest()
+    ExitApp, % auditPassed ? 0 : 1
+}
+
 if HasCommandLineArg("--selftest")
 {
     selfTestOk := RunSelfTestV1()
@@ -6155,14 +6229,14 @@ if HasCommandLineArg("--selftest")
 
 if HasCommandLineArg("--diagnostics")
 {
-    RunDiagnosticsExport()
-    ExitApp
+    diagnosticsOk := RunDiagnosticsExport()
+    ExitApp, % diagnosticsOk ? 0 : 1
 }
 
 if HasCommandLineArg("--context-mocktest")
 {
-    RunContextAssistantMockTest()
-    ExitApp
+    contextMockOk := RunContextAssistantMockTest()
+    ExitApp, % contextMockOk ? 0 : 1
 }
 
 if HasCommandLineArg("--autoreport-mocktest")
@@ -6195,7 +6269,7 @@ if (!UiPreviewMode && !AcquireAppInstance())
     ExitApp
 
 global AppVersion := "1.0"
-global ConfigVersion := 13
+global ConfigVersion := 14
 global ConfigFile := FileExist(A_ScriptDir . "\profiles_updated.ini") ? A_ScriptDir . "\profiles_updated.ini" : A_ScriptDir . "\profiles.ini"
 global ThemesFile := A_ScriptDir . "\themes.ini"
 global LogDir := A_ScriptDir . "\logs"
@@ -6291,7 +6365,7 @@ global ChatTransportMemoryRetryMs := 15000
 global ChatLogReaderEnabled := "On"
 global ChatLogPath := "C:\Amazing Games\Amazing Online\PC\amazing\chatlog.txt"
 global ChatLogPlayerNickname := "Semen_Lukashenko"
-global ChatLogAutoCleanupEnabled := "On"
+global ChatLogAutoCleanupEnabled := "Off"
 global ChatLogMaxSizeKB := 512
 global ChatLogKeepTailKB := 32
 global ChatLogCleanupLastCheckTick := 0
@@ -6518,6 +6592,7 @@ global Bind_RecordCheck := ""
 global Bind_TrainCrash := ""
 global Bind_PersonalFile := ""
 global Bind_Su := ""
+global Bind_MDC := ""
 
 global MDSFormationActive := 0
 global MDSFormationEndTick := 0
@@ -6796,6 +6871,7 @@ global Prev_Trig_PersonalFile := ""
 global Prev_Trig_Su := ""
 global Prev_Trig_GpsD := ""
 global Prev_Trig_GpsOS := ""
+global Prev_Trig_MDC := ""
 
 global Prev_Trig_VU := ""
 global Prev_Trig_FP := ""
@@ -6905,6 +6981,7 @@ global CFG_Trig_PersonalFile := ""
 global CFG_Trig_Su := ""
 global CFG_Trig_GpsD := ""
 global CFG_Trig_GpsOS := ""
+global CFG_Trig_MDC := ""
 global CFG_Trig_VU := ""
 global CFG_Trig_FP := ""
 global CFG_Trig_KON := ""
@@ -7016,6 +7093,7 @@ global CFG_Bind_RecordCheck := ""
 global CFG_Bind_TrainCrash := ""
 global CFG_Bind_PersonalFile := ""
 global CFG_Bind_Su := ""
+global CFG_Bind_MDC := ""
 
 global SettingsTabs := ""
 global HUDTimeText := ""
@@ -7172,6 +7250,11 @@ if (LawUiPreviewMode)
     SetTimer, LawUiPreviewOpenTimer, -350
 SetupTrayMenu()
 OnMessage(0x232, "WM_EXITSIZEMOVE")
+OnMessage(0x115, "Settings_ScrollMessage")
+OnMessage(0x114, "Settings_ScrollMessage")
+OnMessage(0x20A, "Settings_MouseWheel")
+SetTimer, MemoryRemotePollTimer, 50
+SetTimer, CaptureRefreshTimer, 300
 OnMessage(0x201, "BindList_OnLButtonDown")
 OnMessage(0x200, "BindList_OnMouseMove")
 OnMessage(0x202, "BindList_OnLButtonUp")
@@ -7472,7 +7555,7 @@ V1_AllGosubTargetsExist(text, ByRef details) {
 V1_RunMigrationTest(ByRef details) {
     global AppVersion
     AppVersion := "1.0"
-    dir := A_Temp . "\AMZ_GOS_V13_" . DllCall("GetCurrentProcessId") . "_" . A_TickCount
+    dir := A_Temp . "\AMZ_GOS_V13_" . DllCall("GetCurrentProcessId") . "_" . TickNow()
     FileCreateDir, %dir%
     fileName := dir . "\profiles.ini"
     seed := "[Profiles]`r`nNames=Основной|Резервный`r`nLast=Основной`r`n[Profile_Основной]`r`n"
@@ -7813,7 +7896,7 @@ RunSelfTestV1() {
         && InStr(chaseNoIdText, "ChatQueue_Enqueue(""/chase""")
         && !InStr(mainText, "ChatQueue_Enqueue(""/chaseid"))
 
-    captureText := V1_GetBetween(mainText, "LawSearch_CaptureAndCancelChat()", "MatchGpsEnterCommand(")
+    captureText := V1_GetBetween(mainText, "CaptureChatClipboard(cancelChat := false)", "MatchGpsEnterCommand(")
     SelfTest_Add(report, "Critical", "law query is captured locally and cancelled with Escape"
         , InStr(captureText, "{Esc}") && InStr(captureText, "^a^c")
         && !InStr(captureText, "{Enter}") && !InStr(captureText, "{F6}")
@@ -7871,11 +7954,11 @@ RunSelfTestV1() {
         , LawSearch_CheckExpected("ФЗОТОД гл. 3 ст. 9.2 ч. 2", "ALL", "TER", "9.2", "2", 3)
         && LawSearch_CheckExpected("ФЗОТОД гл3 ст9.2 ч2", "ALL", "TER", "9.2", "2", 3))
     SelfTest_Add(report, "High", "law natural query, word forms and permutation"
-        , LawSearch_CheckExpected("кто считается сотрудником полиции", "ALL", "FZOP", "17", "1", 5)
-        && LawSearch_CheckExpected("сотрудника полиции", "ALL", "FZOP", "17", "1", 5)
-        && LawSearch_CheckExpected("полиции сотрудник", "ALL", "FZOP", "17", "1", 5))
+        , LawSearch_CheckExpected("кто считается сотрудником полиции", "ALL", "FZOP", "16", "1", 5)
+        && LawSearch_CheckExpected("сотрудника полиции", "ALL", "FZOP", "16", "1", 5)
+        && LawSearch_CheckExpected("полиции сотрудник", "ALL", "FZOP", "16", "1", 5))
     SelfTest_Add(report, "High", "law bounded typo and negative example"
-        , LawSearch_CheckExpected("сотрудник полицеи", "ALL", "FZOP", "17", "1", 5)
+        , LawSearch_CheckExpected("сотрудник полицеи", "ALL", "FZOP", "16", "1", 5)
         && LawSearch_CheckNoResults("квазиплазменный телепортатор", "ALL"))
     searchPackage := LawSearch_Find("ALL", "сотрудник", 99)
     SelfTest_Add(report, "High", "law results cap at 30 and retain total count"
@@ -8027,8 +8110,8 @@ SelfTest_CheckSyntaxText(ByRef report, name, text) {
     braceDelta := SelfTest_BraceBalance(text)
     contDelta := SelfTest_ContinuationBalance(text)
     SelfTest_Add(report, "High", name . " has no AHK v2 arrow syntax", !SelfTest_TextContains(text, "=" . ">"))
-    SelfTest_Add(report, "High", name . " brace balance", (braceDelta = 0), "delta=" . braceDelta)
-    SelfTest_Add(report, "Medium", name . " continuation balance", (contDelta = 0), "delta=" . contDelta)
+    SelfTest_Add(report, "High", name . " static brace heuristic (not interpreter validation)", (braceDelta = 0), "delta=" . braceDelta)
+    SelfTest_Add(report, "Medium", name . " static continuation heuristic", (contDelta = 0), "delta=" . contDelta)
 }
 
 SelfTest_WriteReport(report) {
@@ -8069,7 +8152,7 @@ RunDiagnosticsExport() {
 
     Diagnostics_AddSection(report, "Runtime safety")
     Diagnostics_AddLine(report, "No GUI, hotkeys, timers, clipboard, GTA memory, profiles/themes writes, or game actions are intentionally used in this mode.")
-    Diagnostics_AddCheck(report, "High", "diagnostics guard before normal startup", true, "guard is in auto-execute before InitProfiles/ApplyAllBinds/CreateHUD")
+    Diagnostics_AddCheck(report, "High", "diagnostics guard before normal startup (static)", SelfTest_TextContains(mainText, "if HasCommandLineArg(" . Chr(34) . "--diagnostics" . Chr(34) . ")"), "guard is in auto-execute before InitProfiles/ApplyAllBinds/CreateHUD")
 
     Diagnostics_AddSection(report, "Files")
     Diagnostics_CollectFileInfo(report, mainPath, "main")
@@ -8165,9 +8248,9 @@ RunDiagnosticsExport() {
         , mapAudit.Ok && mapAudit.Groups = 11
         , "groups=" . mapAudit.Groups . ", failures=" . mapAudit.Issues.Length())
     Diagnostics_AddCheck(report, "Critical", "law-query capture never submits chat"
-        , InStr(V1_GetBetween(mainText, "LawSearch_CaptureAndCancelChat()", "MatchGpsEnterCommand("), "{Esc}")
-        && !InStr(V1_GetBetween(mainText, "LawSearch_CaptureAndCancelChat()", "MatchGpsEnterCommand("), "{Enter}")
-        && !InStr(V1_GetBetween(mainText, "LawSearch_CaptureAndCancelChat()", "MatchGpsEnterCommand("), "SendChat("))
+        , InStr(V1_GetBetween(mainText, "CaptureChatClipboard(cancelChat := false)", "MatchGpsEnterCommand("), "{Esc}")
+        && !InStr(V1_GetBetween(mainText, "CaptureChatClipboard(cancelChat := false)", "MatchGpsEnterCommand("), "{Enter}")
+        && !InStr(V1_GetBetween(mainText, "CaptureChatClipboard(cancelChat := false)", "MatchGpsEnterCommand("), "SendChat("))
 
     Diagnostics_AddSection(report, "Bind-list summary")
     catalog := GetBindCatalog()
@@ -8203,7 +8286,8 @@ RunDiagnosticsExport() {
     Diagnostics_AddLine(report, "Warnings: " . DiagnosticsWarnCount)
     Diagnostics_AddLine(report, "Notes: " . DiagnosticsNoteCount)
 
-    Diagnostics_WriteReport(report)
+    wroteReport := Diagnostics_WriteReport(report)
+    return wroteReport && DiagnosticsFailCount = 0
 }
 
 Diagnostics_AddSection(ByRef report, title) {
@@ -8462,30 +8546,20 @@ NormalizeColorNumber(ByRef val) {
 }
 
 LogError(source, message, level := "ERROR") {
-    global ErrorLogFile, LogDir, ModernLogFile, MaxLogBytes
-    if (ErrorLogFile = "")
-        ErrorLogFile := A_ScriptDir . "\error_log.txt"
+    global LogDir, ModernLogFile, AuditTestMode
     if (LogDir = "")
         LogDir := A_ScriptDir . "\logs"
     if (ModernLogFile = "")
         ModernLogFile := LogDir . "\amz_gos.log"
-    if (MaxLogBytes = "")
-        MaxLogBytes := 262144
+    try {
     FileCreateDir, %LogDir%
-    if FileExist(ModernLogFile)
-    {
-        FileGetSize, logSize, %ModernLogFile%
-        if (logSize > MaxLogBytes)
-        {
-            rotated := LogDir . "\amz_gos_" . A_Now . ".log"
-            FileMove, %ModernLogFile%, %rotated%, 1
-        }
+    RotateOwnedLog(ModernLogFile)
+    line := "[" . A_Now . "] [" . level . "] [" . source . "] " . SubStr(message, 1, 4096) . "`r`n"
+    FileAppend, %line%, %ModernLogFile%, CP1251
+    return !ErrorLevel
+    } catch e {
+        return false
     }
-    line := "[" . A_Now . "] [" . level . "] [" . source . "] " . message . "`r`n"
-    try
-        FileAppend, %line%, %ModernLogFile%, CP1251
-    try
-        FileAppend, %line%, %ErrorLogFile%, CP1251
 }
 
 LogUIError(message) {
@@ -8633,13 +8707,14 @@ CreateConfigBackup(reason := "save", force := 0) {
         return ""
     }
     safeReason := RegExReplace(reason, "[^0-9A-Za-z_-]+", "_")
-    backupFile := backupDir . "\profiles_backup_" . A_Now . "_" . safeReason . ".ini"
+    backupFile := backupDir . "\profiles_backup_" . A_Now . "_" . TickNow() . "_" . safeReason . ".ini"
     FileCopy, %ConfigFile%, %backupFile%, 1
     if (ErrorLevel || !FileExist(backupFile))
     {
         LogError("CreateConfigBackup", "Backup copy failed: " . ConfigFile . " -> " . backupFile)
         return ""
     }
+    PruneOwnedBackups(backupDir)
     return backupFile
 }
 
@@ -8728,7 +8803,7 @@ GetThemeColors(ByRef bg, ByRef panel, ByRef text, ByRef accent, ByRef muted) {
 
     if (CustomTextColor != "")
         text := CustomTextColor
-    else if (text = "")
+    else if (text = "" || CustomMenuColor != "")
     {
         if (ColorBrightness(panel) >= 140)
             text := "1D232B"
@@ -8757,6 +8832,11 @@ GetThemeColors(ByRef bg, ByRef panel, ByRef text, ByRef accent, ByRef muted) {
         muted := "66727F"
     else if (muted = "")
         muted := "A9B1BA"
+    surfaces := [bg, panel]
+    if (CustomTabColor != "")
+        surfaces.Push(CustomTabColor)
+    text := EnsureTextContrast(text, surfaces, 4.5)
+    muted := EnsureTextContrast(muted, surfaces, 4.5)
 }
 
 GetControlSurfaceColors(ByRef controlBg, ByRef controlText, ByRef cardBg, ByRef cardEdge, panel, text, accent) {
@@ -8895,19 +8975,16 @@ SaveThemePreset(themeName) {
     global ThemesFile, CFG_ThemePresetName, CFG_ThemeMode
     NormalizeProfileNameValue(themeName)
     if (themeName = "")
-    {
-        LogError("SaveThemePreset", "Empty preset name.")
-        return 0
-    }
-    section := "Theme_" . themeName
-    if !WriteCurrentThemeToFile(ThemesFile, section)
-    {
-        LogError("SaveThemePreset", "Write failed for preset: " . themeName)
-        return 0
-    }
+        return false
+    stage := ConfigStage(ThemesFile)
+    if (stage = "")
+        return false
+    WriteCurrentThemeToFile(stage, "Theme_" . themeName)
+    if !ConfigCommit(stage, ThemesFile)
+        return false
     CFG_ThemePresetName := themeName
     CFG_ThemeMode := themeName
-    return 1
+    return true
 }
 
 LoadThemePreset(themeName) {
@@ -8932,23 +9009,30 @@ LoadThemePreset(themeName) {
 ShowSettingsWindow() {
     global SettingsX, SettingsY, SettingsW, SettingsH, hSettingsWnd
     global MenuTransparency, UIRoundness, InnerRoundness
-    SettingsW := 1180
-    SettingsH := 800
+    Settings_NormalizeViewport()
     Gui, 2:Show, % "x" . SettingsX . " y" . SettingsY . " w" . SettingsW . " h" . SettingsH, Настройки профиля
+    Settings_UpdateScrollbars()
     WinActivate, ahk_id %hSettingsWnd%
     settingsAlpha := 255
     PromoteOverlayWindow(hSettingsWnd)
     WinSet, Transparent, %settingsAlpha%, ahk_id %hSettingsWnd%
-    ApplyRoundedCorners(hSettingsWnd, UIRoundness)
+    ApplyRoundedCorners(hSettingsWnd, 0)
     ApplyRoundedPanelsForGui(hSettingsWnd, InnerRoundness)
 }
 
 ApplyRoundedCorners(hwnd, radius := 18) {
+    if (!hwnd || !DllCall("IsWindow", "Ptr", hwnd))
+        return false
+    if (radius <= 0)
+        return DllCall("SetWindowRgn", "Ptr", hwnd, "Ptr", 0, "Int", 1)
     WinGetPos,,, w, h, ahk_id %hwnd%
-    if (w = "" or h = "")
-        return
-    hRgn := DllCall("CreateRoundRectRgn", "Int", 0, "Int", 0, "Int", w + 1, "Int", h + 1, "Int", radius, "Int", radius, "UInt")
-    DllCall("SetWindowRgn", "UInt", hwnd, "UInt", hRgn, "Int", 1)
+    region := DllCall("CreateRoundRectRgn", "Int", 0, "Int", 0, "Int", w + 1, "Int", h + 1, "Int", radius, "Int", radius, "Ptr")
+    if (!region)
+        return false
+    ok := DllCall("SetWindowRgn", "Ptr", hwnd, "Ptr", region, "Int", 1)
+    if (!ok)
+        DllCall("DeleteObject", "Ptr", region)
+    return ok
 }
 
 ApplyRoundedPanelsForGui(guiHwnd, radius := "") {
@@ -9135,7 +9219,7 @@ GameInterface_ShowDialog(caption, text, style := 0, button1 := "OK", button2 := 
 GetAzmpModuleInfo(force := 0) {
     global AzmpInfoCache, AzmpExpectedSHA256, GAME_MP_ModulePath
     info := {Ready: 0, Path: "", Version: "", SHA256: "", Expected: "", Match: 0, Status: ""}
-    if !checkHandles() {
+    if !(refreshGTA() && refreshSAMP(1)) {
         info.Status := MemoryGetShortError()
         return info
     }
@@ -9164,7 +9248,7 @@ GetAzmpModuleInfo(force := 0) {
     info.Version := moduleVersion
     info.SHA256 := moduleHash
     info.Expected := expectedHash
-    info.Match := (expectedHash = "") ? 1 : (moduleHash = expectedHash)
+    info.Match := (expectedHash != "" && moduleHash = expectedHash) ? 1 : 0
     if (!info.Ready)
         info.Status := "SHA-256 не вычислен"
     else if (expectedHash = "")
@@ -9265,11 +9349,7 @@ RunMemoryLiveTest(showPrompt := 1) {
 }
 
 AzmpAllowsTargetRead() {
-    global AzmpExpectedSHA256
-    if (Trim(AzmpExpectedSHA256) = "")
-        return true
-    info := GetAzmpModuleInfo(0)
-    return info.Ready && info.Match
+    return MemoryBuildCompatible()
 }
 
 HasCurrentID() {
@@ -9512,6 +9592,7 @@ AutoTargetID_WriteDiagnostic(code, detail, targetPed := 0, repaired := "") {
         snapshot := MemoryGetStatusText()
     line := "[" . A_Now . "] code=" . code . "; detail=" . detail
         . "; repaired=" . repaired . "; " . snapshot . "`r`n"
+    RotateOwnedLog(AutoTargetDiagFile)
     try FileAppend, %line%, %AutoTargetDiagFile%, CP1251
     LogError("AutoID-DIAG", code . ": " . detail . " | repaired=" . repaired . " | " . snapshot, "WARN")
     return snapshot
@@ -9614,7 +9695,7 @@ AutoTargetID_DiagnoseAndRecover(showNotice := 1, attemptRepair := 1, knownTarget
         repaired := "полностью сброшены состояние Auto ID и кэш GTA CPed pool"
     }
 
-    AutoTargetDiagLastRunTick := A_TickCount
+    AutoTargetDiagLastRunTick := TickNow()
     snapshot := AutoTargetID_WriteDiagnostic(code, detail, knownTargetPed, repaired)
     if (showNotice) {
         shortDetail := detail
@@ -9623,7 +9704,7 @@ AutoTargetID_DiagnoseAndRecover(showNotice := 1, attemptRepair := 1, knownTarget
         humanError := AutoTargetID_CodeDescription(code)
         GameNotify("Auto ID: " . humanError . " [" . code . "]. " . shortDetail
             . ". Лог: logs\\autoid_diagnostics.log", recoverable ? "ERROR" : "WARN")
-        AutoTargetDiagLastNoticeTick := A_TickCount
+        AutoTargetDiagLastNoticeTick := TickNow()
     }
     return code
 }
@@ -9638,7 +9719,7 @@ AutoTargetID_RecordFailure(code, detail := "", targetPed := 0) {
         return false
     }
     if (AutoTargetDiagFailStreak = 0)
-        AutoTargetDiagFirstFailTick := A_TickCount
+        AutoTargetDiagFirstFailTick := TickNow()
     AutoTargetDiagFailStreak += 1
 
     ; Диагностика запускается только при устойчивом отказе, чтобы обычное
@@ -9812,7 +9893,7 @@ AutoTargetID_Poll() {
 
     if (AutoTargetLastScanTick != 0 && AZMP_TickElapsed(AutoTargetLastScanTick) < 180)
         return
-    AutoTargetLastScanTick := A_TickCount
+    AutoTargetLastScanTick := TickNow()
 
     aimedValue := AutoTargetID_ReadAimedID(targetPed, angle, targetName, isMask, matchType)
     if (aimedValue = -1 || aimedValue = "") {
@@ -9915,7 +9996,7 @@ Evidence_Arm(eventCode, timeoutMs := 45000) {
         timeoutMs := 3000
     else if (timeoutMs > 180000)
         timeoutMs := 180000
-    EvidencePendingEvents[eventCode] := A_TickCount + timeoutMs
+    EvidencePendingEvents[eventCode] := TickNow() + timeoutMs
     LogError("Evidence", "Ожидание подтверждения в чате: " . Evidence_EventLabel(eventCode), "INFO")
     return true
 }
@@ -9926,7 +10007,7 @@ Evidence_PurgeExpiredPending() {
         EvidencePendingEvents := {}
     expired := []
     for eventCode, expiresAt in EvidencePendingEvents
-        if (expiresAt <= A_TickCount)
+        if (expiresAt <= TickNow())
             expired.Push(eventCode)
     Loop % expired.Length()
         EvidencePendingEvents.Delete(expired[A_Index])
@@ -9972,7 +10053,7 @@ Evidence_ArmDocumentsForPlayer(playerId, timeoutMs := 90000) {
         timeoutMs := 180000
 
     Evidence_ClearDocumentContext(true)
-    EvidenceDocumentContext := {ID: playerId, Name: playerName, Expires: A_TickCount + timeoutMs}
+    EvidenceDocumentContext := {ID: playerId, Name: playerName, Expires: TickNow() + timeoutMs}
     Evidence_Arm("DOC_LICENSE", timeoutMs)
     Evidence_Arm("DOC_TECHPASSPORT", timeoutMs)
     LogError("Evidence", "Ожидаются документы после досмотра ID " . playerId
@@ -10020,7 +10101,7 @@ Evidence_DocumentContextValid() {
     global EvidenceDocumentContext
     if !IsObject(EvidenceDocumentContext) || !EvidenceDocumentContext.HasKey("ID")
         return false
-    if (!EvidenceDocumentContext.HasKey("Expires") || EvidenceDocumentContext.Expires <= A_TickCount) {
+    if (!EvidenceDocumentContext.HasKey("Expires") || EvidenceDocumentContext.Expires <= TickNow()) {
         Evidence_ClearDocumentContext(true)
         return false
     }
@@ -10134,7 +10215,7 @@ Evidence_BeginDocumentWindow() {
     }
     NormalizeNumberRange(EvidenceDocumentWaitSec, 90, 5, 300)
     Evidence_ClearDocumentContext(true)
-    EvidenceDocumentWindowExpires := A_TickCount + EvidenceDocumentWaitSec * 1000
+    EvidenceDocumentWindowExpires := TickNow() + EvidenceDocumentWaitSec * 1000
     GameNotify("Ожидание документов: " . EvidenceDocumentWaitSec . " сек., радиус "
         . EvidenceDocumentDistanceLimit . " ед.", "INFO")
     return true
@@ -10149,7 +10230,7 @@ Evidence_DocumentActivationAllowed() {
         return true
     if (EvidenceDocumentActivationMode != "После представления")
         return false
-    return (EvidenceDocumentWindowExpires > A_TickCount)
+    return (EvidenceDocumentWindowExpires > TickNow())
 }
 
 Evidence_IsOwnReportLine(text) {
@@ -10233,7 +10314,7 @@ Evidence_RequestScreenshot(eventCode, delayMs := 700) {
     else if (delayMs > 10000)
         delayMs := 10000
 
-    dueTick := A_TickCount + delayMs
+    dueTick := TickNow() + delayMs
     expiresTick := dueTick + 20000
     ; The same chat line can be observed by both the direct-send and chatlog paths.
     ; Merge only near-identical requests, without suppressing later real events.
@@ -10420,20 +10501,36 @@ Evidence_RunRecognitionMatrix() {
 }
 
 Evidence_SendKeyPress(keyName, modifier := "") {
-    Critical, 100
-    if (modifier != "") {
-        SendInput, {%modifier% down}
-        Sleep, 30
+    global MockMode
+    if (MockMode = "On" || AuditTestMode) {
+        MockPreview_Append("[SCREENSHOT requested] " . modifier . "+" . keyName)
+        return true
     }
-    SendInput, {%keyName% down}
-    Sleep, 60
-    SendInput, {%keyName% up}
-    if (modifier != "") {
-        Sleep, 30
-        SendInput, {%modifier% up}
+    if (PhysicalInputBusy || !GameLocator_IsActive())
+        return false
+    PhysicalInputBusy := 1
+    epoch := AutomationEpoch
+    modifierDown := false, keyDown := false
+    try {
+        if (modifier != "") {
+            modifierDown := SafeSend("{" . modifier . " down}", "Input", epoch)
+            if (!modifierDown)
+                return false
+            Sleep, 30
+        }
+        keyDown := SafeSend("{" . keyName . " down}", "Input", epoch)
+        if (!keyDown)
+            return false
+        Sleep, 60
+        return epoch = AutomationEpoch && GameLocator_IsActive()
+    } finally {
+        ; Releases never depend on focus: a held modifier must not remain stuck after Alt-Tab.
+        if (keyDown)
+            SendInput, {%keyName% up}
+        if (modifierDown)
+            SendInput, {%modifier% up}
+        PhysicalInputBusy := 0
     }
-    Critical, Off
-    return true
 }
 
 Evidence_SendScreenshot() {
@@ -10470,9 +10567,9 @@ Evidence_ProcessScreenshotQueue() {
     }
 
     item := EvidenceScreenshotQueue[1]
-    if (A_TickCount < item.Due)
+    if (TickNow() < item.Due)
         return false
-    if (EvidenceLastCaptureTick > 0 && A_TickCount - EvidenceLastCaptureTick < 1200) {
+    if (EvidenceLastCaptureTick > 0 && TickNow() - EvidenceLastCaptureTick < 1200) {
         EvidenceScreenshotQueue[1].Due := EvidenceLastCaptureTick + 1200
         return false
     }
@@ -10486,8 +10583,8 @@ Evidence_ProcessScreenshotQueue() {
 
     if !IsGameActive() {
         item.Attempts += 1
-        if (A_TickCount < item.Expires) {
-            item.Due := A_TickCount + 250
+        if (TickNow() < item.Expires) {
+            item.Due := TickNow() + 250
             if (!item.InactiveLogged) {
                 item.InactiveLogged := 1
                 LogError("Evidence", "Снимок ожидает возврата фокуса в игру: "
@@ -10506,11 +10603,11 @@ Evidence_ProcessScreenshotQueue() {
     EvidenceScreenshotQueue.RemoveAt(1)
     try {
         usedMethod := Evidence_SendScreenshot()
-        EvidenceLastCaptureTick := A_TickCount
+        EvidenceLastCaptureTick := TickNow()
         LogError("Evidence", "Нажат " . usedMethod . ": " . Evidence_EventLabel(item.Code), "INFO")
     } catch e {
-        if (A_TickCount < item.Expires) {
-            item.Due := A_TickCount + 400
+        if (TickNow() < item.Expires) {
+            item.Due := TickNow() + 400
             item.Attempts += 1
             EvidenceScreenshotQueue.InsertAt(1, item)
             LogError("Evidence", "Повтор снимка после ошибки отправки клавиши: " . e.Message, "WARN")
@@ -10564,7 +10661,7 @@ Evidence_DetectReceivedDocument(line) {
 
     NormalizeNumberRange(EvidenceDocumentWaitSec, 90, 5, 300)
     EvidenceDocumentContext := {ID: targetId, Name: targetName
-        , Expires: A_TickCount + EvidenceDocumentWaitSec * 1000}
+        , Expires: TickNow() + EvidenceDocumentWaitSec * 1000}
     if !Evidence_DocumentSenderIsNear()
         return ""
     Evidence_Arm(documentEvent, 5000)
@@ -10614,12 +10711,12 @@ CanRunAction(actionName, needsID := false, checkChatClosed := true, requireVehic
     NormalizeNumberRange(ActionCooldownMs, 250, 0, 5000)
     if (ActionCooldownMs > 0)
     {
-        elapsed := A_TickCount - LastActionTick
+        elapsed := TickNow() - LastActionTick
         if (LastActionTick > 0 && elapsed < ActionCooldownMs)
             return false
     }
 
-    LastActionTick := A_TickCount
+    LastActionTick := TickNow()
     return true
 }
 
@@ -10647,19 +10744,22 @@ CanRunCuffFollowup() {
     return true
 }
 
-DoCuffFollowup() {
+DoCuffFollowup(inputEpoch := 0) {
     global UserID
-    SendChat("/frac " . UserID)
+    inputEpoch := AutomationEpoch
+    if (SendChatForEpoch(inputEpoch, "/frac " . UserID) != 1)
+        return
     Sleep, 250
-    SendChat("/fracid " . UserID)
+    if (SendChatForEpoch(inputEpoch, "/fracid " . UserID) != 1)
+        return
     Sleep, 250
-    SendInput, {1}
+    SafeSend("{1}", "Input", inputEpoch)
     Sleep, 80
-    SendInput, {1}
+    SafeSend("{1}", "Input", inputEpoch)
     Sleep, 120
-    SendInput, {4}
+    SafeSend("{4}", "Input", inputEpoch)
     Sleep, 80
-    SendInput, {4}
+    SafeSend("{4}", "Input", inputEpoch)
 }
 
 CanRunDejectFollowup() {
@@ -10885,22 +10985,24 @@ ContextAssistant_GetConfirmationPrompt(actionName, value, variant := "", targetN
     return targetText . " - подставить?"
 }
 
-ContextAssistant_CloseGameChat() {
+ContextAssistant_CloseGameChat(inputEpoch := 0) {
     global MockMode
+    inputEpoch := AutomationEpoch
     if (MockMode = "On")
         return
     if (isInChat() != 1)
         return
-    SendInput, ^a{Backspace}
+    SafeSend("^a{Backspace}", "Input", inputEpoch)
     Sleep, 40
-    SendInput, {F6}
+    SafeSend("{F6}", "Input", inputEpoch)
     Sleep, 80
 }
 
-ContextAssistant_Request(actionName, presetValue := "", presetVariant := "", targetName := "") {
+ContextAssistant_Request(actionName, presetValue := "", presetVariant := "", targetName := "", inputEpoch := 0) {
     global ContextAssistantAction, ContextAssistantInput, ContextAssistantVariant, ContextAssistantTargetName
     global ContextAssistantStatus, ContextAssistantMode, hContextAssistantWnd, UserID, MockMode, UIRoundness, TargetIsMask
     global ContextNotificationMode, ContextNotificationTimeoutSec, Bind_ConfirmID, Bind_RejectID
+    inputEpoch := AutomationEpoch
 
     if !ContextAssistant_IsEnabled(actionName)
     {
@@ -10994,7 +11096,7 @@ ContextAssistant_Request(actionName, presetValue := "", presetVariant := "", tar
     Gui, 42:Show, w560 h230, AHK FOR GOS BY SBEZRUK - %title%
     ApplyRoundedCorners(hContextAssistantWnd, UIRoundness)
     GuiControl, 42:Focus, ContextAssistantInput
-    SendInput, ^a
+    SafeSend("^a", "Input", inputEpoch)
     SetTimer, ContextAssistantTimeoutLabel, -30000
     return true
 }
@@ -11166,7 +11268,7 @@ ResolveChatLogPath() {
     configured := Trim(ChatLogPath)
     if (SubStr(configured, 1, 1) = """" && SubStr(configured, 0) = """")
         configured := SubStr(configured, 2, StrLen(configured) - 2)
-    if (configured != "" && FileExist(configured))
+    if (configured != "")
         return configured
 
     candidates := []
@@ -11182,106 +11284,15 @@ ResolveChatLogPath() {
 }
 
 ChatLogReader_MaybeCleanup(path, fileSize := -1) {
-    global ChatLogAutoCleanupEnabled, ChatLogMaxSizeKB, ChatLogKeepTailKB
-    global ChatLogCleanupLastCheckTick, ChatLogCleanupObservedSize, ChatLogCleanupStableSinceTick
-    global ChatLogLastPos, ChatLogFileSeen, ChatLogLookupAction, ChatLogLookupStartedTick
-    global ChatLogPendingIdResultLine, ChatLogRescuePending
-
-    if (ChatLogAutoCleanupEnabled != "On" || path = "" || !FileExist(path))
-        return false
-
-    now := A_TickCount
-    if (ChatLogCleanupLastCheckTick > 0 && now - ChatLogCleanupLastCheckTick < 1500)
-        return false
-    ChatLogCleanupLastCheckTick := now
-
-    if (fileSize < 0)
-        FileGetSize, fileSize, %path%
-    if (fileSize < ChatLogLastPos) {
-        ChatLogLastPos := fileSize
-        ChatLogFileSeen := true
-        ChatLogPendingIdResultLine := 0
-        ChatLogReader_ClearLookup()
-        ChatLogRescuePending := 0
-        ChatLogCleanupObservedSize := fileSize
-        ChatLogCleanupStableSinceTick := A_TickCount
-        LogError("ChatLogReader", "Chatlog был очищен игрой. Указатель сброшен.", "INFO")
-        return true
-    }
-    maxBytes := ChatLogMaxSizeKB * 1024
-    if (maxBytes < 262144)
-        maxBytes := 262144
-
-    if (fileSize < maxBytes) {
-        ChatLogCleanupObservedSize := fileSize
-        ChatLogCleanupStableSinceTick := now
-        return false
-    }
-
-    ; Do not rotate while /id or an arrest helper is waiting for a reply.
-    if (ChatLogLookupAction != "" && now - ChatLogLookupStartedTick < 15000)
-        return false
-    if IsObject(ChatLogRescuePending) {
-        rescueStarted := ChatLogRescuePending.HasKey("StartedTick") ? ChatLogRescuePending.StartedTick : now
-        if (now - rescueStarted < 15000)
-            return false
-    }
-
-    ; Wait for a quiet interval so a line being written by the game is not cut.
-    if (ChatLogCleanupObservedSize != fileSize) {
-        ChatLogCleanupObservedSize := fileSize
-        ChatLogCleanupStableSinceTick := now
-        return false
-    }
-    if (ChatLogCleanupStableSinceTick = 0 || now - ChatLogCleanupStableSinceTick < 2000)
-        return false
-
-    keepBytes := ChatLogKeepTailKB * 1024
-    if (keepBytes < 0)
-        keepBytes := 0
-    if (keepBytes > maxBytes // 2)
-        keepBytes := maxBytes // 2
-
-    tail := ""
-    if (keepBytes > 0) {
-        readFile := FileOpen(path, "r", "CP1251")
-        if !IsObject(readFile)
-            return false
-        startPos := (fileSize > keepBytes) ? fileSize - keepBytes : 0
-        readFile.Seek(startPos, 0)
-        tail := readFile.Read()
-        readFile.Close()
-        if (startPos > 0) {
-            firstBreak := InStr(tail, "`n")
-            tail := firstBreak ? SubStr(tail, firstBreak + 1) : ""
-        }
-    }
-
-    writeFile := FileOpen(path, "w", "CP1251")
-    if !IsObject(writeFile) {
-        LogError("ChatLogReader", "Automatic chatlog cleanup postponed: file is busy.", "WARN")
-        return false
-    }
-    if (tail != "")
-        writeFile.Write(tail)
-    newReaderPos := writeFile.Pos
-    writeFile.Close()
-
-    ; Preserved tail is history only. New game output starts after newReaderPos.
-    ChatLogLastPos := newReaderPos
-    ChatLogFileSeen := true
-    ChatLogPendingIdResultLine := 0
-    ChatLogReader_ClearLookup()
-    ChatLogRescuePending := 0
-    ChatLogCleanupObservedSize := newReaderPos
-    ChatLogCleanupStableSinceTick := now
-    LogError("ChatLogReader", "Automatic chatlog cleanup: " . fileSize . " -> " . newReaderPos . " bytes.", "INFO")
-    return true
+    global ChatLogAutoCleanupEnabled
+    ChatLogAutoCleanupEnabled := "Off"
+    return false
 }
 
 InitChatLogReader() {
     global ChatLogLastPos, ChatLogFileSeen, ChatLogPendingIdResultLine
     global ChatLogLookupAction, ChatLogLookupVariant, ChatLogLookupName, ChatLogLookupStartedTick
+    ChatLogReaderIdentity := ""
     ChatLogLastPos := 0
     ChatLogFileSeen := false
     ChatLogPendingIdResultLine := 0
@@ -11309,9 +11320,9 @@ ChatLogReader_CanTrigger(actionKey, cooldownMs := 5000) {
     if !IsObject(ChatLogActionCooldowns)
         ChatLogActionCooldowns := {}
     lastTick := ChatLogActionCooldowns.HasKey(actionKey) ? ChatLogActionCooldowns[actionKey] : 0
-    if (lastTick > 0 && A_TickCount - lastTick < cooldownMs)
+    if (lastTick > 0 && TickNow() - lastTick < cooldownMs)
         return false
-    ChatLogActionCooldowns[actionKey] := A_TickCount
+    ChatLogActionCooldowns[actionKey] := TickNow()
     return true
 }
 
@@ -11442,14 +11453,14 @@ ChatLogReader_BeginLookup(actionName, playerName, variant := "") {
     playerName := Trim(playerName)
     if (playerName = "")
         return false
-    if (ChatLogLookupAction != "" && A_TickCount - ChatLogLookupStartedTick < 12000) {
+    if (ChatLogLookupAction != "" && TickNow() - ChatLogLookupStartedTick < 12000) {
         LogError("ChatLogReader", "Lookup skipped while another request is active: " . playerName, "WARN")
         return false
     }
     ChatLogLookupAction := actionName
     ChatLogLookupVariant := variant
     ChatLogLookupName := playerName
-    ChatLogLookupStartedTick := A_TickCount
+    ChatLogLookupStartedTick := TickNow()
     ChatLogPendingIdResultLine := 0
     return ChatQueue_Enqueue("/id " . playerName, "ChatLogReader.Lookup", 0, 900, 1)
 }
@@ -11570,7 +11581,7 @@ ChatLogReader_ProcessLine(line) {
     if (InStr(lowerLine, "спасать игрока") && InStr(lowerLine, "вы начал")) {
         rescueId := ChatLogReader_ExtractID(line)
         rescueName := ChatLogReader_ExtractNickname(line)
-        ChatLogRescuePending := {ID: rescueId, Name: rescueName, StartedTick: A_TickCount}
+        ChatLogRescuePending := {ID: rescueId, Name: rescueName, StartedTick: TickNow()}
         if (rescueId >= 0)
             return ChatLogReader_ApplyDetectedID(rescueId, rescueName, "RescueStart")
         if (rescueName != "")
@@ -11606,58 +11617,72 @@ ChatLogReader_ProcessLine(line) {
 }
 
 ChatLogReader_Tick() {
-    global ChatLogReaderEnabled, MockMode, ChatLogLastPos, ChatLogFileSeen, ChatLogPendingIdResultLine
+    global ChatLogReaderEnabled, MockMode, ChatLogLastPos, ChatLogFileSeen, ChatLogReaderIdentity
     if (ChatLogReaderEnabled != "On" || MockMode = "On")
         return false
     path := ResolveChatLogPath()
-    if (path = "" || !FileExist(path)) {
-        ChatLogFileSeen := false
-        return false
-    }
-
-    FileGetSize, fileSize, %path%
-    if (!ChatLogFileSeen) {
-        file := FileOpen(path, "r", "CP1251")
-        if !IsObject(file)
-            return false
-        file.Seek(0, 2)
-        ChatLogLastPos := file.Pos
-        file.Close()
-        ChatLogFileSeen := true
-        ChatLogReader_MaybeCleanup(path, fileSize)
-        return true
-    }
-    if (fileSize < ChatLogLastPos) {
-        ; The game or an external cleaner replaced/truncated the file.
-        ; Start from its current end instead of replaying old retained lines.
-        ChatLogLastPos := fileSize
-        ChatLogPendingIdResultLine := 0
-        LogError("ChatLogReader", "chatlog.txt was truncated; reader position reset to current EOF.", "INFO")
-        return true
-    }
-    if (fileSize = ChatLogLastPos) {
-        ChatLogReader_MaybeCleanup(path, fileSize)
-        return true
-    }
-
     file := FileOpen(path, "r", "CP1251")
-    if !IsObject(file)
+    if !IsObject(file) {
+        ChatLogReader_ResetGeneration()
         return false
-    file.Seek(ChatLogLastPos, 0)
-    lineCount := 0
-    while (!file.AtEOF && lineCount < 200) {
-        line := file.ReadLine()
-        ChatLogReader_ProcessLine(line)
-        lineCount += 1
     }
-    ChatLogLastPos := file.Pos
-    file.Close()
-
-    ; Rotate only after all currently available lines have been consumed.
-    FileGetSize, currentSize, %path%
-    if (ChatLogLastPos >= currentSize)
-        ChatLogReader_MaybeCleanup(path, currentSize)
-    return true
+    try {
+        fileIdentity := ChatLogReader_FileIdentity(file)
+        identity := path . "|" . fileIdentity
+        if (fileIdentity = "")
+            return false
+        if (!ChatLogFileSeen || identity != ChatLogReaderIdentity || file.Length < ChatLogLastPos || (ChatLogCursorSignature != "" && ChatLogReader_CursorSignature(file, ChatLogLastPos) != ChatLogCursorSignature)) {
+            ChatLogReader_ResetGeneration()
+            ChatLogReaderIdentity := identity
+            ChatLogFileSeen := true
+            ChatLogLastPos := file.Length
+            ChatLogCursorSignature := ChatLogReader_CursorSignature(file, ChatLogLastPos)
+            return true
+        }
+        remaining := file.Length - ChatLogLastPos
+        if (remaining <= 0)
+            return true
+        file.Pos := ChatLogLastPos
+        readSize := Min(65536, remaining)
+        VarSetCapacity(chunk, readSize, 0)
+        bytes := file.RawRead(chunk, readSize)
+        if (!bytes)
+            return true
+        lastBreak := 0, processed := 0, lineStart := 0
+        Loop % bytes {
+            if (NumGet(chunk, A_Index - 1, "UChar") != 10)
+                continue
+            length := A_Index - 1 - lineStart
+            if (ChatLogReaderDroppingLine)
+                ChatLogReaderDroppingLine := 0
+            else if (length <= 16384)
+            {
+                completeLine := RTrim(StrGet(&chunk + lineStart, length, "CP1251"), "`r")
+                if (AuditTestMode && IsObject(AuditReaderLines))
+                    AuditReaderLines.Push(completeLine)
+                else
+                    ChatLogReader_ProcessLine(completeLine)
+            }
+            else
+                LogError("ChatLogReader", "Пропущена строка длиннее 16 КиБ.", "WARN")
+            lastBreak := A_Index
+            lineStart := lastBreak
+            processed++
+            if (processed >= 200)
+                break
+        }
+        ; Keep the byte checkpoint before an incomplete line. No fragment is dispatched.
+        if (lastBreak = 0 && bytes >= 65536) {
+            ChatLogReaderDroppingLine := 1
+            ChatLogLastPos += bytes
+        } else {
+            ChatLogLastPos += lastBreak
+        }
+        ChatLogCursorSignature := ChatLogReader_CursorSignature(file, ChatLogLastPos)
+        return true
+    } finally {
+        file.Close()
+    }
 }
 
 NormalizeTextTrigger(ByRef val) {
@@ -12004,7 +12029,7 @@ TaskScheduler_Set(name, totalMs, callback, statusText := "", payload := "") {
         totalMs := 2147480000
 
     TaskSchedulerGeneration++
-    endTick := Mod(A_TickCount + totalMs, 4294967296)
+    endTick := TickNow() + totalMs
     TaskSchedulerItems[name] := {Name: name, EndTick: endTick, Callback: callback, Status: statusText, Payload: payload, Generation: TaskSchedulerGeneration}
     if (TaskSchedulerNextDueTick = 0 || TaskScheduler_RemainingMs(endTick) < TaskScheduler_RemainingMs(TaskSchedulerNextDueTick))
         TaskSchedulerNextDueTick := endTick
@@ -12045,7 +12070,7 @@ TaskScheduler_StatusText() {
     if !IsObject(TaskSchedulerItems)
         return "нет"
     out := ""
-    nowTick := A_TickCount
+    nowTick := TickNow()
     for name, task in TaskSchedulerItems
     {
         leftSec := Ceil(TaskScheduler_RemainingMs(task.EndTick, nowTick) / 1000.0)
@@ -12063,20 +12088,13 @@ TaskScheduler_StatusText() {
 }
 
 TaskScheduler_RemainingMs(endTick, nowTick := "") {
-    if (nowTick = "")
-        nowTick := A_TickCount
-    delta := endTick - nowTick
-    if (delta > 2147483647)
-        delta -= 4294967296
-    else if (delta < -2147483648)
-        delta += 4294967296
-    return delta
+    return endTick - (nowTick = "" ? TickNow() : nowTick)
 }
 
 TaskScheduler_RecalculateNextDue(nowTick := "") {
     global TaskSchedulerItems, TaskSchedulerNextDueTick
     if (nowTick = "")
-        nowTick := A_TickCount
+        nowTick := TickNow()
     TaskSchedulerNextDueTick := 0
     bestRemaining := ""
     if !IsObject(TaskSchedulerItems)
@@ -12100,7 +12118,7 @@ TaskScheduler_Tick() {
     if (TaskSchedulerBusy)
         return false
     TaskSchedulerBusy := 1
-    nowTick := A_TickCount
+    nowTick := TickNow()
     changed := 0
     ok := true
 
@@ -12138,7 +12156,7 @@ TaskScheduler_Tick() {
                 processed++
                 TaskScheduler_Invoke(task)
                 Sleep, -1
-                nowTick := A_TickCount
+                nowTick := TickNow()
             }
             TaskScheduler_RecalculateNextDue(nowTick)
         }
@@ -12233,7 +12251,7 @@ AutoReport_GetStatusText(nowTick := "") {
     if (!AutoReportActive)
         return "Автодоклад: выключен"
     if (nowTick = "")
-        nowTick := A_TickCount
+        nowTick := TickNow()
     leftSec := Ceil(TaskScheduler_RemainingMs(AutoReportEndTick, nowTick) / 1000.0)
     if (leftSec < 0)
         leftSec := 0
@@ -12247,7 +12265,7 @@ AutoReport_GetStatusText(nowTick := "") {
     }
     else
         nextText := "—"
-    return "Автодоклад: " . AutoReportMode . " | осталось " . leftText . " | следующий " . nextText . " | отправлено " . AutoReportSentCount . " | пропущено " . AutoReportSkippedCount
+    return "Автодоклад: " . AutoReportMode . " | осталось " . leftText . " | следующий " . nextText . " | в очереди принято " . AutoReportAcceptedCount . " | транспорт выполнен " . AutoReportSentCount . " | пропущено " . AutoReportSkippedCount
 }
 
 AutoReport_UpdateStatus() {
@@ -12296,11 +12314,12 @@ AutoReport_Start(mode, durationMin, showStatus := 1) {
     AutoReportMode := mode
     AutoReportDurationMin := durationMin + 0
     AutoReportActive := 1
-    AutoReportStartTick := A_TickCount
-    AutoReportEndTick := Mod(AutoReportStartTick + AutoReportDurationMin * 60000, 4294967296)
-    AutoReportNextTick := Mod(AutoReportStartTick + 600000, 4294967296)
+    AutoReportStartTick := TickNow()
+    AutoReportEndTick := AutoReportStartTick + AutoReportDurationMin * 60000
+    AutoReportNextTick := AutoReportStartTick + 600000
     AutoReportLastDispatchTick := 0
     AutoReportSentCount := 0
+    AutoReportAcceptedCount := 0
     AutoReportSkippedCount := 0
     if !AutoReport_ScheduleNext()
     {
@@ -12342,6 +12361,7 @@ AutoReport_Stop(showStatus := 1, reason := "manual") {
     AutoReportNextTick := 0
     AutoReportLastDispatchTick := 0
     AutoReportSentCount := 0
+    AutoReportAcceptedCount := 0
     AutoReportSkippedCount := 0
     stoppedToken := (stoppedMode = "Пост") ? "Post" : "Patrol"
     ActionTimer_Stop(stoppedToken, 1, "AutoReport")
@@ -12359,7 +12379,7 @@ AutoReport_Stop(showStatus := 1, reason := "manual") {
 }
 
 AutoReport_DispatchScheduled(scheduledTick) {
-    global MockMode, AutoReportSentCount, AutoReportSkippedCount
+    global MockMode, AutoReportAcceptedCount, AutoReportSkippedCount
     reportText := AutoReport_GetTemplate()
     if (Trim(reportText) = "")
     {
@@ -12379,7 +12399,7 @@ AutoReport_DispatchScheduled(scheduledTick) {
         queued := ChatQueue_Enqueue(reportText, "AutoReport", 0, 700, 1)
 
     if (queued)
-        AutoReportSentCount += 1
+        AutoReportAcceptedCount += 1
     else
     {
         AutoReportSkippedCount += 1
@@ -12394,7 +12414,7 @@ AutoReport_HandleTick(nowTick := "") {
     if (!AutoReportActive)
         return false
     if (nowTick = "")
-        nowTick := A_TickCount
+        nowTick := TickNow()
 
     endRemaining := TaskScheduler_RemainingMs(AutoReportEndTick, nowTick)
     nextRemaining := TaskScheduler_RemainingMs(AutoReportNextTick, nowTick)
@@ -12404,7 +12424,7 @@ AutoReport_HandleTick(nowTick := "") {
         missed := 0
         while (TaskScheduler_RemainingMs(AutoReportNextTick, nowTick) <= 0)
         {
-            AutoReportNextTick := Mod(AutoReportNextTick + 600000, 4294967296)
+            AutoReportNextTick := AutoReportNextTick + 600000
             missed += 1
         }
         lateness := -TaskScheduler_RemainingMs(scheduledTick, nowTick)
@@ -12431,7 +12451,7 @@ AutoReport_HandleTick(nowTick := "") {
 }
 
 AutoReport_OnTask(payload := "") {
-    return AutoReport_HandleTick(A_TickCount)
+    return AutoReport_HandleTick(TickNow())
 }
 
 RunV1MockRegression() {
@@ -12530,10 +12550,10 @@ RunLawSearchRegression() {
     checks.Push(["territory maps 11 groups/all assets", mapAudit.Ok && mapAudit.Groups = 11])
     checks.Push(["exact reference", LawSearch_CheckExpected("ФЗОТОД гл. 3 ст. 9.2 ч. 2", "ALL", "TER", "9.2", "2", 3)])
     checks.Push(["compact reference", LawSearch_CheckExpected("ФЗОТОД гл3 ст9.2 ч2", "ALL", "TER", "9.2", "2", 3)])
-    checks.Push(["natural query", LawSearch_CheckExpected("кто считается сотрудником полиции", "ALL", "FZOP", "17", "1", 5)])
-    checks.Push(["word permutation", LawSearch_CheckExpected("полиции сотрудник", "ALL", "FZOP", "17", "1", 5)])
-    checks.Push(["word form", LawSearch_CheckExpected("сотрудника полиции", "ALL", "FZOP", "17", "1", 5)])
-    checks.Push(["bounded typo", LawSearch_CheckExpected("сотрудник полицеи", "ALL", "FZOP", "17", "1", 5)])
+    checks.Push(["natural query", LawSearch_CheckExpected("кто считается сотрудником полиции", "ALL", "FZOP", "16", "1", 5)])
+    checks.Push(["word permutation", LawSearch_CheckExpected("полиции сотрудник", "ALL", "FZOP", "16", "1", 5)])
+    checks.Push(["word form", LawSearch_CheckExpected("сотрудника полиции", "ALL", "FZOP", "16", "1", 5)])
+    checks.Push(["bounded typo", LawSearch_CheckExpected("сотрудник полицеи", "ALL", "FZOP", "16", "1", 5)])
     checks.Push(["negative query", LawSearch_CheckNoResults("квазиплазменный телепортатор", "ALL")])
     checks.Push(["KAS article reference", LawSearch_CheckExpected("КАС статья 1", "ALL", "KAS", "1", "", 5)])
     checks.Push(["current KOAP 17.5", LawSearch_CheckExpected("КоАП статья 17.5", "ALL", "KOAP", "17.5", "", 3)])
@@ -12610,18 +12630,18 @@ RunAutoReportMockTest() {
         && (TaskScheduler_RemainingMs(AutoReportNextTick, AutoReportStartTick) = 600000)
         && AutoReportLastDispatchTick = AutoReportStartTick
         && ChatQueue_Count() = 1
-        && AutoReportSentCount = 1
+        && AutoReportAcceptedCount = 1
     checks.Push({Name: "start and immediate first report", Ok: startOk})
     ok := startOk && ok
 
     firstTick := AutoReportNextTick
     AutoReport_HandleTick(firstTick)
-    firstOk := (ChatQueue_Count() = 2 && AutoReportSentCount = 2 && TaskSchedulerItems.HasKey("AutoReport"))
+    firstOk := (ChatQueue_Count() = 2 && AutoReportAcceptedCount = 2 && TaskSchedulerItems.HasKey("AutoReport"))
     checks.Push({Name: "ten-minute tick and reschedule", Ok: firstOk})
     ok := firstOk && ok
 
     AutoReport_HandleTick(firstTick)
-    noDoubleOk := (ChatQueue_Count() = 2 && AutoReportSentCount = 2)
+    noDoubleOk := (ChatQueue_Count() = 2 && AutoReportAcceptedCount = 2)
     checks.Push({Name: "no double send", Ok: noDoubleOk})
     ok := noDoubleOk && ok
 
@@ -12630,7 +12650,7 @@ RunAutoReportMockTest() {
         && AutoReportMode = "Пост"
         && AutoReportDurationMin = 15
         && ChatQueue_Count() = 1
-        && AutoReportSentCount = 1
+        && AutoReportAcceptedCount = 1
         && TaskScheduler_Count() = 1
         && TaskSchedulerItems.HasKey("AutoReport")
     checks.Push({Name: "safe replacement", Ok: replaceOk})
@@ -12729,7 +12749,7 @@ ChatQueue_Enqueue(text, source := "ChatQueue", forceMock := 0, delayAfter := "",
     }
     if (delayAfter != "")
         NormalizeNumberRange(delayAfter, 700, 0, 30000)
-    ChatQueueItems.Push({Text: text, Source: source, Tries: 0, ForceMock: forceMock ? 1 : 0, DelayAfter: delayAfter})
+    ChatQueueItems.Push({Text: text, Source: source, Tries: 0, ForceMock: forceMock ? 1 : 0, DelayAfter: delayAfter, Epoch: AutomationEpoch, Batch: 0})
     LogError(source, "Queued chat line: " . text, "INFO")
     UpdateHUD()
     return true
@@ -12741,81 +12761,83 @@ ChatQueue_SendNow(text, source := "ChatQueue") {
 
 ChatQueue_Tick() {
     global ChatQueueItems, ChatQueueBusy, ChatQueueLastSendTick, ChatQueueNextSendTick
-    global ChatQueueMinDelay, ChatQueueMaxRetries, MockMode, TextSendMode
-    if (ChatQueueBusy)
+    global ChatQueueMinDelay, ChatQueueMaxRetries, AutoReportSentCount, AutoReportSkippedCount
+    global QueueFailureGeneration, AuditTransportResult, AuditTestMode, QueueBatchStates
+    if (ChatQueueBusy || !IsObject(ChatQueueItems) || !ChatQueueItems.Length())
         return
-    if !IsObject(ChatQueueItems) || ChatQueueItems.Length() <= 0
-        return
-    if (ChatQueueNextSendTick > A_TickCount)
+    if (ChatQueueNextSendTick > TickNow())
         return
     NormalizeNumberRange(ChatQueueMinDelay, 700, 250, 5000)
     NormalizeNumberRange(ChatQueueMaxRetries, 2, 0, 5)
-    if (ChatQueueLastSendTick > 0 && A_TickCount - ChatQueueLastSendTick < ChatQueueMinDelay)
+    if (ChatQueueLastSendTick && TickNow() - ChatQueueLastSendTick < ChatQueueMinDelay)
         return
-
     ChatQueueBusy := 1
-    item := ""
-    ok := false
+    item := ChatQueueItems.RemoveAt(1)
     try {
-        item := ChatQueueItems.RemoveAt(1)
-        if (item.HasKey("ForceMock") && item.ForceMock) {
-            MockPreview_Append(item.Text)
-            ok := true
-        } else {
-            ok := ChatQueue_TrySend(item.Text, item.Source)
+        epoch := item.HasKey("Epoch") ? item.Epoch : AutomationEpoch
+        if (epoch != AutomationEpoch) {
+            ChatQueue_CompleteItem(item, "cancelled")
+            return
         }
-
-        if (ok) {
-            ChatQueueLastSendTick := A_TickCount
-            effectiveDelay := (item.HasKey("DelayAfter") && item.DelayAfter != "") ? item.DelayAfter : ChatQueueMinDelay
-            ChatQueueNextSendTick := A_TickCount + effectiveDelay
-        } else if (MockMode != "On" && (TextSendMode = "Keyboard" || TextSendMode = "Auto") && !GameLocator_IsActive()) {
+        if (item.HasKey("Kind") && item.Kind = "Menu") {
+            result := QueueMenu_Run(item) ? 1 : -1
+        } else if (item.HasKey("ForceMock") && item.ForceMock) {
+            MockPreview_Append(item.Text)
+            result := 1
+        } else
+            result := AuditTestMode ? AuditTransportResult : ChatTransport_Send(item.Text, item.Source)
+        if (epoch != AutomationEpoch) {
+            ChatQueue_CompleteItem(item, "cancelled")
+            return
+        }
+        if (result = 1) {
+            if (item.Source = "AutoReport")
+                AutoReportSentCount++
+            if (!AuditTestMode && !item.HasKey("Kind"))
+                Evidence_MaybeCaptureReportText(item.Text)
+            ChatQueueLastSendTick := TickNow()
+            ChatQueueNextSendTick := TickNow() + (item.DelayAfter = "" ? ChatQueueMinDelay : item.DelayAfter)
+            ChatQueue_CompleteItem(item, "sent")
+        } else if (result != -2 && !item.HasKey("Kind") && !IsObject(g_RemoteOperation) && item.Tries < ChatQueueMaxRetries) {
+            item.Tries++
             ChatQueueItems.InsertAt(1, item)
-            ChatQueueNextSendTick := A_TickCount + 1000
-            LogError(item.Source, "Отправка отложена до активации окна игры.", "INFO")
-        } else if (item.Tries < ChatQueueMaxRetries) {
-            item.Tries += 1
-            ChatQueueItems.InsertAt(1, item)
-            ChatQueueNextSendTick := A_TickCount + 1000
-            LogError(item.Source, "Retry queued chat line " . item.Tries . "/" . ChatQueueMaxRetries, "WARN")
+            ChatQueueNextSendTick := TickNow() + 1000
         } else {
-            ChatQueueNextSendTick := A_TickCount + ChatQueueMinDelay
-            Notify("warn")
-            ToolTip, Строка не отправлена. Активируй игру или выбери режим Auto/Keyboard.
-            SetTimer, RemoveToolTip, -2200
-            LogError(item.Source, "Failed queued chat line: " . item.Text, "ERROR")
+            QueueFailureGeneration++
+            if (item.Source = "AutoReport")
+                AutoReportSkippedCount++
+            ChatQueue_CompleteItem(item, result = -2 || IsObject(g_RemoteOperation) ? "unknown" : "failed")
+            LogError(item.Source, "Отправка не подтверждена; остаток операции отменён: " . item.Text, "ERROR")
+            ChatQueueNextSendTick := TickNow() + ChatQueueMinDelay
         }
     } catch e {
-        ChatQueueNextSendTick := A_TickCount + 1000
-        if (IsObject(item) && !ok)
-            ChatQueueItems.InsertAt(1, item)
-        LogError("ChatQueue", "Необработанная ошибка очереди: " . e.Message, "ERROR")
+        QueueFailureGeneration++
+        ChatQueue_CompleteItem(item, "failed")
+        LogError("ChatQueue", e.Message, "ERROR")
     } finally {
         ChatQueueBusy := 0
-        UpdateHUD()
+        if (!AuditTestMode)
+            UpdateHUD()
     }
 }
 
 ChatQueue_EnqueueSequence(sequenceText, source := "Sequence", delayAfter := 700) {
-    sequenceText := StrReplace(sequenceText, "`r`n", "`n")
-    sequenceText := StrReplace(sequenceText, "`r", "`n")
-    count := 0
+    lines := []
+    sequenceText := StrReplace(StrReplace(sequenceText, "`r`n", "`n"), "`r", "`n")
     Loop, Parse, sequenceText, `n
     {
-        line := Trim(A_LoopField)
-        if (line = "")
-            continue
-        if ChatQueue_Enqueue(ApplyActionTemplate(line), source, 0, delayAfter, 1)
-            count += 1
+        if (Trim(A_LoopField) != "")
+            lines.Push(ApplyActionTemplate(Trim(A_LoopField)))
     }
-    return count
+    return ChatQueue_EnqueueBatch(lines, source, delayAfter) ? lines.Length() : 0
 }
 
 ChatQueue_TrySend(text, source := "ChatQueue") {
+    epoch := AutomationEpoch
     result := ChatTransport_Send(text, source)
-    if (result = 1)
+    if (result = 1 && epoch = AutomationEpoch)
         Evidence_MaybeCaptureReportText(text)
-    return result
+    return result = 1
 }
 
 SendChat(text, source := "Direct") {
@@ -12872,7 +12894,7 @@ ChatTransport_GetConnectionSummary(runMemoryCheck := 0) {
 }
 
 ChatTransport_Send(text, source := "ChatTransport") {
-    global MockMode, TextSendMode
+    global MockMode, TextSendMode, g_RemoteOperation
     global ChatTransportLastMemoryFailureTick, ChatTransportMemoryRetryMs
     text := "" . text
     if (text = "")
@@ -12904,11 +12926,13 @@ ChatTransport_Send(text, source := "ChatTransport") {
             ChatTransport_SetStatus("Memory: " . memoryError, source, "ERROR")
             LogError(source, "Memory send failed | " . memoryStatus, "ERROR")
         }
-        return result
+        return IsObject(g_RemoteOperation) ? -2 : result
     }
 
+    if IsObject(g_RemoteOperation)
+        return -2
     memoryError := ""
-    nowTick := A_TickCount
+    nowTick := TickNow()
     canRetryMemory := (ChatTransportLastMemoryFailureTick <= 0 || nowTick - ChatTransportLastMemoryFailureTick >= ChatTransportMemoryRetryMs)
     if (canRetryMemory)
     {
@@ -12919,6 +12943,8 @@ ChatTransport_Send(text, source := "ChatTransport") {
             ChatTransport_SetStatus("Memory (Auto)", source)
             return 1
         }
+        if IsObject(g_RemoteOperation)
+            return -2
         memoryStatus := MemoryGetStatusText()
         memoryError := MemoryGetShortError()
         LogError(source, "Auto Memory failed | " . memoryStatus, "WARN")
@@ -12944,7 +12970,12 @@ MockPreview_Append(text) {
     if (ChatQueuePreviewText != "")
         ChatQueuePreviewText .= "`r`n"
     ChatQueuePreviewText .= "[" . stamp . "] " . text
-    MockPreview_Show()
+    while (StrLen(ChatQueuePreviewText) > 131072 || StrSplit(ChatQueuePreviewText, "`n").Length() > 500) {
+        boundary := InStr(ChatQueuePreviewText, "`n")
+        ChatQueuePreviewText := boundary ? SubStr(ChatQueuePreviewText, boundary + 1) : SubStr(ChatQueuePreviewText, -131071)
+    }
+    if (!AuditTestMode)
+        MockPreview_Show()
 }
 
 ChatQueue_EnqueueMockDemo() {
@@ -12988,7 +13019,15 @@ MockPreview_Show() {
 }
 
 CancelAllAutomation(showStatus := 1) {
-    global ChatWizardMode
+    global ChatWizardMode, EvidenceScreenshotQueue, EvidencePendingEvents, EvidenceDocumentContext, EvidenceDocumentWindowExpires
+    StopCustomFunctionRun(0)
+    HideStopTimerGUI()
+    EvidenceScreenshotQueue := []
+    EvidencePendingEvents := {}
+    EvidenceDocumentContext := {}
+    EvidenceDocumentWindowExpires := 0
+    ChatLogReader_ResetGeneration()
+    SetTimer, EvidenceScreenshotTimer, Off
     Input
     ChatWizardMode := ""
     StopMDSFormationCountdown(0)
@@ -13006,29 +13045,41 @@ CancelAllAutomation(showStatus := 1) {
     }
 }
 SendChatKeyboard(text) {
+    global MockMode
     if (text = "")
         return false
-    if !IsGameActive()
+    if (MockMode = "On" || AuditTestMode) {
+        MockPreview_Append(text)
+        return true
+    }
+    previous := A_IsCritical
+    Critical, On
+    if (PhysicalInputBusy || !GameLocator_IsActive()) {
+        Critical, %previous%
         return false
-
-    st := isInChat()
-    if (st = 1)
-    {
-        SendInput, ^a{Backspace}
+    }
+    PhysicalInputBusy := 1
+    epoch := AutomationEpoch
+    Critical, %previous%
+    try {
+        chatState := isInChat()
+        if (chatState < 0)
+            return false
+        if (chatState = 0) {
+            if !SafeSend("{F6}", "Input", epoch)
+                return false
+            Sleep, 120
+        }
+        if !SafeSend("^a{Backspace}", "Input", epoch)
+            return false
         Sleep, 50
+        if (epoch != AutomationEpoch || !SafeLayout(0x4190419) || !PasteOnly(text, 1))
+            return false
+        Sleep, 70
+        return SafeSend("{Enter}", "Input", epoch)
+    } finally {
+        PhysicalInputBusy := 0
     }
-    else
-    {
-        SendInput, {F6}
-        Sleep, 120
-    }
-
-    EnsureRussianLayout()
-    if !PasteOnly(text)
-        return false
-    Sleep, 70
-    SendInput, {Enter}
-    return true
 }
 
 SendChatAuto(text) {
@@ -13083,18 +13134,20 @@ MDSFormationFinishText() {
     return MDSApplyTemplate(MDS_FormationFinish)
 }
 
-CloseEmptyChatAfterMDSInput() {
+CloseEmptyChatAfterMDSInput(inputEpoch := 0) {
+    inputEpoch := AutomationEpoch
     if (isInChat() = 1)
     {
-        SendInput, ^a{Backspace}
+        SafeSend("^a{Backspace}", "Input", inputEpoch)
         Sleep, 50
-        SendInput, {Esc}
+        SafeSend("{Esc}", "Input", inputEpoch)
         Sleep, 80
     }
 }
 
-ReadMDSFormationMinutes() {
+ReadMDSFormationMinutes(inputEpoch := 0) {
     global MDSFormationMaxMinutes, MockMode
+    inputEpoch := AutomationEpoch
 
     if (MockMode = "On")
     {
@@ -13122,17 +13175,17 @@ ReadMDSFormationMinutes() {
     chatState := isInChat()
     if (chatState = 1)
     {
-        SendInput, ^a{Backspace}
+        SafeSend("^a{Backspace}", "Input", inputEpoch)
         Sleep, 50
     }
     else
     {
-        SendInput, {F6}
+        SafeSend("{F6}", "Input", inputEpoch)
         Sleep, 120
     }
 
     EnsureRussianLayout()
-    PasteOnly("Время построения в минутах (1-" . MDSFormationMaxMinutes . "): ")
+    PasteOnlyForEpoch(inputEpoch, "Время построения в минутах (1-" . MDSFormationMaxMinutes . "): ")
     Input, minutesText, I L2 V T20, {Enter}{Escape}
     inputResult := ErrorLevel
     CloseEmptyChatAfterMDSInput()
@@ -13182,7 +13235,7 @@ StartMDSFormationCountdown(minutes) {
 
     StopMDSFormationCountdown(0)
     MDSFormationActive := 1
-    MDSFormationEndTick := Mod(A_TickCount + (minutes * 60000), 4294967296)
+    MDSFormationEndTick := TickNow() + minutes * 60000
     MDSFormationLastMinute := minutes
 
     ChatQueue_Enqueue(MDSFormationInitialText(minutes), "MDSFormation")
@@ -13429,6 +13482,11 @@ RegisterGpsInputTextTrigger(triggerName, ByRef prevTrig, currentTrig, actionName
             digit := A_Index - 1
             cb := Func("RunGpsInputTrigger").Bind(currentTrig, actionName, downCount, "" . digit)
             pattern := ":?*B0:" . currentTrig . digit
+            if !Hotstring_AdmitPattern(pattern) {
+                ok := false
+                errText .= "Достигнут предел новых TXT-триггеров за сеанс (512).`n"
+                continue
+            }
             Hotstring(pattern, cb, "On")
             TrackRegisteredGameTextHotstring(pattern)
         }
@@ -13476,7 +13534,8 @@ ReadGpsInputNumber(ByRef wasCancelled, ByRef endKey) {
     return gpsNumber
 }
 
-EraseGpsTypedCommand(triggerText, gpsNumber, endKey := "space") {
+EraseGpsTypedCommand(triggerText, gpsNumber, endKey := "space", inputEpoch := 0) {
+    inputEpoch := AutomationEpoch
     eraseCount := StrLen(triggerText) + StrLen(gpsNumber)
     if (endKey = "space")
         eraseCount += 1
@@ -13484,7 +13543,7 @@ EraseGpsTypedCommand(triggerText, gpsNumber, endKey := "space") {
         return
     Loop, %eraseCount%
     {
-        SendInput, {BS}
+        SafeSend("{BS}", "Input", inputEpoch)
         Sleep, 10
     }
 }
@@ -13532,31 +13591,37 @@ WaitForChatQueueIdle(timeoutMs := 20000) {
     timeoutMs := Round(timeoutMs)
     if (timeoutMs < 1000)
         timeoutMs := 1000
-    started := A_TickCount
+    epoch := AutomationEpoch
+    failures := QueueFailureGeneration
+    started := TickNow()
     Loop
     {
+        if (epoch != AutomationEpoch || QueueFailureGeneration != failures)
+            return false
         if (ChatQueue_Count() <= 0 && !ChatQueueBusy)
             return true
-        if (A_TickCount - started >= timeoutMs)
+        if (TickNow() - started >= timeoutMs)
             return false
         Sleep, 50
     }
 }
 
-SendRadialNumberTwice(number, delayMs := 300, pressGapMs := 0) {
+SendRadialNumberTwice(number, delayMs := 300, pressGapMs := 0, inputEpoch := 0) {
+    inputEpoch := AutomationEpoch
     if !RegExMatch(number . "", "^\d$")
         return false
     key := "{" . number . "}"
-    SendInput, %key%
+    SafeSend(key, "Input", inputEpoch)
     pressGapMs := Round(pressGapMs)
     if (pressGapMs > 0)
         Sleep, %pressGapMs%
-    SendInput, %key%
+    SafeSend(key, "Input", inputEpoch)
     Sleep, %delayMs%
     return true
 }
 
-SendListSelection(position, stepDelayMs := 35, afterDelayMs := 220) {
+SendListSelection(position, stepDelayMs := 35, afterDelayMs := 220, inputEpoch := 0) {
+    inputEpoch := AutomationEpoch
     position := Round(position)
     if (position < 1)
         return false
@@ -13565,21 +13630,22 @@ SendListSelection(position, stepDelayMs := 35, afterDelayMs := 220) {
     {
         Loop, %downCount%
         {
-            SendEvent, {Down}
+            SafeSend("{Down}", "Event", inputEpoch)
             Sleep, %stepDelayMs%
         }
     }
-    SendEvent, {Enter}
+    SafeSend("{Enter}", "Event", inputEpoch)
     Sleep, %afterDelayMs%
     return true
 }
 
 EnsureEnglishLayout() {
-    SendMessage, 0x50,, 0x4090409,, A
+    return SafeLayout(0x4090409)
 }
 
-ChatWizard_Begin(modeName) {
+ChatWizard_Begin(modeName, inputEpoch := 0) {
     global ChatWizardMode, BindMenuEditMode
+    inputEpoch := AutomationEpoch
     if (ChatWizardMode != "") {
         GameNotify("Уже включён режим ввода: " . ChatWizardMode . ". Нажмите Esc для отмены.", "WARN")
         return false
@@ -13591,7 +13657,7 @@ ChatWizard_Begin(modeName) {
     if !IsGameActive()
         return false
     if (isInChat() != 1) {
-        SendInput, {F6}
+        SafeSend("{F6}", "Input", inputEpoch)
         Sleep, 120
     }
     if (isInChat() != 1) {
@@ -13644,13 +13710,14 @@ ChatWizard_NormalizeToken(rawText) {
     return Trim(text)
 }
 
-ChatWizard_Finish(closeChat := true) {
+ChatWizard_Finish(closeChat := true, inputEpoch := 0) {
     global ChatWizardMode
+    inputEpoch := AutomationEpoch
     Input
     if (isInChat() = 1) {
         ClearBindMenuChatLine(true)
         if (closeChat) {
-            SendInput, {Enter}
+            SafeSend("{Enter}", "Input", inputEpoch)
             Sleep, 100
         }
     }
@@ -13791,10 +13858,12 @@ VehicleLookup_RunWizard() {
     return VehicleLookup_Execute(countryIndex, regionIndex, plate)
 }
 
-VehicleLookup_Execute(countryIndex, regionIndex, plate) {
+VehicleLookup_Execute(countryIndex, regionIndex, plate, inputEpoch := 0) {
+    inputEpoch := AutomationEpoch
     if !CanRunAction("поиск ТС по номеру", false, true)
         return false
-    SendChat("/frac")
+    if (SendChatForEpoch(inputEpoch, "/frac") != 1)
+        return
     Sleep, 320
     SendRadialNumberTwice(1, 280)
     SendRadialNumberTwice(3, 280)
@@ -13807,10 +13876,10 @@ VehicleLookup_Execute(countryIndex, regionIndex, plate) {
     }
     SendListSelection(regionListPosition, 35, 280)
     EnsureEnglishLayout()
-    if !PasteOnly(plate)
+    if !PasteOnlyForEpoch(inputEpoch, plate)
         return false
     Sleep, 80
-    SendEvent, {Enter}
+    SafeSend("{Enter}", "Event", inputEpoch)
     Sleep, 80
     EnsureRussianLayout()
     return true
@@ -13879,29 +13948,31 @@ WantedRemoval_RunWizard() {
     return WantedRemoval_Execute(targetId, reasonNumber)
 }
 
-WantedRemoval_Execute(targetId, reasonNumber) {
+WantedRemoval_Execute(targetId, reasonNumber, inputEpoch := 0) {
     global ReportRank, Surname
+    inputEpoch := AutomationEpoch
     if !CanRunAction("снятие розыска", false, true)
         return false
     departmentTag := WantedRemoval_GetDepartmentTag()
     report := "/d [" . departmentTag . "] Говорит " . ReportRank . " полиции " . Surname
         . ",выношу из базы розыска жетон " . targetId
         . ",на основании ФЗоП гл.3 ст.7 ч.1 п." . reasonNumber
-    sendResult := SendChat(report, "WantedRemovalReport")
+    sendResult := SendChatForEpoch(inputEpoch, report, "WantedRemovalReport")
     if (sendResult != 1) {
         GameNotify("Доклад о снятии розыска не отправлен. Действие отменено.", "ERROR")
         return false
     }
     Sleep, 700
-    SendChat("/frac")
+    if (SendChatForEpoch(inputEpoch, "/frac") != 1)
+        return
     Sleep, 320
     SendRadialNumberTwice(1, 280)
     SendRadialNumberTwice(4, 280)
     SendRadialNumberTwice(2, 320)
-    if !PasteOnly(targetId . "")
+    if !PasteOnlyForEpoch(inputEpoch, targetId . "")
         return false
     Sleep, 80
-    SendEvent, {Enter}
+    SafeSend("{Enter}", "Event", inputEpoch)
     return true
 }
 
@@ -13965,8 +14036,9 @@ Fine_RunWizard() {
     return Fine_ExecuteArticle(article, chapterPosition, itemPosition)
 }
 
-Fine_ExecuteArticle(article, chapterPosition, itemPosition) {
+Fine_ExecuteArticle(article, chapterPosition, itemPosition, inputEpoch := 0) {
     global RP_Fine, UserID
+    inputEpoch := AutomationEpoch
     if !CanRunAction("штраф КоАП " . article, true)
         return false
     Evidence_Arm("FINE", 60000)
@@ -13979,7 +14051,7 @@ Fine_ExecuteArticle(article, chapterPosition, itemPosition) {
         }
         Sleep, 900
     }
-    sendResult := SendChat("/frac " . UserID, "Fine.OpenMenu")
+    sendResult := SendChatForEpoch(inputEpoch, "/frac " . UserID, "Fine.OpenMenu")
     if (sendResult != 1) {
         GameNotify("Не удалось открыть /frac " . UserID . ". Оформление штрафа отменено.", "ERROR")
         return false
@@ -13988,7 +14060,7 @@ Fine_ExecuteArticle(article, chapterPosition, itemPosition) {
     SendRadialNumberTwice(1, 480, 110)
     SendRadialNumberTwice(6, 480, 110)
     SendRadialNumberTwice(1, 550, 110)
-    SendEvent, {Enter}
+    SafeSend("{Enter}", "Event", inputEpoch)
     Sleep, 450
     SendListSelection(chapterPosition, 45, 350)
     SendListSelection(itemPosition, 45, 450)
@@ -14008,7 +14080,7 @@ BindMenuWarn(msg := "") {
 
 BindMenuHotkeyBlockedWarn() {
     static lastWarnTick := 0
-    nowTick := A_TickCount
+    nowTick := TickNow()
     if (lastWarnTick > 0 && nowTick - lastWarnTick < 1200)
         return
     lastWarnTick := nowTick
@@ -14017,17 +14089,18 @@ BindMenuHotkeyBlockedWarn() {
     SetTimer, RemoveToolTip, -1400
 }
 
-ClearBindMenuChatLine(force := false) {
+ClearBindMenuChatLine(force := false, inputEpoch := 0) {
+    inputEpoch := AutomationEpoch
     if !IsGameActive()
         return
     if (!force && isInChat() != 1)
         return
 
-    SendInput, {Alt up}
+    SafeSend("{Alt up}", "Input", inputEpoch)
     Sleep, 20
-    SendInput, ^a
+    SafeSend("^a", "Input", inputEpoch)
     Sleep, 30
-    SendInput, {Backspace}
+    SafeSend("{Backspace}", "Input", inputEpoch)
     Sleep, 30
 }
 
@@ -14393,7 +14466,8 @@ ApplyBindMenuTrigger(meta, triggerText) {
         GuiControl, 2:, %cfgVar%, %triggerText%
 
     ApplyAllBinds()
-    SaveProfile(CurrentProfile)
+    if !SaveProfile(CurrentProfile)
+        return
     SaveUISettings()
     if (BindListVisible)
         UpdateBindList()
@@ -14448,7 +14522,8 @@ ApplyBindMenuHotkey(meta, hotkeyText) {
         GuiControl, 2:, %cfgVar%, %hotkeyText%
 
     ApplyAllBinds()
-    SaveProfile(CurrentProfile)
+    if !SaveProfile(CurrentProfile)
+        return
     SaveUISettings()
     if (BindListVisible)
         UpdateBindList()
@@ -14552,12 +14627,13 @@ HandleBindMenuEnter() {
     return true
 }
 
-HandleBindMenuApplyHotkey() {
+HandleBindMenuApplyHotkey(inputEpoch := 0) {
     global BindMenuEditMode
+    inputEpoch := AutomationEpoch
     if (!BindMenuEditMode)
         return false
 
-    SendInput, {Alt up}
+    SafeSend("{Alt up}", "Input", inputEpoch)
     Sleep, 20
 
     lineText := GetActiveChatText()
@@ -15076,15 +15152,26 @@ TowStart_EnsureTowLast(sequenceText) {
 }
 
 EncodeIniText(value) {
-    value := StrReplace(value, "{RAW_NL}", "{RAW2_NL}")
-    value := StrReplace(value, "{NL}", "{RAW_NL}")
-    value := StrReplace(value, "`r`n", "{NL}")
-    value := StrReplace(value, "`n", "{NL}")
-    value := StrReplace(value, "`r", "{NL}")
-    return value
+    size := StrPut(value, "CP1251") - 1
+    VarSetCapacity(buffer, size + 1, 0)
+    StrPut(value, &buffer, size + 1, "CP1251")
+    encoded := ""
+    Loop % size
+        encoded .= Format("{:02X}", NumGet(buffer, A_Index - 1, "UChar"))
+    return "H1:" . size . ":" . encoded
 }
 
-DecodeIniText(value) {
+DecodeIniText(value, codec := "legacy") {
+    if (codec = "hex1") {
+        if !RegExMatch(value, "^H1:([0-9]+):([A-F0-9]*)$", parts)
+            return ""
+        if (StrLen(parts2) != parts1 * 2)
+            return ""
+        VarSetCapacity(buffer, parts1 + 1, 0)
+        Loop % parts1
+            NumPut("0x" . SubStr(parts2, A_Index * 2 - 1, 2), buffer, A_Index - 1, "UChar")
+        return parts1 ? StrGet(&buffer, parts1, "CP1251") : ""
+    }
     value := StrReplace(value, "{NL}", "`r`n")
     value := StrReplace(value, "{RAW_NL}", "{NL}")
     value := StrReplace(value, "{RAW2_NL}", "{RAW_NL}")
@@ -15092,38 +15179,71 @@ DecodeIniText(value) {
 }
 
 IniReadText(fileName, sectionName, keyName, defaultValue := "") {
-    missingMarker := "__AHK_MISSING_VALUE__"
-    IniRead, outValue, %fileName%, %sectionName%, %keyName%, %missingMarker%
-    if (outValue = missingMarker)
+    IniRead, section, %fileName%, %sectionName%
+    if (ErrorLevel)
         return defaultValue
-    return DecodeIniText(outValue)
+    present := false
+    Loop, Parse, section, `n, `r
+    {
+        equals := InStr(A_LoopField, "=")
+        if (equals && Trim(SubStr(A_LoopField, 1, equals - 1)) = keyName) {
+            present := true
+            break
+        }
+    }
+    if (!present)
+        return defaultValue
+    IniRead, outValue, %fileName%, %sectionName%, %keyName%,
+    codecKey := sectionName . "|" . keyName
+    IniRead, codec, %fileName%, TextEncoding, %codecKey%, legacy
+    if (codec != "legacy" && codec != "hex1")
+        return defaultValue
+    return DecodeIniText(outValue, codec)
 }
 
 IniWriteText(value, fileName, sectionName, keyName) {
     encodedValue := EncodeIniText(value)
-    IniWrite, %encodedValue%, %fileName%, %sectionName%, %keyName%
-    return !ErrorLevel
+    codecKey := sectionName . "|" . keyName
+    if !CheckedIniWrite(encodedValue, fileName, sectionName, keyName)
+        return false
+    return CheckedIniWrite("hex1", fileName, "TextEncoding", codecKey)
 }
 
 EnsureRussianLayout() {
-    SendMessage, 0x50,, 0x4190419,, A
+    return SafeLayout(0x4190419)
 }
 
-PasteOnly(text) {
-    ClipSaved := ClipboardAll
-    Clipboard :=
-    Clipboard := text
-    ClipWait, 0.5
-    if (ErrorLevel) {
-        Clipboard := ClipSaved
-        VarSetCapacity(ClipSaved, 0)
-        return false
+PasteOnly(text, alreadyOwned := 0) {
+    global MockMode
+    if (MockMode = "On" || AuditTestMode) {
+        MockPreview_Append("[TYPE] " . text)
+        return true
     }
-    SendInput, ^v
-    Sleep, 50
-    Clipboard := ClipSaved
-    VarSetCapacity(ClipSaved, 0)
-    return true
+    if (!GameLocator_IsActive() || (!alreadyOwned && PhysicalInputBusy))
+        return false
+    if (!alreadyOwned)
+        PhysicalInputBusy := 1
+    epoch := AutomationEpoch
+    saved := ClipboardAll
+    sequence := -1
+    try {
+        Clipboard := text
+        sequence := DllCall("GetClipboardSequenceNumber", "UInt")
+        ClipWait, 0.5
+        if (ErrorLevel || epoch != AutomationEpoch || !GameLocator_IsActive()
+            || sequence != DllCall("GetClipboardSequenceNumber", "UInt"))
+            return false
+        if !SafeSend("^v", "Input", epoch)
+            return false
+        Sleep, 50
+        return epoch = AutomationEpoch && GameLocator_IsActive()
+    } finally {
+        if (sequence >= 0 && sequence = DllCall("GetClipboardSequenceNumber", "UInt"))
+            Clipboard := saved
+        VarSetCapacity(saved, 0)
+        if (!alreadyOwned)
+            PhysicalInputBusy := 0
+    }
 }
 
 SendTemplateChat(template) {
@@ -15131,14 +15251,15 @@ SendTemplateChat(template) {
     SendChatAuto(text)
 }
 
-SendTemplateOpen(template, leftCount := 0) {
+SendTemplateOpen(template, leftCount := 0, inputEpoch := 0) {
+    inputEpoch := AutomationEpoch
     text := ApplyTemplate(template)
     EnsureRussianLayout()
-    PasteOnly(text)
+    PasteOnlyForEpoch(inputEpoch, text)
     if (leftCount > 0)
     {
         Sleep, 50
-        SendInput, {Left %leftCount%}
+        SafeSend("{Left " . leftCount . "}", "Input", inputEpoch)
     }
 }
 
@@ -15282,6 +15403,7 @@ GetBoundLabelByToken(token) {
         labelMap["Search"] := "DoSearch"
         labelMap["PersonalFile"] := "DoPersonalFile"
         labelMap["Su"] := "DoSu"
+        labelMap["MDC"] := "DoMDC"
         labelMap["Dep"] := "DoDep"
         labelMap["WantedList"] := "DoWantedList"
         labelMap["SOSStart"] := "DoSOSStart"
@@ -15461,6 +15583,8 @@ LoadUIAppearanceFromIni(fileName) {
     IniRead, HUDTransparency, %fileName%, UI, HUDTransparency, 225
     IniRead, BindListTransparency, %fileName%, UI, BindListTransparency, 225
     TabGuiHeaderText := IniReadText(fileName, "UI", "TabGuiHeaderText", "AMZ Helper | sbezruk180")
+    IniRead, OBSHideWindows, %fileName%, UI, OBSHideWindows, Off
+    NormalizeOnOff(OBSHideWindows, "Off")
 }
 
 LoadUISafetyAndAudioFromIni(fileName) {
@@ -15527,11 +15651,11 @@ LoadUISafetyAndAudioFromIni(fileName) {
     ; immediately uses the more frequent rotation policy.
     if (ChatLogMaxSizeKB = 2048) {
         ChatLogMaxSizeKB := 512
-        IniWrite, 512, %fileName%, ChatLog, MaxSizeKB
+        CheckedIniWrite("512", fileName, "ChatLog", "MaxSizeKB")
     }
     if (ChatLogKeepTailKB = 64) {
         ChatLogKeepTailKB := 32
-        IniWrite, 32, %fileName%, ChatLog, KeepTailKB
+        CheckedIniWrite("32", fileName, "ChatLog", "KeepTailKB")
     }
 }
 
@@ -15640,7 +15764,7 @@ NormalizeLoadedUISettings() {
     NormalizeNumberRange(EvidenceDocumentDistanceLimit, 20, 2, 100)
     NormalizeOnOff(ProfileSaveBackups, "On")
     NormalizeOnOff(ChatLogReaderEnabled, "On")
-    NormalizeOnOff(ChatLogAutoCleanupEnabled, "On")
+    NormalizeOnOff(ChatLogAutoCleanupEnabled, "Off")
     NormalizeNumberRange(ChatLogMaxSizeKB, 512, 256, 65536)
     NormalizeNumberRange(ChatLogKeepTailKB, 32, 0, 1024)
     if (ChatLogKeepTailKB > ChatLogMaxSizeKB // 2)
@@ -15656,8 +15780,7 @@ NormalizeLoadedUISettings() {
     NormalizeNumberRange(BindListH, 390, 300, 700)
     NormalizeNumberRange(SettingsX, 120, -4000, 8000)
     NormalizeNumberRange(SettingsY, 60, -4000, 8000)
-    SettingsW := 1180
-    SettingsH := 800
+    Settings_NormalizeViewport()
     NormalizeSettingsPage(SettingsPage)
     SettingsTargetTab := SettingsPageIndex(SettingsPage)
     HUDVisible := HUDVisible ? 1 : 0
@@ -15671,24 +15794,27 @@ WriteUIAppearanceToIni(fileName) {
     global UIRoundness, InnerRoundness, GuiTransparency, BackgroundImageURL, FullscreenSafeGui
     global ProfileMode, HUDMode, MenuTransparency, HUDTransparency, BindListTransparency, TabGuiHeaderText
 
-    IniWrite, %ThemeMode%, %fileName%, UI, ThemeMode
-    IniWrite, %CFG_ThemePresetName%, %fileName%, UI, ThemePresetName
-    IniWrite, %CustomMenuColor%, %fileName%, UI, CustomMenuColor
-    IniWrite, %CustomTextColor%, %fileName%, UI, CustomTextColor
-    IniWrite, %CustomBorderColor%, %fileName%, UI, CustomBorderColor
-    IniWrite, %CustomTabColor%, %fileName%, UI, CustomTabColor
-    IniWrite, %CustomBindListColor%, %fileName%, UI, CustomBindListColor
-    IniWrite, %UIRoundness%, %fileName%, UI, UIRoundness
-    IniWrite, %InnerRoundness%, %fileName%, UI, InnerRoundness
-    IniWrite, %GuiTransparency%, %fileName%, UI, GuiTransparency
-    IniWrite, %BackgroundImageURL%, %fileName%, UI, BackgroundImageURL
-    IniWrite, %FullscreenSafeGui%, %fileName%, UI, FullscreenSafeGui
-    IniWrite, %ProfileMode%, %fileName%, UI, ProfileMode
-    IniWrite, %HUDMode%, %fileName%, UI, HUDMode
-    IniWrite, %MenuTransparency%, %fileName%, UI, MenuTransparency
-    IniWrite, %HUDTransparency%, %fileName%, UI, HUDTransparency
-    IniWrite, %BindListTransparency%, %fileName%, UI, BindListTransparency
+    CheckedIniWrite(ThemeMode, fileName, "UI", "ThemeMode")
+    CheckedIniWrite(CFG_ThemePresetName, fileName, "UI", "ThemePresetName")
+    CheckedIniWrite(CustomMenuColor, fileName, "UI", "CustomMenuColor")
+    CheckedIniWrite(CustomTextColor, fileName, "UI", "CustomTextColor")
+    CheckedIniWrite(CustomBorderColor, fileName, "UI", "CustomBorderColor")
+    CheckedIniWrite(CustomTabColor, fileName, "UI", "CustomTabColor")
+    CheckedIniWrite(CustomBindListColor, fileName, "UI", "CustomBindListColor")
+    CheckedIniWrite(UIRoundness, fileName, "UI", "UIRoundness")
+    CheckedIniWrite(InnerRoundness, fileName, "UI", "InnerRoundness")
+    CheckedIniWrite(GuiTransparency, fileName, "UI", "GuiTransparency")
+    CheckedIniWrite(BackgroundImageURL, fileName, "UI", "BackgroundImageURL")
+    CheckedIniWrite(FullscreenSafeGui, fileName, "UI", "FullscreenSafeGui")
+    CheckedIniWrite(ProfileMode, fileName, "UI", "ProfileMode")
+    CheckedIniWrite(HUDMode, fileName, "UI", "HUDMode")
+    CheckedIniWrite(MenuTransparency, fileName, "UI", "MenuTransparency")
+    CheckedIniWrite(HUDTransparency, fileName, "UI", "HUDTransparency")
+    CheckedIniWrite(BindListTransparency, fileName, "UI", "BindListTransparency")
     IniWriteText(TabGuiHeaderText, fileName, "UI", "TabGuiHeaderText")
+    return !ConfigWriteFailed
+    CheckedIniWrite(OBSHideWindows, fileName, "UI", "OBSHideWindows")
+    return !ConfigWriteFailed
 }
 
 WriteUISafetyAndAudioToIni(fileName) {
@@ -15703,83 +15829,89 @@ WriteUISafetyAndAudioToIni(fileName) {
     global EvidenceDocumentActivationMode, EvidenceDocumentWaitSec, EvidenceDocumentDistanceLimit
     global SequenceLineDelay, ProfileSaveBackups
 
-    IniWrite, %SafeModeEnabled%, %fileName%, UI, SafeModeEnabled
-    IniWrite, %SafeBlockWhenChat%, %fileName%, UI, SafeBlockWhenChat
-    IniWrite, %SafeVehicleChecks%, %fileName%, UI, SafeVehicleChecks
-    IniWrite, %SafeRequireChatForEditable%, %fileName%, UI, SafeRequireChatForEditable
-    IniWrite, %SafeTooltipWarnings%, %fileName%, UI, SafeTooltipWarnings
-    IniWrite, %SafeDistanceChecks%, %fileName%, UI, SafeDistanceChecks
-    IniWrite, %SafeDistanceLimit%, %fileName%, UI, SafeDistanceLimit
-    IniWrite, %IDCheckEnabled%, %fileName%, UI, IDCheckEnabled
-    IniWrite, %StopTimerWidth%, %fileName%, UI, StopTimerWidth
-    IniWrite, %StopTimerHeight%, %fileName%, UI, StopTimerHeight
-    IniWrite, %StopTimerTransparency%, %fileName%, UI, StopTimerTransparency
-    IniWrite, %StopTimerBorderColor%, %fileName%, UI, StopTimerBorderColor
-    IniWrite, %StopTimerTextColor%, %fileName%, UI, StopTimerTextColor
-    IniWrite, %StopTimerBgColor%, %fileName%, UI, StopTimerBgColor
-    IniWrite, %StopTimerVolume%, %fileName%, UI, StopTimerVolume
-    IniWrite, %StopTimerX%, %fileName%, UI, StopTimerX
-    IniWrite, %StopTimerY%, %fileName%, UI, StopTimerY
-    IniWrite, %EvacuationTimerEnabled%, %fileName%, UI, EvacuationTimerEnabled
-    IniWrite, %PatrolTimerEnabled%, %fileName%, UI, PatrolTimerEnabled
-    IniWrite, %PostTimerEnabled%, %fileName%, UI, PostTimerEnabled
-    IniWrite, %ActionTimerX%, %fileName%, UI, ActionTimerX
-    IniWrite, %ActionTimerY%, %fileName%, UI, ActionTimerY
-    IniWrite, %TextSendMode%, %fileName%, UI, TextSendMode
-    IniWrite, %GameWindowTitle%, %fileName%, UI, GameWindowTitle
-    IniWrite, %GameProcessName%, %fileName%, UI, GameProcessName
-    IniWrite, %AzmpExpectedSHA256%, %fileName%, UI, AzmpExpectedSHA256
-    IniWrite, %MockMode%, %fileName%, UI, MockMode
-    IniWrite, %ChatQueueEnabled%, %fileName%, UI, ChatQueueEnabled
-    IniWrite, %ChatQueueMinDelay%, %fileName%, UI, ChatQueueMinDelay
-    IniWrite, %NotifySoundEnabled%, %fileName%, UI, NotifySoundEnabled
-    IniWrite, %NotifyVolume%, %fileName%, UI, NotifyVolume
-    IniWrite, %ActionCooldownMs%, %fileName%, UI, ActionCooldownMs
-    IniWrite, %SequenceLineDelay%, %fileName%, UI, SequenceLineDelay
-    IniWrite, %ProfileSaveBackups%, %fileName%, UI, ProfileSaveBackups
-    IniWrite, %ContextNotificationMode%, %fileName%, UI, ContextNotificationMode
-    IniWrite, %ContextNotificationTimeoutSec%, %fileName%, UI, ContextNotificationTimeoutSec
-    IniWrite, %EvidenceScreenshotMode%, %fileName%, UI, EvidenceScreenshotMode
-    IniWrite, %EvidenceScreenshotMethod%, %fileName%, UI, EvidenceScreenshotMethod
-    IniWrite, %EvidenceDocumentActivationMode%, %fileName%, UI, EvidenceDocumentActivationMode
-    IniWrite, %EvidenceDocumentWaitSec%, %fileName%, UI, EvidenceDocumentWaitSec
-    IniWrite, %EvidenceDocumentDistanceLimit%, %fileName%, UI, EvidenceDocumentDistanceLimit
-    IniWrite, %ChatLogReaderEnabled%, %fileName%, ChatLog, Enabled
+    CheckedIniWrite(SafeModeEnabled, fileName, "UI", "SafeModeEnabled")
+    CheckedIniWrite(SafeBlockWhenChat, fileName, "UI", "SafeBlockWhenChat")
+    CheckedIniWrite(SafeVehicleChecks, fileName, "UI", "SafeVehicleChecks")
+    CheckedIniWrite(SafeRequireChatForEditable, fileName, "UI", "SafeRequireChatForEditable")
+    CheckedIniWrite(SafeTooltipWarnings, fileName, "UI", "SafeTooltipWarnings")
+    CheckedIniWrite(SafeDistanceChecks, fileName, "UI", "SafeDistanceChecks")
+    CheckedIniWrite(SafeDistanceLimit, fileName, "UI", "SafeDistanceLimit")
+    CheckedIniWrite(IDCheckEnabled, fileName, "UI", "IDCheckEnabled")
+    CheckedIniWrite(StopTimerWidth, fileName, "UI", "StopTimerWidth")
+    CheckedIniWrite(StopTimerHeight, fileName, "UI", "StopTimerHeight")
+    CheckedIniWrite(StopTimerTransparency, fileName, "UI", "StopTimerTransparency")
+    CheckedIniWrite(StopTimerBorderColor, fileName, "UI", "StopTimerBorderColor")
+    CheckedIniWrite(StopTimerTextColor, fileName, "UI", "StopTimerTextColor")
+    CheckedIniWrite(StopTimerBgColor, fileName, "UI", "StopTimerBgColor")
+    CheckedIniWrite(StopTimerVolume, fileName, "UI", "StopTimerVolume")
+    CheckedIniWrite(StopTimerX, fileName, "UI", "StopTimerX")
+    CheckedIniWrite(StopTimerY, fileName, "UI", "StopTimerY")
+    CheckedIniWrite(EvacuationTimerEnabled, fileName, "UI", "EvacuationTimerEnabled")
+    CheckedIniWrite(PatrolTimerEnabled, fileName, "UI", "PatrolTimerEnabled")
+    CheckedIniWrite(PostTimerEnabled, fileName, "UI", "PostTimerEnabled")
+    CheckedIniWrite(ActionTimerX, fileName, "UI", "ActionTimerX")
+    CheckedIniWrite(ActionTimerY, fileName, "UI", "ActionTimerY")
+    CheckedIniWrite(TextSendMode, fileName, "UI", "TextSendMode")
+    CheckedIniWrite(GameWindowTitle, fileName, "UI", "GameWindowTitle")
+    CheckedIniWrite(GameProcessName, fileName, "UI", "GameProcessName")
+    CheckedIniWrite(AzmpExpectedSHA256, fileName, "UI", "AzmpExpectedSHA256")
+    CheckedIniWrite(MockMode, fileName, "UI", "MockMode")
+    CheckedIniWrite(ChatQueueEnabled, fileName, "UI", "ChatQueueEnabled")
+    CheckedIniWrite(ChatQueueMinDelay, fileName, "UI", "ChatQueueMinDelay")
+    CheckedIniWrite(NotifySoundEnabled, fileName, "UI", "NotifySoundEnabled")
+    CheckedIniWrite(NotifyVolume, fileName, "UI", "NotifyVolume")
+    CheckedIniWrite(ActionCooldownMs, fileName, "UI", "ActionCooldownMs")
+    CheckedIniWrite(SequenceLineDelay, fileName, "UI", "SequenceLineDelay")
+    CheckedIniWrite(ProfileSaveBackups, fileName, "UI", "ProfileSaveBackups")
+    CheckedIniWrite(ContextNotificationMode, fileName, "UI", "ContextNotificationMode")
+    CheckedIniWrite(ContextNotificationTimeoutSec, fileName, "UI", "ContextNotificationTimeoutSec")
+    CheckedIniWrite(EvidenceScreenshotMode, fileName, "UI", "EvidenceScreenshotMode")
+    CheckedIniWrite(EvidenceScreenshotMethod, fileName, "UI", "EvidenceScreenshotMethod")
+    CheckedIniWrite(EvidenceDocumentActivationMode, fileName, "UI", "EvidenceDocumentActivationMode")
+    CheckedIniWrite(EvidenceDocumentWaitSec, fileName, "UI", "EvidenceDocumentWaitSec")
+    CheckedIniWrite(EvidenceDocumentDistanceLimit, fileName, "UI", "EvidenceDocumentDistanceLimit")
+    CheckedIniWrite(ChatLogReaderEnabled, fileName, "ChatLog", "Enabled")
     IniWriteText(ChatLogPath, fileName, "ChatLog", "Path")
     IniWriteText(ChatLogPlayerNickname, fileName, "ChatLog", "PlayerNickname")
-    IniWrite, %ChatLogAutoCleanupEnabled%, %fileName%, ChatLog, AutoCleanup
-    IniWrite, %ChatLogMaxSizeKB%, %fileName%, ChatLog, MaxSizeKB
-    IniWrite, %ChatLogKeepTailKB%, %fileName%, ChatLog, KeepTailKB
+    CheckedIniWrite(ChatLogAutoCleanupEnabled, fileName, "ChatLog", "AutoCleanup")
+    CheckedIniWrite(ChatLogMaxSizeKB, fileName, "ChatLog", "MaxSizeKB")
+    CheckedIniWrite(ChatLogKeepTailKB, fileName, "ChatLog", "KeepTailKB")
+    return !ConfigWriteFailed
 }
 
 WriteUIWindowPrefsToIni(fileName) {
     global HudX, HudY, BindListX, BindListY, BindListW, BindListH
     global HUDVisible, BindListVisible, SettingsVisible, SettingsTargetTab, SettingsPage, SettingsX, SettingsY, SettingsW, SettingsH
 
-    IniWrite, %HudX%, %fileName%, UI, HudX
-    IniWrite, %HudY%, %fileName%, UI, HudY
-    IniWrite, %BindListX%, %fileName%, UI, BindListX
-    IniWrite, %BindListY%, %fileName%, UI, BindListY
-    IniWrite, %BindListW%, %fileName%, UI, BindListW
-    IniWrite, %BindListH%, %fileName%, UI, BindListH
-    IniWrite, %HUDVisible%, %fileName%, UI, HUDVisible
-    IniWrite, %BindListVisible%, %fileName%, UI, BindListVisible
-    IniWrite, %SettingsVisible%, %fileName%, UI, SettingsVisible
-    IniWrite, %SettingsTargetTab%, %fileName%, UI, SettingsTargetTab
-    IniWrite, %SettingsPage%, %fileName%, UI, SettingsPage
-    IniWrite, %SettingsX%, %fileName%, UI, SettingsX
-    IniWrite, %SettingsY%, %fileName%, UI, SettingsY
-    IniWrite, %SettingsW%, %fileName%, UI, SettingsW
-    IniWrite, %SettingsH%, %fileName%, UI, SettingsH
+    CheckedIniWrite(HudX, fileName, "UI", "HudX")
+    CheckedIniWrite(HudY, fileName, "UI", "HudY")
+    CheckedIniWrite(BindListX, fileName, "UI", "BindListX")
+    CheckedIniWrite(BindListY, fileName, "UI", "BindListY")
+    CheckedIniWrite(BindListW, fileName, "UI", "BindListW")
+    CheckedIniWrite(BindListH, fileName, "UI", "BindListH")
+    CheckedIniWrite(HUDVisible, fileName, "UI", "HUDVisible")
+    CheckedIniWrite(BindListVisible, fileName, "UI", "BindListVisible")
+    CheckedIniWrite(SettingsVisible, fileName, "UI", "SettingsVisible")
+    CheckedIniWrite(SettingsTargetTab, fileName, "UI", "SettingsTargetTab")
+    CheckedIniWrite(SettingsPage, fileName, "UI", "SettingsPage")
+    CheckedIniWrite(SettingsX, fileName, "UI", "SettingsX")
+    CheckedIniWrite(SettingsY, fileName, "UI", "SettingsY")
+    CheckedIniWrite(SettingsW, fileName, "UI", "SettingsW")
+    CheckedIniWrite(SettingsH, fileName, "UI", "SettingsH")
+    return !ConfigWriteFailed
 }
 
 SaveUISettings() {
     global ConfigFile, UiPreviewMode
-    if (ConfigFile = "" || UiPreviewMode)
-        return
-    WriteUIAppearanceToIni(ConfigFile)
-    WriteUISafetyAndAudioToIni(ConfigFile)
-    WriteUIWindowPrefsToIni(ConfigFile)
+    if (ConfigFile = "" || UiPreviewMode || ConfigTransactionBusy)
+        return false
+    target := ConfigStage(ConfigFile)
+    if (target = "")
+        return false
+    WriteUIAppearanceToIni(target)
+    WriteUISafetyAndAudioToIni(target)
+    WriteUIWindowPrefsToIni(target)
+    return ConfigCommit(target, ConfigFile)
 }
 
 LoadUISettings() {
@@ -15827,7 +15959,8 @@ LoadSettingsWindowStateFromIni(fileName) {
 ChatQueue_Clear(showStatus := 1) {
     global ChatQueueItems, ChatQueueBusy, ChatQueueNextSendTick, ChatQueueLastSendTick
     ChatQueueItems := []
-    ChatQueueBusy := 0
+    AutomationEpoch++
+    ChatQueue_CancelBatches()
     ChatQueueNextSendTick := 0
     ChatQueueLastSendTick := 0
     if (showStatus)
@@ -15864,17 +15997,24 @@ UpdateAutomationSettingsStatus() {
 }
 
 RunBackgroundTool(argName, reportName) {
-    global PendingToolPid, PendingToolReport
+    global PendingToolPid, PendingToolReport, PendingToolHandle
     if (PendingToolPid)
     {
         ToolTip, Проверка уже выполняется.
         SetTimer, RemoveToolTip, -1400
         return false
     }
-    cmd := """" . A_AhkPath . """ """ . A_ScriptFullPath . """ " . argName
-    Run, %cmd%, %A_ScriptDir%, Hide, childPid
-    if (!childPid)
+    reportPath := A_ScriptDir . "\" . reportName
+    FileDelete, %reportPath%
+    if FileExist(reportPath)
         return false
+    q := Chr(34)
+    cmd := A_IsCompiled ? q . A_ScriptFullPath . q . " /f " . argName
+        : q . A_AhkPath . q . " /f /CP1251 " . q . A_ScriptFullPath . q . " " . argName
+    Run, %cmd%, %A_ScriptDir%, Hide UseErrorLevel, childPid
+    if (ErrorLevel || !childPid)
+        return false
+    PendingToolHandle := DllCall("OpenProcess", "UInt", 0x1000, "Int", 0, "UInt", childPid, "Ptr")
     PendingToolPid := childPid
     PendingToolReport := A_ScriptDir . "\" . reportName
     SetTimer, BackgroundToolPoll, 500
@@ -15922,8 +16062,7 @@ NormalizeWindowStates() {
     NormalizeNumberRange(BindListH, 390, 300, 700)
     NormalizeNumberRange(SettingsX, 120, -4000, 8000)
     NormalizeNumberRange(SettingsY, 60, -4000, 8000)
-    SettingsW := 1180
-    SettingsH := 800
+    Settings_NormalizeViewport()
     ClampWindowToVirtualDesktop(SettingsX, SettingsY, SettingsW, SettingsH)
     ClampWindowToVirtualDesktop(BindListX, BindListY, BindListW, BindListH)
     ClampWindowToVirtualDesktop(HudX, HudY, 380, 180)
@@ -15947,29 +16086,32 @@ LoadWindowStates() {
 
 WriteHudWindowStateToIni(fileName) {
     global HudX, HudY, HUDVisible
-    IniWrite, %HudX%, %fileName%, WINDOW_HUD, X
-    IniWrite, %HudY%, %fileName%, WINDOW_HUD, Y
-    IniWrite, %HUDVisible%, %fileName%, WINDOW_HUD, Visible
+    CheckedIniWrite(HudX, fileName, "WINDOW_HUD", "X")
+    CheckedIniWrite(HudY, fileName, "WINDOW_HUD", "Y")
+    CheckedIniWrite(HUDVisible, fileName, "WINDOW_HUD", "Visible")
+    return !ConfigWriteFailed
 }
 
 WriteBindListWindowStateToIni(fileName) {
     global BindListX, BindListY, BindListW, BindListH, BindListVisible
-    IniWrite, %BindListX%, %fileName%, WINDOW_BINDLIST, X
-    IniWrite, %BindListY%, %fileName%, WINDOW_BINDLIST, Y
-    IniWrite, %BindListW%, %fileName%, WINDOW_BINDLIST, W
-    IniWrite, %BindListH%, %fileName%, WINDOW_BINDLIST, H
-    IniWrite, %BindListVisible%, %fileName%, WINDOW_BINDLIST, Visible
+    CheckedIniWrite(BindListX, fileName, "WINDOW_BINDLIST", "X")
+    CheckedIniWrite(BindListY, fileName, "WINDOW_BINDLIST", "Y")
+    CheckedIniWrite(BindListW, fileName, "WINDOW_BINDLIST", "W")
+    CheckedIniWrite(BindListH, fileName, "WINDOW_BINDLIST", "H")
+    CheckedIniWrite(BindListVisible, fileName, "WINDOW_BINDLIST", "Visible")
+    return !ConfigWriteFailed
 }
 
 WriteSettingsWindowStateToIni(fileName) {
     global SettingsX, SettingsY, SettingsW, SettingsH, SettingsVisible, SettingsTargetTab, SettingsPage
-    IniWrite, %SettingsX%, %fileName%, WINDOW_SETTINGS, X
-    IniWrite, %SettingsY%, %fileName%, WINDOW_SETTINGS, Y
-    IniWrite, %SettingsW%, %fileName%, WINDOW_SETTINGS, W
-    IniWrite, %SettingsH%, %fileName%, WINDOW_SETTINGS, H
-    IniWrite, %SettingsVisible%, %fileName%, WINDOW_SETTINGS, Visible
-    IniWrite, %SettingsTargetTab%, %fileName%, WINDOW_SETTINGS, Tab
-    IniWrite, %SettingsPage%, %fileName%, WINDOW_SETTINGS, Page
+    CheckedIniWrite(SettingsX, fileName, "WINDOW_SETTINGS", "X")
+    CheckedIniWrite(SettingsY, fileName, "WINDOW_SETTINGS", "Y")
+    CheckedIniWrite(SettingsW, fileName, "WINDOW_SETTINGS", "W")
+    CheckedIniWrite(SettingsH, fileName, "WINDOW_SETTINGS", "H")
+    CheckedIniWrite(SettingsVisible, fileName, "WINDOW_SETTINGS", "Visible")
+    CheckedIniWrite(SettingsTargetTab, fileName, "WINDOW_SETTINGS", "Tab")
+    CheckedIniWrite(SettingsPage, fileName, "WINDOW_SETTINGS", "Page")
+    return !ConfigWriteFailed
 }
 
 SaveHUDWindowState() {
@@ -16093,60 +16235,22 @@ return
 
 ResolveBackgroundImage() {
     global BackgroundImageURL, BackgroundImageFile
-    url := Trim(BackgroundImageURL)
-    url := Trim(url, """")
-    BackgroundImageFile := ""
-
-    if (url = "" or url = "ERROR")
-        return
-
-    if FileExist(url)
-    {
-        BackgroundImageFile := url
-        return
+    path := Trim(BackgroundImageURL, " " . Chr(34))
+    if (RegExMatch(path, "i)^https?://"))
+        return false
+    if (path = "" || path = "ERROR") {
+        BackgroundImageFile := ""
+        return true
     }
-
-    localPath := A_ScriptDir . "\" . url
-    if FileExist(localPath)
-    {
-        BackgroundImageFile := localPath
-        return
-    }
-
-    if !RegExMatch(url, "i)^https?://")
-        return
-
-    ext := "png"
-    if RegExMatch(url, "i)\.(png|jpg|jpeg|bmp|gif)(?:\?|$)", m)
-        ext := m1
-
-    cacheFile := A_ScriptDir . "\gui_background_cache." . ext
-
-    UrlDownloadToFile, %url%, %cacheFile%
-    if (!ErrorLevel && FileExist(cacheFile))
-    {
-        BackgroundImageFile := cacheFile
-        return
-    }
-
-    try
-    {
-        whr := ComObjCreate("WinHttp.WinHttpRequest.5.1")
-        whr.Open("GET", url, false)
-        whr.Send()
-        if (whr.Status = 200)
-        {
-            stream := ComObjCreate("ADODB.Stream")
-            stream.Type := 1
-            stream.Open()
-            stream.Write(whr.ResponseBody)
-            stream.SaveToFile(cacheFile, 2)
-            stream.Close()
-            if FileExist(cacheFile)
-                BackgroundImageFile := cacheFile
-        }
-    }
-
+    if (!FileExist(path))
+        path := A_ScriptDir . "\" . path
+    if (!FileExist(path) || !RegExMatch(path, "i)\.(png|jpe?g|bmp)$"))
+        return false
+    FileGetSize, bytes, %path%
+    if (bytes > 5242880 || !ImageDimensionsBounded(path, w, h) || w > 4096 || h > 4096)
+        return false
+    BackgroundImageFile := path
+    return true
 }
 
 SafePicture(guiId, x, y, w, h, varName, imageFile := "") {
@@ -16336,51 +16440,20 @@ LoadCustomFunctions() {
 
 SaveCustomFunctions() {
     global CustomFunctionsFile, CustomFunctions
-    tempFile := CustomFunctionsFile . ".tmp"
-    backupFile := CustomFunctionsFile . ".bak"
-    FileDelete, %tempFile%
+    stage := ConfigStage(CustomFunctionsFile)
+    if (stage = "")
+        return false
     count := IsObject(CustomFunctions) ? CustomFunctions.Length() : 0
-    IniWrite, %count%, %tempFile%, General, Count
-    if (ErrorLevel) {
-        LogError("CustomFunctions", "Не удалось создать временный файл настроек.", "ERROR")
-        return false
-    }
+    CheckedIniWrite(count, stage, "General", "Count")
     Loop % count {
-        fn := CustomFunctions[A_Index]
+        item := CustomFunctions[A_Index]
         section := "Function" . A_Index
-        if !IniWriteText(fn.Name, tempFile, section, "Name") {
-            FileDelete, %tempFile%
-            LogError("CustomFunctions", "Ошибка записи имени функции " . A_Index . ".", "ERROR")
-            return false
-        }
-        IniWrite, % fn.Hotkey, %tempFile%, %section%, Hotkey
-        if (ErrorLevel || !IniWriteText(fn.Trigger, tempFile, section, "Trigger") || !IniWriteText(fn.Script, tempFile, section, "Script")) {
-            FileDelete, %tempFile%
-            LogError("CustomFunctions", "Ошибка записи функции " . A_Index . ".", "ERROR")
-            return false
-        }
+        IniWriteText(item.Name, stage, section, "Name")
+        CheckedIniWrite(item.Hotkey, stage, section, "Hotkey")
+        IniWriteText(item.Trigger, stage, section, "Trigger")
+        IniWriteText(item.Script, stage, section, "Script")
     }
-    if !FileExist(tempFile) {
-        LogError("CustomFunctions", "Временный файл не создан.", "ERROR")
-        return false
-    }
-    FileGetSize, tempSize, %tempFile%
-    if (tempSize < 1) {
-        FileDelete, %tempFile%
-        LogError("CustomFunctions", "Временный файл пуст.", "ERROR")
-        return false
-    }
-    if FileExist(CustomFunctionsFile)
-        FileCopy, %CustomFunctionsFile%, %backupFile%, 1
-    FileMove, %tempFile%, %CustomFunctionsFile%, 1
-    if (ErrorLevel) {
-        if FileExist(backupFile)
-            FileCopy, %backupFile%, %CustomFunctionsFile%, 1
-        FileDelete, %tempFile%
-        LogError("CustomFunctions", "Не удалось заменить файл настроек.", "ERROR")
-        return false
-    }
-    return true
+    return ConfigCommit(stage, CustomFunctionsFile)
 }
 
 CustomFunction_HotkeyAllowed() {
@@ -16553,7 +16626,7 @@ RunCustomFunction(index) {
         GameNotify("Ошибка функции «" . fn.Name . "»: " . errorText, "ERROR")
         return false
     }
-    CustomFunctionRunState := {Name: fn.Name, Steps: steps, Index: 1, NextTick: A_TickCount, WaitingForQueue: 0}
+    CustomFunctionRunState := {Name: fn.Name, Steps: steps, Index: 1, NextTick: TickNow(), WaitingForQueue: 0, Epoch: AutomationEpoch, Profile: CurrentProfile, Target: UserID, Failures: QueueFailureGeneration}
     SetTimer, CustomFunctionRunnerTick, 60
     GameNotify("Запущена функция: " . fn.Name)
     return true
@@ -16568,15 +16641,20 @@ StopCustomFunctionRun(showNotice := 1) {
         GameNotify("Пользовательская функция остановлена.", "WARN")
 }
 
-CustomFunctionRunner_Process() {
+CustomFunctionRunner_Process(inputEpoch := 0) {
     global CustomFunctionRunState, ChatQueueBusy, StopTimerActive, StopTimerCounter, StopTimerLabel
+    inputEpoch := AutomationEpoch
     if !IsObject(CustomFunctionRunState)
     {
         SetTimer, CustomFunctionRunnerTick, Off
         return
     }
     state := CustomFunctionRunState
-    if (state.NextTick > A_TickCount)
+    if (state.Epoch != AutomationEpoch || state.Failures != QueueFailureGeneration || state.Profile != CurrentProfile || state.Target != UserID) {
+        StopCustomFunctionRun(0)
+        return
+    }
+    if (state.NextTick > TickNow())
         return
     if (state.WaitingForQueue)
     {
@@ -16598,7 +16676,7 @@ CustomFunctionRunner_Process() {
         state.Index += 1
         if (step.Type = "WAIT")
         {
-            state.NextTick := A_TickCount + step.Value
+            state.NextTick := TickNow() + step.Value
             CustomFunctionRunState := state
             return
         }
@@ -16615,7 +16693,7 @@ CustomFunctionRunner_Process() {
                 state.WaitingForQueue := 1
             } else {
                 state.Index -= 1
-                state.NextTick := A_TickCount + 1000
+                state.NextTick := TickNow() + 1000
                 LogError("CustomFunction", "Очередь отклонила строку функции «" . state.Name . "».", "WARN")
             }
             CustomFunctionRunState := state
@@ -16638,19 +16716,29 @@ CustomFunctionRunner_Process() {
         }
         if (step.Type = "TYPE")
         {
+            if (MockMode = "On" || AuditTestMode) {
+                MockPreview_Append("[TYPE] " . ApplyActionTemplate(step.Value))
+                continue
+            }
             if !EnsureGameActive()
             {
                 state.Index -= 1
                 CustomFunctionRunState := state
                 return
             }
-            if (isInChat() != 1)
-            {
-                SendInput, {F6}
+            chatState := isInChat()
+            if (chatState < 0)
+                return
+            if (chatState = 0) {
+                if !SafeSend("{F6}", "Input", inputEpoch)
+                    return
                 Sleep, 100
             }
+            if (state.Epoch != AutomationEpoch || state.Target != UserID || !GameLocator_IsActive())
+                return
             EnsureRussianLayout()
-            PasteOnly(ApplyActionTemplate(step.Value))
+            if !PasteOnlyForEpoch(inputEpoch, ApplyActionTemplate(step.Value))
+                return
             continue
         }
         if (step.Type = "STOP")
@@ -16752,8 +16840,13 @@ CustomFunctionBuilder_SaveCurrent(applyBinds := 1) {
         Notify("warn")
         return false
     }
+    previous := CustomFunctions[index]
     CustomFunctions[index] := {Name: name, Hotkey: Trim(CFB_Hotkey), Trigger: triggerValue, Script: CFB_Script}
-    SaveCustomFunctions()
+    if !SaveCustomFunctions() {
+        CustomFunctions[index] := previous
+        GuiControl, 40:, CFB_Status, Ошибка записи. Изменения не сохранены.
+        return false
+    }
     CustomFunctionBuilder_RefreshList(index)
     if (applyBinds)
         ApplyAllBinds()
@@ -17185,7 +17278,7 @@ CreateBindList() {
     Gui, 13:Font, s8 Bold c%accent%, Segoe UI
     Gui, 13:Add, Text, x%countX% y12 w70 h18 Right vBindListCountText BackgroundTrans, 0 шт.
     Gui, 13:Font, s9 Bold c%text%, Segoe UI
-    Gui, 13:Add, Text, x%closeX% y8 w34 h24 Center vBindListCloseText g13GuiClose BackgroundTrans, X
+    Gui, 13:Add, Button, x%closeX% y8 w34 h24 Center vBindListCloseText g13GuiClose BackgroundTrans, X
     Gui, 13:Add, Text, x0 y0 w0 h0 vBindListRefreshText Hidden,
 
     searchW := Max(150, BindListW - 286)
@@ -17247,7 +17340,7 @@ GuiControl, 13:Move, BindListBorderRight, % "x" . (A_GuiWidth - 2) . " y0 w2 h" 
 UpdateBindListColumnLayout(listW)
 ApplyRoundedCorners(hBindListWnd, UIRoundness)
 ApplyRoundedPanelsForGui(hBindListWnd, InnerRoundness)
-SaveUISettings()
+SetTimer, SaveUiDebounced, -500
 return
 
 13GuiEscape:
@@ -17781,7 +17874,7 @@ ActionTimer_Start(token, label, durationSec, timerMode := "Manual", exactEndTick
     }
     if !IsObject(ActionTimerItems)
         ActionTimerItems := {}
-    endTick := (exactEndTick = "") ? Mod(A_TickCount + durationSec * 1000, 4294967296) : Mod(exactEndTick + 0, 4294967296)
+    endTick := (exactEndTick = "") ? TickNow() + durationSec * 1000 : exactEndTick + 0
     ActionTimerItems[token] := {Label: label, EndTick: endTick, Mode: timerMode}
     SetTimer, ActionTimerTick, 1000
     ActionTimer_Render()
@@ -17880,7 +17973,7 @@ ActionTimer_PruneExpired(notifyUser := 1) {
     global ActionTimerItems
     if !IsObject(ActionTimerItems)
         return 0
-    nowTick := A_TickCount
+    nowTick := TickNow()
     expired := []
     for token, item in ActionTimerItems
         if (TaskScheduler_RemainingMs(item.EndTick, nowTick) <= 0)
@@ -17998,7 +18091,7 @@ ActionTimer_RenderCore() {
         return
     }
 
-    nowTick := A_TickCount
+    nowTick := TickNow()
     body := ActionTimer_BuildBody(nowTick, lineCount)
     if (body = "")
     {
@@ -18427,7 +18520,7 @@ OpenSettings(tabIndex := 1) {
     settingsAlpha := 255
     PromoteOverlayWindow(hSettingsWnd)
     WinSet, Transparent, %settingsAlpha%, ahk_id %hSettingsWnd%
-    ApplyRoundedCorners(hSettingsWnd, UIRoundness)
+    ApplyRoundedCorners(hSettingsWnd, 0)
     ApplyRoundedPanelsForGui(hSettingsWnd, InnerRoundness)
     RefreshSettingsTabs()
     SettingsVisible := 1
@@ -18459,7 +18552,8 @@ ApplyGuiSettingsAuto(saveProfileToo := 0, refreshSettingsToo := 0) {
     SaveGuiToGlobals(1)
     SaveUISettings()
     if (saveProfileToo)
-        SaveProfile(CurrentProfile)
+        if !SaveProfile(CurrentProfile)
+            return
     if (refreshSettingsToo)
     {
         RebuildFloatingGUI()
@@ -18486,7 +18580,8 @@ CloseSettings() {
     if (SettingsVisible && !UiPreviewMode)
     {
         SaveGuiToGlobals(1)
-        SaveProfile(CurrentProfile)
+        if !SaveProfile(CurrentProfile)
+            return
         SaveUISettings()
     }
     Gui, 2:Hide
@@ -18517,14 +18612,14 @@ SetSettingsStatus(message) {
 
 SettingsActionAllowed(actionName, delayMs := 700) {
     global SettingsLastAction, SettingsLastActionTick
-    elapsed := A_TickCount - SettingsLastActionTick
+    elapsed := TickNow() - SettingsLastActionTick
     if (SettingsLastAction = actionName && elapsed >= 0 && elapsed < delayMs)
     {
         SetSettingsStatus("Команда уже выполняется. Подождите немного.")
         return false
     }
     SettingsLastAction := actionName
-    SettingsLastActionTick := A_TickCount
+    SettingsLastActionTick := TickNow()
     return true
 }
 
@@ -18611,9 +18706,9 @@ NormalizeSettingsPage(ByRef pageId) {
 }
 
 Settings_AddControl(label, varName, value, x, y, w, controlType, options, textColor, inputColor) {
-    Gui, 2:Font, s9 c%textColor%, Segoe UI
+    Gui, 2:Font, s9 Norm c%textColor%, Segoe UI
     Gui, 2:Add, Text, % "x" x " y" y " w" w " h18 BackgroundTrans", %label%
-    Gui, 2:Font, s10 c%inputColor%, Segoe UI
+    Gui, 2:Font, s10 Norm c%inputColor%, Segoe UI
     opts := "x" x " y" (y + 20) " w" w " v" . varName
     if (controlType = "DropDown")
     {
@@ -18643,9 +18738,9 @@ Settings_AddGrid(items, startX, startY, cols, colWidth, rowHeight, controlType, 
         x := startX + col * colWidth
         y := startY + row * rowHeight
         w := colWidth - 16
-        Gui, 2:Font, s9 c%textColor%, Segoe UI
+        Gui, 2:Font, s9 Norm c%textColor%, Segoe UI
         Gui, 2:Add, Text, % "x" x " y" y " w" w " h18 BackgroundTrans", % item[1]
-        Gui, 2:Font, s10 c%inputColor%, Segoe UI
+        Gui, 2:Font, s10 Norm c%inputColor%, Segoe UI
         opts := "x" x " y" (y + 20) " w" w " v" . item[2]
         if (controlType = "Hotkey")
         {
@@ -18738,14 +18833,18 @@ Settings_AddPageFrame(title, subtitle, cardBg, cardEdge, textColor, mutedColor) 
 BuildSettingsGui() {
     global
     SettingsGuiReady := 0
+    SettingsScrollX := 0
+    SettingsScrollY := 0
     SyncConfigOnlyProfileFieldsToCfg()
     bg := "", panel := "", text := "", accent := "", muted := ""
     GetThemeColors(bg, panel, text, accent, muted)
     controlBg := "F7F8FA", inputText := "111418", cardBg := "2A3037", cardEdge := "3A434D"
-    if (ThemeMode != "Graphite")
-        GetControlSurfaceColors(controlBg, inputText, cardBg, cardEdge, panel, text, accent)
-    if (CustomTabColor != "")
+    GetControlSurfaceColors(controlBg, inputText, cardBg, cardEdge, panel, text, accent)
+    if (CustomTabColor != "") {
         cardBg := CustomTabColor
+        if (ColorContrast(text, cardBg) < 4.5)
+            cardBg := panel
+    }
     if (CustomBorderColor != "")
         cardEdge := CustomBorderColor
 
@@ -18756,7 +18855,7 @@ BuildSettingsGui() {
         pageLabels .= (pageLabels = "" ? "" : "|") . pages[A_Index].Label
 
     Gui, 2:Destroy
-    Gui, 2:+HwndhSettingsWnd +AlwaysOnTop -Caption +ToolWindow -Resize
+    Gui, 2:+HwndhSettingsWnd +AlwaysOnTop -Caption +ToolWindow +Resize +0x300000 -DPIScale
     Gui, 2:Color, %bg%, %controlBg%
     Gui, 2:Font, s10 c%text%, Segoe UI
     buildW := 1180, buildH := 800
@@ -18767,7 +18866,7 @@ BuildSettingsGui() {
     Gui, 2:Font, s12 Bold c%text%, Segoe UI
     Gui, 2:Add, Text, x20 y12 w210 h28 BackgroundTrans, AHK FOR GOS BY SBEZRUK
     Gui, 2:Font, s9 c%muted%, Segoe UI
-    Gui, 2:Add, Text, x20 y40 w190 h18 BackgroundTrans, CONTROL CENTER · v%AppVersion%
+    Gui, 2:Add, Text, x20 y40 w190 h18 BackgroundTrans, Панель управления · v%AppVersion%
     Gui, 2:Font, s9 c%text%, Segoe UI
     Gui, 2:Add, Text, x238 y9 w210 h18 BackgroundTrans, АКТИВНЫЙ ПРОФИЛЬ
     Gui, 2:Font, s10 c%inputText%, Segoe UI
@@ -18797,24 +18896,39 @@ BuildSettingsGui() {
     Gui, 2:Add, Tab2, x-1000 y-1000 w10 h10 AltSubmit vSettingsTabs, %pageLabels%
 
     Gui, 2:Tab, 1
-    Settings_AddPageFrame("Профиль", "Роль, звание и данные экипажей для шаблонов.", cardBg, cardEdge, text, muted)
-    Settings_AddControl("Режим профиля", "CFG_ProfileMode", ProfileMode, 240, 170, 220, "DropDown", "ППС|ГАИ|ФСБ|Спец МВД|ВЧ", text, inputText)
-    Gui, 2:Add, Button, x476 y190 w150 h28 gApplyPresetLabel, Применить режим
+    Settings_AddPageFrame("Профиль", "Данные персонажа и экипажей. Изменения сохраняются кнопкой «Сохранить».", cardBg, cardEdge, text, muted)
+    AddOutlinedPanel(2, 240, 166, 904, 72, panel, cardEdge, 1)
+    Settings_AddControl("Организация", "CFG_ProfileMode", ProfileMode, 256, 172, 210, "DropDown", "ППС|ГАИ|ФСБ|Спец МВД|ВЧ", text, inputText)
+    Gui, 2:Add, Button, x482 y192 w158 h28 gApplyPresetLabel, Применить режим
+    Gui, 2:Font, s12 Bold c%text%, Segoe UI
+    Gui, 2:Add, Text, x668 y176 w452 h24 vProfileSummaryText BackgroundTrans, %CurrentProfile%
+    Gui, 2:Font, s9 Norm c%muted%, Segoe UI
+    Gui, 2:Add, Text, x668 y206 w452 h18 BackgroundTrans, % ProfileMode . "  |  " . Surname . "  |  " . Rank
+
+    AddOutlinedPanel(2, 240, 250, 904, 206, panel, cardEdge, 1)
+    Gui, 2:Font, s10 Bold c%text%, Segoe UI
+    Gui, 2:Add, Text, x256 y264 w860 h20 BackgroundTrans, Персонаж и служба
     profileItems := []
     profileItems.Push(["Должность", "CFG_IntroRole", IntroRole])
-    profileItems.Push(["Должность для /d (именительный падеж)", "CFG_ReportRole", ReportRole])
+    profileItems.Push(["Должность для /d", "CFG_ReportRole", ReportRole])
     profileItems.Push(["Фамилия / позывной", "CFG_Surname", Surname])
-    profileItems.Push(["Личный жетон (ФСБ / Спец МВД)", "CFG_PersonalBadge", PersonalBadge])
+    profileItems.Push(["Личный жетон", "CFG_PersonalBadge", PersonalBadge])
     profileItems.Push(["Звание", "CFG_Rank", Rank])
     profileItems.Push(["Звание для докладов", "CFG_ReportRank", ReportRank])
-    profileItems.Push(["Экипаж патруля", "CFG_PatrolUnit", PatrolUnit])
-    profileItems.Push(["Состав патруля", "CFG_PatrolCrewCount", PatrolCrewCount])
-    profileItems.Push(["Маршрут патруля", "CFG_PatrolRoute", PatrolRoute])
-    profileItems.Push(["Экипаж поста", "CFG_PostUnit", PostUnit])
-    profileItems.Push(["Состав поста", "CFG_PostCrewCount", PostCrewCount])
-    profileItems.Push(["Название поста", "CFG_PostRoute", PostRoute])
-    profileItems.Push(["Маршрут колонны", "CFG_ConvoyRoute", ConvoyRoute])
-    Settings_AddGrid(profileItems, 240, 250, 3, 300, 76, "Edit", text, inputText)
+    Settings_AddGrid(profileItems, 256, 294, 3, 294, 76, "Edit", text, inputText)
+
+    AddOutlinedPanel(2, 240, 472, 444, 180, panel, cardEdge, 1)
+    AddOutlinedPanel(2, 700, 472, 444, 180, panel, cardEdge, 1)
+    Gui, 2:Font, s10 Bold c%text%, Segoe UI
+    Gui, 2:Add, Text, x256 y486 w412 h20 BackgroundTrans, Патруль
+    Gui, 2:Add, Text, x716 y486 w412 h20 BackgroundTrans, Пост
+    patrolItems := [["Экипаж", "CFG_PatrolUnit", PatrolUnit], ["Состав", "CFG_PatrolCrewCount", PatrolCrewCount]]
+    postItems := [["Экипаж", "CFG_PostUnit", PostUnit], ["Состав", "CFG_PostCrewCount", PostCrewCount]]
+    Settings_AddGrid(patrolItems, 256, 514, 2, 210, 68, "Edit", text, inputText)
+    Settings_AddGrid(postItems, 716, 514, 2, 210, 68, "Edit", text, inputText)
+    Settings_AddControl("Маршрут", "CFG_PatrolRoute", PatrolRoute, 256, 584, 408, "Edit", "", text, inputText)
+    Settings_AddControl("Название поста", "CFG_PostRoute", PostRoute, 716, 584, 408, "Edit", "", text, inputText)
+    Settings_AddControl("Маршрут колонны", "CFG_ConvoyRoute", ConvoyRoute, 256, 672, 868, "Edit", "", text, inputText)
 
     Gui, 2:Tab, 2
     Settings_AddPageFrame("Чат и безопасность", "Отправка сообщений, проверки, уведомления и задержки.", cardBg, cardEdge, text, muted)
@@ -18881,7 +18995,10 @@ BuildSettingsGui() {
     Gui, 2:Add, Button, x582 y342 w130 h28 gResetStyleLabel, Сбросить стиль
     Gui, 2:Add, Button, x720 y342 w130 h28 gSaveThemePresetLabel, Сохранить тему
     Gui, 2:Add, Button, x858 y342 w130 h28 gLoadThemePresetLabel, Применить тему
-    Settings_AddControl("PNG-фон для плавающих окон", "CFG_BackgroundImageURL", BackgroundImageURL, 240, 404, 904, "Edit", "", text, inputText)
+    Settings_AddControl("Локальный фон (PNG / JPG / BMP, до 5 МиБ)", "CFG_BackgroundImageURL", BackgroundImageURL, 240, 404, 660, "Edit", "", text, inputText)
+    Gui, 2:Font, s8 c%muted%, Segoe UI
+    Gui, 2:Add, Text, x920 y460 w220 h18 vCaptureStatusText BackgroundTrans, %CaptureStatus%
+    Settings_AddControl("Скрыть окна из OBS", "CFG_OBSHideWindows", OBSHideWindows, 920, 404, 224, "DropDown", "Off|On", text, inputText)
     Settings_AddControl("Ширина таймера", "CFG_StopTimerWidth", StopTimerWidth, 240, 486, 140, "Edit", "", text, inputText)
     Settings_AddControl("Высота таймера", "CFG_StopTimerHeight", StopTimerHeight, 396, 486, 140, "Edit", "", text, inputText)
     Settings_AddControl("Прозрачность", "CFG_StopTimerTransparency", StopTimerTransparency, 552, 486, 140, "Edit", "", text, inputText)
@@ -19013,7 +19130,7 @@ BuildSettingsGui() {
     Gui, 2:Font, s9 c%muted%, Segoe UI
     Gui, 2:Add, Text, x258 y620 w828 h48 vCFG_AutoReportStatus BackgroundTrans +Wrap, % AutoReport_GetStatusText()
     Gui, 2:Tab, 13
-    Settings_AddPageFrame("Автоскриншоты", "Распознавание действий в chatlog.txt. Автоочистка: при 2 МБ, с сохранением последних 64 КБ.", cardBg, cardEdge, text, muted)
+    Settings_AddPageFrame("Автоскриншоты", "Распознавание действий в chatlog.txt. Chatlog читается без изменения файла игры.", cardBg, cardEdge, text, muted)
     AddOutlinedPanel(2, 242, 174, 884, 236, panel, cardEdge, 1)
     Settings_AddControl("Автоскриншоты", "CFG_EvidenceScreenshotMode", EvidenceScreenshotMode, 258, 190, 150, "DropDown", "On|Off", text, inputText)
     Settings_AddControl("Свой Nick_Name", "CFG_ChatLogPlayerNickname", ChatLogPlayerNickname, 426, 190, 236, "Edit", "", text, inputText)
@@ -19029,6 +19146,8 @@ BuildSettingsGui() {
     Gui, 2:Add, Text, x18 y772 w900 h18 vSettingsStatusText BackgroundTrans, Изменения сохраняются кнопкой «Сохранить» или при закрытии окна.
     Gui, 2:Add, Text, x920 y772 w240 h18 Right vSettingsOwnerText BackgroundTrans, AHK FOR GOS BY SBEZRUK · SBezruk180
     SettingsGuiReady := 1
+    Settings_UpdateScrollbars()
+    Capture_ApplyWindow(hSettingsWnd)
     RefreshSettingsTabs()
 }
 
@@ -19051,6 +19170,19 @@ SyncConfigOnlyProfileFieldsToCfg() {
     CFG_AutoReportMode := AutoReportMode
     CFG_AutoReportDurationMin := AutoReportDurationMin
     CFG_TerritoryMapMode := TerritoryMapMode_ToUiLabel(TerritoryMapMode)
+    CFG_T_HijackStart := T_HijackStart
+    CFG_T_HijackArrive := T_HijackArrive
+    catalog := GetBindCatalog()
+    for _, meta in catalog {
+        if (!IsBindCatalogEntryEditable(meta)) {
+            if (meta.HotkeyVar != "")
+                SetDynamicGlobalValue("CFG_" . meta.HotkeyVar, GetDynamicGlobalValue(meta.HotkeyVar))
+            if (meta.TriggerVar != "")
+                SetDynamicGlobalValue("CFG_" . meta.TriggerVar, GetDynamicGlobalValue(meta.TriggerVar))
+        }
+    }
+    for _, name in ["AssistOOPEnabled", "AssistStunEnabled", "AssistChaseEnabled", "AssistHouseEnabled", "AssistDrugsEnabled", "AssistPDPCuffEnabled"]
+        SetDynamicGlobalValue("CFG_" . name, GetDynamicGlobalValue(name) = "On" ? 1 : 0)
 }
 
 ApplyCfgConfigOnlyProfileFieldsToGlobals() {
@@ -19114,6 +19246,9 @@ NormalizeCatalogTriggerGlobals() {
 
 ApplyCfgUiValuesToGlobals() {
     global
+    OBSHideWindows := CFG_OBSHideWindows
+    NormalizeOnOff(OBSHideWindows, "Off")
+    Capture_RefreshWindows()
     BackgroundImageURL := CFG_BackgroundImageURL
     if (CFG_FullscreenSafeGui != "")
         FullscreenSafeGui := CFG_FullscreenSafeGui
@@ -19224,7 +19359,7 @@ ApplyCfgUiValuesToGlobals() {
     NormalizeOnOff(MockMode, "Off")
     NormalizeOnOff(ChatQueueEnabled, "On")
     NormalizeOnOff(ChatLogReaderEnabled, "On")
-    NormalizeOnOff(ChatLogAutoCleanupEnabled, "On")
+    NormalizeOnOff(ChatLogAutoCleanupEnabled, "Off")
     NormalizeNumberRange(ChatLogMaxSizeKB, 512, 256, 65536)
     NormalizeNumberRange(ChatLogKeepTailKB, 32, 0, 1024)
     if (ChatLogKeepTailKB > ChatLogMaxSizeKB // 2)
@@ -19453,7 +19588,7 @@ MigrateContextAssistantProfiles(fileName) {
         {
             IniRead, currentValue, %fileName%, %sectionName%, %keyName%, __MISSING__
             if (currentValue = "__MISSING__")
-                IniWrite, %defaultValue%, %fileName%, %sectionName%, %keyName%
+                CheckedIniWrite(defaultValue, fileName, sectionName, keyName)
         }
     }
 }
@@ -19490,7 +19625,7 @@ MigrateV6Configuration(fileName) {
         {
             IniRead, currentValue, %fileName%, %sectionName%, %keyName%, __MISSING__
             if (currentValue = "__MISSING__")
-                IniWrite, %defaultValue%, %fileName%, %sectionName%, %keyName%
+                CheckedIniWrite(defaultValue, fileName, sectionName, keyName)
         }
     }
 
@@ -19501,26 +19636,26 @@ MigrateV6Configuration(fileName) {
     {
         IniRead, currentValue, %fileName%, UI, %keyName%, __MISSING__
         if (currentValue = "__MISSING__")
-            IniWrite, %defaultValue%, %fileName%, UI, %keyName%
+            CheckedIniWrite(defaultValue, fileName, "UI", keyName)
     }
     IniRead, currentValue, %fileName%, ChatLog, Enabled, __MISSING__
     if (currentValue = "__MISSING__")
-        IniWrite, On, %fileName%, ChatLog, Enabled
+        CheckedIniWrite("On", fileName, "ChatLog", "Enabled")
     IniRead, currentValue, %fileName%, ChatLog, Path, __MISSING__
     if (currentValue = "__MISSING__")
-        IniWrite, C:\Amazing Games\Amazing Online\PC\amazing\chatlog.txt, %fileName%, ChatLog, Path
+        CheckedIniWrite("C:\Amazing Games\Amazing Online\PC\amazing\chatlog.txt", fileName, "ChatLog", "Path")
     IniRead, currentValue, %fileName%, ChatLog, PlayerNickname, __MISSING__
     if (currentValue = "__MISSING__")
-        IniWrite, Semen_Lukashenko, %fileName%, ChatLog, PlayerNickname
+        CheckedIniWrite("Semen_Lukashenko", fileName, "ChatLog", "PlayerNickname")
     IniRead, currentValue, %fileName%, ChatLog, AutoCleanup, __MISSING__
     if (currentValue = "__MISSING__")
-        IniWrite, On, %fileName%, ChatLog, AutoCleanup
+        CheckedIniWrite("On", fileName, "ChatLog", "AutoCleanup")
     IniRead, currentValue, %fileName%, ChatLog, MaxSizeKB, __MISSING__
     if (currentValue = "__MISSING__")
-        IniWrite, 512, %fileName%, ChatLog, MaxSizeKB
+        CheckedIniWrite("512", fileName, "ChatLog", "MaxSizeKB")
     IniRead, currentValue, %fileName%, ChatLog, KeepTailKB, __MISSING__
     if (currentValue = "__MISSING__")
-        IniWrite, 32, %fileName%, ChatLog, KeepTailKB
+        CheckedIniWrite("32", fileName, "ChatLog", "KeepTailKB")
 }
 
 MigrateV7Configuration(fileName) {
@@ -19543,13 +19678,13 @@ MigrateV7Configuration(fileName) {
 }
 
 IniWriteDefaultIfMissing(fileName, sectionName, keyName, defaultValue, encodeText := 0) {
-    missingMarker := "__AHK_V9_MISSING_" . A_TickCount . "_" . keyName . "__"
+    missingMarker := "__AHK_V9_MISSING_" . TickNow() . "_" . keyName . "__"
     IniRead, currentValue, %fileName%, %sectionName%, %keyName%, %missingMarker%
     if (currentValue != missingMarker)
         return true
     if (encodeText)
         return IniWriteText(defaultValue, fileName, sectionName, keyName)
-    IniWrite, %defaultValue%, %fileName%, %sectionName%, %keyName%
+    CheckedIniWrite(defaultValue, fileName, sectionName, keyName)
     return !ErrorLevel
 }
 
@@ -19721,7 +19856,7 @@ MigrateV13Configuration(fileName) {
     return ok
 }
 
-MigrateConfigIfNeeded() {
+MigrateConfigInPlace() {
     global ConfigFile, ConfigVersion, MockMode, ChatQueueEnabled, ChatQueueMinDelay, TextSendMode, GameProcessName
     if !EnsureConfigFilePath("MigrateConfigIfNeeded", 1)
         return
@@ -19730,7 +19865,8 @@ MigrateConfigIfNeeded() {
     if (storedVersion > ConfigVersion)
     {
         LogError("Config", "Configuration schema v" . storedVersion . " is newer than supported v" . ConfigVersion . "; migration skipped.", "WARN")
-        return true
+        ConfigReadOnly := 1
+        return false
     }
     if (storedVersion = ConfigVersion)
         return true
@@ -19744,8 +19880,8 @@ MigrateConfigIfNeeded() {
     {
         IniRead, legacyTab, %ConfigFile%, UI, SettingsTargetTab, 1
         pageId := SettingsPageIdFromLegacyTab(legacyTab)
-        IniWrite, %pageId%, %ConfigFile%, UI, SettingsPage
-        IniWrite, %pageId%, %ConfigFile%, WINDOW_SETTINGS, Page
+        CheckedIniWrite(pageId, ConfigFile, "UI", "SettingsPage")
+        CheckedIniWrite(pageId, ConfigFile, "WINDOW_SETTINGS", "Page")
 
         IniRead, oldTheme, %ConfigFile%, UI, ThemeMode, Graphite
         IniRead, customMenu, %ConfigFile%, UI, CustomMenuColor,
@@ -19753,7 +19889,7 @@ MigrateConfigIfNeeded() {
         IniRead, customBorder, %ConfigFile%, UI, CustomBorderColor,
         IniRead, customTab, %ConfigFile%, UI, CustomTabColor,
         if (oldTheme = "Black" && customMenu = "" && customText = "" && customBorder = "" && customTab = "")
-            IniWrite, Graphite, %ConfigFile%, UI, ThemeMode
+            CheckedIniWrite("Graphite", ConfigFile, "UI", "ThemeMode")
     }
     if (storedVersion < 4)
     {
@@ -19761,8 +19897,8 @@ MigrateConfigIfNeeded() {
         TextSendMode := (oldSendMode = "Keyboard") ? "Keyboard" : "Auto"
         IniRead, GameProcessName, %ConfigFile%, UI, GameProcessName, gta_sa.exe
         NormalizeGameProcessName(GameProcessName)
-        IniWrite, %TextSendMode%, %ConfigFile%, UI, TextSendMode
-        IniWrite, %GameProcessName%, %ConfigFile%, UI, GameProcessName
+        CheckedIniWrite(TextSendMode, ConfigFile, "UI", "TextSendMode")
+        CheckedIniWrite(GameProcessName, ConfigFile, "UI", "GameProcessName")
     }
     if (storedVersion < 5)
         MigrateContextAssistantProfiles(ConfigFile)
@@ -19796,7 +19932,7 @@ MigrateConfigIfNeeded() {
         return false
     if !IniWriteDefaultIfMissing(ConfigFile, "UI", "ChatQueueMinDelay", ChatQueueMinDelay)
         return false
-    IniWrite, %ConfigVersion%, %ConfigFile%, Meta, ConfigVersion
+    CheckedIniWrite(ConfigVersion, ConfigFile, "Meta", "ConfigVersion")
     if (ErrorLevel)
     {
         LogError("Config", "Migration completed, but ConfigVersion could not be updated.")
@@ -19811,18 +19947,20 @@ InitProfiles() {
         return
     if !FileExist(ConfigFile)
     {
-        SaveProfile("Основной")
-        IniWrite, Основной, %ConfigFile%, Profiles, Names
-        IniWrite, Основной, %ConfigFile%, Profiles, Last
+        if !SaveProfile("Основной")
+            return
+        CheckedIniWrite("Основной", ConfigFile, "Profiles", "Names")
+        CheckedIniWrite("Основной", ConfigFile, "Profiles", "Last")
         SaveUISettings()
         return
     }
     IniRead, names, %ConfigFile%, Profiles, Names, ERROR
     if (names = "ERROR" or names = "")
     {
-        IniWrite, Основной, %ConfigFile%, Profiles, Names
+        CheckedIniWrite("Основной", ConfigFile, "Profiles", "Names")
         if !ProfileExists("Основной")
-            SaveProfile("Основной")
+            if !SaveProfile("Основной")
+                return
     }
 }
 
@@ -19874,7 +20012,7 @@ AddProfileToList(profileName) {
             names := profileName
         else
             names := names . "|" . profileName
-        IniWrite, %names%, %ConfigFile%, Profiles, Names
+        CheckedIniWrite(names, ConfigFile, "Profiles", "Names")
     }
 }
 
@@ -19897,7 +20035,7 @@ RemoveProfileFromList(profileName) {
     }
     if (newNames = "")
         newNames := "Основной"
-    IniWrite, %newNames%, %ConfigFile%, Profiles, Names
+    CheckedIniWrite(newNames, ConfigFile, "Profiles", "Names")
 }
 
 LoadLastProfile() {
@@ -19915,21 +20053,21 @@ WriteCurrentThemeToFile(filePath, sectionName) {
         LogError("WriteCurrentThemeToFile", "Empty file path or section.")
         return 0
     }
-    IniWrite, %ThemeMode%, %filePath%, %sectionName%, ThemeMode
-    IniWrite, %CustomMenuColor%, %filePath%, %sectionName%, CustomMenuColor
-    IniWrite, %CustomTextColor%, %filePath%, %sectionName%, CustomTextColor
-    IniWrite, %CustomBorderColor%, %filePath%, %sectionName%, CustomBorderColor
-    IniWrite, %CustomTabColor%, %filePath%, %sectionName%, CustomTabColor
-    IniWrite, %CustomBindListColor%, %filePath%, %sectionName%, CustomBindListColor
-    IniWrite, %UIRoundness%, %filePath%, %sectionName%, UIRoundness
-    IniWrite, %InnerRoundness%, %filePath%, %sectionName%, InnerRoundness
-    IniWrite, %GuiTransparency%, %filePath%, %sectionName%, GuiTransparency
-    IniWrite, %BackgroundImageURL%, %filePath%, %sectionName%, BackgroundImageURL
-    IniWrite, %HUDMode%, %filePath%, %sectionName%, HUDMode
-    IniWrite, %MenuTransparency%, %filePath%, %sectionName%, MenuTransparency
-    IniWrite, %HUDTransparency%, %filePath%, %sectionName%, HUDTransparency
-    IniWrite, %BindListTransparency%, %filePath%, %sectionName%, BindListTransparency
-    return 1
+    CheckedIniWrite(ThemeMode, filePath, sectionName, "ThemeMode")
+    CheckedIniWrite(CustomMenuColor, filePath, sectionName, "CustomMenuColor")
+    CheckedIniWrite(CustomTextColor, filePath, sectionName, "CustomTextColor")
+    CheckedIniWrite(CustomBorderColor, filePath, sectionName, "CustomBorderColor")
+    CheckedIniWrite(CustomTabColor, filePath, sectionName, "CustomTabColor")
+    CheckedIniWrite(CustomBindListColor, filePath, sectionName, "CustomBindListColor")
+    CheckedIniWrite(UIRoundness, filePath, sectionName, "UIRoundness")
+    CheckedIniWrite(InnerRoundness, filePath, sectionName, "InnerRoundness")
+    CheckedIniWrite(GuiTransparency, filePath, sectionName, "GuiTransparency")
+    CheckedIniWrite(BackgroundImageURL, filePath, sectionName, "BackgroundImageURL")
+    CheckedIniWrite(HUDMode, filePath, sectionName, "HUDMode")
+    CheckedIniWrite(MenuTransparency, filePath, sectionName, "MenuTransparency")
+    CheckedIniWrite(HUDTransparency, filePath, sectionName, "HUDTransparency")
+    CheckedIniWrite(BindListTransparency, filePath, sectionName, "BindListTransparency")
+    return !ConfigWriteFailed
 }
 
 LoadThemeFromFile(filePath, sectionName) {
@@ -19978,7 +20116,8 @@ ExportProfilesPack() {
         return 0
     if (CurrentProfile = "")
         CurrentProfile := "Основной"
-    SaveProfile(CurrentProfile)
+    if !SaveProfile(CurrentProfile)
+        return
     SaveUISettings()
     defaultName := A_ScriptDir . "\profiles_export.ini"
     FileSelectFile, outPath, S16, %defaultName%, Экспорт профилей, INI Files (*.ini)
@@ -20225,54 +20364,54 @@ WriteProfileV9FieldsToIni(fileName, sectionName) {
     global AutoReportMode, AutoReportDurationMin, TerritoryMapMode
 
     ok := true
-    IniWrite, %ReportRole%, %fileName%, %sectionName%, ReportRole
+    CheckedIniWrite(ReportRole, fileName, sectionName, "ReportRole")
     if (ErrorLevel)
         ok := false
     if !IniWriteText(T_CivilCallStart, fileName, sectionName, "T_CivilCallStart")
         ok := false
     if !IniWriteText(T_CivilCallArrive, fileName, sectionName, "T_CivilCallArrive")
         ok := false
-    IniWrite, %Bind_CivilCallStart%, %fileName%, %sectionName%, Bind_CivilCallStart
+    CheckedIniWrite(Bind_CivilCallStart, fileName, sectionName, "Bind_CivilCallStart")
     if (ErrorLevel)
         ok := false
-    IniWrite, %Bind_CivilCallArrive%, %fileName%, %sectionName%, Bind_CivilCallArrive
+    CheckedIniWrite(Bind_CivilCallArrive, fileName, sectionName, "Bind_CivilCallArrive")
     if (ErrorLevel)
         ok := false
-    IniWrite, %Trig_CivilCallStart%, %fileName%, %sectionName%, Trig_CivilCallStart
+    CheckedIniWrite(Trig_CivilCallStart, fileName, sectionName, "Trig_CivilCallStart")
     if (ErrorLevel)
         ok := false
-    IniWrite, %Trig_CivilCallArrive%, %fileName%, %sectionName%, Trig_CivilCallArrive
+    CheckedIniWrite(Trig_CivilCallArrive, fileName, sectionName, "Trig_CivilCallArrive")
     if (ErrorLevel)
         ok := false
-    IniWrite, %Bind_VehicleLookup%, %fileName%, %sectionName%, Bind_VehicleLookup
+    CheckedIniWrite(Bind_VehicleLookup, fileName, sectionName, "Bind_VehicleLookup")
     if (ErrorLevel)
         ok := false
-    IniWrite, %Trig_VehicleLookup%, %fileName%, %sectionName%, Trig_VehicleLookup
+    CheckedIniWrite(Trig_VehicleLookup, fileName, sectionName, "Trig_VehicleLookup")
     if (ErrorLevel)
         ok := false
-    IniWrite, %Bind_WantedRemoval%, %fileName%, %sectionName%, Bind_WantedRemoval
+    CheckedIniWrite(Bind_WantedRemoval, fileName, sectionName, "Bind_WantedRemoval")
     if (ErrorLevel)
         ok := false
-    IniWrite, %Trig_WantedRemoval%, %fileName%, %sectionName%, Trig_WantedRemoval
+    CheckedIniWrite(Trig_WantedRemoval, fileName, sectionName, "Trig_WantedRemoval")
     if (ErrorLevel)
         ok := false
-    IniWrite, %Bind_ChaseNoID%, %fileName%, %sectionName%, Bind_ChaseNoID
+    CheckedIniWrite(Bind_ChaseNoID, fileName, sectionName, "Bind_ChaseNoID")
     if (ErrorLevel)
         ok := false
-    IniWrite, %Trig_ChaseNoID%, %fileName%, %sectionName%, Trig_ChaseNoID
+    CheckedIniWrite(Trig_ChaseNoID, fileName, sectionName, "Trig_ChaseNoID")
     if (ErrorLevel)
         ok := false
-    IniWrite, %Bind_LawSearchSubmit%, %fileName%, %sectionName%, Bind_LawSearchSubmit
+    CheckedIniWrite(Bind_LawSearchSubmit, fileName, sectionName, "Bind_LawSearchSubmit")
     if (ErrorLevel)
         ok := false
-    IniWrite, %AutoReportMode%, %fileName%, %sectionName%, AutoReportMode
+    CheckedIniWrite(AutoReportMode, fileName, sectionName, "AutoReportMode")
     if (ErrorLevel)
         ok := false
-    IniWrite, %AutoReportDurationMin%, %fileName%, %sectionName%, AutoReportDurationMin
+    CheckedIniWrite(AutoReportDurationMin, fileName, sectionName, "AutoReportDurationMin")
     if (ErrorLevel)
         ok := false
     TerritoryMapMode_Normalize(TerritoryMapMode)
-    IniWrite, %TerritoryMapMode%, %fileName%, %sectionName%, TerritoryMapMode
+    CheckedIniWrite(TerritoryMapMode, fileName, sectionName, "TerritoryMapMode")
     if (ErrorLevel)
         ok := false
     return ok
@@ -20316,16 +20455,17 @@ WriteContextAssistantProfileToIni(fileName, sectionName) {
     global AssistOOPCommand, AssistTaserCommand, AssistBatonCommand
     global AutoTargetIDEnabled
 
-    IniWrite, %AssistOOPEnabled%, %fileName%, %sectionName%, AssistOOPEnabled
-    IniWrite, %AssistStunEnabled%, %fileName%, %sectionName%, AssistStunEnabled
-    IniWrite, %AssistChaseEnabled%, %fileName%, %sectionName%, AssistChaseEnabled
-    IniWrite, %AssistHouseEnabled%, %fileName%, %sectionName%, AssistHouseEnabled
-    IniWrite, %AssistDrugsEnabled%, %fileName%, %sectionName%, AssistDrugsEnabled
-    IniWrite, %AssistPDPCuffEnabled%, %fileName%, %sectionName%, AssistPDPCuffEnabled
-    IniWrite, %AutoTargetIDEnabled%, %fileName%, %sectionName%, AutoTargetIDEnabled
+    CheckedIniWrite(AssistOOPEnabled, fileName, sectionName, "AssistOOPEnabled")
+    CheckedIniWrite(AssistStunEnabled, fileName, sectionName, "AssistStunEnabled")
+    CheckedIniWrite(AssistChaseEnabled, fileName, sectionName, "AssistChaseEnabled")
+    CheckedIniWrite(AssistHouseEnabled, fileName, sectionName, "AssistHouseEnabled")
+    CheckedIniWrite(AssistDrugsEnabled, fileName, sectionName, "AssistDrugsEnabled")
+    CheckedIniWrite(AssistPDPCuffEnabled, fileName, sectionName, "AssistPDPCuffEnabled")
+    CheckedIniWrite(AutoTargetIDEnabled, fileName, sectionName, "AutoTargetIDEnabled")
     IniWriteText(AssistOOPCommand, fileName, sectionName, "AssistOOPCommand")
     IniWriteText(AssistTaserCommand, fileName, sectionName, "AssistTaserCommand")
     IniWriteText(AssistBatonCommand, fileName, sectionName, "AssistBatonCommand")
+    return !ConfigWriteFailed
 }
 
 NormalizeCatalogHotkeyGlobals() {
@@ -20352,9 +20492,10 @@ WriteCatalogHotkeysToIni(fileName, sectionName) {
         if (meta.HotkeyVar != "")
         {
             currentValue := GetDynamicGlobalValue(meta.HotkeyVar)
-            IniWrite, %currentValue%, %fileName%, %sectionName%, % meta.HotkeyVar
+            CheckedIniWrite(currentValue, fileName, sectionName, meta.HotkeyVar)
         }
     }
+    return !ConfigWriteFailed
 }
 
 WriteCatalogTriggersToIni(fileName, sectionName) {
@@ -20366,16 +20507,17 @@ WriteCatalogTriggersToIni(fileName, sectionName) {
         if (meta.TriggerVar != "")
         {
             currentValue := GetDynamicGlobalValue(meta.TriggerVar)
-            IniWrite, %currentValue%, %fileName%, %sectionName%, % meta.TriggerVar
+            CheckedIniWrite(currentValue, fileName, sectionName, meta.TriggerVar)
         }
     }
+    return !ConfigWriteFailed
 }
 
 FinalizeLoadedProfileState(profileName) {
     global ConfigFile, CurrentProfile
     CurrentProfile := profileName
     SyncConfigOnlyProfileFieldsToCfg()
-    IniWrite, %profileName%, %ConfigFile%, Profiles, Last
+    CheckedIniWrite(profileName, ConfigFile, "Profiles", "Last")
     ApplyAllBinds()
     UpdateHUD()
     UpdateIDOverlay()
@@ -20391,6 +20533,7 @@ GetReplacementProfileAfterDelete(deletedProfile) {
 
 LoadProfile(profileName) {
     global ConfigFile, CurrentProfile
+    CancelAllAutomation(0)
     NormalizeProfileNameValue(profileName)
     if !EnsureConfigFilePath("LoadProfile", 1)
         return
@@ -20408,7 +20551,7 @@ LoadProfile(profileName) {
     global RP_StopChase, RP_Deject, RP_InCar, RP_Doc, RP_Search, RP_TowStart, RP_TowEnd, RP_CarSearch, RP_Arrest, RP_Fine, RP_Protocol, RP_Rights, RP_CardDS, RP_CardVK
     global MDS_FormationInitial, MDS_FormationCountdown, MDS_FormationFinish
     global BindListItems
-    global Trig_Intro, Trig_SOS, Trig_EnterID, Trig_ResetID, Trig_Chase, Trig_Deject, Trig_Cuff, Trig_InCar, Trig_StopChase, Trig_Doc, Trig_Search, Trig_Dep, Trig_WantedList, Trig_SOSStart, Trig_SOSArrive, Trig_HijackStart, Trig_HijackArrive, Trig_CallStart, Trig_CallArrive, Trig_CallWorkStart, Trig_CallWorkEnd, Trig_PatrolStart, Trig_PatrolCont, Trig_PatrolEnd, Trig_PostStart, Trig_PostCont, Trig_PostEnd, Trig_ConvoyStart, Trig_ConvoyCont, Trig_ConvoyEnd, Trig_TowStart, Trig_TowEnd, Trig_CarSearch, Trig_Arrest, Trig_Fine, Trig_Protocol, Trig_Rights, Trig_CardDS, Trig_CardVK, Trig_MDSFormation, Trig_AssistOOP, Trig_AssistStun, Trig_AssistChase, Trig_AssistHouse, Trig_AssistDrugs, Trig_AssistPDPCuff, Trig_OpenBindsTab, Trig_MaskCall, Trig_RecordCheck, Trig_TrainCrash, Trig_PersonalFile, Trig_Su, Trig_GpsD, Trig_GpsOS, Trig_VU, Trig_FP, Trig_KON, Trig_FZOP, Trig_TER, Trig_TK, Trig_ARG, Trig_UK, Trig_VV, Trig_KOAP, Trig_PDD, Trig_ORUZH, Trig_UPK, Trig_KAS, Trig_FSB, Trig_FSIN, Trig_VS, Trig_SUD, Trig_ORD, Trig_GT
+    global Trig_Intro, Trig_SOS, Trig_EnterID, Trig_ResetID, Trig_Chase, Trig_Deject, Trig_Cuff, Trig_InCar, Trig_StopChase, Trig_Doc, Trig_Search, Trig_Dep, Trig_WantedList, Trig_SOSStart, Trig_SOSArrive, Trig_HijackStart, Trig_HijackArrive, Trig_CallStart, Trig_CallArrive, Trig_CallWorkStart, Trig_CallWorkEnd, Trig_PatrolStart, Trig_PatrolCont, Trig_PatrolEnd, Trig_PostStart, Trig_PostCont, Trig_PostEnd, Trig_ConvoyStart, Trig_ConvoyCont, Trig_ConvoyEnd, Trig_TowStart, Trig_TowEnd, Trig_CarSearch, Trig_Arrest, Trig_Fine, Trig_Protocol, Trig_Rights, Trig_CardDS, Trig_CardVK, Trig_MDSFormation, Trig_AssistOOP, Trig_AssistStun, Trig_AssistChase, Trig_AssistHouse, Trig_AssistDrugs, Trig_AssistPDPCuff, Trig_OpenBindsTab, Trig_MaskCall, Trig_RecordCheck, Trig_TrainCrash, Trig_PersonalFile, Trig_Su, Trig_GpsD, Trig_GpsOS, Trig_MDC, Trig_VU, Trig_FP, Trig_KON, Trig_FZOP, Trig_TER, Trig_TK, Trig_ARG, Trig_UK, Trig_VV, Trig_KOAP, Trig_PDD, Trig_ORUZH, Trig_UPK, Trig_KAS, Trig_FSB, Trig_FSIN, Trig_VS, Trig_SUD, Trig_ORD, Trig_GT
     global Trig_AutoPatrol, Trig_AutoPost
 
     global Bind_OpenSettings, Bind_ToggleBindList, Bind_ToggleLastLawDoc, Bind_HideLawGui, Bind_ToggleHUD, Bind_IDOverlay, Bind_ConfirmID, Bind_RejectID, Bind_ResetID
@@ -20420,7 +20563,7 @@ LoadProfile(profileName) {
     global Bind_TowStart, Bind_TowEnd, Bind_CarSearch, Bind_Arrest, Bind_Fine, Bind_Protocol, Bind_Rights, Bind_CardDS, Bind_CardVK, Bind_MDSFormation
     global Bind_AutoPatrol, Bind_AutoPost
     global Bind_AssistOOP, Bind_AssistStun, Bind_AssistChase, Bind_AssistHouse, Bind_AssistDrugs, Bind_AssistPDPCuff
-    global Bind_OpenBindsTab, Bind_MaskCall, Bind_RecordCheck, Bind_TrainCrash, Bind_PersonalFile, Bind_Su
+    global Bind_OpenBindsTab, Bind_MaskCall, Bind_RecordCheck, Bind_TrainCrash, Bind_PersonalFile, Bind_Su, Bind_MDC
 
     section := "Profile_" . profileName
 
@@ -20587,19 +20730,20 @@ WriteProfileIdentityToIni(fileName, sectionName) {
     global IntroRole, Rank, ReportRank, Surname, PersonalBadge
     global PatrolRoute, PostRoute, ConvoyRoute, PatrolUnit, PatrolCrewCount, PostUnit, PostCrewCount
 
-    IniWrite, %IntroRole%, %fileName%, %sectionName%, IntroRole
-    IniWrite, %Rank%, %fileName%, %sectionName%, Rank
-    IniWrite, %ReportRank%, %fileName%, %sectionName%, ReportRank
-    IniWrite, %Surname%, %fileName%, %sectionName%, Surname
-    IniWrite, %PersonalBadge%, %fileName%, %sectionName%, PersonalBadge
+    CheckedIniWrite(IntroRole, fileName, sectionName, "IntroRole")
+    CheckedIniWrite(Rank, fileName, sectionName, "Rank")
+    CheckedIniWrite(ReportRank, fileName, sectionName, "ReportRank")
+    CheckedIniWrite(Surname, fileName, sectionName, "Surname")
+    CheckedIniWrite(PersonalBadge, fileName, sectionName, "PersonalBadge")
 
-    IniWrite, %PatrolRoute%, %fileName%, %sectionName%, PatrolRoute
-    IniWrite, %PostRoute%, %fileName%, %sectionName%, PostRoute
-    IniWrite, %ConvoyRoute%, %fileName%, %sectionName%, ConvoyRoute
-    IniWrite, %PatrolUnit%, %fileName%, %sectionName%, PatrolUnit
-    IniWrite, %PatrolCrewCount%, %fileName%, %sectionName%, PatrolCrewCount
-    IniWrite, %PostUnit%, %fileName%, %sectionName%, PostUnit
-    IniWrite, %PostCrewCount%, %fileName%, %sectionName%, PostCrewCount
+    CheckedIniWrite(PatrolRoute, fileName, sectionName, "PatrolRoute")
+    CheckedIniWrite(PostRoute, fileName, sectionName, "PostRoute")
+    CheckedIniWrite(ConvoyRoute, fileName, sectionName, "ConvoyRoute")
+    CheckedIniWrite(PatrolUnit, fileName, sectionName, "PatrolUnit")
+    CheckedIniWrite(PatrolCrewCount, fileName, sectionName, "PatrolCrewCount")
+    CheckedIniWrite(PostUnit, fileName, sectionName, "PostUnit")
+    CheckedIniWrite(PostCrewCount, fileName, sectionName, "PostCrewCount")
+    return !ConfigWriteFailed
 }
 
 WriteProfileTemplateTextsToIni(fileName, sectionName) {
@@ -20629,6 +20773,7 @@ WriteProfileTemplateTextsToIni(fileName, sectionName) {
     IniWriteText(T_ConvoyStart, fileName, sectionName, "T_ConvoyStart")
     IniWriteText(T_ConvoyCont, fileName, sectionName, "T_ConvoyCont")
     IniWriteText(T_ConvoyEnd, fileName, sectionName, "T_ConvoyEnd")
+    return !ConfigWriteFailed
 }
 
 WriteProfileRpTextsToIni(fileName, sectionName) {
@@ -20652,13 +20797,14 @@ WriteProfileRpTextsToIni(fileName, sectionName) {
     IniWriteText(MDS_FormationInitial, fileName, sectionName, "MDS_FormationInitial")
     IniWriteText(MDS_FormationCountdown, fileName, sectionName, "MDS_FormationCountdown")
     IniWriteText(MDS_FormationFinish, fileName, sectionName, "MDS_FormationFinish")
+    return !ConfigWriteFailed
 }
 
 SaveProfile(profileName) {
     global ConfigFile, CurrentProfile
     NormalizeProfileNameValue(profileName)
     if !EnsureConfigFilePath("SaveProfile", 1)
-        return
+        return false
     global IntroRole, Rank, ReportRank, Surname
     global PatrolRoute, PostRoute, ConvoyRoute, PatrolUnit, PatrolCrewCount, PostUnit, PostCrewCount
     global T_Intro, T_Dep, T_SOSStart, T_SOSArrive
@@ -20683,28 +20829,35 @@ SaveProfile(profileName) {
     if (profileName = "")
         profileName := "Основной"
 
-    CreateConfigBackup("profile_save")
+    if (ProfileSaveBackups = "On" && FileExist(ConfigFile) && CreateConfigBackup("save") = "")
+        return false
+    target := ConfigStage(ConfigFile)
+    if (target = "")
+        return false
     section := "Profile_" . profileName
 
-    WriteProfileIdentityToIni(ConfigFile, section)
+    WriteProfileIdentityToIni(target, section)
 
-    WriteProfileTemplateTextsToIni(ConfigFile, section)
+    WriteProfileTemplateTextsToIni(target, section)
 
-    WriteProfileRpTextsToIni(ConfigFile, section)
+    WriteProfileRpTextsToIni(target, section)
 
-    WriteProfileV9FieldsToIni(ConfigFile, section)
+    WriteProfileV9FieldsToIni(target, section)
 
-    WriteContextAssistantProfileToIni(ConfigFile, section)
+    WriteContextAssistantProfileToIni(target, section)
 
-    WriteCatalogHotkeysToIni(ConfigFile, section)
+    WriteCatalogHotkeysToIni(target, section)
     NormalizeBindListItemsValue(BindListItems)
-    IniWriteText(BindListItems, ConfigFile, section, "BindListItems")
-    WriteCatalogTriggersToIni(ConfigFile, section)
+    IniWriteText(BindListItems, target, section, "BindListItems")
+    WriteCatalogTriggersToIni(target, section)
 
-    AddProfileToList(profileName)
-    IniWrite, %profileName%, %ConfigFile%, Profiles, Last
+    ConfigAddProfile(target, profileName)
+    CheckedIniWrite(profileName, target, "Profiles", "Last")
+    if !ConfigCommit(target, ConfigFile)
+        return false
     CurrentProfile := profileName
     UpdateHUD()
+    return true
 }
 
 DeleteProfile(profileName) {
@@ -20727,18 +20880,28 @@ DeleteProfile(profileName) {
         return false
     }
 
-    CreateConfigBackup("profile_delete")
+    target := ConfigStage(ConfigFile)
+    if (target = "")
+        return false
     section := "Profile_" . profileName
-    IniDelete, %ConfigFile%, %section%
-    RemoveProfileFromList(profileName)
-
+    IniDelete, %target%, %section%
+    if (ErrorLevel)
+        ConfigWriteFailed := 1
+    newNames := ""
+    Loop, Parse, names, |
+        if (A_LoopField != "" && A_LoopField != profileName)
+            newNames .= (newNames = "" ? "" : "|") . A_LoopField
+    CheckedIniWrite(newNames, target, "Profiles", "Names")
     IniRead, lastProfile, %ConfigFile%, Profiles, Last, Основной
-    if (lastProfile = profileName)
-    {
-        newProfile := GetReplacementProfileAfterDelete(profileName)
-        IniWrite, %newProfile%, %ConfigFile%, Profiles, Last
-        LoadProfile(newProfile)
+    newProfile := lastProfile
+    if (lastProfile = profileName) {
+        newProfile := StrSplit(newNames, "|")[1]
+        CheckedIniWrite(newProfile, target, "Profiles", "Last")
     }
+    if !ConfigCommit(target, ConfigFile)
+        return false
+    if (lastProfile = profileName)
+        LoadProfile(newProfile)
     return true
 }
 
@@ -21172,7 +21335,8 @@ if !ProfileExists(targetProfile)
 }
 currentPage := SettingsPage
 SaveGuiToGlobals(1)
-SaveProfile(CurrentProfile)
+if !SaveProfile(CurrentProfile)
+    return
 LoadProfile(targetProfile)
 OpenSettings(currentPage)
 SetSettingsStatus("Загружен профиль: " . CurrentProfile)
@@ -21200,7 +21364,8 @@ if ProfileExists(newProfile)
 }
 currentPage := SettingsPage
 SaveGuiToGlobals(1)
-SaveProfile(newProfile)
+if !SaveProfile(newProfile)
+    return
 OpenSettings(currentPage)
 SetSettingsStatus("Создан профиль: " . CurrentProfile)
 Notify("info")
@@ -21212,7 +21377,8 @@ if !SettingsActionAllowed("save_profile")
 Gui, 2:+OwnDialogs
 currentPage := SettingsPage
 SaveGuiToGlobals()
-SaveProfile(CurrentProfile)
+if !SaveProfile(CurrentProfile)
+    return
 OpenSettings(currentPage)
 SetSettingsStatus("Профиль сохранён: " . CurrentProfile)
 Notify("info")
@@ -21367,8 +21533,12 @@ if (CustomFunctions.Length() <= 1)
 MsgBox, 36, Удаление функции, Удалить выбранную пользовательскую функцию?
 IfMsgBox, No
     return
-CustomFunctions.RemoveAt(CustomFunctionSelected)
-SaveCustomFunctions()
+deletedFunction := CustomFunctions.RemoveAt(CustomFunctionSelected)
+if !SaveCustomFunctions() {
+    CustomFunctions.InsertAt(CustomFunctionSelected, deletedFunction)
+    GuiControl, 40:, CFB_Status, Удаление не сохранено; функция восстановлена.
+    return
+}
 ApplyAllBinds()
 CustomFunctionBuilder_RefreshList(CustomFunctionSelected > CustomFunctions.Length() ? CustomFunctions.Length() : CustomFunctionSelected)
 return
@@ -21582,12 +21752,20 @@ Process, Exist, %PendingToolPid%
 if (ErrorLevel)
     return
 SetTimer, BackgroundToolPoll, Off
+childExit := 1
+if (PendingToolHandle) {
+    DllCall("GetExitCodeProcess", "Ptr", PendingToolHandle, "UInt*", childExit)
+    DllCall("CloseHandle", "Ptr", PendingToolHandle)
+    PendingToolHandle := 0
+}
 if FileExist(PendingToolReport)
 {
     completedReport := PendingToolReport
     Run, %PendingToolReport%
-    SetSettingsStatus("Готов отчёт: " . completedReport)
+    SetSettingsStatus((childExit = 0 ? "Проверка завершена: " : "Проверка выявила ошибки (" . childExit . "): ") . completedReport)
 }
+if !FileExist(PendingToolReport)
+    SetSettingsStatus("Проверка не создала новый отчёт; код " . childExit)
 PendingToolPid := 0
 PendingToolReport := ""
 return
@@ -21654,7 +21832,8 @@ if (!UiPreviewMode)
 {
     if (SettingsVisible)
         SaveGuiToGlobals(1)
-    SaveProfile(CurrentProfile)
+    if !SaveProfile(CurrentProfile)
+        return
     ActionTimer_Hide(1)
     SaveUISettings()
     SaveHUDWindowState()
@@ -21749,13 +21928,8 @@ WM_NCHITTEST(wParam, lParam, msg, hwnd) {
 }
 
 2GuiSize:
-if (A_EventInfo = 1)
-    return
-
-global SettingsX, SettingsY, SettingsW, SettingsH
-SettingsW := 1180
-SettingsH := 800
-SaveSettingsWindowState()
+if (A_EventInfo != 1)
+    Settings_UpdateScrollbars()
 return
 
 2GuiEscape:
@@ -21781,96 +21955,68 @@ ExtractFirstNumber(text) {
     return ""
 }
 
-GetActiveChatText() {
-    if !IsGameActive()
-        return ""
-
-    if (isInChat() != 1)
-        return ""
-
-    ClipSaved := ClipboardAll
-    Clipboard :=
-    SendInput, ^a^c
-    ClipWait, 0.3
-    if (ErrorLevel)
-    {
-        SendInput, {End}
-        Clipboard := ClipSaved
-        VarSetCapacity(ClipSaved, 0)
-        return ""
-    }
-    captured := Clipboard
-    SendInput, {End}
-    Clipboard := ClipSaved
-    VarSetCapacity(ClipSaved, 0)
-    return Trim(captured)
+GetActiveChatText(inputEpoch := 0) {
+    result := CaptureChatClipboard(false)
+    return result.Ok ? result.Query : ""
 }
 
-LawSearch_CaptureAndCancelChat() {
-    result := {Ok: 0, Query: "", Reason: ""}
-    if !IsGameActive()
-    {
-        result.Reason := "Окно игры не активно."
-        return result
-    }
-    if (isInChat() != 1)
-    {
-        result.Reason := "Игровой чат не открыт."
-        return result
-    }
+LawSearch_CaptureAndCancelChat(inputEpoch := 0) {
+    return CaptureChatClipboard(true)
+}
 
-    KeyWait, LControl
-    KeyWait, RControl
-    KeyWait, LShift
-    KeyWait, RShift
-    KeyWait, LAlt
-    KeyWait, RAlt
-    KeyWait, LWin
-    KeyWait, RWin
-
-    if !IsGameActive() || (isInChat() != 1)
-    {
-        result.Reason := "Чат закрылся до чтения запроса."
+CaptureChatClipboard(cancelChat := false) {
+    global MockMode
+    result := {Ok: 0, Query: "", Reason: "Не удалось прочитать игровой чат."}
+    if (MockMode = "On" || AuditTestMode || PhysicalInputBusy || !GameLocator_IsActive() || isInChat() != 1)
         return result
-    }
-
-    savedClipboard := ClipboardAll
-    Clipboard :=
-    SendInput, ^a^c
-    ClipWait, 0.4
-    if (ErrorLevel)
-    {
-        Clipboard := savedClipboard
-        VarSetCapacity(savedClipboard, 0)
-        result.Reason := "Не удалось скопировать поисковый запрос."
+    PhysicalInputBusy := 1
+    epoch := AutomationEpoch
+    saved := ClipboardAll
+    sequence := -1
+    try {
+        Clipboard := ""
+        sequence := DllCall("GetClipboardSequenceNumber", "UInt")
+        if !SafeSend("^a^c", "Input", epoch)
+            return result
+        ClipWait, 0.4
+        if (ErrorLevel || epoch != AutomationEpoch || !GameLocator_IsActive() || isInChat() != 1)
+            return result
+        ; Only restore a clipboard update belonging to this foreground process.
+        foreground := DllCall("GetForegroundWindow", "Ptr")
+        owner := DllCall("GetClipboardOwner", "Ptr")
+        DllCall("GetWindowThreadProcessId", "Ptr", foreground, "UInt*", foregroundPID)
+        DllCall("GetWindowThreadProcessId", "Ptr", owner, "UInt*", ownerPID)
+        if (!ownerPID || ownerPID != foregroundPID) {
+            sequence := -1
+            result.Reason := "Буфер обмена изменён другим приложением."
+            return result
+        }
+        sequence := DllCall("GetClipboardSequenceNumber", "UInt")
+        result.Query := Trim(Clipboard)
+        if (sequence != DllCall("GetClipboardSequenceNumber", "UInt")) {
+            sequence := -1
+            return result
+        }
+        if (!cancelChat) {
+            result.Ok := SafeSend("{End}", "Input", epoch)
+            return result
+        }
+        if !SafeSend("^a{Backspace}", "Input", epoch)
+            return result
+        started := TickNow()
+        while (isInChat() = 1 && TickNow() - started < 900) {
+            if !SafeSend("{Esc}", "Input", epoch)
+                return result
+            Sleep, 70
+        }
+        result.Ok := epoch = AutomationEpoch && GameLocator_IsActive() && isInChat() = 0
         return result
+    } finally {
+        if (sequence >= 0 && sequence = DllCall("GetClipboardSequenceNumber", "UInt"))
+            Clipboard := saved
+        VarSetCapacity(saved, 0)
+        PhysicalInputBusy := 0
     }
-    result.Query := Trim(Clipboard)
-    Clipboard := savedClipboard
-    VarSetCapacity(savedClipboard, 0)
-
-    if (isInChat() != 1)
-    {
-        result.Reason := "Чат закрылся до отмены строки."
-        return result
-    }
-    SendInput, ^a{Backspace}
-    Sleep, 40
-
-    closeStarted := A_TickCount
-    while (isInChat() = 1 && A_TickCount - closeStarted < 900)
-    {
-        SendInput, {Esc}
-        Sleep, 70
-    }
-    if (isInChat() = 1)
-    {
-        result.Reason := "Не удалось закрыть чат клавишей Escape."
-        return result
-    }
-
-    result.Ok := 1
-    return result
 }
 
 MatchGpsEnterCommand(lineText, triggerText, ByRef gpsNumber) {
@@ -21898,8 +22044,9 @@ MatchGpsEnterCommand(lineText, triggerText, ByRef gpsNumber) {
     return true
 }
 
-TryHandleGpsEnterCommand() {
+TryHandleGpsEnterCommand(inputEpoch := 0) {
     global Trig_GpsD, Trig_GpsOS
+    inputEpoch := AutomationEpoch
 
     if !IsGameActive()
         return false
@@ -21928,24 +22075,26 @@ TryHandleGpsEnterCommand() {
     else
         return false
 
-    SendInput, ^a{Backspace}
+    SafeSend("^a{Backspace}", "Input", inputEpoch)
     Sleep, 40
-    SendInput, {Enter}
+    SafeSend("{Enter}", "Input", inputEpoch)
     Sleep, 80
     return RunGpsDialogAction(actionName, downCount, gpsNumber)
 }
 
-SendGpsDialogDown(count, delayMs := 35) {
+SendGpsDialogDown(count, delayMs := 35, inputEpoch := 0) {
+    inputEpoch := AutomationEpoch
     if (count <= 0)
         return
     Loop %count%
     {
-        SendEvent, {Down}
+        SafeSend("{Down}", "Event", inputEpoch)
         Sleep, %delayMs%
     }
 }
 
-RunGpsDialogAction(actionName, downCount, gpsNumber) {
+RunGpsDialogAction(actionName, downCount, gpsNumber, inputEpoch := 0) {
+    inputEpoch := AutomationEpoch
     gpsNumber := ExtractFirstNumber(gpsNumber)
     if (gpsNumber = "")
     {
@@ -21963,15 +22112,17 @@ RunGpsDialogAction(actionName, downCount, gpsNumber) {
     if !CanRunAction(actionName, false, false)
         return false
 
-    SendChat("/gps")
+    if (SendChatForEpoch(inputEpoch, "/gps") != 1)
+
+        return
     Sleep, 260
     SendGpsDialogDown(downCount, 35)
     Sleep, 90
-    SendEvent, {Enter}
+    SafeSend("{Enter}", "Event", inputEpoch)
     Sleep, 220
-    PasteOnly(gpsNumber)
+    PasteOnlyForEpoch(inputEpoch, gpsNumber)
     Sleep, 70
-    SendEvent, {Enter}
+    SafeSend("{Enter}", "Event", inputEpoch)
     return true
 }
 
@@ -22049,6 +22200,12 @@ ServiceCodes_Close:
 ServiceCodesGuiEscape:
 ServiceCodesGuiClose:
 LawGui_Close()
+return
+
+DoMDC:
+if !CanRunAction("MDC", true, false)
+    return
+ChatQueue_Enqueue("/mdc " . UserID, "MDC", 0, 700, 1)
 return
 
 DoVehicleLookup:
@@ -22140,17 +22297,24 @@ PostMessage, 0xA1, 2,,, ahk_id %hBindListWnd%
 return
 
 DoEnterID:
+InputAction_DoEnterID()
+return
+
+InputAction_DoEnterID(inputEpoch := 0) {
+    global
+    inputEpoch := AutomationEpoch
 if !CanRunAction("ввод ID", false, false)
     return
-SendMessage, 0x50,, 0x4190419,, A
-SendInput, {F6}
+SafeLayout(0x4190419)
+SafeSend("{F6}", "Input", inputEpoch)
 Sleep, 100
-SendInput, /Введите ID подозреваемого:{space}
+SafeSend("/Введите ID подозреваемого:{space}", "Input", inputEpoch)
 Sleep, 50
-Input, UserID, I L6 V, {Enter}
+Input, UserID, I L20 V, {Enter}
 if (UserID != "")
     ShowIDGui(UserID)
 return
+}
 
 DoOpenBindsTab:
 if (SettingsVisible)
@@ -22223,7 +22387,7 @@ return
 
 DoDeject:
 global LastDejectActionTick, DejectFollowupWindowMs
-nowTick := A_TickCount
+nowTick := TickNow()
 if (LastDejectActionTick > 0 && nowTick - LastDejectActionTick <= DejectFollowupWindowMs)
 {
     LastDejectActionTick := 0
@@ -22236,17 +22400,15 @@ if (LastDejectActionTick > 0 && nowTick - LastDejectActionTick > DejectFollowupW
     LastDejectActionTick := 0
 if !CanRunAction("deject", true, true, true)
     return
-if (UserID < 1000)
-    SendChat("/deject " . UserID)
-else
-    SendChat("/dejectid " . UserID)
-LastDejectActionTick := A_TickCount
+if (SendChat((UserID < 1000 ? "/deject " : "/dejectid ") . UserID) != 1)
+    return
+LastDejectActionTick := TickNow()
 Sleep, 500
 return
 
 DoCuff:
 global LastCuffActionTick, CuffFollowupWindowMs
-nowTick := A_TickCount
+nowTick := TickNow()
 if (LastCuffActionTick > 0 && nowTick - LastCuffActionTick <= CuffFollowupWindowMs)
 {
     LastCuffActionTick := 0
@@ -22259,22 +22421,22 @@ if (LastCuffActionTick > 0 && nowTick - LastCuffActionTick > CuffFollowupWindowM
     LastCuffActionTick := 0
 if !CanRunAction("cuff", true, true)
     return
-SendChat("/cuff " . UserID)
-LastCuffActionTick := A_TickCount
+if (SendChat("/cuff " . UserID) != 1)
+    return
+LastCuffActionTick := TickNow()
 Sleep, 1200
 return
 
 DoInCar:
-if !CanRunAction("incar", true, true, true)
-    return
-SplitConfigSequenceMiddle(RP_InCar, rpBefore, rpAfter)
-if (rpBefore != "")
-    SendConfigSequence(rpBefore, 700)
-SendChat("/incar " . UserID)
-Sleep 500
-if (rpAfter != "")
-    SendConfigSequence(rpAfter, 700)
+Action_DoInCar()
 return
+
+Action_DoInCar() {
+    global RP_InCar, UserID
+    if !CanRunAction("incar", true, true, true)
+        return false
+    return QueueRpAction(RP_InCar, "/incar " . UserID, "DoInCar", [])
+}
 
 DoStopChase:
 if !CanRunAction("требование остановки", true, true, true)
@@ -22288,45 +22450,45 @@ SendConfigSequence(RP_StopChase, 500)
 return
 
 DoDoc:
-if !CanRunAction("документы", true)
-    return
-SplitConfigSequenceMiddle(RP_Doc, rpBefore, rpAfter)
-if (rpBefore != "")
-    SendConfigSequence(rpBefore, 700)
-SendChat("/doc " . UserID)
-Sleep 500
-if (rpAfter != "")
-    SendConfigSequence(rpAfter, 700)
+Action_DoDoc()
 return
+
+Action_DoDoc() {
+    global RP_Doc, UserID
+    if !CanRunAction("документы", true)
+        return false
+    return QueueRpAction(RP_Doc, "/doc " . UserID, "DoDoc", [])
+}
 
 DoSearch:
-if !CanRunAction("досмотр", true, true, false, false, true)
-    return
-Evidence_Arm("SEARCH_PERSON", 45000)
-SplitConfigSequenceMiddle(RP_Search, rpBefore, rpAfter)
-if (rpBefore != "")
-    SendConfigSequence(rpBefore, 700)
-SendChat("/frac " . UserID)
-Sleep 300
-SendInput {1}{1}
-Sleep 300
-SendInput {5}{5}
-Sleep 300
-SendInput {1}{1}
-Sleep 500
-if (rpAfter != "")
-    SendConfigSequence(rpAfter, 700)
+Action_DoSearch()
 return
 
+Action_DoSearch() {
+    global RP_Search, UserID
+    if !CanRunAction("досмотр", true, true, false, false, true)
+        return false
+    Evidence_Arm("SEARCH_PERSON", 60000)
+    return QueueRpAction(RP_Search, "/frac " . UserID, "DoSearch", [1, 5, 1])
+}
+
 DoSOS:
+InputAction_DoSOS()
+return
+
+InputAction_DoSOS(inputEpoch := 0) {
+    global
+    inputEpoch := AutomationEpoch
 if !CanRunAction("SOS", false, true)
     return
-SendChat("/sos")
+if (SendChatForEpoch(inputEpoch, "/sos") != 1)
+    return
 Sleep 300
-SendInput, {Down}
+SafeSend("{Down}", "Input", inputEpoch)
 Sleep 300
-SendInput, {Enter}
+SafeSend("{Enter}", "Input", inputEpoch)
 return
+}
 
 DoDep:
 if !CanRunAction("/dep", false, false, false, true)
@@ -22335,20 +22497,26 @@ SendTemplateOpen(T_Dep, 0)
 return
 
 DoWantedList:
+InputAction_DoWantedList()
+return
+
+InputAction_DoWantedList(inputEpoch := 0) {
+    global
+    inputEpoch := AutomationEpoch
 if !CanRunAction("Розыскиваемые", false, true)
     return
 Sendchat("/frac")
 Sleep 300
 Loop, 8
 {
-    SendInput, {1}
+    SafeSend("{1}", "Input", inputEpoch)
     Sleep, 50
 }
-global StopTimerActive, StopTimerCounter
 StopTimerActive := 1
 StopTimerCounter := 60
 ShowStopTimerGUI()
 return
+}
 
 DoSOSStart:
 if !CanRunAction("SOS выехал", false, true)
@@ -22510,8 +22678,7 @@ if !SendConfigSequence(towSequence, 700) {
     return
 }
 if !WaitForChatQueueIdle(25000) {
-    ActionTimer_StartEvacuation()
-    GameNotify("Очередь чата не завершилась вовремя; 3-минутный таймер эвакуации всё равно запущен.", "WARN")
+    GameNotify("Отправка эвакуации не подтверждена; таймер не запущен.", "WARN")
     return
 }
 ActionTimer_StartEvacuation()
@@ -22533,7 +22700,8 @@ if !WaitForChatQueueIdle(20000)
 }
 ActionTimer_Stop("Evac")
 Sleep 650
-SendChat("/frac")
+if (SendChat("/frac") != 1)
+    return
 Sleep 320
 SendRadialNumberTwice(1, 280)
 SendRadialNumberTwice(4, 280)
@@ -22550,7 +22718,8 @@ if !WaitForChatQueueIdle(20000)
     return
 }
 Evidence_Arm("SEARCH_TRUNK", 45000)
-SendChat("/frac")
+if (SendChat("/frac") != 1)
+    return
 Sleep 320
 SendRadialNumberTwice(1, 280)
 SendRadialNumberTwice(4, 280)
@@ -22558,23 +22727,16 @@ SendRadialNumberTwice(1, 320)
 return
 
 DoArrest:
-if !CanRunAction("арест", true)
-    return
-Evidence_Arm("ARREST", 60000)
-SplitConfigSequenceMiddle(RP_Arrest, rpBefore, rpAfter)
-if (rpBefore != "")
-    SendConfigSequence(rpBefore, 700)
-SendChat("/frac " . UserID)
-Sleep 300
-SendInput {1}{1}
-Sleep 300
-SendInput {5}{5}
-Sleep 300
-SendInput {8}{8}
-Sleep 500
-if (rpAfter != "")
-    SendConfigSequence(rpAfter, 700)
+Action_DoArrest()
 return
+
+Action_DoArrest() {
+    global RP_Arrest, UserID
+    if !CanRunAction("арест", true)
+        return false
+    Evidence_Arm("ARREST", 60000)
+    return QueueRpAction(RP_Arrest, "/frac " . UserID, "DoArrest", [1, 5, 8])
+}
 
 DoFine:
 Fine_RunWizard()
@@ -22632,7 +22794,8 @@ DoAssistPDPCuff:
 ContextAssistant_Request("PDPCuff")
 return
 
-ReadAutoReportMinutes(mode) {
+ReadAutoReportMinutes(mode, inputEpoch := 0) {
+    inputEpoch := AutomationEpoch
     if !EnsureGameActive()
         return 0
 
@@ -22640,19 +22803,19 @@ ReadAutoReportMinutes(mode) {
 
     chatState := isInChat()
     if (chatState = 1) {
-        SendInput, ^a{Backspace}
+        SafeSend("^a{Backspace}", "Input", inputEpoch)
         Sleep, 50
     } else {
-        SendInput, {F6}
+        SafeSend("{F6}", "Input", inputEpoch)
         Sleep, 120
     }
     Input, minutesText, I L3 V T20, {Enter}{Escape}
     inputResult := ErrorLevel
 
     if (isInChat() = 1) {
-        SendInput, ^a{Backspace}
+        SafeSend("^a{Backspace}", "Input", inputEpoch)
         Sleep, 50
-        SendInput, {Esc}
+        SafeSend("{Esc}", "Input", inputEpoch)
         Sleep, 80
     }
 
@@ -22721,7 +22884,8 @@ if (BindMenuEditMode)
 }
 if !CanRunAction("быстрый /frac", true, true)
     return
-SendChat("/frac " . UserID)
+if (SendChat("/frac " . UserID) != 1)
+    return
 return
 
 !x::
@@ -23037,3 +23201,46 @@ PgDn::
 :?:!фп1::return
 :?:!фп2::return
 :?:!фп3::return
+
+
+MigrateConfigIfNeeded() {
+    global ConfigFile, ConfigReadOnly, ConfigVersion
+    IniRead, version, %ConfigFile%, Meta, ConfigVersion, 0
+    if (version > ConfigVersion) {
+        ConfigReadOnly := 1
+        return false
+    }
+    if (version = ConfigVersion)
+        return true
+    original := ConfigFile
+    stage := ConfigStage(original)
+    if (stage = "") {
+        ConfigReadOnly := 1
+        return false
+    }
+    ConfigFile := stage
+    try {
+        ok := MigrateConfigInPlace()
+    } finally {
+        ConfigFile := original
+    }
+    if (!ok)
+        ConfigWriteFailed := 1
+    committed := ConfigCommit(stage, original)
+    if (!committed)
+        ConfigReadOnly := 1
+    return committed
+}
+
+
+MemoryRemotePollTimer:
+MemoryRemotePoll()
+return
+
+CaptureRefreshTimer:
+Capture_RefreshWindows()
+return
+
+SaveUiDebounced:
+SaveUISettings()
+return

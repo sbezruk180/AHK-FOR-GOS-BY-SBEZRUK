@@ -1,3 +1,4 @@
+global MemoryInjectionOwnerActive := 0
 
 global hGTA := 0x0
 global dwGTAPID := 0x0
@@ -34,6 +35,18 @@ global g_MemoryStageCode := 0
 global g_MemoryStageDetail := ""
 global g_MemoryStageTick := 0
 global g_MemoryInjectionBusy := 0
+
+global GAME_MP_ModulePath := ""
+global g_RemoteOperation := ""
+global g_CompatibilityCache := ""
+global ConfigWriteFailed := 0
+global ConfigTransactionBusy := 0
+global ConfigReadOnly := 0
+global AutomationEpoch := 1
+global PhysicalInputBusy := 0
+global OBSHideWindows := "Off"
+global CaptureWindowStates := {}
+global AuditTestMode := 0
 
 global GAME_MP_ModuleName := "azmp.dll"
 global GAME_PID := "AMAZING ONLINE"
@@ -144,7 +157,7 @@ GameLocator_Activate(timeoutSeconds := 0.7) {
 
 MemoryTickElapsed(startTick, nowTick := "") {
     if (nowTick = "")
-        nowTick := A_TickCount
+        nowTick := TickNow()
     elapsed := nowTick - startTick
     if (elapsed < 0)
         elapsed += 4294967296
@@ -208,26 +221,43 @@ GetFileVersionSafe(path) {
 }
 
 FileSHA256(path) {
+    provider := 0, hash := 0, file := "", digest := ""
     if !FileExist(path)
         return ""
-    tempFile := A_Temp . "\amz_gos_sha256_" . DllCall("GetCurrentProcessId") . "_" . A_TickCount . ".txt"
-    command := ComSpec . " /d /c certutil -hashfile """ . path . """ SHA256 > """ . tempFile . """ 2>nul"
-    RunWait, %command%,, Hide UseErrorLevel
-    if (ErrorLevel) {
-        FileDelete, %tempFile%
-        return ""
-    }
-    FileRead, output, %tempFile%
-    FileDelete, %tempFile%
-    Loop, Parse, output, `n, `r
-    {
-        hashLine := RegExReplace(Trim(A_LoopField), "\s")
-        if RegExMatch(hashLine, "i)^[a-f0-9]{64}$") {
-            StringUpper, hashLine, hashLine
-            return hashLine
+    try {
+        if DllCall("bcrypt\BCryptOpenAlgorithmProvider", "Ptr*", provider, "WStr", "SHA256", "Ptr", 0, "UInt", 0, "Int")
+            return ""
+        VarSetCapacity(sizeBuffer, 4, 0)
+        if DllCall("bcrypt\BCryptGetProperty", "Ptr", provider, "WStr", "ObjectLength", "Ptr", &sizeBuffer, "UInt", 4, "UInt*", copied, "UInt", 0, "Int")
+            return ""
+        VarSetCapacity(hashObject, NumGet(sizeBuffer, 0, "UInt"), 0)
+        if DllCall("bcrypt\BCryptCreateHash", "Ptr", provider, "Ptr*", hash, "Ptr", &hashObject, "UInt", VarSetCapacity(hashObject), "Ptr", 0, "UInt", 0, "UInt", 0, "Int")
+            return ""
+        file := FileOpen(path, "r")
+        if !IsObject(file)
+            return ""
+        VarSetCapacity(chunk, 65536, 0)
+        while (!file.AtEOF) {
+            count := file.RawRead(chunk, 65536)
+            if (!count || DllCall("bcrypt\BCryptHashData", "Ptr", hash, "Ptr", &chunk, "UInt", count, "UInt", 0, "Int"))
+                return ""
         }
+        VarSetCapacity(result, 32, 0)
+        if DllCall("bcrypt\BCryptFinishHash", "Ptr", hash, "Ptr", &result, "UInt", 32, "UInt", 0, "Int")
+            return ""
+        Loop, 32
+            digest .= Format("{:02X}", NumGet(result, A_Index - 1, "UChar"))
+        return digest
+    } catch e {
+        return ""
+    } finally {
+        if IsObject(file)
+            file.Close()
+        if (hash)
+            DllCall("bcrypt\BCryptDestroyHash", "Ptr", hash, "Int")
+        if (provider)
+            DllCall("bcrypt\BCryptCloseAlgorithmProvider", "Ptr", provider, "UInt", 0, "Int")
     }
-    return ""
 }
 
 ReleaseGameHandle() {
@@ -235,14 +265,21 @@ ReleaseGameHandle() {
     global iRefreshHandles, g_LastCheckHandlesResult, g_MemoryInjectionBusy, g_LastSampValidationTick
     global g_LastHandleValidationTick
 
-    if (hGTA && ProcessHandleIsValid(hGTA, dwGTAPID)) {
-        if (pMemory)
+    if (g_MemoryInjectionBusy) {
+        MemoryRemotePoll()
+        if (g_MemoryInjectionBusy)
+            return false
+    }
+    if (hGTA) {
+        if (pMemory && ProcessHandleIsValid(hGTA, dwGTAPID))
             virtualFreeEx(hGTA, pMemory, 0, 0x8000)
         closeProcess(hGTA)
     }
     hGTA := 0
     dwGTAPID := 0
     dwSAMP := 0
+    GAME_MP_ModulePath := ""
+    g_CompatibilityCache := ""
     pMemory := 0
     pParam1 := 0
     pParam2 := 0
@@ -300,8 +337,8 @@ MemoryInvalidateGameHandle(reason := "") {
 
     oldHandle := hGTA
     oldPID := dwGTAPID
-    if (oldHandle && ProcessHandleIsValid(oldHandle, oldPID)) {
-        if (pMemory)
+    if (oldHandle) {
+        if (pMemory && ProcessHandleIsValid(oldHandle, oldPID))
             virtualFreeEx(oldHandle, pMemory, 0, 0x8000)
         closeProcess(oldHandle)
     }
@@ -309,6 +346,8 @@ MemoryInvalidateGameHandle(reason := "") {
     hGTA := 0
     dwGTAPID := 0
     dwSAMP := 0
+    GAME_MP_ModulePath := ""
+    g_CompatibilityCache := ""
     pMemory := 0
     pParam1 := 0
     pParam2 := 0
@@ -320,7 +359,7 @@ MemoryInvalidateGameHandle(reason := "") {
     g_LastCheckHandlesResult := 0
     g_MemoryInjectionBusy := 0
     g_LastSampValidationTick := 0
-    g_LastHandleValidationTick := A_TickCount
+    g_LastHandleValidationTick := TickNow()
     g_HandleReopenCount += 1
     g_LastHandleError := reason
     if IsFunc("AZMP_ResetAutoIDRuntime")
@@ -337,7 +376,7 @@ MemorySetStage(stage, code := 0, detail := "") {
     g_MemoryStage := "" . stage
     g_MemoryStageCode := code + 0
     g_MemoryStageDetail := "" . detail
-    g_MemoryStageTick := A_TickCount
+    g_MemoryStageTick := TickNow()
     ErrorLevel := g_MemoryStageCode
     return true
 }
@@ -348,19 +387,28 @@ MemoryFail(stage, code, detail := "") {
 }
 
 MemoryInjectionEnter() {
-    global g_MemoryInjectionBusy, ERROR_MEMORY_BUSY
+    global g_MemoryInjectionBusy
+    MemoryRemotePoll()
+    oldCritical := A_IsCritical
+    Critical, On
     if (g_MemoryInjectionBusy) {
+        Critical, %oldCritical%
         ErrorLevel := ERROR_MEMORY_BUSY
         return false
     }
     g_MemoryInjectionBusy := 1
+    MemoryInjectionOwnerActive := 1
+    Critical, %oldCritical%
     return true
 }
 
 MemoryInjectionLeave() {
-    global g_MemoryInjectionBusy
-    g_MemoryInjectionBusy := 0
-    return true
+    global g_MemoryInjectionBusy, g_RemoteOperation
+    MemoryInjectionOwnerActive := 0
+    MemoryRemotePoll()
+    if !IsObject(g_RemoteOperation)
+        g_MemoryInjectionBusy := 0
+    return !g_MemoryInjectionBusy
 }
 
 waitForSingleObject(hThread, dwMilliseconds) {
@@ -497,27 +545,20 @@ callWithParams(hProcess, dwFunc, aParams, bCleanupStack = true, thiscall = false
         NumPut(stackParamCount * 4, injectData, codeLength + 2, "UChar")
         codeLength += 3
     }
-    NumPut(0xC3, injectData, codeLength, "UChar")
-    codeLength += 1
+    NumPut(0xC2, injectData, codeLength, "UChar")
+    NumPut(4, injectData, codeLength + 1, "UShort")
+    codeLength += 3
 
     if !writeRaw(hProcess, pInjectFunc, &injectData, codeLength)
         return false
+    if !DllCall("FlushInstructionCache", "Ptr", hProcess, "Ptr", pInjectFunc, "UPtr", codeLength)
+        return MemoryFail("FLUSH_CODE", ERROR_WRITE_MEMORY)
     hThread := createRemoteThread(hProcess, 0, 0, pInjectFunc, 0, 0, 0)
     if (!hThread)
         return false
 
-    waitError := ERROR_OK
-    if (waitThread) {
-        waitForSingleObject(hThread, 0xFFFFFFFF)
-        waitError := ErrorLevel
-    }
-    closeProcess(hThread)
-    if (waitThread && waitError != ERROR_OK) {
-        ErrorLevel := waitError
-        return false
-    }
-    ErrorLevel := ERROR_OK
-    return true
+    return MemoryWaitRemote(hThread, hProcess, waitThread ? 2000 : 0)
+
 }
 
 writeRaw(hProcess, dwAddress, pBuffer, dwLen) {
@@ -571,58 +612,47 @@ readDWORD(hProcess, dwAddress) {
 	return NumGet(dwRead, 0, "UInt")
 }
 readFloat(hProcess, dwAddress) {
-	if (!hProcess) {
-		ErrorLevel := ERROR_INVALID_HANDLE
-		return 0
-	}
-
-	VarSetCapacity(dwRead, 4, 0)
-	dwRet := DllCall("ReadProcessMemory", "UInt", hProcess, "UInt", dwAddress, "Str", dwRead, "UInt", 4, "UInt*", 0, "UInt")
-	if (dwRet == 0) {
-		ErrorLevel := ERROR_READ_MEMORY
-		return 0
-	}
-
-	ErrorLevel := ERROR_OK
-	return NumGet(dwRead, 0, "Float")
+    return TryReadFloat(hProcess, dwAddress, value) ? value : ""
 }
 getModuleBaseAddress(sModule, hProcess) {
-	if (!sModule) {
-		ErrorLevel := ERROR_MODULE_NOT_FOUND
-		return 0
-	}
-
-	if (!hProcess) {
-		ErrorLevel := ERROR_INVALID_HANDLE
-		return 0
-	}
-
-	dwSize = 1024*4
-	VarSetCapacity(hMods, dwSize, 0)
-	VarSetCapacity(cbNeeded, 4, 0)
-	dwRet := DllCall("Psapi.dll\EnumProcessModules", "UInt", hProcess, "UInt", &hMods, "UInt", dwSize, "UInt*", cbNeeded, "UInt")
-	if (dwRet == 0) {
-		ErrorLevel := ERROR_ENUM_PROCESS_MODULES
-		return 0
-	}
-
-	dwMods := cbNeeded / 4
-	i := 0
-	VarSetCapacity(hModule, 4, 0)
-	VarSetCapacity(sCurModule, 260, 0)
-	while(i < dwMods) {
-		hModule := NumGet(hMods, i*4)
-		DllCall("Psapi.dll\GetModuleFileNameEx", 	"UInt", hProcess, 	"UInt", hModule, 	"Str", sCurModule, 	"UInt", 260)
-		SplitPath, sCurModule, sFilename
-		if (sModule = sFilename) {
-			ErrorLevel := ERROR_OK
-			return hModule
-		}
-		i := i + 1
-	}
-
-	ErrorLevel := ERROR_MODULE_NOT_FOUND
-	return 0
+    global GAME_MP_ModulePath, GAME_MP_ModuleName
+    if (!sModule || !hProcess) {
+        ErrorLevel := ERROR_INVALID_HANDLE
+        return 0
+    }
+    capacity := 4096
+    Loop, 3 {
+        VarSetCapacity(modules, capacity, 0)
+        needed := 0
+        if !DllCall("psapi\EnumProcessModules", "Ptr", hProcess, "Ptr", &modules, "UInt", capacity, "UInt*", needed) {
+            ErrorLevel := ERROR_ENUM_PROCESS_MODULES
+            return 0
+        }
+        if (needed <= capacity)
+            break
+        if (needed > 1048576 || A_Index = 3) {
+            ErrorLevel := ERROR_ENUM_PROCESS_MODULES
+            return 0
+        }
+        capacity := needed + 1024
+    }
+    count := needed // A_PtrSize
+    Loop % count {
+        module := NumGet(modules, (A_Index - 1) * A_PtrSize, "Ptr")
+        VarSetCapacity(path, 32768, 0)
+        chars := DllCall("psapi\GetModuleFileNameExA", "Ptr", hProcess, "Ptr", module, "Str", path, "UInt", 32768, "UInt")
+        if (!chars || chars >= 32768)
+            continue
+        SplitPath, path, name
+        if (name = sModule) {
+            if (name = GAME_MP_ModuleName)
+                GAME_MP_ModulePath := path
+            ErrorLevel := ERROR_OK
+            return module
+        }
+    }
+    ErrorLevel := ERROR_MODULE_NOT_FOUND
+    return 0
 }
 closeProcess(hProcess) {
 	if (hProcess == 0) {
@@ -673,7 +703,9 @@ refreshSAMP(forceValidation := false) {
     newBase := getModuleBaseAddress(GAME_MP_ModuleName, hGTA)
     if (!newBase) {
         dwSAMP := 0
-        g_LastSampValidationTick := A_TickCount
+    GAME_MP_ModulePath := ""
+    g_CompatibilityCache := ""
+        g_LastSampValidationTick := TickNow()
         if IsFunc("AZMP_ResetAutoIDRuntime")
             Func("AZMP_ResetAutoIDRuntime").Call("azmp.dll unavailable")
         else if IsFunc("AZMP_ResetTargetCache")
@@ -688,7 +720,7 @@ refreshSAMP(forceValidation := false) {
             Func("AZMP_ResetTargetCache").Call("azmp.dll base changed")
     }
     dwSAMP := newBase
-    g_LastSampValidationTick := A_TickCount
+    g_LastSampValidationTick := TickNow()
     return true
 }
 refreshGTA() {
@@ -719,12 +751,16 @@ refreshGTA() {
             dwGTAPID := 0
             hGTA := 0
             dwSAMP := 0
+    GAME_MP_ModulePath := ""
+    g_CompatibilityCache := ""
             pMemory := 0
             MemoryFail("OPEN_PROCESS", ERROR_OPEN_PROCESS, g_LastHandleError)
             return false
         }
         dwGTAPID := newPID
         dwSAMP := 0
+    GAME_MP_ModulePath := ""
+    g_CompatibilityCache := ""
         pMemory := 0
         pParam1 := 0
         pParam2 := 0
@@ -737,7 +773,7 @@ refreshGTA() {
         MemorySetStage("HANDLE_OK", 0, "GTA PID " . newPID . ", поколение " . g_HandleGeneration)
     }
 
-    g_LastHandleValidationTick := A_TickCount
+    g_LastHandleValidationTick := TickNow()
     return ProcessHandleIsValid(hGTA, dwGTAPID)
 }
 
@@ -749,16 +785,17 @@ checkHandles() {
         if (g_LastCheckHandlesResult && !ProcessHandleIsValid(hGTA, dwGTAPID)) {
             MemoryInvalidateGameHandle("кэш checkHandles содержал недействительный hGTA")
         } else {
-            return g_LastCheckHandlesResult
+            return g_LastCheckHandlesResult && MemoryBuildCompatible()
         }
     }
 
-    refreshTick := A_TickCount
+    refreshTick := TickNow()
     forceModuleValidation := (g_LastSampValidationTick = 0
         || MemoryTickElapsed(g_LastSampValidationTick) >= 2000)
 
     g_LastCheckHandlesResult := (refreshGTA()
         && refreshSAMP(forceModuleValidation)
+        && MemoryBuildCompatible()
         && refreshMemory())
     ; MemoryInvalidateGameHandle сбрасывает iRefreshHandles, поэтому метка
     ; успешной/неуспешной проверки ставится после полного восстановления.
@@ -788,4 +825,100 @@ __unicodeToAnsi(wString, nLen = 0) {
 	VarSetCapacity(sString, nLen)
 	DllCall("WideCharToMultiByte", "Uint", 0, "Uint", 0, "Uint", pString, "int",  -1, "str",  sString, "int",  nLen, "Uint", 0, "Uint", 0)
 	return sString
+}
+
+
+TryReadFloat(hProcess, address, ByRef value) {
+    value := ""
+    VarSetCapacity(buffer, 4, 0)
+    bytes := 0
+    if (!hProcess || !IsLikelyPointer(address)
+        || !DllCall("ReadProcessMemory", "Ptr", hProcess, "Ptr", address, "Ptr", &buffer, "UPtr", 4, "UPtr*", bytes) || bytes != 4) {
+        ErrorLevel := ERROR_READ_MEMORY
+        return false
+    }
+    if ((NumGet(buffer, 0, "UInt") & 0x7F800000) = 0x7F800000) {
+        ErrorLevel := ERROR_READ_MEMORY
+        return false
+    }
+    value := NumGet(buffer, 0, "Float")
+    ErrorLevel := ERROR_OK
+    return true
+}
+
+MemoryBuildCompatible() {
+    global GAME_MP_ModulePath, AzmpExpectedSHA256, dwGTAPID, dwSAMP, g_HandleGeneration, g_CompatibilityCache
+    expected := Trim(AzmpExpectedSHA256)
+    StringUpper, expected, expected
+    if (!RegExMatch(expected, "^[A-F0-9]{64}$") || !FileExist(GAME_MP_ModulePath))
+        return MemoryFail("BUILD_UNVERIFIED", ERROR_MODULE_NOT_FOUND, "Укажите SHA-256 проверенной совместимой сборки azmp.dll; доступ к смещениям отключён.")
+    FileGetSize, size, %GAME_MP_ModulePath%
+    FileGetTime, modified, %GAME_MP_ModulePath%, M
+    key := dwGTAPID . "|" . g_HandleGeneration . "|" . dwSAMP . "|" . GAME_MP_ModulePath . "|" . size . "|" . modified . "|" . expected
+    if (!IsObject(g_CompatibilityCache) || g_CompatibilityCache.Key != key)
+        g_CompatibilityCache := {Key: key, Match: FileSHA256(GAME_MP_ModulePath) = expected}
+    return g_CompatibilityCache.Match ? true : MemoryFail("BUILD_MISMATCH", ERROR_MODULE_NOT_FOUND, "SHA-256 azmp.dll не совпадает; чтение и запись заблокированы.")
+}
+
+MemoryWaitRemote(thread, process, timeoutMs := 2000) {
+    global g_RemoteOperation, g_MemoryInjectionBusy
+    g_RemoteOperation := {Thread: thread, Process: process, Started: TickNow(), ExitCode: 259}
+    g_MemoryInjectionBusy := 1
+    started := TickNow()
+    Loop {
+        result := MemoryRemotePoll()
+        if (result != 0)
+            return result = 1
+        if (MemoryTickElapsed(started) >= timeoutMs) {
+            MemoryFail("REMOTE_PENDING", ERROR_MEMORY_BUSY, "Поток ещё выполняется; буферы сохранены, повтор и Keyboard запрещены.")
+            return false
+        }
+        Sleep, 10
+    }
+}
+
+MemoryRemotePoll() {
+    global g_RemoteOperation, g_MemoryInjectionBusy
+    if !IsObject(g_RemoteOperation)
+        return 0
+    op := g_RemoteOperation
+    state := DllCall("WaitForSingleObject", "Ptr", op.Thread, "UInt", 0, "UInt")
+    if (state != 0 && ProcessHandleIsValid(op.Process))
+        return 0
+    exitCode := 0
+    gotExit := DllCall("GetExitCodeThread", "Ptr", op.Thread, "UInt*", exitCode)
+    if (op.HasKey("RestoreAddress") && ProcessHandleIsValid(op.Process)) {
+        VarSetCapacity(restore, 4, 0)
+        NumPut(op.RestoreValue, restore, 0, "UInt")
+        writeRaw(op.Process, op.RestoreAddress, &restore, 4)
+    }
+    closeProcess(op.Thread)
+    g_RemoteOperation := ""
+    if (!MemoryInjectionOwnerActive)
+        g_MemoryInjectionBusy := 0
+    if (state = 0 && gotExit && exitCode < 0xC0000000) {
+        MemorySetStage("REMOTE_COMPLETE", 0, "удалённый поток завершён; серверное подтверждение не проверено")
+        return 1
+    }
+    MemoryFail("REMOTE_FAILED", ERROR_WAIT_FOR_OBJECT, "поток/процесс завершился с ошибкой")
+    return -1
+}
+
+MemoryShutdown() {
+    global g_RemoteOperation, hGTA
+    MemoryRemotePoll()
+    if IsObject(g_RemoteOperation) {
+        ; Never free code still executing in the target. The target OS reclaims it at process exit.
+        closeProcess(g_RemoteOperation.Thread)
+        g_RemoteOperation := ""
+        if (hGTA)
+            closeProcess(hGTA)
+        hGTA := 0
+        return
+    }
+    ReleaseGameHandle()
+}
+
+TickNow() {
+    return DllCall("GetTickCount64", "Int64")
 }
