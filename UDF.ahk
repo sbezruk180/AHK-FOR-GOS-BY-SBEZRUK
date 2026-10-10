@@ -257,7 +257,7 @@ AZMP_TargetDiagMaybeRecover(code, detail := "", force := 0) {
             AZMP_TARGET_DIAG_LAST_RECOVER_TICK := TickNow()
             AZMP_TARGET_DIAG_RECOVER_COUNT += 1
             Sleep, 25
-            handleOk := checkHandles()
+            handleOk := checkReadHandles()
             playerPoolOk := handleOk && IsLikelyPointer(AZMP_GetPlayerPool())
             gtaPoolOk := handleOk && AZMP_GetGtaPedPoolInfo(recoverPool, recoverObjects, recoverFlags, recoverSize, 1)
             recovered := handleOk && playerPoolOk && gtaPoolOk
@@ -375,6 +375,10 @@ AZMP_GetGtaPedPoolInfo(ByRef poolPtr, ByRef objectsPtr, ByRef flagsPtr, ByRef po
     global AZMP_GTA_PED_POOL_CACHE_FLAGS, AZMP_GTA_PED_POOL_CACHE_SIZE
 
     poolPtr := objectsPtr := flagsPtr := poolSize := 0
+    if (!checkReadHandles()) {
+        AZMP_ResetGtaPedPoolCache()
+        return false
+    }
     if (!forceRefresh && AZMP_GTA_PED_POOL_CACHE_PID = dwGTAPID
         && AZMP_GTA_PED_POOL_CACHE_TICK != 0
         && AZMP_TickElapsed(AZMP_GTA_PED_POOL_CACHE_TICK) < 1000
@@ -390,10 +394,6 @@ AZMP_GetGtaPedPoolInfo(ByRef poolPtr, ByRef objectsPtr, ByRef flagsPtr, ByRef po
         return true
     }
 
-    if (!checkHandles()) {
-        AZMP_ResetGtaPedPoolCache()
-        return false
-    }
     poolPtr := readDWORD(hGTA, GTA_PED_POOL_POINTER_ADDRESS)
     if !IsLikelyPointer(poolPtr) {
         AZMP_ResetGtaPedPoolCache()
@@ -530,29 +530,29 @@ AZMP_PlayerInfoMatchesPed(playerInfo, targetPed, ByRef matchedLayout := "") {
 }
 
 isPlayerInAnyVehicle() {
-    if (!checkHandles())
+    if (!checkReadHandles())
         return -1
-    return readDWORD(hGTA, 0xBA18FC)
+    vehicle := readDWORD(hGTA, 0xBA18FC)
+    if (ErrorLevel || (vehicle && !IsLikelyPointer(vehicle)))
+        return -1
+    return vehicle
 }
 
 getPlayerCoordinates() {
-    if (!checkHandles())
+    if (!checkReadHandles())
         return -1
     pedPtr := readDWORD(hGTA, 0xB6F5F0)
-    if (!pedPtr)
+    if !AZMP_IsValidGamePed(pedPtr)
         return -1
-    matrixPtr := readDWORD(hGTA, pedPtr + 0x14)
-    if (!matrixPtr)
-        return -1
-    if (!TryReadFloat(hGTA, matrixPtr + 0x30, x) || !TryReadFloat(hGTA, matrixPtr + 0x34, y) || !TryReadFloat(hGTA, matrixPtr + 0x38, z))
-        return -1
-    return [x, y, z]
+    return AZMP_GetGamePedCoordinates(pedPtr)
 }
 
 getCameraCoordinates() {
-    if (!checkHandles())
+    if (!checkReadHandles())
         return -1
     if (!TryReadFloat(hGTA, 0xB6F9CC, x) || !TryReadFloat(hGTA, 0xB6F9D0, y) || !TryReadFloat(hGTA, 0xB6F9D4, z))
+        return -1
+    if (Abs(x) > 20000 || Abs(y) > 20000 || Abs(z) > 5000)
         return -1
     return [x, y, z]
 }
@@ -704,7 +704,7 @@ showDialog(style, caption, text, button1, button2 := "", id := 1) {
 }
 
 AZMP_GetPools() {
-    if (!checkHandles())
+    if (!checkReadHandles())
         return 0
     sampInfo := readDWORD(hGTA, dwSAMP + AZMP_SAMP_INFO_OFFSET)
     if !IsLikelyPointer(sampInfo)
@@ -870,7 +870,7 @@ getPlayerNameById(playerId) {
 }
 
 getPlayerPedById(playerId) {
-    if (!checkHandles())
+    if (!checkReadHandles())
         return 0
     if !RegExMatch(playerId . "", "^\d{1,4}$")
         return 0
@@ -921,21 +921,14 @@ AZMP_GetGamePedCoordinates(pedPtr) {
 AZMP_GetAimContext(ByRef cameraX, ByRef cameraY, ByRef cameraZ
     , ByRef viewX, ByRef viewY, ByRef viewZ, ByRef viewLength)
 {
-    global hGTA
     cameraX := cameraY := cameraZ := 0.0
     viewX := viewY := viewZ := 0.0
     viewLength := 0.0
-    if (!checkHandles())
+    camera := getCameraCoordinates()
+    localCoords := getPlayerCoordinates()
+    if (!IsObject(camera) || !IsObject(localCoords))
         return false
-
-    cameraX := readFloat(hGTA, 0xB6F9CC)
-    cameraY := readFloat(hGTA, 0xB6F9D0)
-    cameraZ := readFloat(hGTA, 0xB6F9D4)
-    localPed := readDWORD(hGTA, 0xB6F5F0)
-    localCoords := AZMP_GetGamePedCoordinates(localPed)
-    if !IsObject(localCoords)
-        return false
-
+    cameraX := camera[1], cameraY := camera[2], cameraZ := camera[3]
     viewX := localCoords[1] - cameraX
     viewY := localCoords[2] - cameraY
     viewZ := localCoords[3] - cameraZ
@@ -1000,7 +993,7 @@ getPlayerDataByPed(targetPed, ByRef outId, ByRef outName, nearestLimit := 0) {
         AZMP_TargetDiagSet("TARGET_PED_INVALID", "указатель цели " . targetPed)
         return 0
     }
-    if (!checkHandles()) {
+    if (!checkReadHandles()) {
         AZMP_TargetDiagSetContext(targetPed, 0)
         code := ProcessHandleIsValid(hGTA, dwGTAPID) ? "HANDLE_CHECK_FAILED" : "HANDLE_INVALID"
         detail := MemoryGetStatusText()
@@ -1009,6 +1002,12 @@ getPlayerDataByPed(targetPed, ByRef outId, ByRef outName, nearestLimit := 0) {
         return 0
     }
 
+    if !AZMP_IsPedInGtaPool(targetPed, targetSlot, 1) {
+        AZMP_ResetTargetCache("target PED is not an occupied GTA pool slot")
+        AZMP_TargetDiagSetContext(targetPed, 0)
+        AZMP_TargetDiagSet("TARGET_PED_OUTSIDE_GTA_POOL", "цель не является занятым слотом CPed GTA")
+        return 0
+    }
     playerPool := AZMP_GetPlayerPool()
     if !IsLikelyPointer(playerPool) {
         AZMP_TargetDiagSetContext(targetPed, 0)
@@ -1110,7 +1109,7 @@ getPlayerDataByPed(targetPed, ByRef outId, ByRef outName, nearestLimit := 0) {
                 exactLayout := candidate.Layout
                 break
             }
-            if AZMP_IsValidGamePed(candidate.Ped)
+            if (fallbackLimit > 0 && AZMP_IsValidGamePed(candidate.Ped))
                 strictPedCandidateCount += 1
         }
         if (exactLayout != "") {
@@ -1221,7 +1220,7 @@ getMaskDataByPed(targetPed, ByRef outMaskNumber, ByRef outPlayerId, playerRadius
     outPlayerId := -1
     if !IsLikelyPointer(targetPed)
         return 0
-    if (!checkHandles())
+    if (!checkReadHandles())
         return 0
 
     targetCoords := AZMP_GetGamePedCoordinates(targetPed)
@@ -1437,11 +1436,11 @@ getPlayerIdByPed(targetPed) {
 }
 
 isInChat() {
-    if (!checkHandles())
+    if (!checkReadHandles())
         return -1
     inputInfoPtr := readDWORD(hGTA, dwSAMP + 0x26E8F4)
-    if (!inputInfoPtr)
+    if (ErrorLevel || !IsLikelyPointer(inputInfoPtr))
         return -1
     state := readDWORD(hGTA, inputInfoPtr + 0x61)
-    return ErrorLevel ? -1 : (state > 0 ? 1 : 0)
+    return (ErrorLevel || (state != 0 && state != 1)) ? -1 : state
 }

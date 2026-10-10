@@ -370,6 +370,7 @@ TerritoryMap_ShowCatalog(CtrlHwnd := "", GuiEvent := "", EventInfo := "", ErrLev
     Gui, TerritoryMaps:Add, ListBox, y+8 w610 r11 vTerritoryMapSelectedIndex AltSubmit Choose1, %items%
     Gui, TerritoryMaps:Add, Button, y+10 w190 h30 Default gTerritoryMap_OpenSelected, Открыть
     Gui, TerritoryMaps:Add, Button, x+12 yp w190 h30 gTerritoryMap_CloseCatalog, Закрыть
+    Capture_BeforeShow("TerritoryMaps")
     Gui, TerritoryMaps:Show, AutoSize Center
     TerritoryMapSelectedIndex := 1
     TerritoryMapGuiVisible := 1
@@ -506,6 +507,7 @@ TerritoryMap_ShowLocal(groupIndex, assetIndex := 1)
     Gui, TerritoryMapView:Add, Button, x+8 yp w145 h30 gTerritoryMap_OpenCurrentLocal, Открыть файл
     Gui, TerritoryMapView:Add, Button, x+8 yp w165 h30 gTerritoryMap_OpenCurrentForum, Оригинал форума
     Gui, TerritoryMapView:Add, Button, x+8 yp w130 h30 gTerritoryMap_CloseView, Закрыть
+    Capture_BeforeShow("TerritoryMapView")
     Gui, TerritoryMapView:Show, AutoSize Center
     TerritoryMapViewVisible := 1
     TerritoryMapGuiVisible := 1
@@ -1015,19 +1017,22 @@ LawGui_Show(state, title, body, officialExact := 0, docPrefix := "")
 
     LawGuiX := 5
     LawGuiY := 8
-    LawGuiW := Floor(A_ScreenWidth / 3)
+    uiScale := A_ScreenDPI / 96.0
+    screenW := Floor(A_ScreenWidth / uiScale)
+    screenH := Floor(A_ScreenHeight / uiScale)
+    LawGuiW := Floor(screenW / 3)
     if (LawGuiW < 620)
         LawGuiW := 620
     if (LawGuiW > 900)
         LawGuiW := 900
-    maxLawW := A_ScreenWidth - 16
+    maxLawW := screenW - 16
     if (LawGuiW > maxLawW)
         LawGuiW := maxLawW
 
-    LawGuiH := A_ScreenHeight - 26
+    LawGuiH := screenH - 26
     if (LawGuiH < 600)
         LawGuiH := 600
-    maxLawH := A_ScreenHeight - 16
+    maxLawH := screenH - 16
     if (LawGuiH > maxLawH)
         LawGuiH := maxLawH
 
@@ -1053,9 +1058,7 @@ LawGui_Show(state, title, body, officialExact := 0, docPrefix := "")
     LawTitleFontSize := LawBodyFontSize + 1
     LawAccentColor := LawSearch_GetShellAccentColor()
 
-    ContentW := LawGuiW - 50
-    if (ContentW > 650)
-        ContentW := 650
+    ContentW := LawGuiW - 28
     if (ContentW < 550)
         ContentW := LawGuiW - 24
 
@@ -1072,21 +1075,21 @@ LawGui_Show(state, title, body, officialExact := 0, docPrefix := "")
     HeaderTitleW := ContentW - HeaderPageW - HeaderMapW - 16
     if (LawHeaderPage = "")
         HeaderTitleW := ContentW - HeaderMapW - (HeaderMapW ? 8 : 0)
-    HeaderH := 24
-    BodyH := LawGuiH - 48
+    HeaderH := 30
+    BodyH := Max(40, LawGuiH - 62)
 
     Gui, 1:+LastFound +AlwaysOnTop -Caption +ToolWindow +Border +HwndLawGuiHwnd
     Gui, 1:Color, %LawBgColor%, %LawBgColor%
     Gui, 1:Margin, 10, 6
     LawBorderRight := LawGuiW - 2
     LawBorderBottom := LawGuiH - 2
-    Gui, 1:Add, Progress, x0 y0 w%LawGuiW% h2 Disabled Background%LawBgColor% c%LawAccentColor%, 100
-    Gui, 1:Add, Progress, x0 y%LawBorderBottom% w%LawGuiW% h2 Disabled Background%LawBgColor% c%LawAccentColor%, 100
-    Gui, 1:Add, Progress, x0 y0 w2 h%LawGuiH% Disabled Vertical Background%LawBgColor% c%LawAccentColor%, 100
-    Gui, 1:Add, Progress, x%LawBorderRight% y0 w2 h%LawGuiH% Disabled Vertical Background%LawBgColor% c%LawAccentColor%, 100
+    Gui, 1:Add, Progress, -Theme x0 y0 w%LawGuiW% h2 Disabled Background%LawBgColor% c%LawAccentColor%, 100
+    Gui, 1:Add, Progress, -Theme x0 y%LawBorderBottom% w%LawGuiW% h2 Disabled Background%LawBgColor% c%LawAccentColor%, 100
+    Gui, 1:Add, Progress, -Theme x0 y0 w2 h%LawGuiH% Disabled Vertical Background%LawBgColor% c%LawAccentColor%, 100
+    Gui, 1:Add, Progress, -Theme x%LawBorderRight% y0 w2 h%LawGuiH% Disabled Vertical Background%LawBgColor% c%LawAccentColor%, 100
 
     Gui, 1:Font, s%LawTitleFontSize% Bold c%LawTextColor%, Segoe UI
-    Gui, 1:Add, Text, xm ym w%HeaderTitleW% h%HeaderH% +0x200 BackgroundTrans, %LawHeaderTitle%
+    Gui, 1:Add, Text, xm ym w%HeaderTitleW% h%HeaderH% +0x200 +0x4000 BackgroundTrans, %LawHeaderTitle%
     if (LawHeaderPage != "")
     {
         Gui, 1:Font, s%LawBodyFontSize% Bold c%LawAccentColor%, Segoe UI
@@ -1097,10 +1100,12 @@ LawGui_Show(state, title, body, officialExact := 0, docPrefix := "")
         Gui, 1:Font, s%LawBodyFontSize% Bold c%LawTextColor%, Segoe UI
         Gui, 1:Add, Button, x+8 yp w%HeaderMapW% h22 gTerritoryMap_ShowCatalog, Карты
     }
-    Gui, 1:Add, Progress, xm y+3 w%ContentW% h1 Disabled Background%LawBgColor% c%LawAccentColor%, 100
+    Gui, 1:Add, Progress, -Theme xm y+3 w%ContentW% h1 Disabled Background%LawBgColor% c%LawAccentColor%, 100
 
-    Gui, 1:Font, s%LawBodyFontSize% c%LawTextColor%, Segoe UI
-    Gui, 1:Add, Text, xm y+3 w%ContentW% h%BodyH% BackgroundTrans, %body%
+    Gui, 1:Font, Norm s%LawBodyFontSize% c%LawTextColor%, Segoe UI
+    Gui, 1:Add, Edit, xm y+8 w%ContentW% h%BodyH% ReadOnly Multi +VScroll -WantTab, %body%
+
+    Capture_BeforeShow("1")
 
     Gui, 1:Show, x%LawGuiX% y%LawGuiY% w%LawGuiW% h%LawGuiH% NoActivate, window.
     WinSet, Transparent, %LawAlpha%, ahk_id %LawGuiHwnd%
@@ -4245,30 +4250,26 @@ Search_ShowCurrentResult()
     accentColor := LawSearch_GetShellAccentColor()
     alpha := LawSearch_GetShellAlpha()
 
-    SearchGuiW := 680
-    if (SearchGuiW > A_ScreenWidth - 20)
-        SearchGuiW := A_ScreenWidth - 20
+    uiScale := A_ScreenDPI / 96.0
+    screenW := Floor(A_ScreenWidth / uiScale)
+    screenH := Floor(A_ScreenHeight / uiScale)
+    SearchGuiW := 720
+    if (SearchGuiW > screenW - 20)
+        SearchGuiW := screenW - 20
     SearchGuiH := 392
-    if (SearchGuiH > A_ScreenHeight - 110)
-        SearchGuiH := A_ScreenHeight - 110
-    if (SearchGuiH < 320)
-        SearchGuiH := 320
+    if (SearchGuiH > screenH - 110)
+        SearchGuiH := screenH - 110
+    SearchGuiH := Max(200, Min(SearchGuiH, screenH - 40))
     SearchGuiX := 5
-    SearchGuiY := A_ScreenHeight - SearchGuiH - 20
+    SearchGuiY := A_ScreenHeight - Round(SearchGuiH * uiScale) - 20
     if (SearchGuiY < 80)
         SearchGuiY := 80
     MarginX := 14
     MarginY := 10
     ContentW := SearchGuiW - (MarginX * 2)
-    HierarchyLines := LawSearch_CountDisplayLines(hierarchy)
-    HierarchyH := (HierarchyLines * 18) + 4
-    if (HierarchyH < 24)
-        HierarchyH := 24
-    if (HierarchyH > 102)
-        HierarchyH := 102
-    BodyH := SearchGuiH - HierarchyH - 124
-    if (BodyH < 160)
-        BodyH := 160
+    HierarchyH := Min(120, Max(28, UI_MeasureTextHeight(hierarchy, ContentW, 9, 1)))
+    BodyY := 76 + HierarchyH
+    BodyH := Max(40, SearchGuiH - BodyY - 12)
     borderSize := 2
     rightX := SearchGuiW - borderSize
     bottomY := SearchGuiH - borderSize
@@ -4277,20 +4278,20 @@ Search_ShowCurrentResult()
     Gui, 16:+LastFound +AlwaysOnTop -Caption +ToolWindow +Border +HwndSearchGuiHwnd
     Gui, 16:Color, %bgColor%, %bgColor%
     Gui, 16:Margin, %MarginX%, %MarginY%
-    Gui, 16:Add, Progress, x0 y0 w%SearchGuiW% h%borderSize% Disabled Background%bgColor% c%accentColor%, 100
-    Gui, 16:Add, Progress, x0 y%bottomY% w%SearchGuiW% h%borderSize% Disabled Background%bgColor% c%accentColor%, 100
-    Gui, 16:Add, Progress, x0 y0 w%borderSize% h%SearchGuiH% Disabled Vertical Background%bgColor% c%accentColor%, 100
-    Gui, 16:Add, Progress, x%rightX% y0 w%borderSize% h%SearchGuiH% Disabled Vertical Background%bgColor% c%accentColor%, 100
+    Gui, 16:Add, Progress, -Theme x0 y0 w%SearchGuiW% h%borderSize% Disabled Background%bgColor% c%accentColor%, 100
+    Gui, 16:Add, Progress, -Theme x0 y%bottomY% w%SearchGuiW% h%borderSize% Disabled Background%bgColor% c%accentColor%, 100
+    Gui, 16:Add, Progress, -Theme x0 y0 w%borderSize% h%SearchGuiH% Disabled Vertical Background%bgColor% c%accentColor%, 100
+    Gui, 16:Add, Progress, -Theme x%rightX% y0 w%borderSize% h%SearchGuiH% Disabled Vertical Background%bgColor% c%accentColor%, 100
     Gui, 16:Font, s10 Bold c%textColor%, Segoe UI
-    Gui, 16:Add, Text, xm ym w%ContentW% h22 +0x200 BackgroundTrans, %header%
-    Gui, 16:Font, s8 c%accentColor%, Segoe UI
-    Gui, 16:Add, Text, xm y+0 w%ContentW% h18 +0x200 BackgroundTrans, %meta%
-    Gui, 16:Add, Progress, xm y+4 w%ContentW% h1 Disabled Background%bgColor% c%accentColor%, 100
+    Gui, 16:Add, Text, xm ym w%ContentW% h24 +0x200 +0x4000 BackgroundTrans, %header%
+    Gui, 16:Font, Norm s8 c%accentColor%, Segoe UI
+    Gui, 16:Add, Text, xm y+0 w%ContentW% h20 +0x200 +0x4000 BackgroundTrans, %meta%
+    Gui, 16:Add, Progress, -Theme xm y+4 w%ContentW% h1 Disabled Background%bgColor% c%accentColor%, 100
     Gui, 16:Font, s9 Bold c%accentColor%, Segoe UI
-    Gui, 16:Add, Text, xm y+7 w%ContentW% h%HierarchyH% BackgroundTrans, %hierarchy%
-    Gui, 16:Add, Progress, xm y+5 w%ContentW% h1 Disabled Background%bgColor% c%accentColor%, 100
-    Gui, 16:Font, s9 c%textColor%, Segoe UI
-    Gui, 16:Add, Text, xm y+6 w%ContentW% h%BodyH% BackgroundTrans, %body%
+    Gui, 16:Add, Text, xm y+7 w%ContentW% h%HierarchyH% +Wrap BackgroundTrans, %hierarchy%
+    Gui, 16:Font, s9 Norm c%textColor%, Segoe UI
+    Gui, 16:Add, Edit, x14 y%BodyY% w%ContentW% h%BodyH% ReadOnly Multi +VScroll -WantTab, %body%
+    Capture_BeforeShow("16")
     Gui, 16:Show, x%SearchGuiX% y%SearchGuiY% w%SearchGuiW% h%SearchGuiH% NoActivate, law search
     WinSet, Transparent, %alpha%, ahk_id %SearchGuiHwnd%
     LawSearch_ApplyShellRound(SearchGuiHwnd)
@@ -4465,12 +4466,13 @@ LawSearch_ShowNotice(text)
     Gui, 17:+LastFound +AlwaysOnTop -Caption +ToolWindow +Border +HwndSearchNoticeHwnd
     Gui, 17:Color, %bgColor%, %bgColor%
     Gui, 17:Margin, %MarginX%, %MarginY%
-    Gui, 17:Add, Progress, x0 y0 w%NoticeW% h%borderSize% Disabled Background%bgColor% c%accentColor%, 100
-    Gui, 17:Add, Progress, x0 y%bottomY% w%NoticeW% h%borderSize% Disabled Background%bgColor% c%accentColor%, 100
-    Gui, 17:Add, Progress, x0 y0 w%borderSize% h%NoticeH% Disabled Vertical Background%bgColor% c%accentColor%, 100
-    Gui, 17:Add, Progress, x%rightX% y0 w%borderSize% h%NoticeH% Disabled Vertical Background%bgColor% c%accentColor%, 100
+    Gui, 17:Add, Progress, -Theme x0 y0 w%NoticeW% h%borderSize% Disabled Background%bgColor% c%accentColor%, 100
+    Gui, 17:Add, Progress, -Theme x0 y%bottomY% w%NoticeW% h%borderSize% Disabled Background%bgColor% c%accentColor%, 100
+    Gui, 17:Add, Progress, -Theme x0 y0 w%borderSize% h%NoticeH% Disabled Vertical Background%bgColor% c%accentColor%, 100
+    Gui, 17:Add, Progress, -Theme x%rightX% y0 w%borderSize% h%NoticeH% Disabled Vertical Background%bgColor% c%accentColor%, 100
     Gui, 17:Font, s9 Bold c%textColor%, Segoe UI
     Gui, 17:Add, Text, xm ym w%TextW% h38 +0x200 BackgroundTrans, %text%
+    Capture_BeforeShow("17")
     Gui, 17:Show, x%NoticeX% y%NoticeY% w%NoticeW% h%NoticeH% NoActivate, law search notice
     WinSet, Transparent, %alpha%, ahk_id %SearchNoticeHwnd%
     LawSearch_ApplyShellRound(SearchNoticeHwnd)
@@ -6387,7 +6389,7 @@ global AutoTargetCandidateReads := 0
 global AutoTargetCandidatePed := 0
 global AutoTargetCandidateMatchType := 0
 global AutoTargetRButtonLatched := 0
-global AutoTargetStableReads := 2
+global AutoTargetStableReads := 1
 global AutoTargetLastScanTick := 0
 global AutoTargetDiagCode := "INIT"
 global AutoTargetDiagDetail := ""
@@ -7265,7 +7267,7 @@ SetTimer, UpdateHUDTimer, 1000
 SetTimer, TaskSchedulerTimerTick, 100
 SetTimer, ChatQueueTimerTick, 150
 SetTimer, ChatLogReaderTick, 250
-SetTimer, AutoTargetIDTick, 120
+SetTimer, AutoTargetIDTick, 50
 LogError("System", "Script start", "INFO")
 return
 
@@ -8154,6 +8156,9 @@ RunDiagnosticsExport() {
     Diagnostics_AddLine(report, "No GUI, hotkeys, timers, clipboard, GTA memory, profiles/themes writes, or game actions are intentionally used in this mode.")
     Diagnostics_AddCheck(report, "High", "diagnostics guard before normal startup (static)", SelfTest_TextContains(mainText, "if HasCommandLineArg(" . Chr(34) . "--diagnostics" . Chr(34) . ")"), "guard is in auto-execute before InitProfiles/ApplyAllBinds/CreateHUD")
 
+    Diagnostics_AddSection(report, "Capture")
+    Diagnostics_AddLine(report, Capture_GetDiagnosticsText())
+
     Diagnostics_AddSection(report, "Files")
     Diagnostics_CollectFileInfo(report, mainPath, "main")
     Diagnostics_CollectFileInfo(report, helperPath, "helper")
@@ -8729,11 +8734,11 @@ GetThemeColors(ByRef bg, ByRef panel, ByRef text, ByRef accent, ByRef muted) {
 
     if (ThemeMode = "Graphite")
     {
-        bg := "16191D"
-        panel := "21262C"
-        text := "F2F4F7"
-        accent := "3AA675"
-        muted := "AAB2BD"
+        bg := "121821"
+        panel := "1B2430"
+        text := "EBF0F7"
+        accent := "79A8F5"
+        muted := "A8B5C7"
     }
     else if (ThemeMode = "Light")
     {
@@ -8840,30 +8845,18 @@ GetThemeColors(ByRef bg, ByRef panel, ByRef text, ByRef accent, ByRef muted) {
 }
 
 GetControlSurfaceColors(ByRef controlBg, ByRef controlText, ByRef cardBg, ByRef cardEdge, panel, text, accent) {
-    if (ColorBrightness(panel) >= 140)
-    {
+    if (ColorBrightness(panel) >= 140) {
         controlBg := "FFFFFF"
-        cardBg := ShiftHexColor(panel, -6)
-        cardEdge := ShiftHexColor(accent, -8)
+        cardBg := ShiftHexColor(panel, -3)
+        cardEdge := ShiftHexColor(panel, -24)
+        controlText := "192332"
+    } else {
+        controlBg := ShiftHexColor(panel, 8)
+        cardBg := ShiftHexColor(panel, -3)
+        cardEdge := ShiftHexColor(panel, 20)
+        controlText := "EBF0F7"
     }
-    else
-    {
-        controlBg := ShiftHexColor(panel, 18)
-        if (controlBg = "")
-            controlBg := "343B44"
-        cardBg := ShiftHexColor(panel, 10)
-        cardEdge := ShiftHexColor(accent, 14)
-    }
-
-    if (ColorBrightness(controlBg) >= 140)
-        controlText := "111418"
-    else
-        controlText := "F4F6F8"
-
-    if (cardBg = "")
-        cardBg := panel
-    if (cardEdge = "")
-        cardEdge := accent
+    controlText := EnsureTextContrast(controlText, controlBg, controlBg)
 }
 
 HexToBGR(hex) {
@@ -8911,11 +8904,12 @@ AddOutlinedPanel(guiNum, x, y, w, h, fillColor, borderColor, borderSize := 3) {
         borderSize := 1
     rightX := x + w - borderSize
     bottomY := y + h - borderSize
-    Gui, %guiNum%:Add, Progress, x%x% y%y% w%w% h%h% Disabled Background%fillColor% c%fillColor%, 100
-    Gui, %guiNum%:Add, Progress, x%x% y%y% w%w% h%borderSize% Disabled Background%fillColor% c%borderColor%, 100
-    Gui, %guiNum%:Add, Progress, x%x% y%y% w%borderSize% h%h% Disabled Vertical Background%fillColor% c%borderColor%, 100
-    Gui, %guiNum%:Add, Progress, x%x% y%bottomY% w%w% h%borderSize% Disabled Background%fillColor% c%borderColor%, 100
-    Gui, %guiNum%:Add, Progress, x%rightX% y%y% w%borderSize% h%h% Disabled Vertical Background%fillColor% c%borderColor%, 100
+    Gui, %guiNum%:Add, Progress, -Theme x%x% y%y% w%w% h%h% Disabled Background%fillColor% c%fillColor% hwndpanelFill, 100
+    Gui, %guiNum%:Add, Progress, -Theme x%x% y%y% w%w% h%borderSize% Disabled Background%fillColor% c%borderColor% hwndpanelTop, 100
+    Gui, %guiNum%:Add, Progress, -Theme x%x% y%y% w%borderSize% h%h% Disabled Vertical Background%fillColor% c%borderColor% hwndpanelLeft, 100
+    Gui, %guiNum%:Add, Progress, -Theme x%x% y%bottomY% w%w% h%borderSize% Disabled Background%fillColor% c%borderColor% hwndpanelBottom, 100
+    Gui, %guiNum%:Add, Progress, -Theme x%rightX% y%y% w%borderSize% h%h% Disabled Vertical Background%fillColor% c%borderColor% hwndpanelRight, 100
+    return {Fill: panelFill, Top: panelTop, Left: panelLeft, Bottom: panelBottom, Right: panelRight, X: x, Y: y, W: w, Border: borderSize}
 }
 
 GetThemePresetList() {
@@ -9010,7 +9004,10 @@ ShowSettingsWindow() {
     global SettingsX, SettingsY, SettingsW, SettingsH, hSettingsWnd
     global MenuTransparency, UIRoundness, InnerRoundness
     Settings_NormalizeViewport()
+    Gui, 2:-DPIScale
+    Capture_BeforeShow("2")
     Gui, 2:Show, % "x" . SettingsX . " y" . SettingsY . " w" . SettingsW . " h" . SettingsH, Настройки профиля
+    Gui, 2:+DPIScale
     Settings_UpdateScrollbars()
     WinActivate, ahk_id %hSettingsWnd%
     settingsAlpha := 255
@@ -9349,7 +9346,7 @@ RunMemoryLiveTest(showPrompt := 1) {
 }
 
 AzmpAllowsTargetRead() {
-    return MemoryBuildCompatible()
+    return checkReadHandles()
 }
 
 HasCurrentID() {
@@ -9378,7 +9375,7 @@ GetCrosshairTargetPed(ByRef errorCode := "", ByRef errorDetail := "") {
     global hGTA
     errorCode := ""
     errorDetail := ""
-    if (!checkHandles()) {
+    if (!checkReadHandles()) {
         errorCode := "HANDLE_CHECK_FAILED"
         errorDetail := MemoryGetStatusText()
         return 0
@@ -9455,14 +9452,9 @@ GetCrosshairTargetPed(ByRef errorCode := "", ByRef errorDetail := "") {
 }
 
 GetPedCoordinates(pedPtr) {
-    if (pedPtr = 0)
+    if (!checkReadHandles() || !AZMP_IsValidGamePed(pedPtr))
         return 0
-
-    matrixPtr := readDWORD(hGTA, pedPtr + 0x14)
-    if (matrixPtr = 0)
-        return 0
-
-    return [readFloat(hGTA, matrixPtr + 0x30), readFloat(hGTA, matrixPtr + 0x34), readFloat(hGTA, matrixPtr + 0x38)]
+    return AZMP_GetGamePedCoordinates(pedPtr)
 }
 
 GetCrosshairTargetDistance(ByRef source := "") {
@@ -9672,7 +9664,7 @@ AutoTargetID_DiagnoseAndRecover(showNotice := 1, attemptRepair := 1, knownTarget
                 ? MemoryInvalidateGameHandle("Auto ID diagnostic: " . code) : false
             if (recoveryStarted) {
                 Sleep, 30
-                handleOk := checkHandles()
+                handleOk := checkReadHandles()
                 poolOk := handleOk && IsFunc("AZMP_GetGtaPedPoolInfo")
                     && AZMP_GetGtaPedPoolInfo(recoverPool, recoverObjects, recoverFlags, recoverSize, 1)
                 repaired := handleOk ? (poolOk ? "полностью переоткрыты память и CPed pool"
@@ -9766,6 +9758,13 @@ AutoTargetID_ReadAimedID(ByRef targetPed := 0, ByRef angle := -1, ByRef targetNa
     ; выбор по псевдоуглу камера->локальный игрок был неточным и удалён.
     playerMatch := getPlayerDataByPed(targetPed, aimedId, targetName, 0)
     if (playerMatch = 1 && aimedId >= 0) {
+        ; The pool scan may take longer on a populated server. A live target
+        ; check after it must agree, even when the exact mapping was found.
+        finalTarget := GetCrosshairTargetPed(finalTargetCode, finalTargetDetail)
+        if (finalTarget != targetPed) {
+            AutoTargetID_SetDiagnostic("TARGET_CHANGED_DURING_SCAN", "цель изменилась после точного поиска CPed")
+            return -1
+        }
         matchType := 1
         if AZMP_IsMaskDisplayName(targetName)
             targetName := ""
@@ -9842,8 +9841,30 @@ AutoTargetID_RequestConfirmation(aimedValue, targetPed := 0, angle := -1, source
     return true
 }
 
+AutoTargetID_ObserveCandidate(aimedValue, targetName, targetPed, matchType) {
+    global AutoTargetCandidateID, AutoTargetCandidateReads
+    global AutoTargetCandidatePed, AutoTargetCandidateMatchType
+    candidateKey := aimedValue . "|" . targetName . "|" . targetPed . "|" . matchType
+    if (candidateKey = AutoTargetCandidateID)
+        AutoTargetCandidateReads += 1
+    else {
+        AutoTargetCandidateID := candidateKey
+        AutoTargetCandidateReads := 1
+        AutoTargetCandidatePed := targetPed
+        AutoTargetCandidateMatchType := matchType
+    }
+    return AutoTargetCandidateReads
+}
+
+AutoTargetID_RequiredReads(matchType, isMask) {
+    return (!isMask && matchType = 1) ? 1 : 3
+}
+
 AutoTargetID_CaptureNow(showFailure := 1) {
-    global AutoTargetIDEnabled, AutoTargetDiagCode, AutoTargetDiagDetail
+    global AutoTargetIDEnabled, AutoTargetDiagCode, AutoTargetDiagDetail, MockMode
+    captureEpoch := AutomationEpoch
+    if (MockMode = "On" || !GameLocator_IsActive())
+        return false
     if (AutoTargetIDEnabled != "On") {
         if (showFailure)
             GameNotify("Автозахват ID отключён в профиле.", "WARN")
@@ -9851,7 +9872,7 @@ AutoTargetID_CaptureNow(showFailure := 1) {
     }
     if !AzmpAllowsTargetRead() {
         if (showFailure)
-            GameNotify("Захват ID заблокирован: SHA-256 azmp.dll не совпадает.", "ERROR")
+            GameNotify("Захват ID недоступен: " . MemoryGetShortError(), "ERROR")
         return false
     }
     aimedValue := AutoTargetID_ReadAimedID(targetPed, angle, targetName, isMask, matchType)
@@ -9862,6 +9883,8 @@ AutoTargetID_CaptureNow(showFailure := 1) {
         return false
     }
     AutoTargetID_ClearFailure()
+    if (captureEpoch != AutomationEpoch || !GameLocator_IsActive())
+        return false
     return AutoTargetID_RequestConfirmation(aimedValue, targetPed, angle, "Ручной захват", targetName, isMask)
 }
 
@@ -9873,6 +9896,7 @@ AutoTargetID_Poll() {
 
     if (!GetKeyState("RButton", "P")) {
         AutoTargetRButtonLatched := 0
+        AutoTargetLastScanTick := 0
         AutoTargetID_ResetCandidate()
         AutoTargetID_ClearFailure()
         return
@@ -9881,19 +9905,29 @@ AutoTargetID_Poll() {
         return
     if ContextAssistant_ConfirmHotkeysActive()
         return
-    if !GameLocator_IsActive()
+    if !GameLocator_IsActive() {
+        AutoTargetID_ResetCandidate()
         return
+    }
+    captureEpoch := AutomationEpoch
+    capturePID := dwGTAPID
+    captureGeneration := g_HandleGeneration
 
     chatState := isInChat()
     if (chatState != 0) {
-        if (chatState < 0)
-            AutoTargetID_ResetCandidate()
+        AutoTargetID_ResetCandidate()
         return
     }
 
-    if (AutoTargetLastScanTick != 0 && AZMP_TickElapsed(AutoTargetLastScanTick) < 180)
+    if (AutoTargetLastScanTick != 0 && AZMP_TickElapsed(AutoTargetLastScanTick) < 40)
         return
     AutoTargetLastScanTick := TickNow()
+    if !AzmpAllowsTargetRead() {
+        AutoTargetID_ResetCandidate()
+        return
+    }
+    capturePID := dwGTAPID
+    captureGeneration := g_HandleGeneration
 
     aimedValue := AutoTargetID_ReadAimedID(targetPed, angle, targetName, isMask, matchType)
     if (aimedValue = -1 || aimedValue = "") {
@@ -9905,19 +9939,11 @@ AutoTargetID_Poll() {
 
     ; PED включён в ключ стабильности: один и тот же ID от другой сущности
     ; не может продолжить счётчик предыдущей цели.
-    candidateKey := aimedValue . "|" . targetName . "|" . targetPed . "|" . matchType
-    if (candidateKey = AutoTargetCandidateID) {
-        AutoTargetCandidateReads += 1
-    } else {
-        AutoTargetCandidateID := candidateKey
-        AutoTargetCandidateReads := 1
-        AutoTargetCandidatePed := targetPed
-        AutoTargetCandidateMatchType := matchType
-    }
+    AutoTargetID_ObserveCandidate(aimedValue, targetName, targetPed, matchType)
 
-    requiredReads := isMask ? 3 : AutoTargetStableReads
-    if (matchType != 1 && requiredReads < 3)
-        requiredReads := 3
+    ; Exact ID/PED mapping is accepted on the first scan; masks and indirect
+    ; matches retain three observations. Every path still verifies again below.
+    requiredReads := AutoTargetID_RequiredReads(matchType, isMask)
     if (AutoTargetCandidateReads < requiredReads)
         return
 
@@ -9929,6 +9955,12 @@ AutoTargetID_Poll() {
     }
     targetName := verifyName
     angle := verifyAngle
+    if (captureEpoch != AutomationEpoch || capturePID != dwGTAPID
+        || captureGeneration != g_HandleGeneration || !GameLocator_IsActive()
+        || !GetKeyState("RButton", "P")) {
+        AutoTargetID_ResetCandidate()
+        return
+    }
 
     if (ActiveID) {
         if (!isMask && HasCurrentID() && (UserID + 0 = aimedValue + 0)) {
@@ -10948,11 +10980,12 @@ ContextAssistant_ShowConfirmationOverlay(title, prompt, statusText) {
     Gui, 42:+HwndhContextAssistantWnd +AlwaysOnTop -Caption +ToolWindow +E0x08000020
     Gui, 42:Color, %panel%
     Gui, 42:Margin, 0, 0
-    Gui, 42:Add, Progress, x0 y0 w4 h%overlayH% Disabled Vertical Background%panel% c%accent%, 100
+    Gui, 42:Add, Progress, -Theme x0 y0 w4 h%overlayH% Disabled Vertical Background%panel% c%accent%, 100
     Gui, 42:Font, s8 Bold c%textColor%, Segoe UI
     Gui, 42:Add, Text, x14 y6 w286 h20 0x200 BackgroundTrans, %prompt%
-    Gui, 42:Font, s8 c%muted%, Segoe UI
+    Gui, 42:Font, Norm s8 c%muted%, Segoe UI
     Gui, 42:Add, Text, x14 y29 w286 h17 vContextAssistantStatus BackgroundTrans, %statusText%
+    Capture_BeforeShow("42")
     Gui, 42:Show, x%overlayX% y%overlayY% w%overlayW% h%overlayH% NoActivate, AHK FOR GOS BY SBEZRUK Notification
     ContextAssistant_MakeWindowPassive(hContextAssistantWnd)
     ApplyRoundedCorners(hContextAssistantWnd, (UIRoundness > 12) ? 12 : UIRoundness)
@@ -11075,13 +11108,13 @@ ContextAssistant_Request(actionName, presetValue := "", presetVariant := "", tar
 
     ContextAssistantMode := "input"
     ContextAssistantStatus := "Enter - подтвердить, Esc - отменить."
-    Gui, 42:Font, s9 c%muted%, Segoe UI
+    Gui, 42:Font, Norm s9 c%muted%, Segoe UI
     Gui, 42:Add, Text, x18 y50 w524 h42 BackgroundTrans, %prompt%
-    Gui, 42:Font, s10 c%inputText%, Segoe UI
+    Gui, 42:Font, Norm s10 c%inputText%, Segoe UI
     Gui, 42:Add, Edit, x18 y104 w524 h32 Number Limit6 vContextAssistantInput, %presetValue%
-    Gui, 42:Font, s9 c%muted%, Segoe UI
+    Gui, 42:Font, Norm s9 c%muted%, Segoe UI
     Gui, 42:Add, Text, x18 y142 w524 h22 vContextAssistantStatus BackgroundTrans, %ContextAssistantStatus%
-    Gui, 42:Font, s10 c%textColor%, Segoe UI
+    Gui, 42:Font, Norm s10 c%textColor%, Segoe UI
     if (actionName = "Stun")
     {
         Gui, 42:Add, Button, x18 y178 w164 h34 Default gContextAssistantTaserLabel, Тазер
@@ -11093,6 +11126,7 @@ ContextAssistant_Request(actionName, presetValue := "", presetVariant := "", tar
         Gui, 42:Add, Button, x190 y178 w164 h34 Default gContextAssistantConfirmLabel, %confirmText%
         Gui, 42:Add, Button, x378 y178 w164 h34 gContextAssistantCancelLabel, Отмена
     }
+    Capture_BeforeShow("42")
     Gui, 42:Show, w560 h230, AHK FOR GOS BY SBEZRUK - %title%
     ApplyRoundedCorners(hContextAssistantWnd, UIRoundness)
     GuiControl, 42:Focus, ContextAssistantInput
@@ -13004,13 +13038,14 @@ MockPreview_Show() {
         Gui, 41:Color, %bg%, %controlBg%
         Gui, 41:Font, s14 Bold c%text%, Segoe UI
         Gui, 41:Add, Text, x14 y12 w400 h28 BackgroundTrans, Тестовый чат
-        Gui, 41:Font, s9 c%muted%, Segoe UI
+        Gui, 41:Font, Norm s9 c%muted%, Segoe UI
         Gui, 41:Add, Text, x430 y18 w190 h20 Right vMockPreviewCountText BackgroundTrans, % "Строк: " . count
-        Gui, 41:Font, s10 c%inputText%, Consolas
+        Gui, 41:Font, Norm s10 c%inputText%, Consolas
         Gui, 41:Add, Edit, x14 y50 w612 h310 ReadOnly -Wrap vMockPreviewEdit, %ChatQueuePreviewText%
-        Gui, 41:Font, s10 c%text%, Segoe UI
+        Gui, 41:Font, Norm s10 c%text%, Segoe UI
         Gui, 41:Add, Button, x14 y374 w130 h30 gClearMockPreviewLabel, Очистить
         Gui, 41:Add, Button, x496 y374 w130 h30 gCloseMockPreviewLabel, Закрыть
+        Capture_BeforeShow("41")
         Gui, 41:Show, w640 h420 NoActivate, AMZ MockMode - тест без игры
         WinSet, Transparent, 255, ahk_id %hMockPreviewWnd%
     }
@@ -14773,11 +14808,11 @@ ShowChatBindMenu() {
 
     Gui, 19:Font, s14 Bold c%text%, Segoe UI
     Gui, 19:Add, Text, % "x" contentX " y" headerY " w" contentW " h26 Center BackgroundTrans +0x200 +0x4000", Меню биндов
-    Gui, 19:Font, s8 c%muted%, Segoe UI
+    Gui, 19:Font, Norm s8 c%muted%, Segoe UI
     Gui, 19:Add, Text, % "x" contentX " y" helpY " w" contentW " h16 Center BackgroundTrans +0x200 +0x4000", Закрыть: напиши !меню и нажми Alt+F
     Gui, 19:Add, Text, % "x" contentX " y" formatY " w" contentW " h16 Center BackgroundTrans +0x200 +0x4000", Format: !name hotkey or !name !trigger
     Gui, 19:Add, Text, % "x" contentX " y" examplesY " w" contentW " h16 Center BackgroundTrans +0x200 +0x4000", Examples: !wanted alt+r | !dep !департамент | !cuff ctrl+f8
-    Gui, 19:Add, Progress, % "x" contentX " y108 w" contentW " h2 Disabled Background" cardBg " c" accent, 100
+    Gui, 19:Add, Progress, % "-Theme " . "x" contentX " y108 w" contentW " h2 Disabled Background" cardBg " c" accent, 100
 
     Loop, 2
     {
@@ -14858,9 +14893,9 @@ ShowChatBindMenu() {
         if (cmdText = "")
             cmdText := "-"
 
-        Gui, 19:Font, s7 c%text%, Segoe UI
+        Gui, 19:Font, Norm s7 c%text%, Segoe UI
         Gui, 19:Add, Text, % "x" x " y" y " w" nameW " h" rowH " +0x200 +0x4000 BackgroundTrans", % row.Label
-        Gui, 19:Font, s7 c%muted%, Segoe UI
+        Gui, 19:Font, Norm s7 c%muted%, Segoe UI
         Gui, 19:Add, Text, % "x" cmdX " y" y " w" cmdW " h" rowH " +0x200 +0x4000 BackgroundTrans", % cmdText
         Gui, 19:Add, Text, % "x" hkX " y" y " w" hkW " h" rowH " +0x200 +0x4000 BackgroundTrans", % hkText
         Gui, 19:Add, Text, % "x" trigX " y" y " w" trigW " h" rowH " +0x200 +0x4000 BackgroundTrans", % trigText
@@ -14876,9 +14911,11 @@ ShowChatBindMenu() {
     if (shown < totalRows)
     {
         footerY := overlayH - 32
-        Gui, 19:Font, s8 c%muted%, Segoe UI
+        Gui, 19:Font, Norm s8 c%muted%, Segoe UI
         Gui, 19:Add, Text, % "x" contentX " y" footerY " w" contentW " h18 Center BackgroundTrans +0x200 +0x4000", % "+ еще " . (totalRows - shown) . " строк. Открой F11 для полного списка."
     }
+
+    Capture_BeforeShow("19")
 
     Gui, 19:Show, % "x" overlayX " y" overlayY " w" overlayW " h" overlayH " NoActivate", ChatBindMenu
     PromoteOverlayWindow(hBindMenuWnd, 1, 1)
@@ -16275,16 +16312,16 @@ CreateHUD() {
     NormalizeNumberRange(hudAlpha, 245, 180, 255)
 
     if (HUDMode = "Компактный")
-        hudW := 252, hudH := 112
+        hudW := 280, hudH := 138
     else if (HUDMode = "Профиль + ID")
-        hudW := 252, hudH := 90
+        hudW := 280, hudH := 112
     else
-        hudW := 272, hudH := 156
+        hudW := 304, hudH := 186
 
     hudRight := hudW - 2
     hudBottom := hudH - 2
     accentH := hudH - 20
-    valueX := 82
+    valueX := 100
     valueW := hudW - valueX - 12
     labelW := 64
     lineW := hudW - 40
@@ -16294,53 +16331,55 @@ CreateHUD() {
     Gui, 12:Color, %panel%
     Gui, 12:Margin, 0, 0
     SafePicture(12, 0, 0, hudW, hudH, "HUDBG", BackgroundImageFile)
-    Gui, 12:Add, Progress, x0 y0 w%hudW% h2 Disabled Background%panel% c%accent% vHUDBorderTop, 100
-    Gui, 12:Add, Progress, x0 y%hudBottom% w%hudW% h2 Disabled Background%panel% c%accent% vHUDBorderBottom, 100
-    Gui, 12:Add, Progress, x0 y0 w2 h%hudH% Disabled Vertical Background%panel% c%accent% vHUDBorderLeft, 100
-    Gui, 12:Add, Progress, x%hudRight% y0 w2 h%hudH% Disabled Vertical Background%panel% c%accent% vHUDBorderRight, 100
-    Gui, 12:Add, Progress, x8 y10 w4 h%accentH% Disabled Vertical Background%panel% c%accent%, 100
+    Gui, 12:Add, Progress, -Theme x0 y0 w%hudW% h2 Disabled Background%panel% c%accent% vHUDBorderTop, 100
+    Gui, 12:Add, Progress, -Theme x0 y%hudBottom% w%hudW% h2 Disabled Background%panel% c%accent% vHUDBorderBottom, 100
+    Gui, 12:Add, Progress, -Theme x0 y0 w2 h%hudH% Disabled Vertical Background%panel% c%accent% vHUDBorderLeft, 100
+    Gui, 12:Add, Progress, -Theme x%hudRight% y0 w2 h%hudH% Disabled Vertical Background%panel% c%accent% vHUDBorderRight, 100
+    Gui, 12:Add, Progress, -Theme x8 y10 w4 h%accentH% Disabled Vertical Background%panel% c%accent%, 100
     Gui, 12:Add, Text, x0 y0 w%hudW% h34 vHUDDragZone gStartHUDDrag BackgroundTrans,
 
     Gui, 12:Font, s10 Bold c%text%, Segoe UI
-    Gui, 12:Add, Text, x20 y9 gStartHUDDrag w%lineW% h20 BackgroundTrans, %TabGuiHeaderText%
-    Gui, 12:Font, s7 c%muted%, Segoe UI
-    Gui, 12:Add, Text, x20 y27 w%lineW% h14 BackgroundTrans, STATUS PANEL
+    Gui, 12:Add, Text, x20 y10 gStartHUDDrag w%lineW% h22 +0x4000 BackgroundTrans, %TabGuiHeaderText%
+    Gui, 12:Font, Norm s7 c%muted%, Segoe UI
+    Gui, 12:Add, Text, x20 y36 w%lineW% h16 BackgroundTrans, Статус персонажа
 
-    rowY := 46
-    Gui, 12:Font, s8 c%muted%, Segoe UI
+    rowY := 60
+    Gui, 12:Font, Norm s8 c%muted%, Segoe UI
     if (HUDMode != "Профиль + ID")
     {
         Gui, 12:Add, Text, x20 y%rowY% w%labelW% h18 BackgroundTrans, Время
-        rowY += 22
+        rowY += 24
     }
     Gui, 12:Add, Text, x20 y%rowY% w%labelW% h18 BackgroundTrans, Профиль
-    rowY += 22
+    rowY += 24
     Gui, 12:Add, Text, x20 y%rowY% w%labelW% h18 BackgroundTrans, Цель
     if (HUDMode = "Полный")
     {
-        rowY += 22
+        rowY += 24
         Gui, 12:Add, Text, x20 y%rowY% w%labelW% h18 BackgroundTrans, Меню
-        rowY += 22
+        rowY += 24
         Gui, 12:Add, Text, x20 y%rowY% w%labelW% h18 BackgroundTrans, Бинды
     }
 
-    rowY := 46
+    rowY := 60
     Gui, 12:Font, s8 Bold c%text%, Segoe UI
     if (HUDMode != "Профиль + ID")
     {
-        Gui, 12:Add, Text, x%valueX% y%rowY% vHUDTimeText w%valueW% h18 Right BackgroundTrans, --
-        rowY += 22
+        Gui, 12:Add, Text, x%valueX% y%rowY% vHUDTimeText w%valueW% h20 Right +0x4000 BackgroundTrans, --
+        rowY += 24
     }
-    Gui, 12:Add, Text, x%valueX% y%rowY% vHUDProfileText w%valueW% h18 Right BackgroundTrans, --
-    rowY += 22
-    Gui, 12:Add, Text, x%valueX% y%rowY% vHUDIDText w%valueW% h18 Right BackgroundTrans, --
+    Gui, 12:Add, Text, x%valueX% y%rowY% vHUDProfileText w%valueW% h20 Right +0x4000 BackgroundTrans, --
+    rowY += 24
+    Gui, 12:Add, Text, x%valueX% y%rowY% vHUDIDText w%valueW% h20 Right +0x4000 BackgroundTrans, --
     if (HUDMode = "Полный")
     {
-        rowY += 22
-        Gui, 12:Add, Text, x%valueX% y%rowY% vHUDMenuText w%valueW% h18 Right BackgroundTrans, --
-        rowY += 22
-        Gui, 12:Add, Text, x%valueX% y%rowY% vHUDBindListText w%valueW% h18 Right BackgroundTrans, --
+        rowY += 24
+        Gui, 12:Add, Text, x%valueX% y%rowY% vHUDMenuText w%valueW% h20 Right +0x4000 BackgroundTrans, --
+        rowY += 24
+        Gui, 12:Add, Text, x%valueX% y%rowY% vHUDBindListText w%valueW% h20 Right +0x4000 BackgroundTrans, --
     }
+
+    Capture_BeforeShow("12")
 
     Gui, 12:Show, x%HudX% y%HudY% NoActivate w%hudW% h%hudH%, AMZHUD
     PromoteOverlayWindow(hHUDWnd, 1, 1)
@@ -16881,39 +16920,39 @@ OpenCustomFunctionBuilder(selectIndex := 1) {
     Gui, 40:+HwndhCustomFunctionWnd +AlwaysOnTop -Resize
     Gui, 40:Color, %bg%, %controlBg%
     Gui, 40:Margin, 0, 0
-    Gui, 40:Add, Progress, x0 y0 w940 h4 Disabled Background%bg% c%accent%, 100
+    Gui, 40:Add, Progress, -Theme x0 y0 w940 h4 Disabled Background%bg% c%accent%, 100
     Gui, 40:Font, s15 Bold c%text%, Segoe UI
     Gui, 40:Add, Text, x20 y14 w560 h30 BackgroundTrans, Конструктор функций
-    Gui, 40:Font, s8 c%muted%, Segoe UI
+    Gui, 40:Font, Norm s8 c%muted%, Segoe UI
     Gui, 40:Add, Text, x20 y44 w880 h18 BackgroundTrans, Собирай последовательности из сообщений, пауз, таймеров и уведомлений. Hotkey действует только в игре при закрытом чате.
-    Gui, 40:Add, Progress, x18 y70 w904 h1 Disabled Background%bg% c%cardEdge%, 100
+    Gui, 40:Add, Progress, -Theme x18 y70 w904 h1 Disabled Background%bg% c%cardEdge%, 100
 
     AddOutlinedPanel(40, 18, 84, 238, 500, cardBg, cardEdge, 1)
     AddOutlinedPanel(40, 270, 84, 652, 500, cardBg, cardEdge, 1)
 
     Gui, 40:Font, s9 Bold c%text%, Segoe UI
     Gui, 40:Add, Text, x32 y98 w210 h20 BackgroundTrans, МОИ ФУНКЦИИ
-    Gui, 40:Font, s9 c%controlText%, Segoe UI
+    Gui, 40:Font, Norm s9 c%controlText%, Segoe UI
     Gui, 40:Add, ListBox, x32 y126 w210 h402 vCFB_List gCustomFunctionListChanged AltSubmit
-    Gui, 40:Font, s9 c%text%, Segoe UI
+    Gui, 40:Font, Norm s9 c%text%, Segoe UI
     Gui, 40:Add, Button, x32 y540 w98 h30 gCustomFunctionNewLabel, Новая
     Gui, 40:Add, Button, x144 y540 w98 h30 gCustomFunctionDeleteLabel, Удалить
 
-    Gui, 40:Font, s8 c%muted%, Segoe UI
+    Gui, 40:Font, Norm s8 c%muted%, Segoe UI
     Gui, 40:Add, Text, x286 y100 w250 h18 BackgroundTrans, Название
     Gui, 40:Add, Text, x552 y100 w150 h18 BackgroundTrans, Hotkey
     Gui, 40:Add, Text, x718 y100 w184 h18 BackgroundTrans, TXT-триггер
-    Gui, 40:Font, s9 c%controlText%, Segoe UI
+    Gui, 40:Font, Norm s9 c%controlText%, Segoe UI
     Gui, 40:Add, Edit, x286 y120 w250 h28 vCFB_Name
     Gui, 40:Add, Hotkey, x552 y120 w150 h28 vCFB_Hotkey
     Gui, 40:Add, Edit, x718 y120 w184 h28 vCFB_Trigger
 
-    Gui, 40:Font, s8 c%muted%, Segoe UI
+    Gui, 40:Font, Norm s8 c%muted%, Segoe UI
     Gui, 40:Add, Text, x286 y164 w616 h18 BackgroundTrans, Сценарий
-    Gui, 40:Font, s9 c%controlText%, Consolas
+    Gui, 40:Font, Norm s9 c%controlText%, Consolas
     Gui, 40:Add, Edit, x286 y184 w616 h302 vCFB_Script hwndhCFBScript WantTab -Wrap Background%controlBg%
 
-    Gui, 40:Font, s8 c%text%, Segoe UI
+    Gui, 40:Font, Norm s8 c%text%, Segoe UI
     Gui, 40:Add, Button, x286 y500 w88 h28 gCustomFunctionAddSendLabel, + SEND
     Gui, 40:Add, Button, x380 y500 w88 h28 gCustomFunctionAddWaitLabel, + Пауза
     Gui, 40:Add, Button, x474 y500 w88 h28 gCustomFunctionAddTimerLabel, + Таймер
@@ -16921,13 +16960,15 @@ OpenCustomFunctionBuilder(selectIndex := 1) {
     Gui, 40:Add, Button, x678 y500 w88 h28 gCustomFunctionAddTypeLabel, + TYPE
     Gui, 40:Add, Button, x772 y500 w130 h28 gCustomFunctionAddIDLabel, + Переменная ID
 
-    Gui, 40:Font, s8 c%muted%, Segoe UI
+    Gui, 40:Font, Norm s8 c%muted%, Segoe UI
     Gui, 40:Add, Text, x286 y542 w616 h20 vCFB_Status BackgroundTrans,
-    Gui, 40:Font, s9 c%text%, Segoe UI
+    Gui, 40:Font, Norm s9 c%text%, Segoe UI
     Gui, 40:Add, Button, x286 y594 w132 h32 gCustomFunctionSaveLabel Default, Сохранить
     Gui, 40:Add, Button, x430 y594 w132 h32 gCustomFunctionRunLabel, Запустить
     Gui, 40:Add, Button, x574 y594 w132 h32 gCustomFunctionStopLabel, Остановить
     Gui, 40:Add, Button, x770 y594 w132 h32 gCustomFunctionCloseLabel, Закрыть
+
+    Capture_BeforeShow("40")
 
     Gui, 40:Show, w940 h644, AHK FOR GOS BY SBEZRUK - Конструктор функций
     CustomFunctionGuiVisible := 1
@@ -17264,16 +17305,16 @@ CreateBindList() {
     Gui, 13:Color, %panel%, %controlBg%
     Gui, 13:Margin, 0, 0
     SafePicture(13, 0, 0, BindListW, BindListH, "BindListBG", BackgroundImageFile)
-    Gui, 13:Add, Progress, x0 y0 w%BindListW% h2 Disabled Background%panel% c%accent% vBindListBorderTop, 100
-    Gui, 13:Add, Progress, x0 y%bindBottom% w%BindListW% h2 Disabled Background%panel% c%accent% vBindListBorderBottom, 100
-    Gui, 13:Add, Progress, x0 y0 w2 h%BindListH% Disabled Vertical Background%panel% c%accent% vBindListBorderLeft, 100
-    Gui, 13:Add, Progress, x%bindRight% y0 w2 h%BindListH% Disabled Vertical Background%panel% c%accent% vBindListBorderRight, 100
-    Gui, 13:Add, Progress, x10 y10 w4 h40 Disabled Vertical Background%panel% c%accent%, 100
+    Gui, 13:Add, Progress, -Theme x0 y0 w%BindListW% h2 Disabled Background%panel% c%accent% vBindListBorderTop, 100
+    Gui, 13:Add, Progress, -Theme x0 y%bindBottom% w%BindListW% h2 Disabled Background%panel% c%accent% vBindListBorderBottom, 100
+    Gui, 13:Add, Progress, -Theme x0 y0 w2 h%BindListH% Disabled Vertical Background%panel% c%accent% vBindListBorderLeft, 100
+    Gui, 13:Add, Progress, -Theme x%bindRight% y0 w2 h%BindListH% Disabled Vertical Background%panel% c%accent% vBindListBorderRight, 100
+    Gui, 13:Add, Progress, -Theme x10 y10 w4 h40 Disabled Vertical Background%panel% c%accent%, 100
     Gui, 13:Add, Text, x0 y0 w%BindListW% h48 vBindListDragZone gStartBindListDrag BackgroundTrans,
 
     Gui, 13:Font, s10 Bold c%text%, Segoe UI
     Gui, 13:Add, Text, x22 y8 w260 h20 vBindListTitleText gStartBindListDrag BackgroundTrans, БИНДЫ
-    Gui, 13:Font, s8 c%muted%, Segoe UI
+    Gui, 13:Font, Norm s8 c%muted%, Segoe UI
     Gui, 13:Add, Text, x22 y29 w280 h16 vBindListProfileText gStartBindListDrag BackgroundTrans, %CurrentProfile%
     Gui, 13:Font, s8 Bold c%accent%, Segoe UI
     Gui, 13:Add, Text, x%countX% y12 w70 h18 Right vBindListCountText BackgroundTrans, 0 шт.
@@ -17283,16 +17324,18 @@ CreateBindList() {
 
     searchW := Max(150, BindListW - 286)
     catX := 18 + searchW
-    Gui, 13:Font, s9 c%bindInputText%, Segoe UI
+    Gui, 13:Font, Norm s9 c%bindInputText%, Segoe UI
     Gui, 13:Add, Edit, x12 y56 w%searchW% h26 vBindListSearchEdit gBindListFilterChanged, %BindListSearch%
     Gui, 13:Add, DropDownList, x%catX% y56 w190 r10 vBindListCategoryDDL hwndhBindListCategoryDDL gBindListFilterChanged, Все|Системные|Задержание и RP|Доклады|Транспорт / прочее|Документы|Пользовательское
     GuiControl, 13:ChooseString, BindListCategoryDDL, %BindListCategory%
-    Gui, 13:Font, s8 c%bindInputText%, Segoe UI
+    Gui, 13:Font, Norm s8 c%bindInputText%, Segoe UI
     Gui, 13:Add, ListView, x12 y94 w%listW% h%listH% vBindListLV hwndhBindListLV gBindListViewEvent AltSubmit -Multi Background%controlBg%, Команда|Клавиша|TXT|Token
-    Gui, 13:Font, s8 c%muted%, Segoe UI
+    Gui, 13:Font, Norm s8 c%muted%, Segoe UI
     Gui, 13:Add, Text, x12 y%infoY% w%infoW% h18 vBindListInfoText BackgroundTrans, Бинды загружены.
     Gui, 13:Font, s9 Bold c%accent%, Segoe UI
     Gui, 13:Add, Text, x%gripX% y%infoY% w22 h18 Right vBindListResizeGripText BackgroundTrans, //
+
+    Capture_BeforeShow("13")
 
     Gui, 13:Show, % "x" BindListX " y" BindListY " w" BindListW " h" BindListH, BindList
     PromoteOverlayWindow(hBindListWnd, 1, 0)
@@ -17756,13 +17799,13 @@ ShowBindOverlay() {
 
     Gui, 18:Font, s10 Bold c%text%, Segoe UI
     Gui, 18:Add, Text, % "x" contentX " y16 w" contentW " h20 Center BackgroundTrans", Бинды
-    Gui, 18:Font, s7 c%muted%, Segoe UI
+    Gui, 18:Font, Norm s7 c%muted%, Segoe UI
     Gui, 18:Add, Text, % "x" contentX " y38 w" contentW " h16 Center BackgroundTrans", Alt+X - скрыть | F11 - полный
-    Gui, 18:Add, Progress, % "x" contentX " y58 w" contentW " h2 Disabled Background" cardBg " c" accent, 100
+    Gui, 18:Add, Progress, % "-Theme " . "x" contentX " y58 w" contentW " h2 Disabled Background" cardBg " c" accent, 100
 
     if (!IsObject(rows) || rows.Length() = 0)
     {
-        Gui, 18:Font, s9 c%muted%, Segoe UI
+        Gui, 18:Font, Norm s9 c%muted%, Segoe UI
         Gui, 18:Add, Text, % "x" contentX " y" rowY " w" contentW " h24 Center BackgroundTrans", Назначенных биндов нет.
     }
     else
@@ -17795,9 +17838,9 @@ ShowBindOverlay() {
             hotkeyText := "HK: " . row.Hotkey
             triggerText := "!: " . row.Trigger
 
-            Gui, 18:Font, s7 c%text%, Segoe UI
+            Gui, 18:Font, Norm s7 c%text%, Segoe UI
             Gui, 18:Add, Text, % "x" nameX " y" rowY " w" nameW " h" rowH " +0x200 BackgroundTrans", % actionText
-            Gui, 18:Font, s7 c%muted%, Segoe UI
+            Gui, 18:Font, Norm s7 c%muted%, Segoe UI
             Gui, 18:Add, Text, % "x" hkX " y" rowY " w" hkW " h" rowH " +0x200 BackgroundTrans", % hotkeyText
             Gui, 18:Add, Text, % "x" trigX " y" rowY " w" trigW " h" rowH " +0x200 BackgroundTrans", % triggerText
             rowY += rowH
@@ -17806,10 +17849,12 @@ ShowBindOverlay() {
         if (skippedRows > 0)
         {
             footerY := overlayH - 26
-            Gui, 18:Font, s7 c%muted%, Segoe UI
+            Gui, 18:Font, Norm s7 c%muted%, Segoe UI
             Gui, 18:Add, Text, % "x" contentX " y" footerY " w" contentW " h18 Center BackgroundTrans", % "+ еще " . skippedRows . " строк. Открой F11 для полного списка."
         }
     }
+
+    Capture_BeforeShow("18")
 
     Gui, 18:Show, % "x" overlayX " y" overlayY " w" overlayW " h" overlayH " NoActivate", BindOverlay
     PromoteOverlayWindow(hBindOverlayWnd, 1, 1)
@@ -18127,16 +18172,17 @@ ActionTimer_RenderCore() {
         Gui, ActionTimers:New, +HwndhActionTimerWnd +AlwaysOnTop -Caption +ToolWindow +E0x08000000 +Border +LastFound
         Gui, ActionTimers:Color, %timerBgColor%
         Gui, ActionTimers:Margin, 0, 0
-        Gui, ActionTimers:Add, Progress, x0 y0 w%overlayW% h2 Disabled Background%timerBgColor% c%borderColor%, 100
-        Gui, ActionTimers:Add, Progress, x0 y%bottomY% w%overlayW% h2 Disabled Background%timerBgColor% c%borderColor%, 100
-        Gui, ActionTimers:Add, Progress, x0 y0 w2 h%overlayH% Disabled Vertical Background%timerBgColor% c%borderColor%, 100
-        Gui, ActionTimers:Add, Progress, x%rightX% y0 w2 h%overlayH% Disabled Vertical Background%timerBgColor% c%borderColor%, 100
+        Gui, ActionTimers:Add, Progress, -Theme x0 y0 w%overlayW% h2 Disabled Background%timerBgColor% c%borderColor%, 100
+        Gui, ActionTimers:Add, Progress, -Theme x0 y%bottomY% w%overlayW% h2 Disabled Background%timerBgColor% c%borderColor%, 100
+        Gui, ActionTimers:Add, Progress, -Theme x0 y0 w2 h%overlayH% Disabled Vertical Background%timerBgColor% c%borderColor%, 100
+        Gui, ActionTimers:Add, Progress, -Theme x%rightX% y0 w2 h%overlayH% Disabled Vertical Background%timerBgColor% c%borderColor%, 100
         Gui, ActionTimers:Font, s8 Bold c%borderColor%, Segoe UI
         Gui, ActionTimers:Add, Text, x10 y5 w%headerW% h22 Center 0x200 gStartActionTimerDrag BackgroundTrans, ТАЙМЕРЫ ДЕЙСТВИЙ
         Gui, ActionTimers:Font, s11 Bold c%timerTextColor%, Segoe UI
         Gui, ActionTimers:Add, Text, x12 y30 w%bodyW% h%bodyH% Center 0x200 gStartActionTimerDrag vActionTimerBody BackgroundTrans, %body%
         ActionTimerLastHeight := overlayH
         showOpts := "x" . ActionTimerX . " y" . ActionTimerY . " w" . overlayW . " h" . overlayH . " NoActivate"
+        Capture_BeforeShow("ActionTimers")
         Gui, ActionTimers:Show, %showOpts%, ActionTimers
         WinSet, Transparent, %alpha%, ahk_id %hActionTimerWnd%
         WinSet, AlwaysOnTop, On, ahk_id %hActionTimerWnd%
@@ -18190,16 +18236,17 @@ ShowStopTimerGUI() {
     Gui, 15:+HwndhStopTimerWnd +AlwaysOnTop -Caption +ToolWindow +E0x08000000 +Border +LastFound
     Gui, 15:Color, %timerBgColor%
     Gui, 15:Margin, 0, 0
-    Gui, 15:Add, Progress, x0 y0 w%timerW% h2 Disabled Background%timerBgColor% c%borderColor%, 100
+    Gui, 15:Add, Progress, -Theme x0 y0 w%timerW% h2 Disabled Background%timerBgColor% c%borderColor%, 100
     bottomY := timerH - 2
-    Gui, 15:Add, Progress, x0 y%bottomY% w%timerW% h2 Disabled Background%timerBgColor% c%borderColor%, 100
-    Gui, 15:Add, Progress, x0 y0 w2 h%timerH% Disabled Vertical Background%timerBgColor% c%borderColor%, 100
+    Gui, 15:Add, Progress, -Theme x0 y%bottomY% w%timerW% h2 Disabled Background%timerBgColor% c%borderColor%, 100
+    Gui, 15:Add, Progress, -Theme x0 y0 w2 h%timerH% Disabled Vertical Background%timerBgColor% c%borderColor%, 100
     rightX := timerW - 2
-    Gui, 15:Add, Progress, x%rightX% y0 w2 h%timerH% Disabled Vertical Background%timerBgColor% c%borderColor%, 100
+    Gui, 15:Add, Progress, -Theme x%rightX% y0 w2 h%timerH% Disabled Vertical Background%timerBgColor% c%borderColor%, 100
     Gui, 15:Add, Text, x0 y0 w%timerW% h%timerH% Center 0x200 gStartStopTimerDrag vStopTimerCount BackgroundTrans, %StopTimerCounter%
     Gui, 15:Font, s26 Bold c%timerTextColor%, Segoe UI
     GuiControl, 15:Font, StopTimerCount
     showOpts := "x" . StopTimerX . " y" . StopTimerY . " w" . timerW . " h" . timerH . " NoActivate"
+    Capture_BeforeShow("15")
     Gui, 15:Show, %showOpts%, StopTimer
     WinSet, Transparent, %alpha%, ahk_id %hStopTimerWnd%
     WinSet, AlwaysOnTop, On, ahk_id %hStopTimerWnd%
@@ -18271,12 +18318,13 @@ ShowIDOverlay() {
     Gui, IDOverlay:New, +HwndhIDOverlayWnd +AlwaysOnTop -Caption +ToolWindow +E0x08000000 +LastFound
     Gui, IDOverlay:Color, %panel%
     Gui, IDOverlay:Margin, 0, 0
-    Gui, IDOverlay:Add, Progress, x0 y0 w%overlayW% h2 Disabled Background%panel% c%accent%, 100
-    Gui, IDOverlay:Add, Progress, x0 y%borderBottom% w%overlayW% h2 Disabled Background%panel% c%accent%, 100
-    Gui, IDOverlay:Add, Progress, x0 y0 w2 h%overlayH% Disabled Vertical Background%panel% c%accent%, 100
-    Gui, IDOverlay:Add, Progress, x%borderRight% y0 w2 h%overlayH% Disabled Vertical Background%panel% c%accent%, 100
+    Gui, IDOverlay:Add, Progress, -Theme x0 y0 w%overlayW% h2 Disabled Background%panel% c%accent%, 100
+    Gui, IDOverlay:Add, Progress, -Theme x0 y%borderBottom% w%overlayW% h2 Disabled Background%panel% c%accent%, 100
+    Gui, IDOverlay:Add, Progress, -Theme x0 y0 w2 h%overlayH% Disabled Vertical Background%panel% c%accent%, 100
+    Gui, IDOverlay:Add, Progress, -Theme x%borderRight% y0 w2 h%overlayH% Disabled Vertical Background%panel% c%accent%, 100
     Gui, IDOverlay:Font, s10 Bold c%text%, Segoe UI
     Gui, IDOverlay:Add, Text, x8 y0 w%textW% h%overlayH% Center 0x200 vIDOverlayText BackgroundTrans, % "ID: " . GetCurrentDisplayID()
+    Capture_BeforeShow("IDOverlay")
     Gui, IDOverlay:Show, % "x" . IDOverlayX . " y" . IDOverlayY . " w" . overlayW . " h" . overlayH . " NoActivate", IDOverlay
     WinSet, AlwaysOnTop, On, ahk_id %hIDOverlayWnd%
     ApplyRoundedCorners(hIDOverlayWnd, UIRoundness)
@@ -18644,6 +18692,7 @@ Settings_SwitchPage(pageIndex, syncNavigation := 1) {
         return false
 
     SettingsNavigationBusy := 1
+    Settings_ResetScroll()
     SettingsTargetTab := pageIndex
     SettingsPage := pages[pageIndex].Id
     GuiControl, 2:Choose, SettingsTabs, %SettingsTargetTab%
@@ -18654,6 +18703,7 @@ Settings_SwitchPage(pageIndex, syncNavigation := 1) {
         LV_Modify(0, "-Select -Focus")
         LV_Modify(SettingsTargetTab, "Select Focus Vis")
     }
+    Settings_ActivateLayout(pageIndex)
     UpdateAutomationSettingsStatus()
     SettingsNavigationBusy := 0
     return true
@@ -18707,57 +18757,46 @@ NormalizeSettingsPage(ByRef pageId) {
 
 Settings_AddControl(label, varName, value, x, y, w, controlType, options, textColor, inputColor) {
     Gui, 2:Font, s9 Norm c%textColor%, Segoe UI
-    Gui, 2:Add, Text, % "x" x " y" y " w" w " h18 BackgroundTrans", %label%
+    Gui, 2:Add, Text, % "x" x " y" y " w" w " h28 +Wrap BackgroundTrans", %label%
     Gui, 2:Font, s10 Norm c%inputColor%, Segoe UI
-    opts := "x" x " y" (y + 20) " w" w " v" . varName
-    if (controlType = "DropDown")
-    {
+    opts := "x" x " y" (y + 32) " w" w " v" . varName
+    if (controlType = "DropDown" || controlType = "Combo") {
         opts .= " r8"
-        Gui, 2:Add, DropDownList, %opts%, %options%
+        if (controlType = "DropDown")
+            Gui, 2:Add, DropDownList, %opts%, %options%
+        else
+            Gui, 2:Add, ComboBox, %opts%, %options%
         GuiControl, 2:ChooseString, %varName%, %value%
-    }
-    else if (controlType = "Combo")
-    {
-        opts .= " r8"
-        Gui, 2:Add, ComboBox, %opts%, %options%
-        GuiControl, 2:ChooseString, %varName%, %value%
-    }
-    else
-    {
-        opts .= " h28"
+    } else {
+        opts .= " h30"
         Gui, 2:Add, Edit, %opts%, %value%
     }
+    Settings_RecordExtent(y + 66)
 }
 
 Settings_AddGrid(items, startX, startY, cols, colWidth, rowHeight, controlType, textColor, inputColor) {
-    Loop % items.Length()
-    {
-        item := items[A_Index]
-        col := Mod(A_Index - 1, cols)
-        row := Floor((A_Index - 1) / cols)
+    rowHeight := Max(rowHeight, controlType = "Multi" ? 88 : 76)
+    for index, item in items {
+        col := Mod(index - 1, cols)
+        row := Floor((index - 1) / cols)
         x := startX + col * colWidth
         y := startY + row * rowHeight
-        w := colWidth - 16
+        w := colWidth - 18
+        controlValue := item[3]
         Gui, 2:Font, s9 Norm c%textColor%, Segoe UI
-        Gui, 2:Add, Text, % "x" x " y" y " w" w " h18 BackgroundTrans", % item[1]
+        Gui, 2:Add, Text, % "x" x " y" y " w" w " h28 +Wrap BackgroundTrans", % item[1]
         Gui, 2:Font, s10 Norm c%inputColor%, Segoe UI
-        opts := "x" x " y" (y + 20) " w" w " v" . item[2]
-        if (controlType = "Hotkey")
-        {
-            opts .= " h28 gCfgHotkeyChanged"
-            Gui, 2:Add, Hotkey, %opts%, % item[3]
+        h := controlType = "Multi" ? rowHeight - 46 : 30
+        opts := "x" x " y" (y + 32) " w" w " h" h " v" . item[2]
+        if (controlType = "Hotkey") {
+            opts .= " gCfgHotkeyChanged"
+            Gui, 2:Add, Hotkey, %opts%, %controlValue%
+        } else {
+            if (controlType = "Multi")
+                opts .= " Multi WantTab +VScroll"
+            Gui, 2:Add, Edit, %opts%, %controlValue%
         }
-        else if (controlType = "Multi")
-        {
-            h := rowHeight - 32
-            opts .= " h" . h . " WantTab"
-            Gui, 2:Add, Edit, %opts%, % item[3]
-        }
-        else
-        {
-            opts .= " h28"
-            Gui, 2:Add, Edit, %opts%, % item[3]
-        }
+        Settings_RecordExtent(y + 32 + h + 12)
     }
 }
 
@@ -18809,30 +18848,36 @@ Settings_AddAssistantCard(label, enabledCfgVar, enabledValue, hotkeyCfgVar, hotk
     labelY := y + 27
     inputY := y + 45
     triggerX := x + 126
-    Gui, 2:Font, s8 c%mutedColor%, Segoe UI
+    Gui, 2:Font, Norm s8 c%mutedColor%, Segoe UI
     Gui, 2:Add, Text, % "x" . x . " y" . labelY . " w116 h16 BackgroundTrans", Клавиша
     Gui, 2:Add, Text, % "x" . triggerX . " y" . labelY . " w154 h16 BackgroundTrans", TXT-триггер
 
     hotkeyOpts := "x" . x . " y" . inputY . " w116 h28 v" . hotkeyCfgVar . " gCfgHotkeyChanged"
     triggerOpts := "x" . triggerX . " y" . inputY . " w154 h28 v" . triggerCfgVar
-    Gui, 2:Font, s9 c%inputTextColor%, Segoe UI
+    Gui, 2:Font, Norm s9 c%inputTextColor%, Segoe UI
     Gui, 2:Add, Hotkey, %hotkeyOpts%, %hotkeyValue%
     Gui, 2:Add, Edit, %triggerOpts%, %triggerValue%
 }
 
 Settings_AddPageFrame(title, subtitle, cardBg, cardEdge, textColor, mutedColor) {
-    AddOutlinedPanel(2, 230, 82, 934, 674, cardBg, cardEdge, 2)
-    Gui, 2:Add, Progress, x242 y100 w4 h44 Disabled Vertical Background%cardBg% c%cardEdge%, 100
+    SettingsPageFrames[SettingsBuildingPage] := AddOutlinedPanel(2, 230, 82, 934, 674, cardBg, cardEdge, 1)
+    Settings_RecordExtent(740)
+    Gui, 2:Add, Progress, -Theme x242 y100 w4 h44 Disabled Vertical Background%cardBg% c%cardEdge%, 100
     Gui, 2:Font, s15 Bold c%textColor%, Segoe UI
     Gui, 2:Add, Text, x258 y96 w870 h30 BackgroundTrans, %title%
-    Gui, 2:Font, s9 c%mutedColor%, Segoe UI
+    Gui, 2:Font, Norm s9 c%mutedColor%, Segoe UI
     Gui, 2:Add, Text, x258 y128 w870 h22 BackgroundTrans, %subtitle%
-    Gui, 2:Add, Progress, x242 y156 w886 h1 Disabled Background%cardBg% c%cardEdge%, 100
+    Gui, 2:Add, Progress, -Theme x242 y156 w886 h1 Disabled Background%cardBg% c%cardEdge%, 100
 }
 
 BuildSettingsGui() {
     global
     SettingsGuiReady := 0
+    SettingsPageExtents := {}
+    SettingsPageFrames := {}
+    SettingsCanvasHeight := 800
+    SettingsScale := A_ScreenDPI / 96.0
+    SettingsBuildingPage := 0
     SettingsScrollX := 0
     SettingsScrollY := 0
     SyncConfigOnlyProfileFieldsToCfg()
@@ -18855,24 +18900,24 @@ BuildSettingsGui() {
         pageLabels .= (pageLabels = "" ? "" : "|") . pages[A_Index].Label
 
     Gui, 2:Destroy
-    Gui, 2:+HwndhSettingsWnd +AlwaysOnTop -Caption +ToolWindow +Resize +0x300000 -DPIScale
+    Gui, 2:+HwndhSettingsWnd +AlwaysOnTop -Caption +ToolWindow +Resize +0x300000 +DPIScale
     Gui, 2:Color, %bg%, %controlBg%
-    Gui, 2:Font, s10 c%text%, Segoe UI
+    Gui, 2:Font, Norm s10 c%text%, Segoe UI
     buildW := 1180, buildH := 800
-    Gui, 2:Add, Progress, x0 y0 w1180 h4 Disabled Background%bg% c%accent% vSettingsBorderTop, 100
-    Gui, 2:Add, Progress, x0 y796 w1180 h4 Disabled Background%bg% c%accent% vSettingsBorderBottom, 100
+    Gui, 2:Add, Progress, -Theme x0 y0 w1180 h4 Disabled Background%bg% c%accent% vSettingsBorderTop, 100
+    Gui, 2:Add, Progress, -Theme x0 y796 w1180 h4 Disabled Background%bg% c%accent% vSettingsBorderBottom, 100
     Gui, 2:Add, Text, x0 y0 w216 h64 vSettingsDragZone gStartSettingsDrag BackgroundTrans,
 
     Gui, 2:Font, s12 Bold c%text%, Segoe UI
-    Gui, 2:Add, Text, x20 y12 w210 h28 BackgroundTrans, AHK FOR GOS BY SBEZRUK
-    Gui, 2:Font, s9 c%muted%, Segoe UI
-    Gui, 2:Add, Text, x20 y40 w190 h18 BackgroundTrans, Панель управления · v%AppVersion%
-    Gui, 2:Font, s9 c%text%, Segoe UI
+    Gui, 2:Add, Text, x20 y12 w210 h28 BackgroundTrans, ГОС / ПОМОЩНИК
+    Gui, 2:Font, Norm s9 c%muted%, Segoe UI
+    Gui, 2:Add, Text, x20 y40 w190 h18 BackgroundTrans, SBEZRUK · Amazing Online
+    Gui, 2:Font, Norm s9 c%text%, Segoe UI
     Gui, 2:Add, Text, x238 y9 w210 h18 BackgroundTrans, АКТИВНЫЙ ПРОФИЛЬ
-    Gui, 2:Font, s10 c%inputText%, Segoe UI
+    Gui, 2:Font, Norm s10 c%inputText%, Segoe UI
     Gui, 2:Add, ComboBox, x238 y29 w214 r10 vCFG_ProfileName, %profiles%
     GuiControl, 2:ChooseString, CFG_ProfileName, %CurrentProfile%
-    Gui, 2:Font, s9 c%text%, Segoe UI
+    Gui, 2:Font, Norm s9 c%text%, Segoe UI
     Gui, 2:Add, Button, x466 y27 w82 h30 vSettingsBtnLoad gCfgLoadProfile, Загрузить
     Gui, 2:Add, Button, x554 y27 w82 h30 vSettingsBtnSave gCfgSaveProfile, Сохранить
     Gui, 2:Add, Button, x642 y27 w82 h30 vSettingsBtnCreate gCfgCreateProfile, Создать
@@ -18881,10 +18926,10 @@ BuildSettingsGui() {
     Gui, 2:Add, Button, x908 y27 w76 h30 vSettingsBtnExport gExportProfilesLabel, Экспорт
     Gui, 2:Add, Button, x1062 y27 w42 h30 vSettingsBtnHide gMinimizeSettingsLabel, -
     Gui, 2:Add, Button, x1110 y27 w48 h30 vSettingsBtnExit gExitScriptButtonLabel, X
-    Gui, 2:Add, Progress, x18 y68 w1140 h2 Disabled Background%bg% c%accent%, 100
+    Gui, 2:Add, Progress, -Theme x18 y68 w1140 h2 Disabled Background%bg% c%accent%, 100
 
     AddOutlinedPanel(2, 16, 82, 210, 674, panel, cardEdge, 2)
-    Gui, 2:Font, s10 c%text%, Segoe UI
+    Gui, 2:Font, Norm s10 c%text%, Segoe UI
     Gui, 2:Add, ListView, x26 y94 w190 h648 -Hdr -Multi AltSubmit vSettingsNavLV hwndhSettingsNavLV gSettingsNavChanged Background%panel% NoSortHdr, Раздел
     Gui, 2:Default
     Gui, 2:ListView, SettingsNavLV
@@ -18895,15 +18940,16 @@ BuildSettingsGui() {
 
     Gui, 2:Add, Tab2, x-1000 y-1000 w10 h10 AltSubmit vSettingsTabs, %pageLabels%
 
+    SettingsBuildingPage := 1
     Gui, 2:Tab, 1
     Settings_AddPageFrame("Профиль", "Данные персонажа и экипажей. Изменения сохраняются кнопкой «Сохранить».", cardBg, cardEdge, text, muted)
     AddOutlinedPanel(2, 240, 166, 904, 72, panel, cardEdge, 1)
     Settings_AddControl("Организация", "CFG_ProfileMode", ProfileMode, 256, 172, 210, "DropDown", "ППС|ГАИ|ФСБ|Спец МВД|ВЧ", text, inputText)
-    Gui, 2:Add, Button, x482 y192 w158 h28 gApplyPresetLabel, Применить режим
+    Gui, 2:Add, Button, x482 y204 w158 h28 gApplyPresetLabel, Применить режим
     Gui, 2:Font, s12 Bold c%text%, Segoe UI
-    Gui, 2:Add, Text, x668 y176 w452 h24 vProfileSummaryText BackgroundTrans, %CurrentProfile%
+    Gui, 2:Add, Text, x668 y176 w452 h24 vProfileSummaryText +0x200 +0x4000 BackgroundTrans, %CurrentProfile%
     Gui, 2:Font, s9 Norm c%muted%, Segoe UI
-    Gui, 2:Add, Text, x668 y206 w452 h18 BackgroundTrans, % ProfileMode . "  |  " . Surname . "  |  " . Rank
+    Gui, 2:Add, Text, x668 y206 w452 h18 +0x4000 BackgroundTrans, % ProfileMode . "  |  " . Surname . "  |  " . Rank
 
     AddOutlinedPanel(2, 240, 250, 904, 206, panel, cardEdge, 1)
     Gui, 2:Font, s10 Bold c%text%, Segoe UI
@@ -18930,12 +18976,13 @@ BuildSettingsGui() {
     Settings_AddControl("Название поста", "CFG_PostRoute", PostRoute, 716, 584, 408, "Edit", "", text, inputText)
     Settings_AddControl("Маршрут колонны", "CFG_ConvoyRoute", ConvoyRoute, 256, 672, 868, "Edit", "", text, inputText)
 
+    SettingsBuildingPage := 2
     Gui, 2:Tab, 2
     Settings_AddPageFrame("Чат и безопасность", "Отправка сообщений, проверки, уведомления и задержки.", cardBg, cardEdge, text, muted)
-    AddOutlinedPanel(2, 240, 166, 904, 64, panel, cardEdge, 1)
-    AddOutlinedPanel(2, 240, 238, 904, 64, panel, cardEdge, 1)
-    AddOutlinedPanel(2, 240, 312, 904, 64, panel, cardEdge, 1)
-    AddOutlinedPanel(2, 240, 390, 904, 202, panel, cardEdge, 1)
+    AddOutlinedPanel(2, 240, 166, 904, 72, panel, cardEdge, 1)
+    AddOutlinedPanel(2, 240, 240, 904, 72, panel, cardEdge, 1)
+    AddOutlinedPanel(2, 240, 314, 904, 74, panel, cardEdge, 1)
+    AddOutlinedPanel(2, 240, 390, 904, 212, panel, cardEdge, 1)
     idChoice := IDCheckEnabled ? "On" : "Off"
     Settings_AddControl("Режим отправки", "CFG_TextSendMode", TextSendMode, 240, 170, 190, "DropDown", "Auto|Memory|Keyboard", text, inputText)
     Settings_AddControl("Тест без игры (Mock)", "CFG_MockMode", MockMode, 446, 170, 150, "DropDown", "Off|On", text, inputText)
@@ -18946,11 +18993,11 @@ BuildSettingsGui() {
     Settings_AddControl("Требовать чат", "CFG_SafeRequireChatForEditable", SafeRequireChatForEditable, 456, 244, 190, "DropDown", "On|Off", text, inputText)
     Settings_AddControl("Проверка транспорта", "CFG_SafeVehicleChecks", SafeVehicleChecks, 662, 244, 190, "DropDown", "On|Off", text, inputText)
     Settings_AddControl("Проверка дистанции", "CFG_SafeDistanceChecks", SafeDistanceChecks, 868, 244, 190, "DropDown", "On|Off", text, inputText)
-    Settings_AddControl("Лимит дистанции, м", "CFG_SafeDistanceLimit", SafeDistanceLimit, 1074, 244, 70, "Edit", "", text, inputText)
+    Settings_AddControl("Радиус, м", "CFG_SafeDistanceLimit", SafeDistanceLimit, 1074, 244, 70, "Edit", "", text, inputText)
     Settings_AddControl("Подсказки", "CFG_SafeTooltipWarnings", SafeTooltipWarnings, 240, 318, 130, "DropDown", "On|Off", text, inputText)
     Settings_AddControl("Звук", "CFG_NotifySoundEnabled", NotifySoundEnabled, 386, 318, 110, "DropDown", "On|Off", text, inputText)
     Settings_AddControl("Громкость", "CFG_NotifyVolume", NotifyVolume, 512, 318, 90, "Edit", "", text, inputText)
-    Gui, 2:Add, Button, x618 y338 w120 h28 gPreviewNotifySoundLabel, Звук
+    Gui, 2:Add, Button, x618 y350 w120 h28 gPreviewNotifySoundLabel, Звук
     Settings_AddControl("ID-уведомление", "CFG_ContextNotificationMode", ContextNotificationMode, 754, 318, 168, "DropDown", "Плашка|Чат", text, inputText)
     Settings_AddControl("Скрыть через, сек", "CFG_ContextNotificationTimeoutSec", ContextNotificationTimeoutSec, 938, 318, 166, "Edit", "", text, inputText)
     Settings_AddControl("Задержка действия", "CFG_ActionCooldownMs", ActionCooldownMs, 240, 396, 150, "Edit", "", text, inputText)
@@ -18958,25 +19005,27 @@ BuildSettingsGui() {
     Settings_AddControl("Пауза очереди", "CFG_ChatQueueMinDelay", ChatQueueMinDelay, 572, 396, 150, "Edit", "", text, inputText)
     Settings_AddControl("GUI fullscreen", "CFG_FullscreenSafeGui", FullscreenSafeGui, 738, 396, 140, "DropDown", "Auto|On|Off", text, inputText)
     Settings_AddControl("Бэкапы", "CFG_ProfileSaveBackups", ProfileSaveBackups, 894, 396, 120, "DropDown", "On|Off", text, inputText)
-    Gui, 2:Font, s9 c%text%, Segoe UI
+    Gui, 2:Font, Norm s9 c%text%, Segoe UI
     Gui, 2:Add, Text, x240 y476 w880 h18 BackgroundTrans, Приоритет bind-list
-    Gui, 2:Font, s9 c%inputText%, Consolas
+    Gui, 2:Font, Norm s9 c%inputText%, Consolas
     Gui, 2:Add, Edit, x240 y498 w884 h90 vCFG_BindListItems WantTab, %BindListItems%
     Settings_AddControl("Заголовок окна", "CFG_GameWindowTitle", GameWindowTitle, 240, 602, 200, "Edit", "", text, inputText)
     Settings_AddControl("Процесс (резерв)", "CFG_GameProcessName", GameProcessName, 456, 602, 170, "Edit", "", text, inputText)
     Settings_AddControl("Ожидаемый SHA-256 azmp.dll", "CFG_AzmpExpectedSHA256", AzmpExpectedSHA256, 642, 602, 320, "Edit", "", text, inputText)
-    Gui, 2:Font, s9 c%text%, Segoe UI
-    Gui, 2:Add, Button, x978 y622 w146 h30 gTestChatConnectionLabel, Проверить
-    Gui, 2:Font, s9 c%muted%, Segoe UI
+    Gui, 2:Font, Norm s9 c%text%, Segoe UI
+    Gui, 2:Add, Button, x978 y634 w146 h30 gTestChatConnectionLabel, Проверить
+    Gui, 2:Font, Norm s9 c%muted%, Segoe UI
     Gui, 2:Add, Text, x240 y668 w884 h46 vCFG_ChatConnectionStatus BackgroundTrans +Wrap, % ChatTransport_GetConnectionSummary(0)
 
+    SettingsBuildingPage := 3
     Gui, 2:Tab, 3
     Settings_AddPageFrame("Интерфейс", "Тема, HUD, цвета и параметры таймера.", cardBg, cardEdge, text, muted)
-    AddOutlinedPanel(2, 240, 166, 904, 64, panel, cardEdge, 1)
-    AddOutlinedPanel(2, 240, 240, 904, 132, panel, cardEdge, 1)
-    AddOutlinedPanel(2, 240, 398, 904, 66, panel, cardEdge, 1)
-    AddOutlinedPanel(2, 240, 480, 904, 114, panel, cardEdge, 1)
-    AddOutlinedPanel(2, 240, 610, 904, 112, panel, cardEdge, 1)
+    AddOutlinedPanel(2, 240, 166, 904, 72, panel, cardEdge, 1)
+    AddOutlinedPanel(2, 240, 240, 904, 148, panel, cardEdge, 1)
+    AddOutlinedPanel(2, 240, 398, 904, 78, panel, cardEdge, 1)
+    AddOutlinedPanel(2, 240, 490, 904, 124, panel, cardEdge, 1)
+    AddOutlinedPanel(2, 240, 630, 904, 150, panel, cardEdge, 1)
+    AddOutlinedPanel(2, 240, 796, 904, 122, panel, cardEdge, 1)
     themeControlValue := (CFG_ThemePresetName != "" && ThemePresetExists(CFG_ThemePresetName)) ? CFG_ThemePresetName : ThemeMode
     Settings_AddControl("Тема", "CFG_ThemeMode", themeControlValue, 240, 170, 200, "Combo", GetThemeModeList(), text, inputText)
     Settings_AddControl("Режим HUD", "CFG_HUDMode", HUDMode, 456, 170, 200, "DropDown", "Полный|Компактный|Профиль + ID", text, inputText)
@@ -18992,27 +19041,30 @@ BuildSettingsGui() {
     Settings_AddControl("Карточки", "CFG_CustomTabColor", CustomTabColor, 1026, 246, 118, "Edit", "", text, inputText)
     Settings_AddControl("Фон bind-list", "CFG_CustomBindListColor", CustomBindListColor, 240, 322, 150, "Edit", "", text, inputText)
     Settings_AddControl("Общая прозрачность", "CFG_GuiTransparency", GuiTransparency, 406, 322, 160, "Edit", "", text, inputText)
-    Gui, 2:Add, Button, x582 y342 w130 h28 gResetStyleLabel, Сбросить стиль
-    Gui, 2:Add, Button, x720 y342 w130 h28 gSaveThemePresetLabel, Сохранить тему
-    Gui, 2:Add, Button, x858 y342 w130 h28 gLoadThemePresetLabel, Применить тему
+    Gui, 2:Add, Button, x582 y354 w130 h28 gResetStyleLabel, Сбросить стиль
+    Gui, 2:Add, Button, x720 y354 w130 h28 gSaveThemePresetLabel, Сохранить тему
+    Gui, 2:Add, Button, x858 y354 w130 h28 gLoadThemePresetLabel, Применить тему
     Settings_AddControl("Локальный фон (PNG / JPG / BMP, до 5 МиБ)", "CFG_BackgroundImageURL", BackgroundImageURL, 240, 404, 660, "Edit", "", text, inputText)
-    Gui, 2:Font, s8 c%muted%, Segoe UI
-    Gui, 2:Add, Text, x920 y460 w220 h18 vCaptureStatusText BackgroundTrans, %CaptureStatus%
-    Settings_AddControl("Скрыть окна из OBS", "CFG_OBSHideWindows", OBSHideWindows, 920, 404, 224, "DropDown", "Off|On", text, inputText)
-    Settings_AddControl("Ширина таймера", "CFG_StopTimerWidth", StopTimerWidth, 240, 486, 140, "Edit", "", text, inputText)
-    Settings_AddControl("Высота таймера", "CFG_StopTimerHeight", StopTimerHeight, 396, 486, 140, "Edit", "", text, inputText)
-    Settings_AddControl("Прозрачность", "CFG_StopTimerTransparency", StopTimerTransparency, 552, 486, 140, "Edit", "", text, inputText)
-    Settings_AddControl("Цвет рамки", "CFG_StopTimerBorderColor", StopTimerBorderColor, 708, 486, 140, "Edit", "", text, inputText)
-    Settings_AddControl("Цвет цифр", "CFG_StopTimerTextColor", StopTimerTextColor, 864, 486, 140, "Edit", "", text, inputText)
-    Settings_AddControl("Цвет фона", "CFG_StopTimerBgColor", StopTimerBgColor, 1020, 486, 124, "Edit", "", text, inputText)
-    Settings_AddControl("Громкость таймера", "CFG_StopTimerVolume", StopTimerVolume, 240, 562, 160, "Edit", "", text, inputText)
-    Gui, 2:Add, Button, x416 y582 w140 h28 gPreviewStopTimerSoundLabel, Проверить таймер
+    Settings_AddControl("Скрывать окна из захвата", "CFG_OBSHideWindows", OBSHideWindows, 256, 500, 270, "DropDown", "Off|On", text, inputText)
+    Gui, 2:Font, s9 Norm c%text%, Segoe UI
+    Gui, 2:Add, Text, x548 y502 w574 h56 vCaptureStatusText BackgroundTrans +Wrap, %CaptureStatus%
+    Gui, 2:Font, s8 Norm c%muted%, Segoe UI
+    Gui, 2:Add, Text, x548 y566 w574 h40 BackgroundTrans +Wrap, % "OBS: «Захват окна» — метод Windows 10 (1903+). Флаг Windows не подтверждает результат записи; проверьте источник OBS."
+    Settings_AddControl("Ширина таймера", "CFG_StopTimerWidth", StopTimerWidth, 240, 642, 140, "Edit", "", text, inputText)
+    Settings_AddControl("Высота таймера", "CFG_StopTimerHeight", StopTimerHeight, 396, 642, 140, "Edit", "", text, inputText)
+    Settings_AddControl("Прозрачность", "CFG_StopTimerTransparency", StopTimerTransparency, 552, 642, 140, "Edit", "", text, inputText)
+    Settings_AddControl("Цвет рамки", "CFG_StopTimerBorderColor", StopTimerBorderColor, 708, 642, 140, "Edit", "", text, inputText)
+    Settings_AddControl("Цвет цифр", "CFG_StopTimerTextColor", StopTimerTextColor, 864, 642, 140, "Edit", "", text, inputText)
+    Settings_AddControl("Цвет фона", "CFG_StopTimerBgColor", StopTimerBgColor, 1020, 642, 124, "Edit", "", text, inputText)
+    Settings_AddControl("Громкость таймера", "CFG_StopTimerVolume", StopTimerVolume, 240, 710, 160, "Edit", "", text, inputText)
+    Gui, 2:Add, Button, x416 y742 w160 h30 gPreviewStopTimerSoundLabel, Проверить таймер
     Gui, 2:Font, s10 Bold c%text%, Segoe UI
-    Gui, 2:Add, Text, x258 y620 w850 h22 BackgroundTrans, Таймеры действий
-    Settings_AddControl("Эвакуация · 3 минуты", "CFG_EvacuationTimerEnabled", EvacuationTimerEnabled, 258, 650, 250, "DropDown", "On|Off", text, inputText)
-    Settings_AddControl("Патруль · до доклада", "CFG_PatrolTimerEnabled", PatrolTimerEnabled, 524, 650, 250, "DropDown", "On|Off", text, inputText)
-    Settings_AddControl("Пост · до доклада", "CFG_PostTimerEnabled", PostTimerEnabled, 790, 650, 250, "DropDown", "On|Off", text, inputText)
+    Gui, 2:Add, Text, x258 y806 w850 h22 BackgroundTrans, Таймеры действий
+    Settings_AddControl("Эвакуация · 3 минуты", "CFG_EvacuationTimerEnabled", EvacuationTimerEnabled, 258, 840, 250, "DropDown", "On|Off", text, inputText)
+    Settings_AddControl("Патруль · до доклада", "CFG_PatrolTimerEnabled", PatrolTimerEnabled, 524, 840, 250, "DropDown", "On|Off", text, inputText)
+    Settings_AddControl("Пост · до доклада", "CFG_PostTimerEnabled", PostTimerEnabled, 790, 840, 250, "DropDown", "On|Off", text, inputText)
 
+    SettingsBuildingPage := 4
     Gui, 2:Tab, 4
     Settings_AddPageFrame("Шаблоны докладов", "Одна строка поля отправляется как одно сообщение.", cardBg, cardEdge, text, muted)
     reportItems := []
@@ -19028,6 +19080,7 @@ BuildSettingsGui() {
     reportItems.Push(["ДТП: завершено", "CFG_T_CallWorkEnd", T_CallWorkEnd])
     Settings_AddGrid(reportItems, 240, 170, 2, 452, 112, "Multi", text, inputText)
 
+    SettingsBuildingPage := 5
     Gui, 2:Tab, 5
     Settings_AddPageFrame("Патруль, пост и строй", "Операционные доклады и редактируемые сообщения строя.", cardBg, cardEdge, text, muted)
     operationItems := []
@@ -19045,29 +19098,36 @@ BuildSettingsGui() {
     operationItems.Push(["Строй: завершение", "CFG_MDS_FormationFinish", MDS_FormationFinish])
     Settings_AddGrid(operationItems, 240, 166, 2, 452, 82, "Multi", text, inputText)
 
+    SettingsBuildingPage := 6
     Gui, 2:Tab, 6
     Settings_AddPageFrame("Основные клавиши", "Системные команды, задержание, доклады и строй.", cardBg, cardEdge, text, muted)
     Settings_AddGrid(Settings_GetCatalogItems("Hotkey", "main"), 240, 166, 4, 224, 56, "Hotkey", text, inputText)
-    Gui, 2:Font, s9 c%muted%, Segoe UI
-    Gui, 2:Add, Text, x240 y720 w880 h20 vCFG_BindsStatusText BackgroundTrans, Конфликтов hotkey нет.
+    Gui, 2:Font, Norm s9 c%muted%, Segoe UI
+    bindsStatusY := SettingsPageExtents[6] + 12
+    Settings_RecordExtent(bindsStatusY + 32)
+    Gui, 2:Add, Text, x240 y%bindsStatusY% w880 h28 vCFG_BindsStatusText BackgroundTrans +Wrap, Конфликтов hotkey нет.
 
+    SettingsBuildingPage := 7
     Gui, 2:Tab, 7
     Settings_AddPageFrame("Транспортные клавиши", "Патруль, пост, колонна, эвакуация и служебные действия.", cardBg, cardEdge, text, muted)
     Settings_AddGrid(Settings_GetCatalogItems("Hotkey", "transport"), 240, 170, 3, 300, 76, "Hotkey", text, inputText)
 
+    SettingsBuildingPage := 8
     Gui, 2:Tab, 8
     Settings_AddPageFrame("TXT-команды", "Триггеры вводятся в чат с префиксом ! и сохраняются в профиль.", cardBg, cardEdge, text, muted)
     Settings_AddGrid(Settings_GetCatalogItems("Trigger", "commands"), 240, 166, 5, 180, 52, "Edit", text, inputText)
 
+    SettingsBuildingPage := 9
     Gui, 2:Tab, 9
     Settings_AddPageFrame("Документы", "Кодексы открываются по TXT-командам и листаются PgUp / PgDn.", cardBg, cardEdge, text, muted)
     Settings_AddGrid(Settings_GetCatalogItems("Trigger", "documents"), 240, 174, 3, 300, 64, "Edit", text, inputText)
     AddOutlinedPanel(2, 242, 618, 884, 120, panel, cardEdge, 1)
     Settings_AddControl("Режим карт территорий", "CFG_TerritoryMapMode", CFG_TerritoryMapMode, 258, 630, 270, "DropDown", "Локальные копии|Официальные ссылки", text, inputText)
-    Gui, 2:Font, s9 c%muted%, Segoe UI
+    Gui, 2:Font, Norm s9 c%muted%, Segoe UI
     Gui, 2:Add, Text, x548 y628 w560 h38 BackgroundTrans +Wrap, Локальные копии — открываются внутри AHK FOR GOS BY SBEZRUK без интернета; режим по умолчанию.
     Gui, 2:Add, Text, x548 y680 w560 h42 BackgroundTrans +Wrap, Официальные ссылки — соответствующий пост открывается через системный браузер; нужный спойлер необходимо развернуть вручную.
 
+    SettingsBuildingPage := 10
     Gui, 2:Tab, 10
     Settings_AddPageFrame("RP: персонаж", "Последовательности /me и /do для взаимодействия с персонажем.", cardBg, cardEdge, text, muted)
     rpPerson := []
@@ -19082,6 +19142,7 @@ BuildSettingsGui() {
     rpPerson.Push(["Права", "CFG_RP_Rights", RP_Rights])
     Settings_AddGrid(rpPerson, 240, 170, 3, 300, 184, "Multi", text, inputText)
 
+    SettingsBuildingPage := 11
     Gui, 2:Tab, 11
     Settings_AddPageFrame("RP: транспорт", "Эвакуация, осмотр транспорта и служебные визитки.", cardBg, cardEdge, text, muted)
     rpVehicle := []
@@ -19092,6 +19153,7 @@ BuildSettingsGui() {
     rpVehicle.Push(["Визитка VK", "CFG_RP_CardVK", RP_CardVK])
     Settings_AddGrid(rpVehicle, 240, 180, 2, 452, 176, "Multi", text, inputText)
 
+    SettingsBuildingPage := 12
     Gui, 2:Tab, 12
     Settings_AddPageFrame("Автоматизация", "Очередь, задачи, автодоклады и диагностические инструменты.", cardBg, cardEdge, text, muted)
     AddOutlinedPanel(2, 242, 174, 884, 120, panel, cardEdge, 1)
@@ -19101,7 +19163,7 @@ BuildSettingsGui() {
     Gui, 2:Add, Text, x250 y184 w860 h28 vCFG_AutomationQueueStatus BackgroundTrans, Очередь: --
     Gui, 2:Add, Text, x250 y224 w860 h28 vCFG_AutomationTaskStatus BackgroundTrans, Задачи: --
     Gui, 2:Add, Text, x250 y264 w860 h28 vCFG_AutomationSafeStatus BackgroundTrans, SafeMode / MockMode: --
-    Gui, 2:Font, s10 c%text%, Segoe UI
+    Gui, 2:Font, Norm s10 c%text%, Segoe UI
     Gui, 2:Add, Button, x250 y324 w190 h34 gCancelAllAutomationLabel, Остановить всё
     Gui, 2:Add, Button, x454 y324 w190 h34 gClearChatQueueLabel, Очистить очередь
     Gui, 2:Add, Button, x658 y324 w190 h34 gOpenMockPreviewLabel, Тестовый чат
@@ -19111,11 +19173,11 @@ BuildSettingsGui() {
     Gui, 2:Add, Button, x658 y378 w190 h34 gRunMemoryLiveTestLabel, Memory live-тест
     Gui, 2:Add, Button, x862 y378 w190 h34 gCheckAzmpLabel, Проверить azmp.dll
     Gui, 2:Add, Button, x250 y732 w250 h28 gOpenCustomFunctionBuilderLabel, Конструктор своих функций
-    Gui, 2:Font, s8 c%muted%, Segoe UI
+    Gui, 2:Font, Norm s8 c%muted%, Segoe UI
     Gui, 2:Add, Text, x514 y736 w596 h20 BackgroundTrans, Свои последовательности, паузы, таймеры, уведомления и TXT/hotkey-запуск.
     chatLogChecked := (ChatLogReaderEnabled = "On") ? " Checked" : ""
     autoTargetChecked := (AutoTargetIDEnabled = "On") ? " Checked" : ""
-    Gui, 2:Font, s9 c%text%, Segoe UI
+    Gui, 2:Font, Norm s9 c%text%, Segoe UI
     Gui, 2:Add, Checkbox, x250 y438 w170 h24 vCFG_ChatLogReaderEnabled%chatLogChecked%, Читать chatlog.txt
     Gui, 2:Add, Checkbox, x430 y438 w170 h24 vCFG_AutoTargetIDEnabled%autoTargetChecked%, ID по ПКМ
     Settings_AddControl("Путь chatlog.txt", "CFG_ChatLogPath", ChatLogPath, 610, 418, 500, "Edit", "", text, inputText)
@@ -19124,11 +19186,12 @@ BuildSettingsGui() {
     Gui, 2:Add, Text, x258 y510 w850 h24 BackgroundTrans, Автоматический доклад каждые 10 минут
     Settings_AddControl("Режим", "CFG_AutoReportMode", AutoReportMode, 258, 542, 220, "DropDown", "Патруль|Пост", text, inputText)
     Settings_AddControl("Продолжительность, минут (10–600)", "CFG_AutoReportDurationMin", AutoReportDurationMin, 496, 542, 250, "Edit", "", text, inputText)
-    Gui, 2:Font, s10 c%text%, Segoe UI
-    Gui, 2:Add, Button, x770 y562 w150 h32 gAutoReportStartLabel, Запустить
-    Gui, 2:Add, Button, x936 y562 w150 h32 gAutoReportStopLabel, Остановить
-    Gui, 2:Font, s9 c%muted%, Segoe UI
+    Gui, 2:Font, Norm s10 c%text%, Segoe UI
+    Gui, 2:Add, Button, x770 y574 w150 h32 gAutoReportStartLabel, Запустить
+    Gui, 2:Add, Button, x936 y574 w150 h32 gAutoReportStopLabel, Остановить
+    Gui, 2:Font, Norm s9 c%muted%, Segoe UI
     Gui, 2:Add, Text, x258 y620 w828 h48 vCFG_AutoReportStatus BackgroundTrans +Wrap, % AutoReport_GetStatusText()
+    SettingsBuildingPage := 13
     Gui, 2:Tab, 13
     Settings_AddPageFrame("Автоскриншоты", "Распознавание действий в chatlog.txt. Chatlog читается без изменения файла игры.", cardBg, cardEdge, text, muted)
     AddOutlinedPanel(2, 242, 174, 884, 236, panel, cardEdge, 1)
@@ -19138,13 +19201,15 @@ BuildSettingsGui() {
     Settings_AddControl("Способ снимка", "CFG_EvidenceScreenshotMethod", EvidenceScreenshotMethod, 908, 190, 198, "DropDown", "Alt+F1|PrintScreen|Win+PrintScreen|Alt+PrintScreen|F8|F12", text, inputText)
     Settings_AddControl("Ожидание после представления, сек", "CFG_EvidenceDocumentWaitSec", EvidenceDocumentWaitSec, 258, 274, 250, "Edit", "", text, inputText)
     Settings_AddControl("Радиус документов, ед.", "CFG_EvidenceDocumentDistanceLimit", EvidenceDocumentDistanceLimit, 526, 274, 210, "Edit", "", text, inputText)
-    Gui, 2:Font, s9 c%muted%, Segoe UI
+    Gui, 2:Font, Norm s9 c%muted%, Segoe UI
     Gui, 2:Add, Text, x258 y354 w830 h44 BackgroundTrans +Wrap, Укажите Nick_Name сотрудника точно как в chatlog.txt (сейчас: Semen_Lukashenko). Режим «Только радиус» работает постоянно; «После представления» включает ожидание после команды «Представление».
 
+    SettingsBuildingPage := 0
     Gui, 2:Tab
-    Gui, 2:Font, s9 c%muted%, Segoe UI
+    Gui, 2:Font, Norm s9 c%muted%, Segoe UI
     Gui, 2:Add, Text, x18 y772 w900 h18 vSettingsStatusText BackgroundTrans, Изменения сохраняются кнопкой «Сохранить» или при закрытии окна.
     Gui, 2:Add, Text, x920 y772 w240 h18 Right vSettingsOwnerText BackgroundTrans, AHK FOR GOS BY SBEZRUK · SBezruk180
+    SettingsCanvasHeight := Max(800, SettingsPageExtents[1] + 60)
     SettingsGuiReady := 1
     Settings_UpdateScrollbars()
     Capture_ApplyWindow(hSettingsWnd)
