@@ -9,7 +9,7 @@ $ProgressPreference = 'SilentlyContinue'
 $ProjectName = 'AHK FOR GOS BY SBEZRUK'
 $RepoOwner = 'sbezruk180'
 $RepoName = 'AHK-FOR-GOS-BY-SBEZRUK'
-$RepoBranch = 'main'
+$RepoBranch = 'audit-fixes-obs-search-gui-20261009'
 $ProjectZipUrl = "https://github.com/$RepoOwner/$RepoName/archive/refs/heads/$RepoBranch.zip"
 
 $AhkVersion = '1.1.37.02'

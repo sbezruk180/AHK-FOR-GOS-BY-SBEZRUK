@@ -1,3 +1,8 @@
+global SettingsPageExtents := {}
+global SettingsPageFrames := {}
+global SettingsBuildingPage := 0
+global SettingsCanvasHeight := 800
+global SettingsScale := 1
 global LawSearchVocabulary := {}
 ; Shared runtime contracts for AutoHotkey v1.1 ANSI x86.
 global QueueBatchStates := {}
@@ -7,7 +12,10 @@ global AutoReportAcceptedCount := 0
 global ChatLogReaderIdentity := ""
 global ChatLogCursorSignature := ""
 global ChatLogReaderDroppingLine := 0
-global CaptureStatus := "Отключено"
+global CaptureStatus := "Защита захвата выключена"
+global CaptureLastError := 0
+global CaptureDiagnostics := {}
+global CaptureRefreshBusy := 0
 global HistoricalHotstrings := {}
 global HistoricalHotstringCount := 0
 global SettingsScrollX := 0
@@ -337,62 +345,230 @@ EnsureTextContrast(color, surfaces, ratio := 4.5) {
     return best
 }
 
-Capture_Supported() {
-    VarSetCapacity(version, 284, 0)
-    NumPut(284, version, 0, "UInt")
-    return DllCall("ntdll\RtlGetVersion", "Ptr", &version) = 0 && NumGet(version, 4, "UInt") >= 10 && NumGet(version, 12, "UInt") >= 19041
+Capture_GetEnvironment() {
+    result := {Supported: false, Composition: false, Version: "", Error: 0, Reason: ""}
+    try {
+        VarSetCapacity(version, 284, 0)
+        NumPut(284, version, 0, "UInt")
+        code := DllCall("ntdll\RtlGetVersion", "Ptr", &version, "Int")
+        if (code != 0) {
+            result.Error := code
+            result.Reason := "Не удалось определить версию Windows"
+            return result
+        }
+        major := NumGet(version, 4, "UInt")
+        minor := NumGet(version, 8, "UInt")
+        build := NumGet(version, 12, "UInt")
+        result.Version := major . "." . minor . "." . build
+        result.Supported := major > 10 || (major = 10 && build >= 19041)
+        if (!result.Supported) {
+            result.Reason := "Нужна Windows 10 2004 / Windows 11"
+            return result
+        }
+        composition := 0
+        code := DllCall("dwmapi\DwmIsCompositionEnabled", "Int*", composition, "Int")
+        result.Composition := code = 0 && composition
+        if (!result.Composition) {
+            result.Error := code
+            result.Reason := "Защита захвата недоступна: DWM выключен"
+        }
+    } catch e {
+        result.Error := -1
+        result.Reason := "API защиты захвата недоступен"
+    }
+    return result
 }
 
-Capture_ApplyWindow(hwnd) {
-    if (!hwnd || !DllCall("IsWindow", "Ptr", hwnd))
+Capture_Supported() {
+    environment := Capture_GetEnvironment()
+    return environment.Supported && environment.Composition
+}
+
+Capture_IsOwnGui(hwnd) {
+    if (!hwnd || !DllCall("user32\IsWindow", "Ptr", hwnd))
+        return false
+    ownerProcess := 0
+    DllCall("user32\GetWindowThreadProcessId", "Ptr", hwnd, "UInt*", ownerProcess)
+    if (ownerProcess != DllCall("kernel32\GetCurrentProcessId", "UInt"))
+        return false
+    if (DllCall("user32\GetAncestor", "Ptr", hwnd, "UInt", 2, "Ptr") != hwnd)
+        return false
+    ; Native class lookup also sees a just-created, still-hidden GUI.
+    VarSetCapacity(className, 256, 0)
+    length := DllCall("user32\GetClassNameA", "Ptr", hwnd, "Ptr", &className, "Int", 256, "Int")
+    return length && StrGet(&className, length, "CP0") = "AutoHotkeyGUI"
+}
+
+Capture_ReadAffinity(hwnd, ByRef affinity, ByRef lastError) {
+    affinity := 0
+    lastError := 0
+    try {
+        DllCall("kernel32\SetLastError", "UInt", 0)
+        verified := DllCall("user32\GetWindowDisplayAffinity", "Ptr", hwnd, "UInt*", affinity, "Int")
+        lastError := verified ? 0 : A_LastError
+        return !!verified
+    } catch e {
+        lastError := -1
+        return false
+    }
+}
+
+Capture_AffinityMatches(enabled, verified, affinity) {
+    ; A failed read must never be treated as confirmation of cached success.
+    return !!verified && affinity = (enabled ? 0x11 : 0)
+}
+
+Capture_ShouldRetry(state, enabled, now) {
+    return !IsObject(state) || state.Enabled != enabled || now >= state.NextRetry
+}
+
+Capture_BeforeShow(guiName) {
+    ; Resolve the named GUI while hidden, before its first visible frame.
+    if (guiName = "")
+        return false
+    Gui, %guiName%:+HwndcaptureHwnd
+    UI_PrepareWindow(captureHwnd)
+    return Capture_ApplyWindow(captureHwnd)
+}
+
+Capture_ApplyWindow(hwnd, environment := "") {
+    if (!Capture_IsOwnGui(hwnd))
         return false
     enabled := OBSHideWindows = "On"
-    if (enabled && !Capture_Supported()) {
-        CaptureStatus := "Нужна Windows 10 2004 / Windows 11"
-        return false
-    }
-    try {
-        ok := DllCall("user32\SetWindowDisplayAffinity", "Ptr", hwnd, "UInt", enabled ? 0x11 : 0)
-        if (!ok) {
-            CaptureStatus := "Исключение захвата не применено (" . A_LastError . ")"
+    now := TickNow()
+    state := {Enabled: enabled, Verified: false, Affinity: 0, Error: 0, Reason: "", LastChecked: now, NextRetry: now + 2000}
+    if (enabled) {
+        if (!IsObject(environment))
+            environment := Capture_GetEnvironment()
+        if (!environment.Supported || !environment.Composition) {
+            state.Error := environment.Error
+            state.Reason := environment.Reason
+            CaptureWindowStates[hwnd] := state
+            CaptureStatus := state.Reason
             return false
         }
-        affinity := 0
-        verified := DllCall("user32\GetWindowDisplayAffinity", "Ptr", hwnd, "UInt*", affinity)
-        if (!verified || affinity != (enabled ? 0x11 : 0))
-            return false
-        CaptureWindowStates[hwnd] := {Enabled: enabled, Class: ""}
-        CaptureStatus := enabled ? "Окна исключены из совместимого захвата" : "Отключено"
-        return true
-    } catch e {
-        CaptureStatus := "Исключение захвата недоступно"
-        return false
     }
+    try {
+        DllCall("kernel32\SetLastError", "UInt", 0)
+        ok := DllCall("user32\SetWindowDisplayAffinity", "Ptr", hwnd, "UInt", enabled ? 0x11 : 0, "Int")
+        lastError := ok ? 0 : A_LastError
+        if (!ok) {
+            state.Error := lastError
+            state.Reason := "SetWindowDisplayAffinity"
+        } else {
+            verified := Capture_ReadAffinity(hwnd, affinity, lastError)
+            state.Affinity := affinity
+            state.Verified := Capture_AffinityMatches(enabled, verified, affinity)
+            if (!state.Verified) {
+                state.Error := lastError
+                state.Reason := verified ? "Windows вернула другой флаг захвата" : "GetWindowDisplayAffinity"
+            } else {
+                state.NextRetry := 0
+            }
+        }
+    } catch e {
+        state.Error := -1
+        state.Reason := "API защиты захвата недоступен"
+    }
+    CaptureWindowStates[hwnd] := state
+    if (state.Verified)
+        CaptureStatus := enabled ? "Флаг защиты Windows подтверждён. Проверьте OBS." : "Защита захвата выключена"
+    else
+        CaptureStatus := "Защита не подтверждена: " . state.Reason . " (" . state.Error . ")"
+    return state.Verified
 }
 
 Capture_RefreshWindows() {
+    if (CaptureRefreshBusy)
+        return
+    CaptureRefreshBusy := 1
     previous := A_DetectHiddenWindows
-    DetectHiddenWindows, On
-    process := DllCall("GetCurrentProcessId")
-    WinGet, windows, List, ahk_pid %process%
-    for hwnd, state in CaptureWindowStates {
-        if !DllCall("IsWindow", "Ptr", hwnd)
+    enabled := OBSHideWindows = "On"
+    environment := enabled ? Capture_GetEnvironment() : {Supported: true, Composition: true, Version: "", Error: 0, Reason: ""}
+    total := 0, confirmed := 0, failed := 0, lastError := 0, lastReason := ""
+    now := TickNow()
+    try {
+        DetectHiddenWindows, On
+        process := DllCall("kernel32\GetCurrentProcessId", "UInt")
+        WinGet, windows, List, ahk_pid %process%
+        expired := []
+        for hwnd, state in CaptureWindowStates {
+            if (!Capture_IsOwnGui(hwnd))
+                expired.Push(hwnd)
+        }
+        ; Deleting during object enumeration can skip the following HWND.
+        for _, hwnd in expired
             CaptureWindowStates.Delete(hwnd)
+        Loop % windows {
+            hwnd := windows%A_Index%
+            if (!Capture_IsOwnGui(hwnd))
+                continue
+            total++
+            state := CaptureWindowStates.HasKey(hwnd) ? CaptureWindowStates[hwnd] : ""
+            if (enabled && (!environment.Supported || !environment.Composition)) {
+                CaptureWindowStates[hwnd] := {Enabled: enabled, Verified: false, Affinity: 0, Error: environment.Error, Reason: environment.Reason, LastChecked: now, NextRetry: now + 2000}
+                failed++
+                lastError := environment.Error
+                lastReason := environment.Reason
+                continue
+            }
+            verified := Capture_ReadAffinity(hwnd, affinity, readError)
+            if (Capture_AffinityMatches(enabled, verified, affinity)) {
+                CaptureWindowStates[hwnd] := {Enabled: enabled, Verified: true, Affinity: affinity, Error: 0, Reason: "", LastChecked: now, NextRetry: 0}
+                confirmed++
+                continue
+            }
+            if (Capture_ShouldRetry(state, enabled, now))
+                Capture_ApplyWindow(hwnd, environment)
+            else {
+                ; Remember a failed current read even when the retry is throttled.
+                state.Verified := false
+                state.Affinity := affinity
+                state.Error := readError
+                state.Reason := verified ? "Windows вернула другой флаг захвата" : "GetWindowDisplayAffinity"
+                state.LastChecked := now
+                CaptureWindowStates[hwnd] := state
+            }
+            state := CaptureWindowStates[hwnd]
+            if (state.Verified)
+                confirmed++
+            else {
+                failed++
+                lastError := state.Error
+                lastReason := state.Reason
+            }
+        }
+        CaptureLastError := lastError
+        CaptureDiagnostics := {Enabled: enabled, Windows: total, Confirmed: confirmed, Failed: failed, Version: environment.Version, Supported: environment.Supported, Composition: environment.Composition, Error: lastError, Reason: lastReason}
+        if (enabled && (!environment.Supported || !environment.Composition))
+            CaptureStatus := environment.Reason
+        else if (!total)
+            CaptureStatus := enabled ? "Защита включена; ожидается создание окна" : "Защита захвата выключена"
+        else if (failed)
+            CaptureStatus := "Windows: " . confirmed . "/" . total . " окон подтверждено; ошибка " . lastError . "."
+        else if (enabled)
+            CaptureStatus := "Windows: защита подтверждена для " . confirmed . " окон. Проверьте OBS."
+        else
+            CaptureStatus := "Защита захвата выключена"
+        if (SettingsGui_CanUpdate())
+            GuiControl, 2:, CaptureStatusText, %CaptureStatus%
+    } finally {
+        DetectHiddenWindows, %previous%
+        CaptureRefreshBusy := 0
     }
-    Loop % windows {
-        hwnd := windows%A_Index%
-        WinGetClass, class, ahk_id %hwnd%
-        if (class != "AutoHotkeyGUI")
-            continue
-        expected := OBSHideWindows = "On"
-        affinity := 0
-        existing := DllCall("user32\GetWindowDisplayAffinity", "Ptr", hwnd, "UInt*", affinity)
-        if (!CaptureWindowStates.HasKey(hwnd) || CaptureWindowStates[hwnd].Enabled != expected || (existing && affinity != (expected ? 0x11 : 0)))
-            Capture_ApplyWindow(hwnd)
-    }
-    if (SettingsGui_CanUpdate())
-        GuiControl, 2:, CaptureStatusText, %CaptureStatus%
-    DetectHiddenWindows, %previous%
+}
+
+Capture_GetDiagnosticsText() {
+    state := CaptureDiagnostics
+    if (!IsObject(state) || !state.HasKey("Windows"))
+        return "Защита захвата: состояние ещё не проверено."
+    text := "Защита захвата: " . CaptureStatus
+    text .= "`r`nWindows=" . state.Version . "; On=" . state.Enabled . "; DWM=" . state.Composition
+    text .= "; окон=" . state.Windows . "; подтверждено=" . state.Confirmed . "; ошибки=" . state.Failed
+    text .= "; API=" . state.Reason . "; код=" . state.Error
+    text .= "`r`nПроверка подтверждает флаг Windows, а не результат в OBS."
+    text .= "`r`nПроверьте запись выбранного источника OBS. BitBlt и сторонний захват могут не учитывать исключение."
+    return text
 }
 
 Settings_NormalizeViewport() {
@@ -408,8 +584,8 @@ Settings_NormalizeViewport() {
         }
     }
     SysGet, area, MonitorWorkArea, %selected%
-    SettingsW := Min(1180, Max(320, areaRight - areaLeft - 32))
-    SettingsH := Min(800, Max(240, areaBottom - areaTop - 56))
+    SettingsW := Min(Round(1180 * A_ScreenDPI / 96.0), Max(320, areaRight - areaLeft - 32))
+    SettingsH := Min(Round(800 * A_ScreenDPI / 96.0), Max(240, areaBottom - areaTop - 56))
     SettingsX := Max(areaLeft + 8, Min(SettingsX, areaRight - SettingsW - 24))
     SettingsY := Max(areaTop + 8, Min(SettingsY, areaBottom - SettingsH - 40))
 }
@@ -422,11 +598,11 @@ Settings_UpdateScrollbars() {
     DllCall("GetClientRect", "Ptr", hSettingsWnd, "Ptr", &rect)
     width := NumGet(rect, 8, "Int"), height := NumGet(rect, 12, "Int")
     oldX := SettingsScrollX, oldY := SettingsScrollY
-    SettingsScrollX := Max(0, Min(SettingsScrollX, 1180 - width))
-    SettingsScrollY := Max(0, Min(SettingsScrollY, 800 - height))
+    SettingsScrollX := Max(0, Min(SettingsScrollX, Round(1180 * SettingsScale) - width))
+    SettingsScrollY := Max(0, Min(SettingsScrollY, Round(SettingsCanvasHeight * SettingsScale) - height))
     if (oldX != SettingsScrollX || oldY != SettingsScrollY)
         DllCall("ScrollWindowEx", "Ptr", hSettingsWnd, "Int", oldX - SettingsScrollX, "Int", oldY - SettingsScrollY, "Ptr", 0, "Ptr", 0, "Ptr", 0, "Ptr", 0, "UInt", 7)
-    for axis, canvas in [1180, 800] {
+    for axis, canvas in [Round(1180 * SettingsScale), Round(SettingsCanvasHeight * SettingsScale)] {
         page := axis = 1 ? width : height
         offset := axis = 1 ? SettingsScrollX : SettingsScrollY
         VarSetCapacity(info, 28, 0)
@@ -646,5 +822,85 @@ ChatLogReader_CursorSignature(file, position) {
         return signature
     } finally {
         file.Pos := savedPosition
+    }
+}
+
+Settings_RecordExtent(bottom) {
+    if (!SettingsBuildingPage)
+        return
+    old := SettingsPageExtents.HasKey(SettingsBuildingPage) ? SettingsPageExtents[SettingsBuildingPage] : 0
+    SettingsPageExtents[SettingsBuildingPage] := Max(old, bottom)
+}
+
+Settings_ResetScroll() {
+    global hSettingsWnd
+    if (hSettingsWnd && (SettingsScrollX || SettingsScrollY))
+        DllCall("ScrollWindowEx", "Ptr", hSettingsWnd, "Int", SettingsScrollX, "Int", SettingsScrollY, "Ptr", 0, "Ptr", 0, "Ptr", 0, "Ptr", 0, "UInt", 7)
+    SettingsScrollX := 0, SettingsScrollY := 0
+}
+
+Settings_ActivateLayout(page) {
+    SettingsCanvasHeight := Max(800, (SettingsPageExtents.HasKey(page) ? SettingsPageExtents[page] : 740) + 60)
+    footerY := SettingsCanvasHeight - 28
+    borderY := SettingsCanvasHeight - 4
+    GuiControl, 2:Move, SettingsStatusText, y%footerY%
+    GuiControl, 2:Move, SettingsOwnerText, y%footerY%
+    GuiControl, 2:Move, SettingsBorderBottom, y%borderY%
+    if SettingsPageFrames.HasKey(page) {
+        frame := SettingsPageFrames[page]
+        height := SettingsCanvasHeight - frame.Y - 44
+        bottom := frame.Y + height - frame.Border
+        GuiControl, 2:Move, % frame.Fill, h%height%
+        GuiControl, 2:Move, % frame.Left, h%height%
+        GuiControl, 2:Move, % frame.Right, h%height%
+        GuiControl, 2:Move, % frame.Bottom, y%bottom%
+        ApplyRoundedCorners(frame.Fill, InnerRoundness)
+    }
+    Settings_UpdateScrollbars()
+}
+
+UI_MeasureTextHeight(text, logicalWidth, pointSize := 9, bold := false) {
+    scale := A_ScreenDPI / 96.0
+    dc := DllCall("GetDC", "Ptr", 0, "Ptr")
+    if (!dc)
+        return 48
+    font := DllCall("CreateFontA", "Int", -Round(pointSize * A_ScreenDPI / 72), "Int", 0, "Int", 0, "Int", 0, "Int", bold ? 700 : 400, "UInt", 0, "UInt", 0, "UInt", 0, "UInt", 1, "UInt", 0, "UInt", 0, "UInt", 0, "UInt", 0, "AStr", "Segoe UI", "Ptr")
+    previous := font ? DllCall("SelectObject", "Ptr", dc, "Ptr", font, "Ptr") : 0
+    try {
+        VarSetCapacity(rect, 16, 0)
+        NumPut(Round(logicalWidth * scale), rect, 8, "Int")
+        count := StrPut(text, "UTF-16")
+        VarSetCapacity(buffer, count * 2, 0)
+        StrPut(text, &buffer, count, "UTF-16")
+        DllCall("DrawTextW", "Ptr", dc, "Ptr", &buffer, "Int", count - 1, "Ptr", &rect, "UInt", 0x400 | 0x10 | 0x800)
+        return Ceil(NumGet(rect, 12, "Int") / scale) + 6
+    } finally {
+        if (previous)
+            DllCall("SelectObject", "Ptr", dc, "Ptr", previous)
+        if (font)
+            DllCall("DeleteObject", "Ptr", font)
+        DllCall("ReleaseDC", "Ptr", 0, "Ptr", dc)
+    }
+}
+
+UI_PrepareWindow(hwnd) {
+    ; A nonexistent theme name disables themed painting without resetting it to
+    ; the system default. Empty strings can restore the blue progress theme.
+    if (!hwnd || !DllCall("IsWindow", "Ptr", hwnd))
+        return
+    oldHidden := A_DetectHiddenWindows
+    DetectHiddenWindows, On
+    try {
+        WinGet, children, ControlListHwnd, ahk_id %hwnd%
+        Loop, Parse, children, `n, `r
+        {
+            child := A_LoopField + 0
+            VarSetCapacity(className, 128, 0)
+            length := DllCall("GetClassNameW", "Ptr", child, "Ptr", &className, "Int", 64, "Int")
+            if (length > 0 && StrGet(&className, length, "UTF-16") = "msctls_progress32")
+                try DllCall("uxtheme\SetWindowTheme", "Ptr", child, "WStr", " ", "WStr", " ", "Int")
+        }
+    } finally {
+        DetectHiddenWindows, %oldHidden%
     }
 }

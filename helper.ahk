@@ -346,6 +346,7 @@ TerritoryMap_ShowCatalog(CtrlHwnd := "", GuiEvent := "", EventInfo := "", ErrLev
     Gui, TerritoryMaps:Add, ListBox, y+8 w610 r11 vTerritoryMapSelectedIndex AltSubmit Choose1, %items%
     Gui, TerritoryMaps:Add, Button, y+10 w190 h30 Default gTerritoryMap_OpenSelected, Открыть
     Gui, TerritoryMaps:Add, Button, x+12 yp w190 h30 gTerritoryMap_CloseCatalog, Закрыть
+    Capture_BeforeShow("TerritoryMaps")
     Gui, TerritoryMaps:Show, AutoSize Center
     TerritoryMapSelectedIndex := 1
     TerritoryMapGuiVisible := 1
@@ -482,6 +483,7 @@ TerritoryMap_ShowLocal(groupIndex, assetIndex := 1)
     Gui, TerritoryMapView:Add, Button, x+8 yp w145 h30 gTerritoryMap_OpenCurrentLocal, Открыть файл
     Gui, TerritoryMapView:Add, Button, x+8 yp w165 h30 gTerritoryMap_OpenCurrentForum, Оригинал форума
     Gui, TerritoryMapView:Add, Button, x+8 yp w130 h30 gTerritoryMap_CloseView, Закрыть
+    Capture_BeforeShow("TerritoryMapView")
     Gui, TerritoryMapView:Show, AutoSize Center
     TerritoryMapViewVisible := 1
     TerritoryMapGuiVisible := 1
@@ -991,19 +993,22 @@ LawGui_Show(state, title, body, officialExact := 0, docPrefix := "")
 
     LawGuiX := 5
     LawGuiY := 8
-    LawGuiW := Floor(A_ScreenWidth / 3)
+    uiScale := A_ScreenDPI / 96.0
+    screenW := Floor(A_ScreenWidth / uiScale)
+    screenH := Floor(A_ScreenHeight / uiScale)
+    LawGuiW := Floor(screenW / 3)
     if (LawGuiW < 620)
         LawGuiW := 620
     if (LawGuiW > 900)
         LawGuiW := 900
-    maxLawW := A_ScreenWidth - 16
+    maxLawW := screenW - 16
     if (LawGuiW > maxLawW)
         LawGuiW := maxLawW
 
-    LawGuiH := A_ScreenHeight - 26
+    LawGuiH := screenH - 26
     if (LawGuiH < 600)
         LawGuiH := 600
-    maxLawH := A_ScreenHeight - 16
+    maxLawH := screenH - 16
     if (LawGuiH > maxLawH)
         LawGuiH := maxLawH
 
@@ -1029,9 +1034,7 @@ LawGui_Show(state, title, body, officialExact := 0, docPrefix := "")
     LawTitleFontSize := LawBodyFontSize + 1
     LawAccentColor := LawSearch_GetShellAccentColor()
 
-    ContentW := LawGuiW - 50
-    if (ContentW > 650)
-        ContentW := 650
+    ContentW := LawGuiW - 28
     if (ContentW < 550)
         ContentW := LawGuiW - 24
 
@@ -1048,21 +1051,21 @@ LawGui_Show(state, title, body, officialExact := 0, docPrefix := "")
     HeaderTitleW := ContentW - HeaderPageW - HeaderMapW - 16
     if (LawHeaderPage = "")
         HeaderTitleW := ContentW - HeaderMapW - (HeaderMapW ? 8 : 0)
-    HeaderH := 24
-    BodyH := LawGuiH - 48
+    HeaderH := 30
+    BodyH := Max(40, LawGuiH - 62)
 
     Gui, 1:+LastFound +AlwaysOnTop -Caption +ToolWindow +Border +HwndLawGuiHwnd
     Gui, 1:Color, %LawBgColor%, %LawBgColor%
     Gui, 1:Margin, 10, 6
     LawBorderRight := LawGuiW - 2
     LawBorderBottom := LawGuiH - 2
-    Gui, 1:Add, Progress, x0 y0 w%LawGuiW% h2 Disabled Background%LawBgColor% c%LawAccentColor%, 100
-    Gui, 1:Add, Progress, x0 y%LawBorderBottom% w%LawGuiW% h2 Disabled Background%LawBgColor% c%LawAccentColor%, 100
-    Gui, 1:Add, Progress, x0 y0 w2 h%LawGuiH% Disabled Vertical Background%LawBgColor% c%LawAccentColor%, 100
-    Gui, 1:Add, Progress, x%LawBorderRight% y0 w2 h%LawGuiH% Disabled Vertical Background%LawBgColor% c%LawAccentColor%, 100
+    Gui, 1:Add, Progress, -Theme x0 y0 w%LawGuiW% h2 Disabled Background%LawBgColor% c%LawAccentColor%, 100
+    Gui, 1:Add, Progress, -Theme x0 y%LawBorderBottom% w%LawGuiW% h2 Disabled Background%LawBgColor% c%LawAccentColor%, 100
+    Gui, 1:Add, Progress, -Theme x0 y0 w2 h%LawGuiH% Disabled Vertical Background%LawBgColor% c%LawAccentColor%, 100
+    Gui, 1:Add, Progress, -Theme x%LawBorderRight% y0 w2 h%LawGuiH% Disabled Vertical Background%LawBgColor% c%LawAccentColor%, 100
 
     Gui, 1:Font, s%LawTitleFontSize% Bold c%LawTextColor%, Segoe UI
-    Gui, 1:Add, Text, xm ym w%HeaderTitleW% h%HeaderH% +0x200 BackgroundTrans, %LawHeaderTitle%
+    Gui, 1:Add, Text, xm ym w%HeaderTitleW% h%HeaderH% +0x200 +0x4000 BackgroundTrans, %LawHeaderTitle%
     if (LawHeaderPage != "")
     {
         Gui, 1:Font, s%LawBodyFontSize% Bold c%LawAccentColor%, Segoe UI
@@ -1073,10 +1076,12 @@ LawGui_Show(state, title, body, officialExact := 0, docPrefix := "")
         Gui, 1:Font, s%LawBodyFontSize% Bold c%LawTextColor%, Segoe UI
         Gui, 1:Add, Button, x+8 yp w%HeaderMapW% h22 gTerritoryMap_ShowCatalog, Карты
     }
-    Gui, 1:Add, Progress, xm y+3 w%ContentW% h1 Disabled Background%LawBgColor% c%LawAccentColor%, 100
+    Gui, 1:Add, Progress, -Theme xm y+3 w%ContentW% h1 Disabled Background%LawBgColor% c%LawAccentColor%, 100
 
-    Gui, 1:Font, s%LawBodyFontSize% c%LawTextColor%, Segoe UI
-    Gui, 1:Add, Text, xm y+3 w%ContentW% h%BodyH% BackgroundTrans, %body%
+    Gui, 1:Font, Norm s%LawBodyFontSize% c%LawTextColor%, Segoe UI
+    Gui, 1:Add, Edit, xm y+8 w%ContentW% h%BodyH% ReadOnly Multi +VScroll -WantTab, %body%
+
+    Capture_BeforeShow("1")
 
     Gui, 1:Show, x%LawGuiX% y%LawGuiY% w%LawGuiW% h%LawGuiH% NoActivate, window.
     WinSet, Transparent, %LawAlpha%, ahk_id %LawGuiHwnd%
@@ -4221,30 +4226,26 @@ Search_ShowCurrentResult()
     accentColor := LawSearch_GetShellAccentColor()
     alpha := LawSearch_GetShellAlpha()
 
-    SearchGuiW := 680
-    if (SearchGuiW > A_ScreenWidth - 20)
-        SearchGuiW := A_ScreenWidth - 20
+    uiScale := A_ScreenDPI / 96.0
+    screenW := Floor(A_ScreenWidth / uiScale)
+    screenH := Floor(A_ScreenHeight / uiScale)
+    SearchGuiW := 720
+    if (SearchGuiW > screenW - 20)
+        SearchGuiW := screenW - 20
     SearchGuiH := 392
-    if (SearchGuiH > A_ScreenHeight - 110)
-        SearchGuiH := A_ScreenHeight - 110
-    if (SearchGuiH < 320)
-        SearchGuiH := 320
+    if (SearchGuiH > screenH - 110)
+        SearchGuiH := screenH - 110
+    SearchGuiH := Max(200, Min(SearchGuiH, screenH - 40))
     SearchGuiX := 5
-    SearchGuiY := A_ScreenHeight - SearchGuiH - 20
+    SearchGuiY := A_ScreenHeight - Round(SearchGuiH * uiScale) - 20
     if (SearchGuiY < 80)
         SearchGuiY := 80
     MarginX := 14
     MarginY := 10
     ContentW := SearchGuiW - (MarginX * 2)
-    HierarchyLines := LawSearch_CountDisplayLines(hierarchy)
-    HierarchyH := (HierarchyLines * 18) + 4
-    if (HierarchyH < 24)
-        HierarchyH := 24
-    if (HierarchyH > 102)
-        HierarchyH := 102
-    BodyH := SearchGuiH - HierarchyH - 124
-    if (BodyH < 160)
-        BodyH := 160
+    HierarchyH := Min(120, Max(28, UI_MeasureTextHeight(hierarchy, ContentW, 9, 1)))
+    BodyY := 76 + HierarchyH
+    BodyH := Max(40, SearchGuiH - BodyY - 12)
     borderSize := 2
     rightX := SearchGuiW - borderSize
     bottomY := SearchGuiH - borderSize
@@ -4253,20 +4254,20 @@ Search_ShowCurrentResult()
     Gui, 16:+LastFound +AlwaysOnTop -Caption +ToolWindow +Border +HwndSearchGuiHwnd
     Gui, 16:Color, %bgColor%, %bgColor%
     Gui, 16:Margin, %MarginX%, %MarginY%
-    Gui, 16:Add, Progress, x0 y0 w%SearchGuiW% h%borderSize% Disabled Background%bgColor% c%accentColor%, 100
-    Gui, 16:Add, Progress, x0 y%bottomY% w%SearchGuiW% h%borderSize% Disabled Background%bgColor% c%accentColor%, 100
-    Gui, 16:Add, Progress, x0 y0 w%borderSize% h%SearchGuiH% Disabled Vertical Background%bgColor% c%accentColor%, 100
-    Gui, 16:Add, Progress, x%rightX% y0 w%borderSize% h%SearchGuiH% Disabled Vertical Background%bgColor% c%accentColor%, 100
+    Gui, 16:Add, Progress, -Theme x0 y0 w%SearchGuiW% h%borderSize% Disabled Background%bgColor% c%accentColor%, 100
+    Gui, 16:Add, Progress, -Theme x0 y%bottomY% w%SearchGuiW% h%borderSize% Disabled Background%bgColor% c%accentColor%, 100
+    Gui, 16:Add, Progress, -Theme x0 y0 w%borderSize% h%SearchGuiH% Disabled Vertical Background%bgColor% c%accentColor%, 100
+    Gui, 16:Add, Progress, -Theme x%rightX% y0 w%borderSize% h%SearchGuiH% Disabled Vertical Background%bgColor% c%accentColor%, 100
     Gui, 16:Font, s10 Bold c%textColor%, Segoe UI
-    Gui, 16:Add, Text, xm ym w%ContentW% h22 +0x200 BackgroundTrans, %header%
-    Gui, 16:Font, s8 c%accentColor%, Segoe UI
-    Gui, 16:Add, Text, xm y+0 w%ContentW% h18 +0x200 BackgroundTrans, %meta%
-    Gui, 16:Add, Progress, xm y+4 w%ContentW% h1 Disabled Background%bgColor% c%accentColor%, 100
+    Gui, 16:Add, Text, xm ym w%ContentW% h24 +0x200 +0x4000 BackgroundTrans, %header%
+    Gui, 16:Font, Norm s8 c%accentColor%, Segoe UI
+    Gui, 16:Add, Text, xm y+0 w%ContentW% h20 +0x200 +0x4000 BackgroundTrans, %meta%
+    Gui, 16:Add, Progress, -Theme xm y+4 w%ContentW% h1 Disabled Background%bgColor% c%accentColor%, 100
     Gui, 16:Font, s9 Bold c%accentColor%, Segoe UI
-    Gui, 16:Add, Text, xm y+7 w%ContentW% h%HierarchyH% BackgroundTrans, %hierarchy%
-    Gui, 16:Add, Progress, xm y+5 w%ContentW% h1 Disabled Background%bgColor% c%accentColor%, 100
-    Gui, 16:Font, s9 c%textColor%, Segoe UI
-    Gui, 16:Add, Text, xm y+6 w%ContentW% h%BodyH% BackgroundTrans, %body%
+    Gui, 16:Add, Text, xm y+7 w%ContentW% h%HierarchyH% +Wrap BackgroundTrans, %hierarchy%
+    Gui, 16:Font, s9 Norm c%textColor%, Segoe UI
+    Gui, 16:Add, Edit, x14 y%BodyY% w%ContentW% h%BodyH% ReadOnly Multi +VScroll -WantTab, %body%
+    Capture_BeforeShow("16")
     Gui, 16:Show, x%SearchGuiX% y%SearchGuiY% w%SearchGuiW% h%SearchGuiH% NoActivate, law search
     WinSet, Transparent, %alpha%, ahk_id %SearchGuiHwnd%
     LawSearch_ApplyShellRound(SearchGuiHwnd)
@@ -4441,12 +4442,13 @@ LawSearch_ShowNotice(text)
     Gui, 17:+LastFound +AlwaysOnTop -Caption +ToolWindow +Border +HwndSearchNoticeHwnd
     Gui, 17:Color, %bgColor%, %bgColor%
     Gui, 17:Margin, %MarginX%, %MarginY%
-    Gui, 17:Add, Progress, x0 y0 w%NoticeW% h%borderSize% Disabled Background%bgColor% c%accentColor%, 100
-    Gui, 17:Add, Progress, x0 y%bottomY% w%NoticeW% h%borderSize% Disabled Background%bgColor% c%accentColor%, 100
-    Gui, 17:Add, Progress, x0 y0 w%borderSize% h%NoticeH% Disabled Vertical Background%bgColor% c%accentColor%, 100
-    Gui, 17:Add, Progress, x%rightX% y0 w%borderSize% h%NoticeH% Disabled Vertical Background%bgColor% c%accentColor%, 100
+    Gui, 17:Add, Progress, -Theme x0 y0 w%NoticeW% h%borderSize% Disabled Background%bgColor% c%accentColor%, 100
+    Gui, 17:Add, Progress, -Theme x0 y%bottomY% w%NoticeW% h%borderSize% Disabled Background%bgColor% c%accentColor%, 100
+    Gui, 17:Add, Progress, -Theme x0 y0 w%borderSize% h%NoticeH% Disabled Vertical Background%bgColor% c%accentColor%, 100
+    Gui, 17:Add, Progress, -Theme x%rightX% y0 w%borderSize% h%NoticeH% Disabled Vertical Background%bgColor% c%accentColor%, 100
     Gui, 17:Font, s9 Bold c%textColor%, Segoe UI
     Gui, 17:Add, Text, xm ym w%TextW% h38 +0x200 BackgroundTrans, %text%
+    Capture_BeforeShow("17")
     Gui, 17:Show, x%NoticeX% y%NoticeY% w%NoticeW% h%NoticeH% NoActivate, law search notice
     WinSet, Transparent, %alpha%, ahk_id %SearchNoticeHwnd%
     LawSearch_ApplyShellRound(SearchNoticeHwnd)

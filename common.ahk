@@ -39,6 +39,7 @@ global g_MemoryInjectionBusy := 0
 global GAME_MP_ModulePath := ""
 global g_RemoteOperation := ""
 global g_CompatibilityCache := ""
+global g_ReadCompatibilityCache := ""
 global ConfigWriteFailed := 0
 global ConfigTransactionBusy := 0
 global ConfigReadOnly := 0
@@ -280,6 +281,7 @@ ReleaseGameHandle() {
     dwSAMP := 0
     GAME_MP_ModulePath := ""
     g_CompatibilityCache := ""
+    g_ReadCompatibilityCache := ""
     pMemory := 0
     pParam1 := 0
     pParam2 := 0
@@ -348,6 +350,7 @@ MemoryInvalidateGameHandle(reason := "") {
     dwSAMP := 0
     GAME_MP_ModulePath := ""
     g_CompatibilityCache := ""
+    g_ReadCompatibilityCache := ""
     pMemory := 0
     pParam1 := 0
     pParam2 := 0
@@ -705,6 +708,7 @@ refreshSAMP(forceValidation := false) {
         dwSAMP := 0
     GAME_MP_ModulePath := ""
     g_CompatibilityCache := ""
+    g_ReadCompatibilityCache := ""
         g_LastSampValidationTick := TickNow()
         if IsFunc("AZMP_ResetAutoIDRuntime")
             Func("AZMP_ResetAutoIDRuntime").Call("azmp.dll unavailable")
@@ -753,6 +757,7 @@ refreshGTA() {
             dwSAMP := 0
     GAME_MP_ModulePath := ""
     g_CompatibilityCache := ""
+    g_ReadCompatibilityCache := ""
             pMemory := 0
             MemoryFail("OPEN_PROCESS", ERROR_OPEN_PROCESS, g_LastHandleError)
             return false
@@ -761,6 +766,7 @@ refreshGTA() {
         dwSAMP := 0
     GAME_MP_ModulePath := ""
     g_CompatibilityCache := ""
+    g_ReadCompatibilityCache := ""
         pMemory := 0
         pParam1 := 0
         pParam2 := 0
@@ -801,6 +807,68 @@ checkHandles() {
     ; успешной/неуспешной проверки ставится после полного восстановления.
     iRefreshHandles := refreshTick
     return g_LastCheckHandlesResult
+}
+
+; Read-only discovery never calls refreshMemory or launches game code. An explicit
+; build hash remains mandatory for writes/injection via the unchanged checkHandles.
+checkReadHandles() {
+    global hGTA, dwGTAPID, dwSAMP, g_HandleGeneration, g_LastSampValidationTick
+    global GAME_MP_ModulePath, AzmpExpectedSHA256, g_ReadCompatibilityCache
+    expected := Trim(AzmpExpectedSHA256)
+    StringUpper, expected, expected
+    if (expected != "" && !RegExMatch(expected, "^[A-F0-9]{64}$"))
+        return MemoryFail("READ_BUILD_INVALID", ERROR_MODULE_NOT_FOUND, "Некорректный ожидаемый SHA-256; чтение цели заблокировано.")
+    key := dwGTAPID . "|" . g_HandleGeneration . "|" . dwSAMP . "|" . expected
+    if (IsObject(g_ReadCompatibilityCache) && g_ReadCompatibilityCache.Key = key
+        && MemoryTickElapsed(g_ReadCompatibilityCache.Tick) < 500
+        && ProcessHandleIsValid(hGTA, dwGTAPID))
+        return g_ReadCompatibilityCache.Ready
+    forceModule := !g_LastSampValidationTick || MemoryTickElapsed(g_LastSampValidationTick) >= 2000
+    if !(refreshGTA() && refreshSAMP(forceModule))
+        return false
+    if (!MemoryReadModuleIsX86(hGTA, dwSAMP))
+        return MemoryFail("READ_LAYOUT_INVALID", ERROR_MODULE_NOT_FOUND, "azmp.dll не является читаемым модулем PE x86 с ожидаемым диапазоном данных.")
+    ; No hash is inferred or learned from an unknown build. Only structural reads
+    ; are allowed when expected is empty; the caller must validate pool/PED links.
+    allowed := MemoryReadBuildPolicy(expected, true, expected = "" ? false : MemoryBuildCompatible())
+    key := dwGTAPID . "|" . g_HandleGeneration . "|" . dwSAMP . "|" . expected
+    g_ReadCompatibilityCache := {Key: key, Tick: TickNow(), Ready: allowed}
+    return allowed
+}
+
+MemoryReadBuildPolicy(expected, moduleX86, hashMatches := false) {
+    expected := Trim(expected)
+    return moduleX86 && (expected = "" || (RegExMatch(expected, "i)^[A-F0-9]{64}$") && hashMatches))
+}
+
+MemoryReadModuleIsX86(process, base) {
+    if (!process || !IsLikelyPointer(base))
+        return false
+    VarSetCapacity(header, 4096, 0)
+    bytes := 0
+    if (!DllCall("ReadProcessMemory", "Ptr", process, "Ptr", base, "Ptr", &header
+        , "UPtr", 4096, "UPtr*", bytes) || bytes != 4096)
+        return false
+    imageBase := base < 0 ? base + 0x100000000 : base
+    return MemoryReadPe32Header(header, bytes)
+        && imageBase + NumGet(header, NumGet(header, 0x3C, "UInt") + 80, "UInt") <= 0x100000000
+}
+
+MemoryReadPe32Header(ByRef header, bytes) {
+    if (bytes < 64 || VarSetCapacity(header) < bytes || NumGet(header, 0, "UShort") != 0x5A4D)
+        return false
+    pe := NumGet(header, 0x3C, "UInt")
+    if (pe < 64 || pe > bytes - 120 || NumGet(header, pe, "UInt") != 0x4550
+        || NumGet(header, pe + 4, "UShort") != 0x14C
+        || !(NumGet(header, pe + 22, "UShort") & 0x2000)
+        || NumGet(header, pe + 24, "UShort") != 0x10B)
+        return false
+    optionalBytes := NumGet(header, pe + 20, "UShort")
+    imageSize := NumGet(header, pe + 24 + 56, "UInt")
+    headerSize := NumGet(header, pe + 24 + 60, "UInt")
+    return optionalBytes >= 96 && pe + 24 + optionalBytes <= bytes
+        && imageSize >= 0x26E8F8 && imageSize <= 0x10000000
+        && headerSize >= pe + 24 + optionalBytes && headerSize <= imageSize
 }
 
 HexToDec(str) {
