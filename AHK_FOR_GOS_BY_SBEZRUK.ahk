@@ -22,6 +22,10 @@ if (A_PtrSize != 4 || A_IsUnicode)
 #Include %A_ScriptDir%
 #Include %A_ScriptDir%\UDF.ahk
 #Include %A_ScriptDir%\runtime_support.ahk
+#Include %A_ScriptDir%\chat_typing.ahk
+#Include %A_ScriptDir%\id_capture.ahk
+#Include %A_ScriptDir%\tests\chat_typing_regression.ahk
+#Include %A_ScriptDir%\tests\id_capture_regression.ahk
 #Include %A_ScriptDir%\tests\audit_regression.ahk
 ; ===== BEGIN EMBEDDED helper.ahk: territory map quality/forum patch =====
 LawSearchDebug := 0
@@ -6351,6 +6355,8 @@ global EvidenceDocumentDistanceLimit := 20
 global EvidenceDocumentWindowExpires := 0
 global ChatWizardMode := ""
 global TextSendMode := "Auto"
+global IDEntryMode := "Перехват цифр"
+global IDCaptureTimeoutSec := 3
 global GameWindowTitle := "AMAZING ONLINE"
 global GameProcessName := "gta_sa.exe"
 global AzmpExpectedSHA256 := ""
@@ -6660,6 +6666,10 @@ global CFG_EvacuationTimerEnabled := ""
 global CFG_PatrolTimerEnabled := ""
 global CFG_PostTimerEnabled := ""
 global CFG_TextSendMode := ""
+global CFG_ChatTypingDelayMs := ""
+global CFG_ChatFactionCommands := ""
+global CFG_IDEntryMode := ""
+global CFG_IDCaptureTimeoutSec := ""
 global CFG_GameWindowTitle := ""
 global CFG_GameProcessName := ""
 global CFG_AzmpExpectedSHA256 := ""
@@ -8636,9 +8646,13 @@ NormalizeThemeMode(ByRef val) {
 }
 
 NormalizeTextSendMode(ByRef val) {
+    val := ChatTyping_ModeFromLabel(val)
+}
+
+NormalizeIDEntryMode(ByRef val) {
     val := Trim(val)
-    if (val != "Auto" && val != "Memory" && val != "Keyboard")
-        val := "Auto"
+    if (val != "Перехват цифр" && val != "Через чат")
+        val := "Перехват цифр"
 }
 
 NormalizeGameProcessName(ByRef val) {
@@ -9861,6 +9875,8 @@ AutoTargetID_RequiredReads(matchType, isMask) {
 }
 
 AutoTargetID_CaptureNow(showFailure := 1) {
+    if IsObject(IDCaptureState)
+        return false
     global AutoTargetIDEnabled, AutoTargetDiagCode, AutoTargetDiagDetail, MockMode
     captureEpoch := AutomationEpoch
     if (MockMode = "On" || !GameLocator_IsActive())
@@ -9894,6 +9910,11 @@ AutoTargetID_Poll() {
     global AutoTargetRButtonLatched, AutoTargetStableReads, AutoTargetLastScanTick
     global UserID, ActiveID, AutoTargetDiagCode, AutoTargetDiagDetail
 
+    if IsObject(IDCaptureState) {
+        AutoTargetRButtonLatched := 1
+        AutoTargetID_ResetCandidate()
+        return
+    }
     if (!GetKeyState("RButton", "P")) {
         AutoTargetRButtonLatched := 0
         AutoTargetLastScanTick := 0
@@ -10702,6 +10723,8 @@ Evidence_DetectReceivedDocument(line) {
 }
 
 CanRunAction(actionName, needsID := false, checkChatClosed := true, requireVehicle := false, requireChatOpen := false, requireCloseRange := false) {
+    if (IsObject(IDCaptureState) || PhysicalInputBusy)
+        return false
     global ActionCooldownMs, LastActionTick
     global SafeModeEnabled, SafeBlockWhenChat, SafeVehicleChecks, SafeRequireChatForEditable
     global SafeDistanceChecks, SafeDistanceLimit
@@ -11032,6 +11055,8 @@ ContextAssistant_CloseGameChat(inputEpoch := 0) {
 }
 
 ContextAssistant_Request(actionName, presetValue := "", presetVariant := "", targetName := "", inputEpoch := 0) {
+    if (IsObject(IDCaptureState) || PhysicalInputBusy)
+        return false
     global ContextAssistantAction, ContextAssistantInput, ContextAssistantVariant, ContextAssistantTargetName
     global ContextAssistantStatus, ContextAssistantMode, hContextAssistantWnd, UserID, MockMode, UIRoundness, TargetIsMask
     global ContextNotificationMode, ContextNotificationTimeoutSec, Bind_ConfirmID, Bind_RejectID
@@ -12797,7 +12822,7 @@ ChatQueue_Tick() {
     global ChatQueueItems, ChatQueueBusy, ChatQueueLastSendTick, ChatQueueNextSendTick
     global ChatQueueMinDelay, ChatQueueMaxRetries, AutoReportSentCount, AutoReportSkippedCount
     global QueueFailureGeneration, AuditTransportResult, AuditTestMode, QueueBatchStates
-    if (ChatQueueBusy || !IsObject(ChatQueueItems) || !ChatQueueItems.Length())
+    if (ChatQueueBusy || PhysicalInputBusy || IsObject(IDCaptureState) || !IsObject(ChatQueueItems) || !ChatQueueItems.Length())
         return
     if (ChatQueueNextSendTick > TickNow())
         return
@@ -12928,6 +12953,8 @@ ChatTransport_GetConnectionSummary(runMemoryCheck := 0) {
 }
 
 ChatTransport_Send(text, source := "ChatTransport") {
+    if IsObject(IDCaptureState)
+        return -1
     global MockMode, TextSendMode, g_RemoteOperation
     global ChatTransportLastMemoryFailureTick, ChatTransportMemoryRetryMs
     text := "" . text
@@ -12942,6 +12969,17 @@ ChatTransport_Send(text, source := "ChatTransport") {
 
     ApplyGameProcessSelector()
     NormalizeTextSendMode(TextSendMode)
+    if (TextSendMode = "FastTyping" || TextSendMode = "FactionTyping") {
+        if ChatTyping_ShouldType(TextSendMode, text, ChatFactionCommands) {
+            result := SendChatTyped(text)
+            status := result = 1 ? ChatTyping_ModeLabel(TextSendMode) : (result = -2 ? "Печать прервана; повтор отключён" : "Печать: отправка недоступна")
+            ChatTransport_SetStatus(status, source, result = 1 ? "INFO" : "WARN")
+            return result
+        }
+        ok := SendChatKeyboard(text)
+        ChatTransport_SetStatus(ok ? "Вставка (остальной текст)" : "Вставка: отправка недоступна", source, ok ? "INFO" : "WARN")
+        return ok ? 1 : -1
+    }
     if (TextSendMode = "Keyboard")
     {
         ok := SendChatKeyboard(text)
@@ -13054,6 +13092,7 @@ MockPreview_Show() {
 }
 
 CancelAllAutomation(showStatus := 1) {
+    IDCapture_Complete("cancel")
     global ChatWizardMode, EvidenceScreenshotQueue, EvidencePendingEvents, EvidenceDocumentContext, EvidenceDocumentWindowExpires
     StopCustomFunctionRun(0)
     HideStopTimerGUI()
@@ -13080,6 +13119,8 @@ CancelAllAutomation(showStatus := 1) {
     }
 }
 SendChatKeyboard(text) {
+    if IsObject(IDCaptureState)
+        return false
     global MockMode
     if (text = "")
         return false
@@ -13089,7 +13130,7 @@ SendChatKeyboard(text) {
     }
     previous := A_IsCritical
     Critical, On
-    if (PhysicalInputBusy || !GameLocator_IsActive()) {
+    if (PhysicalInputBusy || IsObject(IDCaptureState) || !GameLocator_IsActive()) {
         Critical, %previous%
         return false
     }
@@ -15251,6 +15292,8 @@ EnsureRussianLayout() {
 }
 
 PasteOnly(text, alreadyOwned := 0) {
+    if IsObject(IDCaptureState)
+        return false
     global MockMode
     if (MockMode = "On" || AuditTestMode) {
         MockPreview_Append("[TYPE] " . text)
@@ -15292,7 +15335,8 @@ SendTemplateOpen(template, leftCount := 0, inputEpoch := 0) {
     inputEpoch := AutomationEpoch
     text := ApplyTemplate(template)
     EnsureRussianLayout()
-    PasteOnlyForEpoch(inputEpoch, text)
+    if !PasteOnlyForEpoch(inputEpoch, text)
+        return false
     if (leftCount > 0)
     {
         Sleep, 50
@@ -15659,6 +15703,10 @@ LoadUISafetyAndAudioFromIni(fileName) {
     IniRead, ActionTimerX, %fileName%, UI, ActionTimerX, 100
     IniRead, ActionTimerY, %fileName%, UI, ActionTimerY, 180
     IniRead, TextSendMode, %fileName%, UI, TextSendMode, Auto
+    IniRead, ChatTypingDelayMs, %fileName%, UI, ChatTypingDelayMs, 5
+    ChatFactionCommands := IniReadText(fileName, "UI", "ChatFactionCommands", ChatTyping_DefaultCommands())
+    IniRead, IDEntryMode, %fileName%, UI, IDEntryMode, Перехват цифр
+    IniRead, IDCaptureTimeoutSec, %fileName%, UI, IDCaptureTimeoutSec, 3
     IniRead, GameWindowTitle, %fileName%, UI, GameWindowTitle, AMAZING ONLINE
     IniRead, GameProcessName, %fileName%, UI, GameProcessName, gta_sa.exe
     IniRead, AzmpExpectedSHA256, %fileName%, UI, AzmpExpectedSHA256,
@@ -15776,6 +15824,10 @@ NormalizeLoadedUISettings() {
     NormalizeNumberRange(ActionTimerX, 100, -4000, 8000)
     NormalizeNumberRange(ActionTimerY, 180, -4000, 8000)
     NormalizeTextSendMode(TextSendMode)
+    ChatTyping_NormalizeDelay(ChatTypingDelayMs)
+    ChatTyping_NormalizeCommands(ChatFactionCommands)
+    NormalizeIDEntryMode(IDEntryMode)
+    IDCaptureTimeoutSec := IDCapture_NormalizeTimeout(IDCaptureTimeoutSec)
     NormalizeGameWindowTitle(GameWindowTitle)
     NormalizeGameProcessName(GameProcessName)
     NormalizeSHA256(AzmpExpectedSHA256)
@@ -15849,7 +15901,6 @@ WriteUIAppearanceToIni(fileName) {
     CheckedIniWrite(HUDTransparency, fileName, "UI", "HUDTransparency")
     CheckedIniWrite(BindListTransparency, fileName, "UI", "BindListTransparency")
     IniWriteText(TabGuiHeaderText, fileName, "UI", "TabGuiHeaderText")
-    return !ConfigWriteFailed
     CheckedIniWrite(OBSHideWindows, fileName, "UI", "OBSHideWindows")
     return !ConfigWriteFailed
 }
@@ -15889,6 +15940,10 @@ WriteUISafetyAndAudioToIni(fileName) {
     CheckedIniWrite(ActionTimerX, fileName, "UI", "ActionTimerX")
     CheckedIniWrite(ActionTimerY, fileName, "UI", "ActionTimerY")
     CheckedIniWrite(TextSendMode, fileName, "UI", "TextSendMode")
+    CheckedIniWrite(ChatTypingDelayMs, fileName, "UI", "ChatTypingDelayMs")
+    IniWriteText(ChatFactionCommands, fileName, "UI", "ChatFactionCommands")
+    CheckedIniWrite(IDEntryMode, fileName, "UI", "IDEntryMode")
+    CheckedIniWrite(IDCaptureTimeoutSec, fileName, "UI", "IDCaptureTimeoutSec")
     CheckedIniWrite(GameWindowTitle, fileName, "UI", "GameWindowTitle")
     CheckedIniWrite(GameProcessName, fileName, "UI", "GameProcessName")
     CheckedIniWrite(AzmpExpectedSHA256, fileName, "UI", "AzmpExpectedSHA256")
@@ -16390,6 +16445,11 @@ CreateHUD() {
 }
 
 UpdateHUD() {
+    global hHUDWnd
+    if (!hHUDWnd || !DllCall("IsWindow", "Ptr", hHUDWnd, "Int")) {
+        UpdateAutomationSettingsStatus()
+        return
+    }
     global CurrentProfile, UserID, ActiveID, Bind_OpenSettings, Bind_ToggleBindList, HUDMode
     global TargetNickname, TargetIsMask
     FormatTime, timeNow,, HH:mm:ss
@@ -18366,6 +18426,7 @@ ShowIDGui(idValue, nickname := "", isMask := 0) {
 }
 
 ResetCurrentID() {
+    IDCapture_Complete("cancel")
     global UserID, ActiveID, TargetNickname, TargetIsMask
     UserID := ""
     TargetNickname := ""
@@ -18984,7 +19045,8 @@ BuildSettingsGui() {
     AddOutlinedPanel(2, 240, 314, 904, 74, panel, cardEdge, 1)
     AddOutlinedPanel(2, 240, 390, 904, 212, panel, cardEdge, 1)
     idChoice := IDCheckEnabled ? "On" : "Off"
-    Settings_AddControl("Режим отправки", "CFG_TextSendMode", TextSendMode, 240, 170, 190, "DropDown", "Auto|Memory|Keyboard", text, inputText)
+    textModeLabel := ChatTyping_ModeLabel(TextSendMode)
+    Settings_AddControl("Режим отправки", "CFG_TextSendMode", textModeLabel, 240, 170, 190, "DropDown", "Авто|Память|Вставка|Печать всего|Печать фракции", text, inputText)
     Settings_AddControl("Тест без игры (Mock)", "CFG_MockMode", MockMode, 446, 170, 150, "DropDown", "Off|On", text, inputText)
     Settings_AddControl("Очередь чата", "CFG_ChatQueueEnabled", ChatQueueEnabled, 612, 170, 150, "DropDown", "On|Off", text, inputText)
     Settings_AddControl("Проверка ID", "CFG_IDCheckEnabled", idChoice, 778, 170, 150, "DropDown", "On|Off", text, inputText)
@@ -19016,6 +19078,19 @@ BuildSettingsGui() {
     Gui, 2:Add, Button, x978 y634 w146 h30 gTestChatConnectionLabel, Проверить
     Gui, 2:Font, Norm s9 c%muted%, Segoe UI
     Gui, 2:Add, Text, x240 y668 w884 h46 vCFG_ChatConnectionStatus BackgroundTrans +Wrap, % ChatTransport_GetConnectionSummary(0)
+
+    AddOutlinedPanel(2, 240, 730, 904, 234, panel, cardEdge, 1)
+    Gui, 2:Font, s11 Bold c%text%, Segoe UI
+    Gui, 2:Add, Text, x256 y742 w868 h24 BackgroundTrans, Печать и ручной ввод ID
+    Settings_AddControl("Интервал печати, мс (1–100)", "CFG_ChatTypingDelayMs", ChatTypingDelayMs, 256, 778, 214, "Edit", "", text, inputText)
+    Settings_AddControl("Ручной ввод ID", "CFG_IDEntryMode", IDEntryMode, 490, 778, 258, "DropDown", "Перехват цифр|Через чат", text, inputText)
+    Settings_AddControl("Время ввода ID, сек", "CFG_IDCaptureTimeoutSec", IDCaptureTimeoutSec, 768, 778, 164, "Edit", "", text, inputText)
+    Gui, 2:Font, Norm s9 c%muted%, Segoe UI
+    Gui, 2:Add, Text, x950 y782 w174 h58 +Wrap BackgroundTrans, По бинду «Ввести ID вручную». Повтор бинда применяет ID.
+    Settings_AddControl("Команды для режима «Печать фракции»", "CFG_ChatFactionCommands", ChatFactionCommands, 256, 852, 868, "Edit", "", text, inputText)
+    Gui, 2:Font, Norm s9 c%muted%, Segoe UI
+    Gui, 2:Add, Text, x256 y924 w868 h32 +Wrap BackgroundTrans, Интервал меньше — печать быстрее. Команды разделяются пробелом или `;. Остальной текст в режиме «Печать фракции» вставляется.
+    Settings_RecordExtent(974)
 
     SettingsBuildingPage := 3
     Gui, 2:Tab, 3
@@ -19350,7 +19425,15 @@ ApplyCfgUiValuesToGlobals() {
     EvacuationTimerEnabled := CFG_EvacuationTimerEnabled
     PatrolTimerEnabled := CFG_PatrolTimerEnabled
     PostTimerEnabled := CFG_PostTimerEnabled
-    TextSendMode := CFG_TextSendMode
+    TextSendMode := ChatTyping_ModeFromLabel(CFG_TextSendMode)
+    ChatTypingDelayMs := CFG_ChatTypingDelayMs
+    ChatFactionCommands := CFG_ChatFactionCommands
+    IDEntryMode := CFG_IDEntryMode
+    IDCaptureTimeoutSec := CFG_IDCaptureTimeoutSec
+    ChatTyping_NormalizeDelay(ChatTypingDelayMs)
+    ChatTyping_NormalizeCommands(ChatFactionCommands)
+    NormalizeIDEntryMode(IDEntryMode)
+    IDCaptureTimeoutSec := IDCapture_NormalizeTimeout(IDCaptureTimeoutSec)
     GameWindowTitle := CFG_GameWindowTitle
     GameProcessName := CFG_GameProcessName
     AzmpExpectedSHA256 := CFG_AzmpExpectedSHA256
@@ -21667,6 +21750,7 @@ CloseCustomFunctionBuilder(0)
 return
 
 HandleAppExit:
+IDCapture_Shutdown()
 SetTimer, ActionTimerTick, Off
 Gui, ActionTimers:Destroy
 TerritoryMap_CloseAll()
@@ -21700,7 +21784,7 @@ return
 
 TestChatConnectionLabel:
 Gui, 2:Submit, NoHide
-TextSendMode := CFG_TextSendMode
+TextSendMode := ChatTyping_ModeFromLabel(CFG_TextSendMode)
 GameWindowTitle := CFG_GameWindowTitle
 GameProcessName := CFG_GameProcessName
 AzmpExpectedSHA256 := CFG_AzmpExpectedSHA256
@@ -22367,18 +22451,23 @@ return
 
 InputAction_DoEnterID(inputEpoch := 0) {
     global
+    if IsObject(IDCaptureState)
+        return IDCapture_Complete("confirm")
+    if !CanRunAction("ввод ID", false, false)
+        return false
+    NormalizeIDEntryMode(IDEntryMode)
+    if (IDEntryMode = "Перехват цифр")
+        return IDCapture_Start()
     inputEpoch := AutomationEpoch
-if !CanRunAction("ввод ID", false, false)
+    SafeLayout(0x4190419)
+    SafeSend("{F6}", "Input", inputEpoch)
+    Sleep, 100
+    SafeSend("/Введите ID подозреваемого:{space}", "Input", inputEpoch)
+    Sleep, 50
+    Input, UserID, I L20 V, {Enter}
+    if (UserID != "" && inputEpoch = AutomationEpoch)
+        ShowIDGui(UserID)
     return
-SafeLayout(0x4190419)
-SafeSend("{F6}", "Input", inputEpoch)
-Sleep, 100
-SafeSend("/Введите ID подозреваемого:{space}", "Input", inputEpoch)
-Sleep, 50
-Input, UserID, I L20 V, {Enter}
-if (UserID != "")
-    ShowIDGui(UserID)
-return
 }
 
 DoOpenBindsTab:

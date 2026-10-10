@@ -290,6 +290,8 @@ QueueRpAction(template, command, source, menu) {
 }
 
 SafeSend(keys, mode := "Input", epoch := "") {
+    if IsObject(IDCaptureState)
+        return false
     global MockMode
     if (epoch != "" && epoch != AutomationEpoch)
         return false
@@ -749,18 +751,31 @@ ImageDimensionsBounded(path, ByRef width, ByRef height) {
 
 QueueMenu_Run(item) {
     global MockMode
-    if (item.Epoch != AutomationEpoch)
+    if (item.Epoch != AutomationEpoch || IsObject(IDCaptureState) || PhysicalInputBusy)
         return false
     if (MockMode = "On" || AuditTestMode) {
         MockPreview_Append("[MENU] " . item.Source . " " . JoinStrings(item.Steps, " > "))
         return true
     }
-    for _, digit in item.Steps {
-        if !SafeSend("{" . digit . "}{" . digit . "}", "Input", item.Epoch)
-            return false
-        Sleep, 300
+    previous := A_IsCritical
+    Critical, On
+    if (PhysicalInputBusy || IsObject(IDCaptureState) || !GameLocator_IsActive()) {
+        Critical, %previous%
+        return false
     }
-    return item.Epoch = AutomationEpoch
+    PhysicalInputBusy := 1
+    ownerHwnd := WinExist("A")
+    Critical, %previous%
+    try {
+        for _, digit in item.Steps {
+            if (WinExist("A") != ownerHwnd || !SafeSend("{" . digit . "}{" . digit . "}", "Input", item.Epoch))
+                return false
+            Sleep, 300
+        }
+        return item.Epoch = AutomationEpoch && WinExist("A") = ownerHwnd
+    } finally {
+        PhysicalInputBusy := 0
+    }
 }
 
 LawSearchVocabulary_Build() {
