@@ -199,6 +199,9 @@ RunAuditSelfTest() {
     AuditAssert("OBS errors throttled before deadline", !Capture_ShouldRetry(retryState, 1, 1999))
     AuditAssert("OBS error retry reaches deadline", Capture_ShouldRetry(retryState, 1, 2000))
     AuditAssert("OBS changed option retries immediately", Capture_ShouldRetry(retryState, 0, 0))
+    RunChatTypingRegression()
+    IDCapture_RunRegression()
+    Audit_ChatIDIntegration(scratch)
     AuditAssert("F10 reader never truncates chatlog", !ChatLogReader_MaybeCleanup(file) && FileExist(file))
 
     LawSearchCorpusSignature := "", SearchInitialized := 0
@@ -285,4 +288,77 @@ Audit_ViewportCheck() {
     SysGet, primary, MonitorPrimary
     SysGet, area, MonitorWorkArea, %primary%
     return SettingsW <= areaRight - areaLeft && SettingsH <= areaBottom - areaTop
+}
+
+; Exercise the real INI writers/readers and queue ownership without physical input.
+Audit_ChatIDIntegration(scratch) {
+    global TextSendMode, ChatTypingDelayMs, ChatFactionCommands, IDEntryMode, IDCaptureTimeoutSec
+    global OBSHideWindows, ConfigWriteFailed, ConfigReadOnly, ConfigTransactionBusy
+    global IDCaptureState, PhysicalInputBusy, ChatQueueItems, ChatQueueBusy
+    global ChatQueueLastSendTick, ChatQueueNextSendTick, ChatQueueMaxRetries
+    global AuditTransportResult, QueueBatchStates, ChatQueuePreviewText
+    backup := scratch . "\chat_id_before.ini"
+    fixture := scratch . "\chat_id_roundtrip.ini"
+    savedObs := OBSHideWindows, savedWrite := ConfigWriteFailed
+    savedState := IDCaptureState, savedBusy := PhysicalInputBusy
+    savedItems := ChatQueueItems, savedQueueBusy := ChatQueueBusy
+    savedLast := ChatQueueLastSendTick, savedNext := ChatQueueNextSendTick
+    savedRetries := ChatQueueMaxRetries, savedResult := AuditTransportResult
+    savedBatches := QueueBatchStates
+    ConfigWriteFailed := 0
+    WriteUISafetyAndAudioToIni(backup)
+    try {
+        ChatTypingDelayMs := 17
+        ChatFactionCommands := "/frac /cuff /deject /mdc /chase"
+        IDEntryMode := "Перехват цифр", IDCaptureTimeoutSec := 3
+        for _, mode in ["FastTyping", "FactionTyping"] {
+            TextSendMode := mode
+            ConfigWriteFailed := 0
+            wrote := WriteUISafetyAndAudioToIni(fixture)
+            TextSendMode := "Auto", ChatTypingDelayMs := 1, ChatFactionCommands := "/r"
+            IDEntryMode := "Через чат", IDCaptureTimeoutSec := 15
+            LoadUISafetyAndAudioFromIni(fixture)
+            NormalizeTextSendMode(TextSendMode)
+            AuditAssert("Chat/ID settings: stable mode roundtrip " . mode, wrote && TextSendMode = mode)
+            AuditAssert("Chat/ID settings: speed and exact commands " . mode, ChatTypingDelayMs = 17 && ChatFactionCommands == "/frac /cuff /deject /mdc /chase")
+            AuditAssert("Chat/ID settings: capture mode and deadline " . mode, IDEntryMode = "Перехват цифр" && IDCaptureTimeoutSec = 3)
+        }
+        for _, obs in ["On", "Off"] {
+            OBSHideWindows := obs, ConfigWriteFailed := 0
+            wrote := WriteUIAppearanceToIni(fixture)
+            IniRead, storedObs, %fixture%, UI, OBSHideWindows, MISSING
+            AuditAssert("OBS setting survives appearance save " . obs, wrote && storedObs = obs)
+        }
+        ChatQueueItems := [], ChatQueueBusy := 0
+        ChatQueueLastSendTick := 0, ChatQueueNextSendTick := 0
+        AuditTransportResult := 1, PhysicalInputBusy := 0
+        ChatQueue_Enqueue("pending while collecting ID", "test", 0, 0, 1)
+        IDCaptureState := {Test: 1}
+        preview := ChatQueuePreviewText
+        ChatQueue_Tick()
+        AuditAssert("ID capture pauses queued chat without consuming it", ChatQueueItems.Length() = 1 && !ChatQueueBusy)
+        AuditAssert("ID capture refuses menu input", !QueueMenu_Run({Epoch: AutomationEpoch, Steps: [1, 5]}))
+        AuditAssert("ID capture refuses physical send even in mock", !SafeSend("1") && ChatQueuePreviewText == preview)
+        IDCaptureState := "", PhysicalInputBusy := 1
+        ChatQueue_Tick()
+        AuditAssert("Typing ownership pauses queued chat", ChatQueueItems.Length() = 1 && !ChatQueueBusy)
+        AuditAssert("Typing ownership refuses menu input", !QueueMenu_Run({Epoch: AutomationEpoch, Steps: [1, 5]}))
+        PhysicalInputBusy := 0
+        ChatQueue_Tick()
+        AuditAssert("Queue resumes after ID/input ownership release", !ChatQueueItems.Length())
+        ChatQueueItems := [], ChatQueueLastSendTick := 0, ChatQueueNextSendTick := 0
+        ChatQueueMaxRetries := 2, AuditTransportResult := -2
+        ChatQueue_EnqueueBatch(["possibly partial", "must not follow"], "test")
+        batch := ChatQueueItems[1].Batch
+        ChatQueue_Tick()
+        AuditAssert("Partial typing is never retried and cancels the batch", !ChatQueueItems.Length() && QueueBatchStates[batch].State = "unknown")
+    } finally {
+        LoadUISafetyAndAudioFromIni(backup)
+        OBSHideWindows := savedObs, ConfigWriteFailed := savedWrite
+        IDCaptureState := savedState, PhysicalInputBusy := savedBusy
+        ChatQueueItems := savedItems, ChatQueueBusy := savedQueueBusy
+        ChatQueueLastSendTick := savedLast, ChatQueueNextSendTick := savedNext
+        ChatQueueMaxRetries := savedRetries, AuditTransportResult := savedResult
+        QueueBatchStates := savedBatches
+    }
 }

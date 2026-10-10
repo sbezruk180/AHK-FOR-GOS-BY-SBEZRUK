@@ -1,8 +1,9 @@
 Cloud validation: Linux, AutoHotkey 1.1.37.02 Unicode x64 under Wine.
 Only the architecture guard was removed in a disposable, game-free test copy.
 Shipped sources retain their ANSI x86 requirement.
-Windows GUI/OBS/game integration remains unverified.
+Windows ANSI x86 / game chat / OBS capture integration remains unverified.
 
+Latest game-free logic suite:
 AHK audit behavioural regression
 Runtime=1.1.37.02 | Unicode=1 | PtrSize=8
 No game, physical input, capture verification, or game ABI test.
@@ -62,7 +63,124 @@ PASS | F24 dark override has readable text
 PASS | F19 hidden templates and flags preserved
 PASS | F28 repeated pattern allowed, new pattern capped
 PASS | F12 preview bounded
-PASS | F07 no reference build means no memory access
+PASS | F07 no reference build blocks memory writes
+PASS | Auto ID: read-only accepts no hash with x86 module
+PASS | Auto ID: read-only rejects x64 module
+PASS | Auto ID: explicit hash mismatch stays blocked
+PASS | Auto ID: explicit verified hash permits read
+PASS | Auto ID: malformed explicit hash cannot bypass
+PASS | Auto ID: explicit hash cannot permit x64 layout
+PASS | Auto ID: valid bounded PE32 DLL accepted
+PASS | Auto ID: PE64 module refused
+PASS | Auto ID: module too small for read offsets refused
+PASS | Auto ID: out-of-range PE header refused
+PASS | Auto ID: first exact ID qualifies immediately
+PASS | Auto ID: mask retains repeated observations
+PASS | Auto ID: same target accumulates
+PASS | Auto ID: same ID different PED resets
+PASS | Auto ID: lost target resets candidate
+PASS | OBS exclusion requires 0x11
+PASS | OBS disabled confirmed at zero
+PASS | OBS failed read rejects cached success
+PASS | OBS WDA_MONITOR is not exclusion
+PASS | OBS missing state retries
+PASS | OBS errors throttled before deadline
+PASS | OBS error retry reaches deadline
+PASS | OBS changed option retries immediately
+PASS | Typing speed range 1
+PASS | Typing speed range 2
+PASS | Typing speed range 3
+PASS | Typing speed range 4
+PASS | Typing speed range 5
+PASS | Typing speed range 6
+PASS | Typing speed range 7
+PASS | Typing speed range 8
+PASS | Typing speed range 9
+PASS | Typing speed range 10
+PASS | Faction list canonicalizes separators and removes duplicates
+PASS | Default faction typing includes operational command /frac
+PASS | Default faction typing includes operational command /cuff
+PASS | Default faction typing includes operational command /deject
+PASS | Default faction typing includes operational command /mdc
+PASS | Default faction typing includes operational command /chase
+PASS | Faction typing does not confuse cuff with cuffing
+PASS | Faction command ignores case and leading spaces
+PASS | Faction command with no message
+PASS | Faction command needs token boundary
+PASS | Faction command needs slash at start
+PASS | Faction command punctuation is not delimiter
+PASS | FastTyping types ordinary text
+PASS | FactionTyping types faction text
+PASS | FactionTyping leaves other commands to paste
+PASS | Keyboard never selects typing
+PASS | Typed sender accepts literal keyboard punctuation
+PASS | Typed sender rejects newline with accidental Enter
+PASS | Typed sender rejects tab
+PASS | Chat send mode label roundtrip Auto
+PASS | Chat send mode label roundtrip Memory
+PASS | Chat send mode label roundtrip Keyboard
+PASS | Chat send mode label roundtrip FastTyping
+PASS | Chat send mode label roundtrip FactionTyping
+PASS | Unknown send label selects Auto
+PASS | Typing mock does not touch clipboard
+PASS | Typed sender refuses during numeric ID capture
+PASS | Typed sender rejects multiline before transport
+PASS | ID capture timeout defaults to 3 seconds
+PASS | ID capture timeout clamps to 1..15
+PASS | ID capture deadline is fixed from start
+PASS | ID capture accepts digits and preserves leading zero
+PASS | ID capture ignores non-digit text
+PASS | ID capture Backspace removes exactly one digit
+PASS | ID capture Backspace on empty remains empty
+PASS | ID capture caps at 20 digits without numeric rounding
+PASS | ID capture validation preserves large masks
+PASS | ID capture invalid or empty strings cannot commit
+PASS | ID capture cancellation freezes the pending value
+PASS | ID capture top-row and numpad digit decode
+PASS | ID capture modified and non-digit keys decode as empty
+PASS | ID capture plain digit down is suppressed
+PASS | ID capture owned digit up is suppressed and released
+PASS | ID capture other letters pass through
+PASS | ID capture Ctrl+digit shortcut passes without append
+PASS | ID capture modifier release restores plain digits
+PASS | ID capture injected digits are ignored and pass through
+PASS | ID capture Backspace down is suppressed
+PASS | ID capture Enter suppresses and schedules confirmation
+PASS | ID capture pending confirmation blocks further collection
+PASS | ID capture held activation digit repeats pass without append
+PASS | ID capture activation key release clears initial-key guard
+PASS | ID capture fresh activation digit can become input
+PASS | ID capture Escape suppresses and schedules cancellation
+PASS | ID capture deadline ends collection without stealing late digit
+PASS | ID capture chat-open key passes and cancels collection
+PASS | ID capture left/right modifier bits are distinct
+PASS | ID capture resolves Alt+digit binding
+PASS | ID capture resolves multiple modifier F-key binding
+PASS | ID capture resolves wildcard/hook numpad binding
+PASS | ID capture resolves custom combination suffix
+PASS | ID capture resolves combined VK/scan-code binding
+PASS | ID capture resolves qualified modifier and Up suffix
+PASS | ID capture mouse or missing activation cannot leave key guard
+PASS | ID capture held F2 activation blocks premature confirm
+PASS | ID capture held F2 repeat passes without clearing guard
+PASS | ID capture F2 keyup permits intentional second confirmation
+PASS | ID capture unrelated held digit does not block confirmation
+PASS | ID capture modifier-only activation releases its initial guard
+PASS | Chat/ID settings: stable mode roundtrip FastTyping
+PASS | Chat/ID settings: speed and exact commands FastTyping
+PASS | Chat/ID settings: capture mode and deadline FastTyping
+PASS | Chat/ID settings: stable mode roundtrip FactionTyping
+PASS | Chat/ID settings: speed and exact commands FactionTyping
+PASS | Chat/ID settings: capture mode and deadline FactionTyping
+PASS | OBS setting survives appearance save On
+PASS | OBS setting survives appearance save Off
+PASS | ID capture pauses queued chat without consuming it
+PASS | ID capture refuses menu input
+PASS | ID capture refuses physical send even in mock
+PASS | Typing ownership pauses queued chat
+PASS | Typing ownership refuses menu input
+PASS | Queue resumes after ID/input ownership release
+PASS | Partial typing is never retried and cancels the batch
 PASS | F10 reader never truncates chatlog
 PASS | F21 official LAW corpus loaded
 PASS | search exact reference TER
@@ -80,4 +198,57 @@ PASS | F24 settings fits work area
 SKIP | ANSI x86 game ABI, module enumeration and HANDLE lifecycle need Windows A32 integration
 SKIP | Real Windows GUI/DPI, OBS capture, game offsets, remote-thread stress and screenshot files require target integration
 
-Checks: 71 | Failed: 0 | Skipped integration groups: 2
+Checks: 188 | Failed: 0 | Skipped integration groups: 2
+
+Separate native Wine fixtures (real Edit controls and synthetic XTest events):
+PASS Successful sender returns 1
+PASS Cyrillic command and punctuation typed literally with single final Enter
+ACTUAL=/cuff 123 Кириллица ^ ! + # % {Enter}<CR><LF>
+PASS Key delay and duration restored
+PASS Clipboard sequence preserved
+PASS Keyboard layout restored
+PASS Physical input owner released
+PASS Epoch cancellation reports unknown result
+PASS Cancelled sender leaves partial text and sends no Enter
+PASS Caller critical setting restored after interruptible sender
+PASS No further characters after cancellation
+PASS Key settings and clipboard restored after cancellation
+PASS Focus loss reports unknown result
+PASS Focus loss sends no Enter
+PASS No further characters after focus loss
+PASS Sender does not steal focus back
+PASS Key settings and clipboard restored after focus loss
+PASS Speed setting changes actual typing duration
+TIMING 10ms=265ms 50ms=893ms
+Checks=17 failures=0
+
+PASS Held activation shortcut starts capture without accepting repeat
+PASS Production capture policy ran before showing GUI
+PASS ID capture GUI has WS_EX_NOACTIVATE and click-through
+PASS ID capture GUI leaves game fixture focused
+PASS Native hook consumes digits and permits Ctrl+digit
+PASS Native hook lets ordinary movement letter pass without digits
+PASS Repeating configured Alt+1 accepts ID once
+PASS Confirmation removes hook and GUI
+PASS All 20 ID digits fit the rendered capture control
+PASS Long ID resizing preserves game focus
+PASS Shortened ID returns to larger font and still fits
+TEXT WIDTH long=240/312 short=240/312
+PASS Native Backspace and Enter edit and commit
+PASS Native edit controls and digits never reach game Edit
+PASS Default three-second deadline automatically commits
+PASS Native Escape preserves previous ID
+PASS Injected SendInput digits pass through without being captured
+PASS Focus loss cancels capture preserving ID
+PASS Capture does not steal focus back
+PASS Automation epoch change cancels capture
+PASS Profile change cancels capture
+PASS Fast keyboard callback preserves caller ErrorLevel and native error
+PASS Held F2 activation shortcut does not prematurely confirm
+PASS F2 release clears guard and accepts digit input
+PASS Second Alt+F2 press confirms after activation key release
+PASS Final shutdown unhooks and frees callback
+Checks=25 failures=0
+
+Settings page 2 bottom card, temporary pages 1-3 preview, 96 DPI:
+60 visible controls; 1860 checks; 0 failures; 0 warnings.
