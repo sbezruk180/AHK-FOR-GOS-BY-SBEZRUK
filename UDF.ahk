@@ -322,8 +322,8 @@ AZMP_ReadProcessByte(address, ByRef outValue) {
         return false
     VarSetCapacity(byteBuffer, 1, 0)
     bytesRead := 0
-    ok := DllCall("ReadProcessMemory", "UInt", hGTA, "UInt", address
-        , "UInt", &byteBuffer, "UInt", 1, "UInt*", bytesRead, "UInt")
+    ok := DllCall("ReadProcessMemory", "Ptr", hGTA, "Ptr", address
+        , "Ptr", &byteBuffer, "UPtr", 1, "UPtr*", bytesRead)
     if (!ok || bytesRead != 1)
         return false
     outValue := NumGet(byteBuffer, 0, "UChar")
@@ -484,49 +484,48 @@ AZMP_AddPedCandidate(ByRef candidates, pedPtr, layout) {
     return true
 }
 
-AZMP_GetGamePedCandidates(playerInfo) {
-    global hGTA
-    global AZMP_R3_PLAYER_DATA_OFFSET, AZMP_R3_ACTOR_OFFSET
+; Чтение точной цепочки старой рабочей версии без объектов на каждый ID.
+; Указатели здесь не фильтруются по координатам: GTA-pool цели проверяется
+; вызывающей функцией, а совпадение ID -> PlayerInfo -> CPed проверяется повторно.
+AZMP_ReadGamePedLinks(playerInfo, ByRef gamePed, ByRef entityPed) {
+    global hGTA, AZMP_R3_PLAYER_DATA_OFFSET, AZMP_R3_ACTOR_OFFSET
     global AZMP_R3_ACTOR_GTA_PED_OFFSET, AZMP_R3_PED_GAME_OFFSET
-    candidates := []
+    gamePed := entityPed := 0
     if !IsLikelyPointer(playerInfo)
-        return candidates
-
-    ; Официальная цепочка SA-MP 0.3.7-R3:
-    ; CPlayerInfo::m_pPlayer (+0) -> CRemotePlayer::m_pPed (+0)
-    ; -> SAMP CPed. В SAMP CPed присутствуют два указателя на тот же GTA CPed:
-    ; базовый CEntity::m_pGameEntity (+0x40) и CPed::m_pGamePed (+0x2A4).
+        return false
     remotePlayer := readDWORD(hGTA, playerInfo + AZMP_R3_PLAYER_DATA_OFFSET)
-    if !IsLikelyPointer(remotePlayer)
-        return candidates
-
+    if (ErrorLevel || !IsLikelyPointer(remotePlayer))
+        return false
     sampPed := readDWORD(hGTA, remotePlayer + AZMP_R3_ACTOR_OFFSET)
-    if !IsLikelyPointer(sampPed)
-        return candidates
+    if (ErrorLevel || !IsLikelyPointer(sampPed))
+        return false
+    gamePed := readDWORD(hGTA, sampPed + AZMP_R3_PED_GAME_OFFSET)
+    if (ErrorLevel || !IsLikelyPointer(gamePed) || Mod(gamePed, 4) != 0)
+        gamePed := 0
+    entityPed := readDWORD(hGTA, sampPed + AZMP_R3_ACTOR_GTA_PED_OFFSET)
+    if (ErrorLevel || !IsLikelyPointer(entityPed) || Mod(entityPed, 4) != 0 || entityPed = gamePed)
+        entityPed := 0
+    return gamePed || entityPed
+}
 
-    ; Специализированное поле CPed является основным, базовое поле — контрольным.
-    AZMP_AddPedCandidate(candidates
-        , readDWORD(hGTA, sampPed + AZMP_R3_PED_GAME_OFFSET), "R3_PED_GAME")
-    AZMP_AddPedCandidate(candidates
-        , readDWORD(hGTA, sampPed + AZMP_R3_ACTOR_GTA_PED_OFFSET), "R3_ENTITY_GAME")
+AZMP_GetGamePedCandidates(playerInfo) {
+    candidates := []
+    if AZMP_ReadGamePedLinks(playerInfo, gamePed, entityPed) {
+        AZMP_AddPedCandidate(candidates, gamePed, "R3_PED_GAME")
+        AZMP_AddPedCandidate(candidates, entityPed, "R3_ENTITY_GAME")
+    }
     return candidates
 }
 
 AZMP_PlayerInfoMatchesPed(playerInfo, targetPed, ByRef matchedLayout := "") {
     matchedLayout := ""
-    if !IsLikelyPointer(targetPed)
+    if (!IsLikelyPointer(targetPed) || !AZMP_ReadGamePedLinks(playerInfo, gamePed, entityPed))
         return false
-    candidates := AZMP_GetGamePedCandidates(playerInfo)
-    Loop % candidates.Length() {
-        item := candidates[A_Index]
-        ; Сначала точное равенство адресов. Не требуем предварительного попадания
-        ; кандидата в снимок GTA-пула: это и было причиной массовых false negative.
-        if (item.Ped = targetPed) {
-            matchedLayout := item.Layout
-            return true
-        }
-    }
-    return false
+    if (gamePed = targetPed)
+        matchedLayout := "R3_PED_GAME"
+    else if (entityPed = targetPed)
+        matchedLayout := "R3_ENTITY_GAME"
+    return matchedLayout != ""
 }
 
 isPlayerInAnyVehicle() {
@@ -1045,12 +1044,12 @@ getPlayerDataByPed(targetPed, ByRef outId, ByRef outName, nearestLimit := 0) {
     VarSetCapacity(playerFlags, playerArrayBytes, 0)
     infoBytesRead := 0
     flagBytesRead := 0
-    readInfoOk := DllCall("ReadProcessMemory", "UInt", hGTA
-        , "UInt", playerPool + AZMP_PLAYER_INFO_ARRAY_OFFSET
-        , "UInt", &playerInfos, "UInt", playerArrayBytes, "UInt*", infoBytesRead, "UInt")
-    readFlagsOk := DllCall("ReadProcessMemory", "UInt", hGTA
-        , "UInt", playerPool + AZMP_PLAYER_NOT_EMPTY_ARRAY_OFFSET
-        , "UInt", &playerFlags, "UInt", playerArrayBytes, "UInt*", flagBytesRead, "UInt")
+    readInfoOk := DllCall("ReadProcessMemory", "Ptr", hGTA
+        , "Ptr", playerPool + AZMP_PLAYER_INFO_ARRAY_OFFSET
+        , "Ptr", &playerInfos, "UPtr", playerArrayBytes, "UPtr*", infoBytesRead)
+    readFlagsOk := DllCall("ReadProcessMemory", "Ptr", hGTA
+        , "Ptr", playerPool + AZMP_PLAYER_NOT_EMPTY_ARRAY_OFFSET
+        , "Ptr", &playerFlags, "UPtr", playerArrayBytes, "UPtr*", flagBytesRead)
 
     if (!readInfoOk || infoBytesRead != playerArrayBytes) {
         AZMP_ResetTargetCache("incomplete player info read")
@@ -1095,22 +1094,31 @@ getPlayerDataByPed(targetPed, ByRef outId, ByRef outName, nearestLimit := 0) {
             continue
         infoCount += 1
 
-        candidates := AZMP_GetGamePedCandidates(playerInfo)
-        if (candidates.Length() = 0)
-            continue
-        rawPedCandidateCount += candidates.Length()
-
         exactLayout := ""
-        Loop % candidates.Length() {
-            candidate := candidates[A_Index]
-            ; Главное правило: сравниваем сырой указатель с уже проверенным
-            ; targetPed до любой дополнительной фильтрации.
-            if (candidate.Ped = targetPed) {
-                exactLayout := candidate.Layout
-                break
+        if (fallbackLimit = 0) {
+            ; Основной Auto ID не создаёт массив и объекты для каждого из 1004 ID.
+            ; Полный обход сохраняется: дубликат CPed у двух ID нельзя принять.
+            if !AZMP_ReadGamePedLinks(playerInfo, gamePed, entityPed)
+                continue
+            rawPedCandidateCount += (gamePed ? 1 : 0) + (entityPed ? 1 : 0)
+            if (gamePed = targetPed)
+                exactLayout := "R3_PED_GAME"
+            else if (entityPed = targetPed)
+                exactLayout := "R3_ENTITY_GAME"
+        } else {
+            candidates := AZMP_GetGamePedCandidates(playerInfo)
+            if (candidates.Length() = 0)
+                continue
+            rawPedCandidateCount += candidates.Length()
+            Loop % candidates.Length() {
+                candidate := candidates[A_Index]
+                if (candidate.Ped = targetPed) {
+                    exactLayout := candidate.Layout
+                    break
+                }
+                if AZMP_IsValidGamePed(candidate.Ped)
+                    strictPedCandidateCount += 1
             }
-            if (fallbackLimit > 0 && AZMP_IsValidGamePed(candidate.Ped))
-                strictPedCandidateCount += 1
         }
         if (exactLayout != "") {
             exactMatches.Push({Id: playerId, Info: playerInfo, Layout: exactLayout})
@@ -1151,7 +1159,6 @@ getPlayerDataByPed(targetPed, ByRef outId, ByRef outName, nearestLimit := 0) {
             && AZMP_PlayerInfoMatchesPed(currentInfo, targetPed, finalLayout)) {
             outId := match.Id
             name1 := AZMP_GetNicknameFromPlayerInfo(currentInfo)
-            Sleep, 1
             name2 := AZMP_GetNicknameFromPlayerInfo(currentInfo)
             outName := (name1 = name2) ? name1 : ""
             AZMP_CacheTarget(targetPed, outId, currentInfo, playerPool)

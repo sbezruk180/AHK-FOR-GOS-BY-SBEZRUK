@@ -599,20 +599,24 @@ writeString(hProcess, dwAddress, wString) {
 	return true
 }
 readDWORD(hProcess, dwAddress) {
-	if (!hProcess) {
-		ErrorLevel := ERROR_INVALID_HANDLE
-		return 0
-	}
-
-	VarSetCapacity(dwRead, 4, 0)
-	dwRet := DllCall("ReadProcessMemory", "UInt", hProcess, "UInt", dwAddress, "Str", dwRead, "UInt", 4, "UInt*", 0)
-	if (dwRet == 0) {
-		ErrorLevel := ERROR_READ_MEMORY
-		return 0
-	}
-
-	ErrorLevel := ERROR_OK
-	return NumGet(dwRead, 0, "UInt")
+    if (!hProcess) {
+        ErrorLevel := ERROR_INVALID_HANDLE
+        return 0
+    }
+    address := dwAddress < 0 ? dwAddress + 0x100000000 : dwAddress
+    if (!IsLikelyPointer(address) || address > 0xFFFFFFFA) {
+        ErrorLevel := ERROR_READ_MEMORY
+        return 0
+    }
+    VarSetCapacity(dwRead, 4, 0)
+    bytesRead := 0
+    if (!DllCall("ReadProcessMemory", "Ptr", hProcess, "Ptr", address
+        , "Ptr", &dwRead, "UPtr", 4, "UPtr*", bytesRead) || bytesRead != 4) {
+        ErrorLevel := ERROR_READ_MEMORY
+        return 0
+    }
+    ErrorLevel := ERROR_OK
+    return NumGet(dwRead, 0, "UInt")
 }
 readFloat(hProcess, dwAddress) {
     return TryReadFloat(hProcess, dwAddress, value) ? value : ""

@@ -209,9 +209,12 @@ ChatQueue_EnqueueBatch(lines, source, delayAfter := 700, menu := "") {
     prepared := []
     for _, text in lines {
         if IsObject(text) {
-            if (text.Kind != "Menu" || !IsObject(text.Steps))
+            if (text.Kind = "Menu" && IsObject(text.Steps))
+                prepared.Push({Kind: "Menu", Steps: text.Steps.Clone(), Text: "[MENU]", Source: source, Tries: 0, ForceMock: 0, DelayAfter: 300, Epoch: AutomationEpoch})
+            else if (text.Role = "RP" && text.HasKey("Text") && Trim(text.Text) != "")
+                prepared.Push({Text: text.Text, Role: "RP", Source: source, Tries: 0, ForceMock: 0, DelayAfter: delayAfter, Epoch: AutomationEpoch})
+            else
                 return 0
-            prepared.Push({Kind: "Menu", Steps: text.Steps.Clone(), Text: "[MENU]", Source: source, Tries: 0, ForceMock: 0, DelayAfter: 300, Epoch: AutomationEpoch})
         } else {
             if (Trim(text) = "")
                 return 0
@@ -279,13 +282,13 @@ QueueRpAction(template, command, source, menu) {
     lines := []
     Loop, Parse, before, `n, `r
         if (Trim(A_LoopField) != "")
-            lines.Push(ApplyActionTemplate(A_LoopField))
+            lines.Push({Text: ApplyActionTemplate(A_LoopField), Role: "RP"})
     lines.Push(command)
     if (menu.Length())
         lines.Push({Kind: "Menu", Steps: menu})
     Loop, Parse, after, `n, `r
         if (Trim(A_LoopField) != "")
-            lines.Push(ApplyActionTemplate(A_LoopField))
+            lines.Push({Text: ApplyActionTemplate(A_LoopField), Role: "RP"})
     return ChatQueue_EnqueueBatch(lines, source, SequenceLineDelay) ? true : false
 }
 
@@ -782,13 +785,19 @@ LawSearchVocabulary_Build() {
     global SearchIndex
     vocabulary := {}
     for _, item in SearchIndex {
-        for word, unused in item.AllTokens {
-            if (StrLen(word) < 4 || RegExMatch(word, "^[0-9.]+$"))
-                continue
-            vocabulary[word] := vocabulary.HasKey(word) ? vocabulary[word] + 1 : 1
-        }
+        for word, unused in item.TitleTokens
+            LawSearchVocabulary_Add(vocabulary, word)
+        for word, unused in item.BodyTokens
+            if !item.TitleTokens.HasKey(word)
+                LawSearchVocabulary_Add(vocabulary, word)
     }
     LawSearchVocabulary := vocabulary
+}
+
+LawSearchVocabulary_Add(vocabulary, word) {
+    if (StrLen(word) < 4 || RegExMatch(word, "^[0-9.]+$"))
+        return
+    vocabulary[word] := vocabulary.HasKey(word) ? vocabulary[word] + 1 : 1
 }
 
 LawSearch_CorrectToken(word) {
@@ -820,6 +829,21 @@ PasteOnlyForEpoch(epoch, text) {
         return false
     return PasteOnly(text)
 }
+
+TypeChatForEpoch(epoch, text, contextGuard := "") {
+    global TextSendMode, ChatFactionCommands
+    if (epoch != AutomationEpoch || (IsObject(contextGuard) && !contextGuard.Call()))
+        return false
+    NormalizeTextSendMode(TextSendMode)
+    if ChatTyping_ShouldType(TextSendMode, text, ChatFactionCommands) {
+        result := SendChatTyped(text, false, false, contextGuard)
+        if (result != 1)
+            ChatTransport_SetStatus(result = -2 ? "Печать прервана; повтор отключён" : "Печать: " . ChatTypingLastError, "EditableChat", "WARN")
+        return result = 1
+    }
+    return PasteChatForEpoch(epoch, text, contextGuard)
+}
+
 
 ChatLogReader_CursorSignature(file, position) {
     if (position <= 0)
@@ -918,4 +942,52 @@ UI_PrepareWindow(hwnd) {
     } finally {
         DetectHiddenWindows, %oldHidden%
     }
+}
+
+
+PasteChatForEpoch(epoch, text, contextGuard := "") {
+    global PhysicalInputBusy, MockMode
+    if (epoch != AutomationEpoch || IsObject(IDCaptureState) || PhysicalInputBusy)
+        return false
+    if (MockMode = "On" || AuditTestMode) {
+        MockPreview_Append("[TYPE] " . text)
+        return true
+    }
+    previous := A_IsCritical
+    Critical, On
+    if (PhysicalInputBusy || IsObject(IDCaptureState) || !GameLocator_IsActive()) {
+        Critical, %previous%
+        return false
+    }
+    PhysicalInputBusy := 1
+    ownerHwnd := WinExist("A")
+    Critical, Off
+    try {
+        if !ChatTyping_IsReady(epoch, ownerHwnd, contextGuard)
+            return false
+        chatState := isInChat()
+        if (chatState < 0)
+            return false
+        if (chatState = 0) {
+            if !SafeSend("{F6}", "Input", epoch)
+                return false
+            Sleep, 120
+        }
+        if (!ChatTyping_IsReady(epoch, ownerHwnd, contextGuard) || isInChat() != 1)
+            return false
+        if (!SafeLayout(0x4190419) || !PasteOnly(text, 1, contextGuard, ownerHwnd))
+            return false
+        return ChatTyping_IsReady(epoch, ownerHwnd, contextGuard)
+    } finally {
+        Critical, On
+        PhysicalInputBusy := 0
+        Critical, %previous%
+    }
+}
+
+
+ChatTransport_TypingDelayOverride(source, role, text) {
+    if (role = "RP" || (source = "RPSequence" && RegExMatch(Trim(text), "i)^/(?:me|do|todo)(?:\s|$)")))
+        return 0
+    return ""
 }

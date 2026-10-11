@@ -3534,19 +3534,13 @@ LawSearch_Add(docCode, docName, itemId, title, itemText, chapter := "", chapterT
     item.PointTitle := pointTitle
     item.SubPoint := subPoint
     item.SubPointTitle := subPointTitle
-    item.SearchTitle := searchTitle
-    item.SearchText := searchTitle . " " . itemText
     item.NormId := LawSearch_Normalize(itemId)
     item.NormTitle := LawSearch_Normalize(searchTitle)
     item.NormBody := LawSearch_Normalize(itemText)
-    item.NormText := item.NormBody
-    item.NormAll := LawSearch_Normalize(item.SearchText)
     item.TitleTokens := LawSearch_BuildTokenSet(item.NormTitle)
     item.BodyTokens := LawSearch_BuildTokenSet(item.NormBody)
-    item.AllTokens := LawSearch_MergeTokenSets(item.TitleTokens, item.BodyTokens)
     item.TitleStems := LawSearch_BuildStemSet(item.TitleTokens)
     item.BodyStems := LawSearch_BuildStemSet(item.BodyTokens)
-    item.AllStems := LawSearch_MergeTokenSets(item.TitleStems, item.BodyStems)
     SearchIndex.Push(item)
 
     if (!SearchIndexCounts.HasKey(docCode))

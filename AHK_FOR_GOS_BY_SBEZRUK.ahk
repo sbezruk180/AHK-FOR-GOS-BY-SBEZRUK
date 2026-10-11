@@ -3562,19 +3562,13 @@ LawSearch_Add(docCode, docName, itemId, title, itemText, chapter := "", chapterT
     item.PointTitle := pointTitle
     item.SubPoint := subPoint
     item.SubPointTitle := subPointTitle
-    item.SearchTitle := searchTitle
-    item.SearchText := searchTitle . " " . itemText
     item.NormId := LawSearch_Normalize(itemId)
     item.NormTitle := LawSearch_Normalize(searchTitle)
     item.NormBody := LawSearch_Normalize(itemText)
-    item.NormText := item.NormBody
-    item.NormAll := LawSearch_Normalize(item.SearchText)
     item.TitleTokens := LawSearch_BuildTokenSet(item.NormTitle)
     item.BodyTokens := LawSearch_BuildTokenSet(item.NormBody)
-    item.AllTokens := LawSearch_MergeTokenSets(item.TitleTokens, item.BodyTokens)
     item.TitleStems := LawSearch_BuildStemSet(item.TitleTokens)
     item.BodyStems := LawSearch_BuildStemSet(item.BodyTokens)
-    item.AllStems := LawSearch_MergeTokenSets(item.TitleStems, item.BodyStems)
     SearchIndex.Push(item)
 
     if (!SearchIndexCounts.HasKey(docCode))
@@ -6397,6 +6391,7 @@ global AutoTargetCandidateMatchType := 0
 global AutoTargetRButtonLatched := 0
 global AutoTargetStableReads := 1
 global AutoTargetLastScanTick := 0
+global AutoTargetAimStartedTick := 0
 global AutoTargetDiagCode := "INIT"
 global AutoTargetDiagDetail := ""
 global AutoTargetDiagFailStreak := 0
@@ -7180,6 +7175,8 @@ global ChatQueueBusy := 0
 global ChatQueueLastSendTick := 0
 global ChatQueueNextSendTick := 0
 global ChatQueuePreviewText := ""
+global ChatQueuePreviewLineCount := 0
+global ChatQueuePreviewKnownLength := 0
 global hMockPreviewWnd := 0
 global MockPreviewEdit := ""
 global MockPreviewCountText := ""
@@ -7277,7 +7274,7 @@ SetTimer, UpdateHUDTimer, 1000
 SetTimer, TaskSchedulerTimerTick, 100
 SetTimer, ChatQueueTimerTick, 150
 SetTimer, ChatLogReaderTick, 250
-SetTimer, AutoTargetIDTick, 50
+SetTimer, AutoTargetIDTick, Off
 LogError("System", "Script start", "INFO")
 return
 
@@ -9439,8 +9436,7 @@ GetCrosshairTargetPed(ByRef errorCode := "", ByRef errorDetail := "") {
         return 0
     }
 
-    ; Два чтения защищают от смены цели в середине обработки.
-    Sleep, 12
+    ; Два чтения защищают от смены цели; после поиска ID цель проверяется заново.
     pedPtr2 := readDWORD(hGTA, localPed + 0x79C)
     if (pedPtr2 != pedPtr1) {
         errorCode := "TARGET_PED_UNSTABLE"
@@ -9904,10 +9900,41 @@ AutoTargetID_CaptureNow(showFailure := 1) {
     return AutoTargetID_RequestConfirmation(aimedValue, targetPed, angle, "Ручной захват", targetName, isMask)
 }
 
+AutoTargetID_BeginAim() {
+    global AutoTargetIDEnabled, MockMode, AutoTargetLastScanTick
+    global AutoTargetAimStartedTick, AutoTargetRButtonLatched
+    if (AutoTargetIDEnabled != "On" || MockMode = "On" || !GameLocator_IsActive())
+        return false
+    if IsObject(IDCaptureState) {
+        AutoTargetRButtonLatched := 1
+        return false
+    }
+    if ContextAssistant_ConfirmHotkeysActive()
+        return false
+    AutoTargetRButtonLatched := 0
+    AutoTargetLastScanTick := 0
+    AutoTargetAimStartedTick := TickNow()
+    AutoTargetID_ResetCandidate()
+    ; Let GTA process the new RMB before reading its target on the next frame.
+    SetTimer, AutoTargetIDTick, 20
+    return true
+}
+
+AutoTargetID_EndAim() {
+    global AutoTargetLastScanTick, AutoTargetAimStartedTick, AutoTargetRButtonLatched
+    SetTimer, AutoTargetIDTick, Off
+    AutoTargetLastScanTick := 0
+    AutoTargetAimStartedTick := 0
+    AutoTargetRButtonLatched := 0
+    AutoTargetID_ResetCandidate()
+    AutoTargetID_ClearFailure()
+}
+
 AutoTargetID_Poll() {
     global AutoTargetIDEnabled, MockMode, AutoTargetCandidateID, AutoTargetCandidateReads
     global AutoTargetCandidatePed, AutoTargetCandidateMatchType
     global AutoTargetRButtonLatched, AutoTargetStableReads, AutoTargetLastScanTick
+    global AutoTargetAimStartedTick
     global UserID, ActiveID, AutoTargetDiagCode, AutoTargetDiagDetail
 
     if IsObject(IDCaptureState) {
@@ -9916,17 +9943,19 @@ AutoTargetID_Poll() {
         return
     }
     if (!GetKeyState("RButton", "P")) {
-        AutoTargetRButtonLatched := 0
-        AutoTargetLastScanTick := 0
-        AutoTargetID_ResetCandidate()
-        AutoTargetID_ClearFailure()
+        AutoTargetID_EndAim()
         return
     }
-    if (AutoTargetIDEnabled != "On" || MockMode = "On" || AutoTargetRButtonLatched)
+    if (AutoTargetIDEnabled != "On" || MockMode = "On" || AutoTargetRButtonLatched) {
+        SetTimer, AutoTargetIDTick, Off
+        return
+    }
+    if (PhysicalInputBusy || (AutoTargetAimStartedTick && AZMP_TickElapsed(AutoTargetAimStartedTick) < 20))
         return
     if ContextAssistant_ConfirmHotkeysActive()
         return
     if !GameLocator_IsActive() {
+        SetTimer, AutoTargetIDTick, Off
         AutoTargetID_ResetCandidate()
         return
     }
@@ -9940,7 +9969,7 @@ AutoTargetID_Poll() {
         return
     }
 
-    if (AutoTargetLastScanTick != 0 && AZMP_TickElapsed(AutoTargetLastScanTick) < 40)
+    if (AutoTargetLastScanTick != 0 && AZMP_TickElapsed(AutoTargetLastScanTick) < 20)
         return
     AutoTargetLastScanTick := TickNow()
     if !AzmpAllowsTargetRead() {
@@ -9978,7 +10007,7 @@ AutoTargetID_Poll() {
     angle := verifyAngle
     if (captureEpoch != AutomationEpoch || capturePID != dwGTAPID
         || captureGeneration != g_HandleGeneration || !GameLocator_IsActive()
-        || !GetKeyState("RButton", "P")) {
+        || !GetKeyState("RButton", "P") || PhysicalInputBusy || IsObject(IDCaptureState)) {
         AutoTargetID_ResetCandidate()
         return
     }
@@ -12844,7 +12873,7 @@ ChatQueue_Tick() {
             MockPreview_Append(item.Text)
             result := 1
         } else
-            result := AuditTestMode ? AuditTransportResult : ChatTransport_Send(item.Text, item.Source)
+            result := AuditTestMode ? AuditTransportResult : ChatTransport_Send(item.Text, item.Source, item.HasKey("Role") ? item.Role : "")
         if (epoch != AutomationEpoch) {
             ChatQueue_CompleteItem(item, "cancelled")
             return
@@ -12952,7 +12981,7 @@ ChatTransport_GetConnectionSummary(runMemoryCheck := 0) {
     return "PID " . gamePID . " через " . sourceText . ", " . activeText . " | " . reason
 }
 
-ChatTransport_Send(text, source := "ChatTransport") {
+ChatTransport_Send(text, source := "ChatTransport", role := "") {
     if IsObject(IDCaptureState)
         return -1
     global MockMode, TextSendMode, g_RemoteOperation
@@ -12971,8 +13000,8 @@ ChatTransport_Send(text, source := "ChatTransport") {
     NormalizeTextSendMode(TextSendMode)
     if (TextSendMode = "FastTyping" || TextSendMode = "FactionTyping") {
         if ChatTyping_ShouldType(TextSendMode, text, ChatFactionCommands) {
-            result := SendChatTyped(text)
-            status := result = 1 ? ChatTyping_ModeLabel(TextSendMode) : (result = -2 ? "Печать прервана; повтор отключён" : "Печать: отправка недоступна")
+            result := SendChatTyped(text, true, true, "", ChatTransport_TypingDelayOverride(source, role, text))
+            status := result = 1 ? ChatTyping_ModeLabel(TextSendMode) : (result = -2 ? "Печать прервана; повтор отключён" : "Печать: " . (ChatTypingLastError != "" ? ChatTypingLastError : "отправка недоступна"))
             ChatTransport_SetStatus(status, source, result = 1 ? "INFO" : "WARN")
             return result
         }
@@ -13037,17 +13066,47 @@ ChatTransport_Send(text, source := "ChatTransport") {
 }
 
 MockPreview_Append(text) {
-    global ChatQueuePreviewText
+    global ChatQueuePreviewText, ChatQueuePreviewLineCount, ChatQueuePreviewKnownLength
+    MockPreview_LineCount()
     FormatTime, stamp,, HH:mm:ss
     if (ChatQueuePreviewText != "")
         ChatQueuePreviewText .= "`r`n"
     ChatQueuePreviewText .= "[" . stamp . "] " . text
-    while (StrLen(ChatQueuePreviewText) > 131072 || StrSplit(ChatQueuePreviewText, "`n").Length() > 500) {
-        boundary := InStr(ChatQueuePreviewText, "`n")
-        ChatQueuePreviewText := boundary ? SubStr(ChatQueuePreviewText, boundary + 1) : SubStr(ChatQueuePreviewText, -131071)
+    StrReplace(text, "`n", "", addedBreaks)
+    ChatQueuePreviewLineCount += addedBreaks + 1
+    ; Trim a large append in one pass instead of allocating one array per line.
+    if (ChatQueuePreviewLineCount > 500) {
+        boundary := InStr(ChatQueuePreviewText, "`n", false, 0, 500)
+        ChatQueuePreviewText := SubStr(ChatQueuePreviewText, boundary + 1)
+        ChatQueuePreviewLineCount := 500
     }
+    length := StrLen(ChatQueuePreviewText)
+    if (length > 131072) {
+        start := length - 131072 + 1
+        boundary := InStr(ChatQueuePreviewText, "`n", false, start)
+        ChatQueuePreviewText := SubStr(ChatQueuePreviewText, boundary ? boundary + 1 : start)
+        ChatQueuePreviewLineCount := MockPreview_CountLines(ChatQueuePreviewText)
+    }
+    ChatQueuePreviewKnownLength := StrLen(ChatQueuePreviewText)
     if (!AuditTestMode)
         MockPreview_Show()
+}
+
+MockPreview_CountLines(text) {
+    if (text = "")
+        return 0
+    StrReplace(text, "`n", "", breaks)
+    return breaks + 1
+}
+
+MockPreview_LineCount() {
+    global ChatQueuePreviewText, ChatQueuePreviewLineCount, ChatQueuePreviewKnownLength
+    length := StrLen(ChatQueuePreviewText)
+    if (length != ChatQueuePreviewKnownLength) {
+        ChatQueuePreviewLineCount := MockPreview_CountLines(ChatQueuePreviewText)
+        ChatQueuePreviewKnownLength := length
+    }
+    return ChatQueuePreviewLineCount
 }
 
 ChatQueue_EnqueueMockDemo() {
@@ -13068,7 +13127,7 @@ MockPreview_Show() {
         controlBg := bg, inputText := text
     else
         GetControlSurfaceColors(controlBg, inputText, cardBg, cardEdge, panel, text, accent)
-    count := (ChatQueuePreviewText = "") ? 0 : StrSplit(ChatQueuePreviewText, "`n").Length()
+    count := MockPreview_LineCount()
     if (!hMockPreviewWnd)
     {
         Gui, 41:Destroy
@@ -15291,7 +15350,7 @@ EnsureRussianLayout() {
     return SafeLayout(0x4190419)
 }
 
-PasteOnly(text, alreadyOwned := 0) {
+PasteOnly(text, alreadyOwned := 0, contextGuard := "", expectedHwnd := 0) {
     if IsObject(IDCaptureState)
         return false
     global MockMode
@@ -15304,19 +15363,25 @@ PasteOnly(text, alreadyOwned := 0) {
     if (!alreadyOwned)
         PhysicalInputBusy := 1
     epoch := AutomationEpoch
+    ownerHwnd := expectedHwnd ? expectedHwnd : WinExist("A")
+    if !ChatTyping_IsReady(epoch, ownerHwnd, contextGuard) {
+        if (!alreadyOwned)
+            PhysicalInputBusy := 0
+        return false
+    }
     saved := ClipboardAll
     sequence := -1
     try {
         Clipboard := text
         sequence := DllCall("GetClipboardSequenceNumber", "UInt")
         ClipWait, 0.5
-        if (ErrorLevel || epoch != AutomationEpoch || !GameLocator_IsActive()
+        if (ErrorLevel || !ChatTyping_IsReady(epoch, ownerHwnd, contextGuard)
             || sequence != DllCall("GetClipboardSequenceNumber", "UInt"))
             return false
         if !SafeSend("^v", "Input", epoch)
             return false
         Sleep, 50
-        return epoch = AutomationEpoch && GameLocator_IsActive()
+        return ChatTyping_IsReady(epoch, ownerHwnd, contextGuard)
     } finally {
         if (sequence >= 0 && sequence = DllCall("GetClipboardSequenceNumber", "UInt"))
             Clipboard := saved
@@ -15332,15 +15397,36 @@ SendTemplateChat(template) {
 }
 
 SendTemplateOpen(template, leftCount := 0, inputEpoch := 0) {
+    global PhysicalInputBusy
     inputEpoch := AutomationEpoch
     text := ApplyTemplate(template)
-    EnsureRussianLayout()
-    if !PasteOnlyForEpoch(inputEpoch, text)
-        return false
-    if (leftCount > 0)
-    {
-        Sleep, 50
-        SafeSend("{Left " . leftCount . "}", "Input", inputEpoch)
+    previous := A_IsCritical
+    Critical, On
+    try {
+        ownerHwnd := WinExist("A")
+        if (PhysicalInputBusy || IsObject(IDCaptureState))
+            return false
+        if !TypeChatForEpoch(inputEpoch, text)
+            return false
+        if (leftCount <= 0)
+            return true
+        ; Typed input restores this critical thread before returning. Claim its
+        ; caret tail before allowing another sender or hotkey to interrupt.
+        if (PhysicalInputBusy || inputEpoch != AutomationEpoch || WinExist("A") != ownerHwnd)
+            return false
+        PhysicalInputBusy := 1
+        Critical, Off
+        try {
+            Sleep, 50
+            if (inputEpoch != AutomationEpoch || WinExist("A") != ownerHwnd)
+                return false
+            return SafeSend("{Left " . leftCount . "}", "Input", inputEpoch)
+        } finally {
+            Critical, On
+            PhysicalInputBusy := 0
+        }
+    } finally {
+        Critical, %previous%
     }
 }
 
@@ -16740,6 +16826,19 @@ StopCustomFunctionRun(showNotice := 1) {
         GameNotify("Пользовательская функция остановлена.", "WARN")
 }
 
+CustomFunction_InputIsCurrent(state) {
+    global CustomFunctionRunState, AutomationEpoch, CurrentProfile, UserID, QueueFailureGeneration
+    return IsObject(state) && IsObject(CustomFunctionRunState) && CustomFunctionRunState == state
+        && state.Epoch = AutomationEpoch && state.Profile = CurrentProfile && state.Target = UserID
+        && state.Failures = QueueFailureGeneration
+}
+
+CustomFunction_StopIfCurrent(state) {
+    global CustomFunctionRunState
+    if (IsObject(CustomFunctionRunState) && CustomFunctionRunState == state)
+        StopCustomFunctionRun(0)
+}
+
 CustomFunctionRunner_Process(inputEpoch := 0) {
     global CustomFunctionRunState, ChatQueueBusy, StopTimerActive, StopTimerCounter, StopTimerLabel
     inputEpoch := AutomationEpoch
@@ -16753,6 +16852,8 @@ CustomFunctionRunner_Process(inputEpoch := 0) {
         StopCustomFunctionRun(0)
         return
     }
+    if (PhysicalInputBusy || IsObject(IDCaptureState))
+        return
     if (state.NextTick > TickNow())
         return
     if (state.WaitingForQueue)
@@ -16760,10 +16861,13 @@ CustomFunctionRunner_Process(inputEpoch := 0) {
         if (ChatQueue_Count() > 0 || ChatQueueBusy)
             return
         state.WaitingForQueue := 0
-        CustomFunctionRunState := state
     }
     Loop, 20
     {
+        if !CustomFunction_InputIsCurrent(state) {
+            CustomFunction_StopIfCurrent(state)
+            return
+        }
         if (state.Index > state.Steps.Length())
         {
             completedName := state.Name
@@ -16776,7 +16880,6 @@ CustomFunctionRunner_Process(inputEpoch := 0) {
         if (step.Type = "WAIT")
         {
             state.NextTick := TickNow() + step.Value
-            CustomFunctionRunState := state
             return
         }
         if (step.Type = "SEND")
@@ -16784,7 +16887,6 @@ CustomFunctionRunner_Process(inputEpoch := 0) {
             if (ChatQueue_Count() > 0 || ChatQueueBusy)
             {
                 state.Index -= 1
-                CustomFunctionRunState := state
                 return
             }
             text := ApplyActionTemplate(step.Value)
@@ -16795,7 +16897,6 @@ CustomFunctionRunner_Process(inputEpoch := 0) {
                 state.NextTick := TickNow() + 1000
                 LogError("CustomFunction", "Очередь отклонила строку функции «" . state.Name . "».", "WARN")
             }
-            CustomFunctionRunState := state
             return
         }
         if (step.Type = "NOTICE")
@@ -16822,22 +16923,21 @@ CustomFunctionRunner_Process(inputEpoch := 0) {
             if !EnsureGameActive()
             {
                 state.Index -= 1
-                CustomFunctionRunState := state
                 return
             }
-            chatState := isInChat()
-            if (chatState < 0)
+            if !CustomFunction_InputIsCurrent(state) {
+                CustomFunction_StopIfCurrent(state)
                 return
-            if (chatState = 0) {
-                if !SafeSend("{F6}", "Input", inputEpoch)
-                    return
-                Sleep, 100
             }
-            if (state.Epoch != AutomationEpoch || state.Target != UserID || !GameLocator_IsActive())
+            if (PhysicalInputBusy || IsObject(IDCaptureState)) {
+                state.Index -= 1
                 return
-            EnsureRussianLayout()
-            if !PasteOnlyForEpoch(inputEpoch, ApplyActionTemplate(step.Value))
+            }
+            if !TypeChatForEpoch(inputEpoch, ApplyActionTemplate(step.Value), Func("CustomFunction_InputIsCurrent").Bind(state)) {
+                CustomFunction_StopIfCurrent(state)
+                LogError("CustomFunction", "Ввод текста не завершён; зависимые шаги отменены.", "WARN")
                 return
+            }
             continue
         }
         if (step.Type = "STOP")
@@ -16846,7 +16946,6 @@ CustomFunctionRunner_Process(inputEpoch := 0) {
             return
         }
     }
-    CustomFunctionRunState := state
 }
 
 AppendCustomFunctionBindRows(ByRef rows) {
@@ -18683,7 +18782,8 @@ ApplyGuiSettingsAuto(saveProfileToo := 0, refreshSettingsToo := 0) {
 }
 
 CloseSettings() {
-    global SettingsVisible, SettingsGuiReady, CurrentProfile, BindMenuEditMode, UiPreviewMode
+    global SettingsVisible, SettingsGuiReady, CurrentProfile, BindMenuEditMode, UiPreviewMode, hSettingsWnd
+    global SettingsPageExtents, SettingsPageFrames, SettingsScrollX, SettingsScrollY
     if (BindMenuEditMode)
         CloseBindMenuEditMode(0)
     if (SettingsVisible && !UiPreviewMode)
@@ -18693,11 +18793,15 @@ CloseSettings() {
             return
         SaveUISettings()
     }
-    Gui, 2:Hide
     SettingsVisible := 0
     SettingsGuiReady := 0
     if (!UiPreviewMode)
         SaveSettingsWindowState()
+    ; Opening settings always rebuilds the GUI, so hidden controls serve no reuse.
+    Gui, 2:Destroy
+    hSettingsWnd := 0
+    SettingsPageExtents := {}, SettingsPageFrames := {}
+    SettingsScrollX := 0, SettingsScrollY := 0
 }
 
 SetupTrayMenu() {
@@ -19089,7 +19193,7 @@ BuildSettingsGui() {
     Gui, 2:Add, Text, x950 y782 w174 h58 +Wrap BackgroundTrans, По бинду «Ввести ID вручную». Повтор бинда применяет ID.
     Settings_AddControl("Команды для режима «Печать фракции»", "CFG_ChatFactionCommands", ChatFactionCommands, 256, 852, 868, "Edit", "", text, inputText)
     Gui, 2:Font, Norm s9 c%muted%, Segoe UI
-    Gui, 2:Add, Text, x256 y924 w868 h32 +Wrap BackgroundTrans, Интервал меньше — печать быстрее. Команды разделяются пробелом или `;. Остальной текст в режиме «Печать фракции» вставляется.
+    Gui, 2:Add, Text, x256 y924 w868 h32 +Wrap BackgroundTrans, Интервал — между символами; RP до/после действия вводится без этой паузы. Фракционные команды: через пробел или `;. Остальной текст вставляется.
     Settings_RecordExtent(974)
 
     SettingsBuildingPage := 3
@@ -21164,12 +21268,10 @@ LawDoc_ResetAllFlags() {
     Loop % docPrefixes.Length()
     {
         docPrefix := docPrefixes[A_Index]
-        count := LawDoc_PageCount(docPrefix)
-        Loop %count%
-        {
-            flagName := "fl" . docPrefix . A_Index
-            %flagName% := False
-        }
+        ; Navigation uses LawDocCurrentPages; only the legacy first-page flag exists.
+        ; Resetting a window must not load and paginate every corpus document.
+        flagName := "fl" . docPrefix . "1"
+        %flagName% := False
     }
 }
 
@@ -21308,6 +21410,8 @@ return
 
 AutoTargetIDTick:
 AutoTargetID_Poll()
+if (AutoTargetRButtonLatched)
+    SetTimer, AutoTargetIDTick, Off
 return
 
 RunMemoryLiveTestCliLabel:
@@ -23028,6 +23132,17 @@ $!f::
 HandleBindMenuApplyHotkey()
 return
 #If
+
+; Passive hooks leave RMB available to the game and stop polling on any release.
+#If (AutoTargetIDEnabled = "On" && MockMode != "On" && GameLocator_IsActive())
+~*RButton::
+AutoTargetID_BeginAim()
+return
+#If
+
+~*RButton Up::
+AutoTargetID_EndAim()
+return
 
 #If IsGameActive()
 Numpad1::
