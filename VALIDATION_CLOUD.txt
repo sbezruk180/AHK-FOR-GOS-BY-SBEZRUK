@@ -1,3 +1,34 @@
+Text-bind repair validation (2026-10-11): 22 checks, zero failures.
+Real XTest keyboard events and native Edit, current production predicate/registrations/callbacks,
+ApplyTextTriggers and actual bind-menu suspend/resume/profile reapplication functions.
+Game memory and actual actions are explicit external substitutes; this verifies recognition
+and callback dispatch, not Russian hotstrings or completed sends in the Windows A32 game.
+HEAD comparison reproduces unchanged !test + Space when memory reports unknown.
+Current predicate performs no memory/discovery calls, including with a slow read substitute.
+PASS | HEAD comparison receives real physical text
+PASS | HEAD reproduces unchanged trigger when chat memory is unreadable
+PASS | HEAD hook invokes memory/discovery predicates
+PASS | Current ordinary text remains unchanged
+PASS | Current abbreviation waits for ending key
+PASS | Current Space calls actual RunTriggerLabel and timer label once
+PASS | Current Space erases matched abbreviation from real Edit
+PASS | Current hook does not read unavailable game memory or discover modules
+PASS | Current preserves preceding ordinary text
+PASS | Current activation avoids slow memory dependency
+PASS | Current refuses when outside configured game
+PASS | Current refuses when physical sender owns input
+PASS | Current refuses when manual ID capture active
+PASS | Custom TXT registration invokes actual custom trigger on Space
+PASS | Search TXT registration invokes actual search callback on Space
+PASS | Actual bind-menu lifecycle marks TXT suspended
+PASS | Actual bind-menu suspension leaves abbreviation unchanged
+PASS | Actual resume clears suspension flag and reapplies catalog
+PASS | Actual resume restores Space callback once
+PASS | Actual profile reapplication disables old trigger
+PASS | Actual profile reapplication enables new trigger once
+PASS | Actual profile reapplication keeps custom callback without duplication
+Checks: 22 | Failed: 0
+
 Cloud validation, 2026-10-11: Linux, AutoHotkey 1.1.37.02 Unicode x64 under Wine.
 Shipped sources remain CP1251, CRLF, ANSI x86. Disposable copies alone bypass the architecture guard.
 Windows ANSI x86, Russian physical typing in the game, game offsets/ABI and OBS capture are not verified here.
