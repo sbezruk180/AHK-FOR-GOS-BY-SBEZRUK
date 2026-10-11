@@ -17,7 +17,8 @@ for path in sources:
 
 for name in ('UDF.ahk', 'common.ahk', 'runtime_support.ahk', 'chat_typing.ahk', 'id_capture.ahk',
              'tests/audit_regression.ahk', 'tests/chat_typing_regression.ahk',
-             'tests/id_capture_regression.ahk'):
+             'tests/id_capture_regression.ahk', 'tests/chat_state_regression.ahk',
+             'tests/autoid_direct_regression.ahk'):
     if not (root / name).is_file():
         raise SystemExit(f'Missing required include: {name}')
 subprocess.run([sys.executable, str(root / 'tools/sync_helper.py'), '--check'], check=True)

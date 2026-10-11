@@ -203,6 +203,8 @@ RunAuditSelfTest() {
     AuditAssert("OBS error retry reaches deadline", Capture_ShouldRetry(retryState, 1, 2000))
     AuditAssert("OBS changed option retries immediately", Capture_ShouldRetry(retryState, 0, 0))
     RunChatTypingRegression()
+    RunChatStateRegression()
+    Audit_AutoIDDirect()
     IDCapture_RunRegression()
     Audit_ChatIDIntegration(scratch)
     Audit_MemoryRetention()

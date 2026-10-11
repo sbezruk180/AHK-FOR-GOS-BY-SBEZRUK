@@ -25,6 +25,8 @@ if (A_PtrSize != 4 || A_IsUnicode)
 #Include %A_ScriptDir%\chat_typing.ahk
 #Include %A_ScriptDir%\id_capture.ahk
 #Include %A_ScriptDir%\tests\chat_typing_regression.ahk
+#Include %A_ScriptDir%\tests\chat_state_regression.ahk
+#Include %A_ScriptDir%\tests\autoid_direct_regression.ahk
 #Include %A_ScriptDir%\tests\id_capture_regression.ahk
 #Include %A_ScriptDir%\tests\audit_regression.ahk
 ; ===== BEGIN EMBEDDED helper.ahk: territory map quality/forum patch =====
@@ -9834,21 +9836,48 @@ AutoTargetID_ReadAimedID(ByRef targetPed := 0, ByRef angle := -1, ByRef targetNa
     return -1
 }
 
-AutoTargetID_RequestConfirmation(aimedValue, targetPed := 0, angle := -1, source := "RMB", targetName := "", isMask := 0) {
-    if (aimedValue = -1 || aimedValue = "")
-        return false
-    if ContextAssistant_ConfirmHotkeysActive()
-        return false
+AutoTargetID_IsCurrentSelection(aimedValue, targetName := "", isMask := 0) {
+    global UserID, ActiveID, TargetNickname, TargetIsMask
+    targetName := isMask ? "" : Trim(targetName)
+    return (ActiveID && TargetIsMask = (isMask ? 1 : 0)
+        && "V" . UserID = "V" . aimedValue && TargetNickname = targetName)
+}
 
-    requestValue := isMask ? ("__MASK__:" . aimedValue) : aimedValue
-    if !ContextAssistant_Request("EnterID", requestValue, "", targetName)
-        return false
-
-    angleText := (angle >= 0) ? " | угол " . Round(angle, 1) . "°" : ""
-    valueText := isMask ? ("Маска " . aimedValue) : ("ID " . aimedValue)
-    nameText := (!isMask && targetName != "") ? (" | ник " . targetName) : ""
-    LogError("AutoTargetID", source . ": " . valueText . nameText . ", ped " . targetPed . angleText, "INFO")
-    return true
+; A verified aimed target is applied immediately. The existing HUD/ID overlay
+; stays NoActivate and keeps the configured OBS exclusion; no confirmation opens.
+AutoTargetID_ApplyAimedID(aimedValue, targetPed := 0, angle := -1, source := "RMB", targetName := "", isMask := 0) {
+    global AZMP_MAX_PLAYERS
+    wasCritical := A_IsCritical
+    Critical, 30
+    try {
+        if (IsObject(IDCaptureState) || PhysicalInputBusy || ContextAssistant_ConfirmHotkeysActive())
+            return false
+        isMask := isMask ? 1 : 0
+        if (isMask) {
+            if !RegExMatch("" . aimedValue, "^[0-9]{5,20}$")
+                return false
+            value := "" . aimedValue
+            targetName := ""
+        } else {
+            if !ContextAssistant_ValidateNumber(aimedValue, AZMP_MAX_PLAYERS - 1, value, 0)
+                return false
+            targetName := Trim(targetName)
+        }
+        ; Stable aim must not redraw controls, create windows, play sounds or
+        ; change AutomationEpoch on every polling tick.
+        if AutoTargetID_IsCurrentSelection(value, targetName, isMask)
+            return true
+        ShowIDGui(value, targetName, isMask)
+        valueText := isMask ? ("Маска " . value) : ("ID " . value)
+        nameText := (!isMask && targetName != "") ? (" | ник " . targetName) : ""
+        LogError("AutoTargetID", source . ": " . valueText . nameText . ", ped " . targetPed, "INFO")
+        return true
+    } finally {
+        if (wasCritical)
+            Critical, %wasCritical%
+        else
+            Critical, Off
+    }
 }
 
 AutoTargetID_ObserveCandidate(aimedValue, targetName, targetPed, matchType) {
@@ -9871,9 +9900,9 @@ AutoTargetID_RequiredReads(matchType, isMask) {
 }
 
 AutoTargetID_CaptureNow(showFailure := 1) {
-    if IsObject(IDCaptureState)
-        return false
     global AutoTargetIDEnabled, AutoTargetDiagCode, AutoTargetDiagDetail, MockMode
+    if (IsObject(IDCaptureState) || PhysicalInputBusy || ContextAssistant_ConfirmHotkeysActive())
+        return false
     captureEpoch := AutomationEpoch
     if (MockMode = "On" || !GameLocator_IsActive())
         return false
@@ -9887,17 +9916,21 @@ AutoTargetID_CaptureNow(showFailure := 1) {
             GameNotify("Захват ID недоступен: " . MemoryGetShortError(), "ERROR")
         return false
     }
+    capturePID := dwGTAPID
+    captureGeneration := g_HandleGeneration
     aimedValue := AutoTargetID_ReadAimedID(targetPed, angle, targetName, isMask, matchType)
-    if (aimedValue = -1 || aimedValue = "") {
+    if ("V" . aimedValue = "V-1" || "V" . aimedValue = "V") {
         AutoTargetID_RecordFailure(AutoTargetDiagCode, AutoTargetDiagDetail, targetPed)
         if (showFailure)
             AutoTargetID_DiagnoseAndRecover(1, 1, targetPed)
         return false
     }
     AutoTargetID_ClearFailure()
-    if (captureEpoch != AutomationEpoch || !GameLocator_IsActive())
+    finalTarget := GetCrosshairTargetPed(finalCode, finalDetail)
+    if (finalTarget != targetPed || captureEpoch != AutomationEpoch || capturePID != dwGTAPID
+        || captureGeneration != g_HandleGeneration || !GameLocator_IsActive())
         return false
-    return AutoTargetID_RequestConfirmation(aimedValue, targetPed, angle, "Ручной захват", targetName, isMask)
+    return AutoTargetID_ApplyAimedID(aimedValue, targetPed, angle, "Ручной захват", targetName, isMask)
 }
 
 AutoTargetID_BeginAim() {
@@ -9980,12 +10013,19 @@ AutoTargetID_Poll() {
     captureGeneration := g_HandleGeneration
 
     aimedValue := AutoTargetID_ReadAimedID(targetPed, angle, targetName, isMask, matchType)
-    if (aimedValue = -1 || aimedValue = "") {
+    if ("V" . aimedValue = "V-1" || "V" . aimedValue = "V") {
         AutoTargetID_RecordFailure(AutoTargetDiagCode, AutoTargetDiagDetail, targetPed)
         AutoTargetID_ResetCandidate()
         return
     }
     AutoTargetID_ClearFailure()
+
+    ; The same selected value still keeps the timer running: moving aim to a
+    ; different player while RMB remains held must update the ID immediately.
+    if AutoTargetID_IsCurrentSelection(aimedValue, targetName, isMask) {
+        AutoTargetID_ResetCandidate()
+        return
+    }
 
     ; PED включён в ключ стабильности: один и тот же ID от другой сущности
     ; не может продолжить счётчик предыдущей цели.
@@ -9997,9 +10037,9 @@ AutoTargetID_Poll() {
     if (AutoTargetCandidateReads < requiredReads)
         return
 
-    ; Финальная проверка сразу перед показом подтверждения.
+    ; Финальная проверка сразу перед обновлением ID в HUD.
     verifyValue := AutoTargetID_ReadAimedID(verifyPed, verifyAngle, verifyName, verifyIsMask, verifyMatch)
-    if (verifyValue != aimedValue || verifyPed != targetPed || verifyIsMask != isMask || verifyMatch != matchType) {
+    if ("V" . verifyValue != "V" . aimedValue || verifyPed != targetPed || verifyIsMask != isMask || verifyMatch != matchType) {
         AutoTargetID_ResetCandidate()
         return
     }
@@ -10012,21 +10052,7 @@ AutoTargetID_Poll() {
         return
     }
 
-    if (ActiveID) {
-        if (!isMask && HasCurrentID() && (UserID + 0 = aimedValue + 0)) {
-            AutoTargetRButtonLatched := 1
-            AutoTargetID_ResetCandidate()
-            return
-        }
-        if (isMask && ("M" . UserID = "M" . aimedValue)) {
-            AutoTargetRButtonLatched := 1
-            AutoTargetID_ResetCandidate()
-            return
-        }
-    }
-
-    if AutoTargetID_RequestConfirmation(aimedValue, targetPed, angle, "Автозахват ПКМ", targetName, isMask)
-        AutoTargetRButtonLatched := 1
+    AutoTargetID_ApplyAimedID(aimedValue, targetPed, angle, "Автозахват ПКМ", targetName, isMask)
     AutoTargetID_ResetCandidate()
 }
 
@@ -13006,18 +13032,29 @@ ChatTransport_Send(text, source := "ChatTransport", role := "") {
             return result
         }
         ok := SendChatKeyboard(text)
-        ChatTransport_SetStatus(ok ? "Вставка (остальной текст)" : "Вставка: отправка недоступна", source, ok ? "INFO" : "WARN")
+        ChatTransport_SetStatus(ok ? "Вставка (остальной текст)" : "Вставка: " . ChatKeyboardLastError, source, ok ? "INFO" : "WARN")
         return ok ? 1 : -1
     }
     if (TextSendMode = "Keyboard")
     {
         ok := SendChatKeyboard(text)
-        ChatTransport_SetStatus(ok ? "Keyboard" : "Keyboard: игра не активна", source, ok ? "INFO" : "WARN")
+        ChatTransport_SetStatus(ok ? "Вставка" : "Вставка: " . ChatKeyboardLastError, source, ok ? "INFO" : "WARN")
         return ok ? 1 : -1
     }
 
     if (TextSendMode = "Memory")
     {
+        if IsObject(g_RemoteOperation)
+            return -2
+        ; Only fall back before a memory operation is attempted, never after an uncertain call.
+        if !checkHandles() {
+            memoryError := MemoryGetShortError()
+            if IsObject(g_RemoteOperation)
+                return -2
+            ok := SendChatKeyboard(text)
+            ChatTransport_SetStatus(ok ? "Вставка: память недоступна (" . memoryError . ")" : "Отправка: " . ChatKeyboardLastError, source, ok ? "INFO" : "WARN")
+            return ok ? 1 : -1
+        }
         result := SendChatMemory(text)
         if (result = 1)
             ChatTransport_SetStatus("Memory", source)
@@ -13055,7 +13092,7 @@ ChatTransport_Send(text, source := "ChatTransport", role := "") {
     if GameLocator_IsActive()
     {
         ok := SendChatKeyboard(text)
-        ChatTransport_SetStatus(ok ? "Keyboard (Auto)" : "Auto: Keyboard не отправил после " . memoryError, source, ok ? "INFO" : "WARN")
+        ChatTransport_SetStatus(ok ? "Вставка (Авто)" : "Авто: " . ChatKeyboardLastError, source, ok ? "INFO" : "WARN")
         return ok ? 1 : -1
     }
 
@@ -13178,9 +13215,12 @@ CancelAllAutomation(showStatus := 1) {
     }
 }
 SendChatKeyboard(text) {
-    if IsObject(IDCaptureState)
+    global MockMode, ChatKeyboardLastError
+    ChatKeyboardLastError := ""
+    if IsObject(IDCaptureState) {
+        ChatKeyboardLastError := "Активен ввод ID."
         return false
-    global MockMode
+    }
     if (text = "")
         return false
     if (MockMode = "On" || AuditTestMode) {
@@ -13190,30 +13230,45 @@ SendChatKeyboard(text) {
     previous := A_IsCritical
     Critical, On
     if (PhysicalInputBusy || IsObject(IDCaptureState) || !GameLocator_IsActive()) {
+        ChatKeyboardLastError := "Окно игры не активно или ввод занят."
         Critical, %previous%
         return false
     }
     PhysicalInputBusy := 1
-    epoch := AutomationEpoch
-    Critical, %previous%
+    epoch := AutomationEpoch, ownerHwnd := WinExist("A")
+    Critical, Off
     try {
         chatState := isInChat()
-        if (chatState < 0)
+        if (chatState < 0 || !ChatTyping_IsReady(epoch, ownerHwnd)) {
+            ChatKeyboardLastError := "Состояние чата недоступно: " . MemoryGetShortError()
             return false
+        }
         if (chatState = 0) {
             if !SafeSend("{F6}", "Input", epoch)
                 return false
-            Sleep, 120
+        }
+        if !ChatTyping_WaitForChatOpen(epoch, ownerHwnd) {
+            ChatKeyboardLastError := ChatTypingLastError
+            return false
         }
         if !SafeSend("^a{Backspace}", "Input", epoch)
             return false
         Sleep, 50
-        if (epoch != AutomationEpoch || !SafeLayout(0x4190419) || !PasteOnly(text, 1))
+        ; Clipboard insertion works independently of the keyboard layout.
+        if !PasteOnly(text, 1, "", ownerHwnd) {
+            ChatKeyboardLastError := "Вставка отменена: окно, контекст или буфер изменились."
             return false
+        }
         Sleep, 70
+        if (!ChatTyping_IsReady(epoch, ownerHwnd) || isInChat() != 1) {
+            ChatKeyboardLastError := "Ввод отменён или чат закрыт до отправки."
+            return false
+        }
         return SafeSend("{Enter}", "Input", epoch)
     } finally {
+        Critical, On
         PhysicalInputBusy := 0
+        Critical, %previous%
     }
 }
 
@@ -18449,7 +18504,7 @@ ToggleHUD() {
 GetCurrentDisplayID() {
     global UserID, ActiveID
     displayID := Trim(UserID)
-    if (!ActiveID || displayID = "" || displayID = "0" || displayID = "ERROR")
+    if (!ActiveID || displayID = "" || displayID = "ERROR")
         return "—"
     return displayID
 }

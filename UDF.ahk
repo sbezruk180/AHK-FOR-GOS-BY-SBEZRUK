@@ -1449,5 +1449,14 @@ isInChat() {
     if (ErrorLevel || !IsLikelyPointer(inputInfoPtr))
         return -1
     state := readDWORD(hGTA, inputInfoPtr + 0x61)
-    return (ErrorLevel || (state != 0 && state != 1)) ? -1 : state
+    return AZMP_ChatStateFromRead(state, ErrorLevel)
+}
+
+AZMP_ChatStateFromRead(rawState, readFailed := false) {
+    ; Amazing uses a 32-bit BOOL here: every nonzero completed read means open.
+    ; Keep failed reads unknown; a failed RPM must never masquerade as closed chat.
+    if (readFailed || !RegExMatch(rawState . "", "^\d+$")
+        || rawState < 0 || rawState > 0xFFFFFFFF || rawState != Floor(rawState))
+        return -1
+    return rawState = 0 ? 0 : 1
 }
