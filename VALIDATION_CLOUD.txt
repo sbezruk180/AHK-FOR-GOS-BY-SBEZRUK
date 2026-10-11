@@ -1,9 +1,9 @@
-Cloud validation: Linux, AutoHotkey 1.1.37.02 Unicode x64 under Wine.
-Only the architecture guard was removed in a disposable, game-free test copy.
-Shipped sources retain their ANSI x86 requirement.
-Windows ANSI x86 / game chat / OBS capture integration remains unverified.
+Cloud validation, 2026-10-11: Linux, AutoHotkey 1.1.37.02 Unicode x64 under Wine.
+Shipped sources remain CP1251, CRLF, ANSI x86. Only disposable copies bypass the architecture guard.
+Windows ANSI x86, Russian physical typing in the game, game offsets/ABI and OBS capture are not verified here.
+The user reported working OBS exclusion; cloud capture was not repeated.
 
-Latest game-free logic suite:
+Latest game-free logic suite (242 checks, zero failures; 3 skipped groups):
 AHK audit behavioural regression
 Runtime=1.1.37.02 | Unicode=1 | PtrSize=8
 No game, physical input, capture verification, or game ABI test.
@@ -19,6 +19,9 @@ PASS | F29 sent increments at transport completion
 PASS | F14 batch rejects without accepting prefix
 PASS | F14 RP action accepted
 PASS | F14 order includes command, menu, and RP after
+PASS | Typing delay: RP before/after are independent of command printing
+PASS | Typing delay: sequence pause remains a separate setting
+PASS | Typing delay: standalone RP sequence skips per-character interval
 PASS | F14 failed batch cancels menu and RP after
 PASS | F13 cancellation preserves active sender ownership
 PASS | F13 StopAll cancels custom runner and evidence
@@ -97,6 +100,12 @@ PASS | Typing speed range 7
 PASS | Typing speed range 8
 PASS | Typing speed range 9
 PASS | Typing speed range 10
+PASS | Typing override uses zero for RP without changing configured delay
+PASS | Typing no override keeps user delay
+PASS | Typing override clamps below zero
+PASS | Typing override clamps above maximum
+PASS | Typing malformed override keeps user delay
+PASS | Typing invalid user delay keeps default without override
 PASS | Faction list canonicalizes separators and removes duplicates
 PASS | Default faction typing includes operational command /frac
 PASS | Default faction typing includes operational command /cuff
@@ -122,6 +131,42 @@ PASS | Chat send mode label roundtrip Keyboard
 PASS | Chat send mode label roundtrip FastTyping
 PASS | Chat send mode label roundtrip FactionTyping
 PASS | Unknown send label selects Auto
+PASS | Typing CP1251 byte decodes to Unicode 1
+PASS | Typing CP1251 byte decodes to Unicode 2
+PASS | Typing CP1251 byte decodes to Unicode 3
+PASS | Typing CP1251 byte decodes to Unicode 4
+PASS | Typing CP1251 byte decodes to Unicode 5
+PASS | Typing CP1251 byte decodes to Unicode 6
+PASS | Typing rejects undefined CP1251 byte
+SKIP | Native Windows RU/US layout loading and Cyrillic VkKeyScanEx mappings unavailable in Wine
+PASS | Typing physical VK/scancode/Shift mapping 1
+PASS | Typing event has explicit VK/scancode, no Unicode packet 1
+PASS | Typing physical VK/scancode/Shift mapping 2
+PASS | Typing event has explicit VK/scancode, no Unicode packet 2
+PASS | Typing physical VK/scancode/Shift mapping 3
+PASS | Typing event has explicit VK/scancode, no Unicode packet 3
+PASS | Typing physical VK/scancode/Shift mapping 9
+PASS | Typing event has explicit VK/scancode, no Unicode packet 9
+PASS | Typing physical VK/scancode/Shift mapping 10
+PASS | Typing event has explicit VK/scancode, no Unicode packet 10
+PASS | Typing physical VK/scancode/Shift mapping 11
+PASS | Typing event has explicit VK/scancode, no Unicode packet 11
+PASS | Typing physical VK/scancode/Shift mapping 12
+PASS | Typing event has explicit VK/scancode, no Unicode packet 12
+PASS | Typing physical VK/scancode/Shift mapping 13
+PASS | Typing event has explicit VK/scancode, no Unicode packet 13
+PASS | Typing physical VK/scancode/Shift mapping 14
+PASS | Typing event has explicit VK/scancode, no Unicode packet 14
+PASS | Typing physical VK/scancode/Shift mapping 15
+PASS | Typing event has explicit VK/scancode, no Unicode packet 15
+PASS | Typing physical VK/scancode/Shift mapping 16
+PASS | Typing event has explicit VK/scancode, no Unicode packet 16
+PASS | Typing accounts for CapsLock on lower case
+PASS | Typing accounts for CapsLock on upper case
+PASS | Typing refuses packet key plan
+PASS | Typing preflights full physical ASCII command and punctuation
+PASS | Typing refuses unmappable char before any prefix plan
+PASS | Typing refuses malformed line before keyboard plan
 PASS | Typing mock does not touch clipboard
 PASS | Typed sender refuses during numeric ID capture
 PASS | Typed sender rejects multiline before transport
@@ -181,6 +226,16 @@ PASS | Typing ownership pauses queued chat
 PASS | Typing ownership refuses menu input
 PASS | Queue resumes after ID/input ownership release
 PASS | Partial typing is never retried and cancels the batch
+PASS | Memory: closing a law does not load the whole corpus
+PASS | Memory: closing a law still resets navigation
+PASS | Memory: vocabulary counts once per item without merged sets
+PASS | Memory: one multiline append retains the last 500 lines
+PASS | Memory: oversized preview is bounded without a line array
+PASS | Memory: clearing preview resets incremental count
+PASS | Custom TYPE guard accepts its current run
+PASS | Custom TYPE guard stops input after constructor Stop
+PASS | Custom TYPE guard rejects a replaced run
+PASS | Custom TYPE failure does not stop a new run
 PASS | F10 reader never truncates chatlog
 PASS | F21 official LAW corpus loaded
 PASS | search exact reference TER
@@ -198,16 +253,28 @@ PASS | F24 settings fits work area
 SKIP | ANSI x86 game ABI, module enumeration and HANDLE lifecycle need Windows A32 integration
 SKIP | Real Windows GUI/DPI, OBS capture, game offsets, remote-thread stress and screenshot files require target integration
 
-Checks: 188 | Failed: 0 | Skipped integration groups: 2
+Checks: 242 | Failed: 0 | Skipped integration groups: 3
 
-Separate native Wine fixtures (real Edit controls and synthetic XTest events):
+Current physical typing fixture: actual SendChatTyped, real Edit, keyboard hook and XTest events.
+Test-only loader shim supplies Wine layout handles; VkKeyScanEx in Wine 10 ignores HKL and cannot map Cyrillic.
+ASCII mapping is native and all 95 printable US characters are covered. This does not validate Windows RU/US layout loading or game chat.
+TEST LIMIT: Native Wine ASCII mapping only; RU/US KLID loader test shim. No Windows/game validation.
+PASS Low-level keyboard hook installed
 PASS Successful sender returns 1
-PASS Cyrillic command and punctuation typed literally with single final Enter
-ACTUAL=/cuff 123 Кириллица ^ ! + # % {Enter}<CR><LF>
+PASS ASCII command and punctuation typed literally with single final Enter
+ACTUAL=/cuff 123 Literal Aa ^ ! + # % {Enter}<CR><LF>
 PASS Key delay and duration restored
 PASS Clipboard sequence preserved
 PASS Keyboard layout restored
 PASS Physical input owner released
+PASS Real keyboard stream has no VK_PACKET
+PASS Real keyboard stream carries explicit letter VK/scancode
+PASS ASCII typing works with Wine native layout handle
+PASS No-submit typed mode never presses Enter
+PASS No-submit append preserves existing chat prefix
+PASS Unmappable char rejected before any keyboard events or chat clearing
+PASS Physical typing respects CapsLock for Latin
+PASS Held hotkey modifiers released before typed command
 PASS Epoch cancellation reports unknown result
 PASS Cancelled sender leaves partial text and sends no Enter
 PASS Caller critical setting restored after interruptible sender
@@ -218,10 +285,109 @@ PASS Focus loss sends no Enter
 PASS No further characters after focus loss
 PASS Sender does not steal focus back
 PASS Key settings and clipboard restored after focus loss
+PASS Context cancellation reports unknown result without epoch change
+PASS Context cancellation sends no Enter and stops partial typing
+PASS No stale context characters after custom stop
+PASS Context stop restores old layout in same game and epoch
 PASS Speed setting changes actual typing duration
-TIMING 10ms=265ms 50ms=893ms
-Checks=17 failures=0
+TIMING 10ms=259ms 50ms=918ms
+PASS All 95 visible US keyboard characters typed literally
+ASCII_RESULT=1 ACTUAL= !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~ ERROR=
+PASS RP zero override types successfully and preserves user setting
+PASS RP zero override removes character wait from same text
+TIMING RP zero=105ms configured=50ms
+PASS XTest physical hotkey modifiers held before typing
+PASS Physical external Alt Ctrl Shift do not corrupt typed command
+PASS Entire fixture keyboard stream has no VK_PACKET
+Checks=36 failures=0
 
+Clipboard fallback fixture: extracted current PasteOnly, PasteChatForEpoch, SafeSend and ChatTyping_IsReady.
+Real Edit and Clipboard; external game/chat/layout predicates are explicit stubs.
+Cancellation and focus change occur deterministically at the actual check after ClipWait, before Ctrl+V.
+Cyrillic clipboard success does not establish physical Cyrillic typing.
+PASS actual editable clipboard paste
+PASS normal paste restores clipboard
+PASS normal wrapper owns input through checks and releases it
+PASS context cancel after ClipWait refuses Ctrl+V
+PASS cancel restores clipboard and releases input
+PASS cancel preserves game focus
+PASS focus loss after ClipWait sends nothing to either window
+PASS focus loss does not reactivate the game
+PASS focus loss restores clipboard and releases input
+PASS wrapper restores prior Critical after failure
+PASS busy refusal preserves another owner's flag
+PASS capture refusal leaves clipboard and ownership alone
+PASS direct paste cancellation releases its ownership
+PASS direct paste cancellation sends no text
+TOTAL PASS=14 FAIL=0
+
+Auto ID memory fixture: actual RPM on an allocated 1004-player pool, real source mapping functions.
+Fixed GTA global addresses are remapped into owned fixture memory because Wine occupies that address range.
+External module/GTA pool predicates are fixtures. GTA game offsets are not validated by these allocated-memory cases.
+PASS occupied high slot ID1003 resolves
+PASS previous scan agrees with high-slot fixture
+INFO current=237ms previous=267ms for 1004 streamed players
+PASS ID0 valid
+PASS unlisted player rejected
+PASS duplicate CPed refused
+PASS secondary entity link accepted
+PASS unaligned primary does not hide secondary
+PASS cached ID remains freshly checked
+PASS cached stale chain refused
+PASS free GTA CPed slot refused
+PASS interior CPed pointer refused
+PASS null target refused
+PASS zero DWORD successful read
+PASS invalid DWORD address refused
+PASS missing process refused
+PASS out of x86 address range refused
+PASS RPM failure from invalid handle refused
+PASS equal primary/secondary deduplicated
+PASS old B6F3B8 primary target has priority
+PASS B6F5F0 fallback when primary empty
+PASS fallback when primary is interior pointer
+PASS fallback when primary GTA slot freed
+PASS no aimed CPed refused
+PASS interior target refused by getter
+PASS target missing matrix refused
+PASS target unaligned matrix refused
+SUMMARY PASS=26 FAIL=0
+
+Auto ID scheduling fixture: extracted current main functions, real SetTimer and Sleep.
+Game, memory and held-RMB predicates are stubs. It validates timing/latching/cancellation flow, not physical game targeting.
+PASS idle timer produces no memory reads
+PASS RMB begin performs no synchronous read
+PASS first game frame guard blocks immediate poll
+PASS timer accepts exact ID on first eligible observation
+PASS first read waits at least one frame
+PASS held RMB latch prevents repeated capture
+PASS RMB end clears capture state
+PASS RMB end stops timer
+PASS stream-in failure keeps retrying while RMB held
+PASS release stops failed-target retries
+PASS focus loss prevents read and stops timer
+PASS focus regain alone cannot resume held capture
+PASS new RMB activation resumes after focus loss
+PASS physical typing busy pauses memory capture
+PASS capture resumes after typing releases ownership
+PASS manual digit capture blocks activation
+PASS manual capture during held aim requires fresh RMB
+PASS release then fresh RMB works after manual capture
+PASS pending confirmation blocks second activation
+PASS disabled Auto ID blocks activation
+PASS Mock mode never reads game target
+PASS mask retains three observations plus verification
+PASS final independent guard rejects epoch
+PASS final independent guard rejects pid
+PASS final independent guard rejects generation
+PASS final independent guard rejects focus
+PASS final independent guard rejects release
+PASS final independent guard rejects busy
+PASS final independent guard rejects capture
+PASS final independent guard rejects target
+SUMMARY PASS=30 FAIL=0
+
+Unchanged ID capture module: separate native Wine hook/Edit/XTest fixture from the preceding release:
 PASS Held activation shortcut starts capture without accepting repeat
 PASS Production capture policy ran before showing GUI
 PASS ID capture GUI has WS_EX_NOACTIVATE and click-through
@@ -250,5 +416,25 @@ PASS Second Alt+F2 press confirms after activation key release
 PASS Final shutdown unhooks and frees callback
 Checks=25 failures=0
 
-Settings page 2 bottom card, temporary pages 1-3 preview, 96 DPI:
-60 visible controls; 1860 checks; 0 failures; 0 warnings.
+Settings lifecycle: 92 PASS, 0 FAIL. Six opens/closes of pages 1-3 at 96 DPI under U64/Wine.
+Each open creates 285 child HWNDs; every child is destroyed at close, values survive rebuild, no orphan GUI windows.
+UiPreviewMode disables INI persistence in this fixture; persistence is covered separately in the logic suite.
+Wine GetGuiResources returns zero, which is not evidence of zero allocated bytes.
+Final chat settings bottom card with the updated delay explanation: 60 visible controls, 1860 checks, 0 failures, 0 warnings.
+Full pages 4-13 GUI fails in both baseline/current U64/Wine during multiline Edit construction and is not counted as passed.
+
+Memory comparison: two fresh processes per variant, real 3544-item LAW index/search, no game or GUI.
+Wine PROCESS_MEMORY_COUNTERS_EX PrivateUsage is unavailable; the values are WorkingSetSize.
+Baseline working bytes: 268587008 and 268513280; index init: 11292 and 11359 ms.
+Optimized working bytes: 228474880 and 228466688; index init: 11294 and 11266 ms.
+Reduction: about 40.1 MB / 38.3 MiB / 15%; init time unchanged. Windows ANSI x86 reduction is not measured.
+Vocabulary snapshots: exactly 8659 words, byte-identical frequencies. Six search queries: 89 result lines with identical IDs/scores/ranks.
+Deleted index fields: SearchTitle, SearchText, NormText, NormAll, AllTokens, AllStems.
+LAW reset baseline loads 20 documents (664495 corpus chars + 664077 page chars); optimized loads zero and preserves flag/navigation reset.
+Preview benchmark: 2500 appends, old 465 ms versus new 321 ms, both retain 500 lines/39498 chars.
+This preview benchmark measures elapsed time, not peak memory.
+
+Packaging: tools/sync_helper.py --check, tools/validate_package.py, AHK /iLib and git diff --check.
+CHECKSUMS.sha256 contains SHA-256 for each tracked release file except itself.
+For target verification run tests\run_windows.cmd with AutoHotkeyA32.exe, then exercise RU messages, /cuff, pre/post RP,
+Stop during typing, immediate RMB targeting and Alt+1 digits/repeat/deadline in the actual game.

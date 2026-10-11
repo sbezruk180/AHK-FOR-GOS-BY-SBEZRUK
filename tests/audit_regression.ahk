@@ -43,6 +43,9 @@ RunAuditSelfTest() {
     UserID := 42
     AuditAssert("F14 RP action accepted", QueueRpAction("before`nafter", "/doc 42", "test", [1, 5, 1]))
     AuditAssert("F14 order includes command, menu, and RP after", ChatQueueItems.Length() = 4 && ChatQueueItems[1].Text = "before" && ChatQueueItems[2].Text = "/doc 42" && ChatQueueItems[3].Kind = "Menu" && ChatQueueItems[4].Text = "after")
+    AuditAssert("Typing delay: RP before/after are independent of command printing", ChatQueueItems[1].Role = "RP" && ChatQueueItems[4].Role = "RP" && !ChatQueueItems[2].HasKey("Role") && ChatTransport_TypingDelayOverride("test", ChatQueueItems[1].Role, "before") = 0 && ChatTransport_TypingDelayOverride("test", "", "/doc 42") == "")
+    AuditAssert("Typing delay: sequence pause remains a separate setting", ChatQueueItems[1].DelayAfter = 700 && ChatQueueItems[2].DelayAfter = 700 && ChatQueueItems[4].DelayAfter = 700)
+    AuditAssert("Typing delay: standalone RP sequence skips per-character interval", ChatTransport_TypingDelayOverride("RPSequence", "", "/me action") = 0 && ChatTransport_TypingDelayOverride("RPSequence", "", "/tow") == "")
     batch := ChatQueueItems[1].Batch
     AuditTransportResult := -1, ChatQueueMaxRetries := 0
     ChatQueue_Tick()
@@ -202,6 +205,8 @@ RunAuditSelfTest() {
     RunChatTypingRegression()
     IDCapture_RunRegression()
     Audit_ChatIDIntegration(scratch)
+    Audit_MemoryRetention()
+    Audit_CustomRunIdentity()
     AuditAssert("F10 reader never truncates chatlog", !ChatLogReader_MaybeCleanup(file) && FileExist(file))
 
     LawSearchCorpusSignature := "", SearchInitialized := 0
@@ -360,5 +365,66 @@ Audit_ChatIDIntegration(scratch) {
         ChatQueueLastSendTick := savedLast, ChatQueueNextSendTick := savedNext
         ChatQueueMaxRetries := savedRetries, AuditTransportResult := savedResult
         QueueBatchStates := savedBatches
+    }
+}
+
+
+Audit_MemoryRetention() {
+    global LawCorpusCache, LawCorpusPages, LawDocCurrentPages, fluk1
+    global SearchIndex, LawSearchVocabulary, ChatQueuePreviewText
+    savedCorpus := LawCorpusCache, savedPages := LawCorpusPages
+    savedNavigation := LawDocCurrentPages, savedFlag := fluk1
+    savedIndex := SearchIndex, savedVocabulary := LawSearchVocabulary
+    savedPreview := ChatQueuePreviewText
+    try {
+        LawCorpusCache := {}, LawCorpusPages := {}, LawDocCurrentPages := {uk: 3}, fluk1 := true
+        LawDoc_ResetAllFlags()
+        AuditAssert("Memory: closing a law does not load the whole corpus", LawCorpusCache.Count() = 0 && LawCorpusPages.Count() = 0)
+        AuditAssert("Memory: closing a law still resets navigation", LawDocCurrentPages.Count() = 0 && !fluk1)
+        SearchIndex := [{TitleTokens: {police: 1, 1234: 1}, BodyTokens: {police: 1, arrest: 1}}
+            , {TitleTokens: {}, BodyTokens: {police: 1}}]
+        LawSearchVocabulary_Build()
+        AuditAssert("Memory: vocabulary counts once per item without merged sets", LawSearchVocabulary.police = 2 && LawSearchVocabulary.arrest = 1 && !LawSearchVocabulary.HasKey("1234"))
+        ChatQueuePreviewText := ""
+        incoming := ""
+        Loop, 1200
+            incoming .= (A_Index = 1 ? "" : "`n") . "line-" . A_Index
+        MockPreview_Append(incoming)
+        AuditAssert("Memory: one multiline append retains the last 500 lines", MockPreview_LineCount() = 500 && StrSplit(ChatQueuePreviewText, "`n").Length() = 500 && InStr(ChatQueuePreviewText, "line-701") = 1 && SubStr(ChatQueuePreviewText, -8) = "line-1200")
+        ChatQueuePreviewText := ""
+        oversized := ""
+        Loop, 140000
+            oversized .= "x"
+        MockPreview_Append(oversized)
+        AuditAssert("Memory: oversized preview is bounded without a line array", StrLen(ChatQueuePreviewText) = 131072 && MockPreview_LineCount() = 1)
+        ChatQueuePreviewText := ""
+        MockPreview_Append("fresh")
+        AuditAssert("Memory: clearing preview resets incremental count", MockPreview_LineCount() = 1 && InStr(ChatQueuePreviewText, "fresh"))
+    } finally {
+        LawCorpusCache := savedCorpus, LawCorpusPages := savedPages
+        LawDocCurrentPages := savedNavigation, fluk1 := savedFlag
+        SearchIndex := savedIndex, LawSearchVocabulary := savedVocabulary
+        ChatQueuePreviewText := savedPreview
+        MockPreview_LineCount()
+    }
+}
+
+
+Audit_CustomRunIdentity() {
+    global CustomFunctionRunState
+    saved := CustomFunctionRunState
+    state := {Epoch: AutomationEpoch, Profile: CurrentProfile, Target: UserID, Failures: QueueFailureGeneration}
+    try {
+        CustomFunctionRunState := state
+        AuditAssert("Custom TYPE guard accepts its current run", CustomFunction_InputIsCurrent(state))
+        StopCustomFunctionRun(0)
+        AuditAssert("Custom TYPE guard stops input after constructor Stop", !CustomFunction_InputIsCurrent(state))
+        replacement := state.Clone()
+        CustomFunctionRunState := replacement
+        AuditAssert("Custom TYPE guard rejects a replaced run", !CustomFunction_InputIsCurrent(state) && CustomFunction_InputIsCurrent(replacement))
+        CustomFunction_StopIfCurrent(state)
+        AuditAssert("Custom TYPE failure does not stop a new run", CustomFunctionRunState == replacement)
+    } finally {
+        CustomFunctionRunState := saved
     }
 }
