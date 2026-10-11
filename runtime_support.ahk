@@ -16,6 +16,8 @@ global CaptureStatus := "Защита захвата выключена"
 global CaptureLastError := 0
 global CaptureDiagnostics := {}
 global CaptureRefreshBusy := 0
+global InputLayoutLastError := ""
+global ChatKeyboardLastError := ""
 global HistoricalHotstrings := {}
 global HistoricalHotstringCount := 0
 global SettingsScrollX := 0
@@ -311,14 +313,58 @@ SafeSend(keys, mode := "Input", epoch := "") {
     return true
 }
 
-SafeLayout(layout) {
-    global MockMode
+SafeLayout(layout, expectedHwnd := 0, epoch := "") {
+    global MockMode, InputLayoutLastError
+    InputLayoutLastError := ""
     if (MockMode = "On" || AuditTestMode)
         return true
-    if !GameLocator_IsActive()
+    ownerHwnd := expectedHwnd ? expectedHwnd : WinExist("A")
+    epoch := epoch = "" ? AutomationEpoch : epoch
+    if !ChatTyping_IsReady(epoch, ownerHwnd) {
+        InputLayoutLastError := "Окно игры сменилось или ввод отменён."
         return false
-    SendMessage, 0x50,, %layout%,, A
-    return !ErrorLevel
+    }
+    gameThread := DllCall("GetWindowThreadProcessId", "Ptr", ownerHwnd, "Ptr", 0, "UInt")
+    if (!gameThread || !layout) {
+        InputLayoutLastError := "Не удалось определить раскладку окна игры."
+        return false
+    }
+    current := DllCall("GetKeyboardLayout", "UInt", gameThread, "Ptr")
+    if (current = layout)
+        return true
+    ; Fixed RU/US handles need a loaded layout. A saved arbitrary HKL is already loaded.
+    if (layout = 0x4190419 || layout = 0x4090409) {
+        loaded := DllCall("LoadKeyboardLayoutW", "WStr", Format("{:08X}", layout & 0xFFFF), "UInt", 0, "Ptr")
+        if (!loaded || (loaded & 0xFFFF) != (layout & 0xFFFF)) {
+            InputLayoutLastError := "Не удалось загрузить раскладку RU/US."
+            return false
+        }
+        layout := loaded
+        if (current = layout)
+            return ChatTyping_IsReady(epoch, ownerHwnd)
+    }
+    if !ChatTyping_IsReady(epoch, ownerHwnd)
+        return false
+    ; WM_INPUTLANGCHANGEREQUEST's reply is not a success flag. Verify the actual HKL.
+    acknowledged := 0
+    delivered := DllCall("SendMessageTimeoutW", "Ptr", ownerHwnd, "UInt", 0x50
+        , "UPtr", 0, "Ptr", layout, "UInt", 0x2, "UInt", 400, "UPtr*", acknowledged, "Ptr")
+    if (!delivered) {
+        InputLayoutLastError := "Окно игры не ответило на смену раскладки."
+        return false
+    }
+    deadline := TickNow() + 100
+    Loop {
+        if !ChatTyping_IsReady(epoch, ownerHwnd)
+            return false
+        if (DllCall("GetKeyboardLayout", "UInt", gameThread, "Ptr") = layout)
+            return true
+        if (TickNow() >= deadline)
+            break
+        Sleep, 10
+    }
+    InputLayoutLastError := "Игра не применила выбранную раскладку."
+    return false
 }
 
 ColorLuminance(color) {
@@ -971,11 +1017,11 @@ PasteChatForEpoch(epoch, text, contextGuard := "") {
         if (chatState = 0) {
             if !SafeSend("{F6}", "Input", epoch)
                 return false
-            Sleep, 120
         }
-        if (!ChatTyping_IsReady(epoch, ownerHwnd, contextGuard) || isInChat() != 1)
+        if !ChatTyping_WaitForChatOpen(epoch, ownerHwnd, contextGuard)
             return false
-        if (!SafeLayout(0x4190419) || !PasteOnly(text, 1, contextGuard, ownerHwnd))
+        ; Clipboard contains literal text; pasting does not require switching keyboard layouts.
+        if !PasteOnly(text, 1, contextGuard, ownerHwnd)
             return false
         return ChatTyping_IsReady(epoch, ownerHwnd, contextGuard)
     } finally {

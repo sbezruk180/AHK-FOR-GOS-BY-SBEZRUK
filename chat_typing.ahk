@@ -188,13 +188,58 @@ ChatTyping_KeyToken(key, capsLockOn := false) {
     return "{Blind}" . (shift ? "{LShift down}" : "") . token . (shift ? "{LShift up}" : "")
 }
 
-ChatTyping_ActivateLayout(layout, epoch, gameHwnd, gameThread, contextGuard := "") {
+ChatTyping_KeyMatchesLayout(key, layout) {
+    if (!IsObject(key) || !layout || !key.HasKey("Codepoint") || key.VK = 0xE7 || key.SC < 1)
+        return false
+    packed := DllCall("VkKeyScanExW", "UShort", key.Codepoint, "Ptr", layout, "Short")
+    if (packed = -1 || (packed & 0xFF) != key.VK || ((packed >> 8) & 0xFF) != key.Shift)
+        return false
+    scan := DllCall("MapVirtualKeyExW", "UInt", key.VK, "UInt", 4, "Ptr", layout, "UInt")
+    scan := (scan & 0xFF) | ((scan & 0xFF00) ? 0x100 : 0)
+    ; A matching language ID alone is insufficient: alternate keyboard variants may place keys differently.
+    return scan = key.SC
+}
+
+ChatTyping_ActivateLayout(layout, epoch, gameHwnd, gameThread, contextGuard := "", key := "") {
     if !ChatTyping_IsReady(epoch, gameHwnd, contextGuard)
         return false
     current := DllCall("GetKeyboardLayout", "UInt", gameThread, "Ptr")
-    if (current != layout && !SafeLayout(layout))
+    if (current = layout || ChatTyping_KeyMatchesLayout(key, current))
+        return ChatTyping_IsReady(epoch, gameHwnd, contextGuard)
+    SafeLayout(layout, gameHwnd, epoch)
+    if !ChatTyping_IsReady(epoch, gameHwnd, contextGuard)
         return false
-    return ChatTyping_IsReady(epoch, gameHwnd, contextGuard) && DllCall("GetKeyboardLayout", "UInt", gameThread, "Ptr") = layout
+    current := DllCall("GetKeyboardLayout", "UInt", gameThread, "Ptr")
+    matches := current = layout || ChatTyping_KeyMatchesLayout(key, current)
+    return matches && ChatTyping_IsReady(epoch, gameHwnd, contextGuard)
+}
+
+ChatTyping_WaitForChatOpen(epoch, gameHwnd, contextGuard := "", timeoutMs := 700) {
+    global ChatTypingLastError
+    started := A_TickCount
+    timeoutMs := Max(1, Min(2000, Round(timeoutMs + 0)))
+    Loop {
+        if !ChatTyping_IsReady(epoch, gameHwnd, contextGuard) {
+            ChatTypingLastError := "Ввод прерван: изменилось активное окно или действие."
+            return false
+        }
+        state := isInChat()
+        if !ChatTyping_IsReady(epoch, gameHwnd, contextGuard) {
+            ChatTypingLastError := "Ввод прерван: изменилось активное окно или действие."
+            return false
+        }
+        if (state = 1)
+            return true
+        if (state < 0) {
+            ChatTypingLastError := "Не удалось прочитать состояние игрового чата."
+            return false
+        }
+        if (((A_TickCount - started) & 0xFFFFFFFF) >= timeoutMs) {
+            ChatTypingLastError := "Чат не открылся после F6."
+            return false
+        }
+        Sleep, 10
+    }
 }
 
 SendChatTyped(text, submit := true, clearExisting := true, contextGuard := "", delayOverride := "") {
@@ -229,7 +274,9 @@ SendChatTyped(text, submit := true, clearExisting := true, contextGuard := "", d
         oldLayout := DllCall("GetKeyboardLayout", "UInt", gameThread, "Ptr")
         if !ChatTyping_BuildKeyPlan(text, plan, ChatTypingLastError)
             return -1
-        SetKeyDelay, -1, -1
+        ; A short key-down interval is needed by games that sample the physical keyboard per frame.
+        ; The configured typing interval still controls the gap between characters.
+        SetKeyDelay, -1, 10
         timerPeriodSet := DllCall("winmm\timeBeginPeriod", "UInt", 1, "UInt") = 0
         chatState := isInChat()
         if (chatState < 0 || !ChatTyping_IsReady(epoch, gameHwnd, contextGuard))
@@ -240,8 +287,7 @@ SendChatTyped(text, submit := true, clearExisting := true, contextGuard := "", d
         if (chatState = 0) {
             if !SafeSend("{Blind}{F6}", "Event", epoch)
                 return -2
-            Sleep, 120
-            if (!ChatTyping_IsReady(epoch, gameHwnd, contextGuard) || isInChat() != 1)
+            if !ChatTyping_WaitForChatOpen(epoch, gameHwnd, contextGuard)
                 return -2
         }
         if (!ChatTyping_IsReady(epoch, gameHwnd, contextGuard) || isInChat() != 1)
@@ -255,7 +301,7 @@ SendChatTyped(text, submit := true, clearExisting := true, contextGuard := "", d
         for index, key in plan {
             if (!ChatTyping_IsReady(epoch, gameHwnd, contextGuard) || isInChat() != 1)
                 return -2
-            if !ChatTyping_ActivateLayout(key.Layout, epoch, gameHwnd, gameThread, contextGuard) {
+            if !ChatTyping_ActivateLayout(key.Layout, epoch, gameHwnd, gameThread, contextGuard, key) {
                 ChatTypingLastError := "Игра не приняла раскладку клавиатуры."
                 return -2
             }

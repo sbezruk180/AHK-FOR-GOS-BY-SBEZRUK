@@ -1,9 +1,9 @@
 Cloud validation, 2026-10-11: Linux, AutoHotkey 1.1.37.02 Unicode x64 under Wine.
-Shipped sources remain CP1251, CRLF, ANSI x86. Only disposable copies bypass the architecture guard.
+Shipped sources remain CP1251, CRLF, ANSI x86. Disposable copies alone bypass the architecture guard.
 Windows ANSI x86, Russian physical typing in the game, game offsets/ABI and OBS capture are not verified here.
 The user reported working OBS exclusion; cloud capture was not repeated.
 
-Latest game-free logic suite (242 checks, zero failures; 3 skipped groups):
+Latest game-free suite: 273 checks, zero failures, 3 skipped groups.
 AHK audit behavioural regression
 Runtime=1.1.37.02 | Unicode=1 | PtrSize=8
 No game, physical input, capture verification, or game ABI test.
@@ -170,6 +170,37 @@ PASS | Typing refuses malformed line before keyboard plan
 PASS | Typing mock does not touch clipboard
 PASS | Typed sender refuses during numeric ID capture
 PASS | Typed sender rejects multiline before transport
+PASS | Chat BOOL completed DWORD 0
+PASS | Chat BOOL completed DWORD 1
+PASS | Chat BOOL completed DWORD 2
+PASS | Chat BOOL completed DWORD 255
+PASS | Chat BOOL completed DWORD 4294967295
+PASS | Chat BOOL failed DWORD stays unknown 0
+PASS | Chat BOOL failed DWORD stays unknown 1
+PASS | Chat BOOL failed DWORD stays unknown 2
+PASS | Chat BOOL failed DWORD stays unknown 255
+PASS | Chat BOOL failed DWORD stays unknown 4294967295
+PASS | Chat BOOL memory error code stays unknown
+PASS | Chat BOOL rejects malformed raw flag 1
+PASS | Chat BOOL rejects malformed raw flag 2
+PASS | Chat BOOL rejects malformed raw flag 3
+PASS | Chat BOOL rejects malformed raw flag 4
+PASS | Chat BOOL rejects malformed raw flag 5
+PASS | Auto ID direct: exact target is selected without confirmation
+PASS | Auto ID direct: selection opens no context dialog and keeps epoch
+PASS | Auto ID direct: stable target is recognised and stays unchanged
+PASS | Auto ID direct: another aimed player replaces selection immediately
+PASS | Auto ID direct: changed nickname refreshes selected player
+PASS | Auto ID direct: ID0 is valid and displayed
+PASS | Auto ID direct: highest player slot remains valid
+PASS | Auto ID direct: invalid IDs cannot overwrite selection
+PASS | Auto ID direct: full mask number is preserved with no nickname
+PASS | Auto ID direct: mask identity stays distinct from player ID
+PASS | Auto ID direct: invalid masks cannot overwrite target
+PASS | Auto ID direct: manual digit entry protects its target
+PASS | Auto ID direct: active physical sender blocks selection change
+PASS | Auto ID direct: existing confirmation retains ownership
+PASS | Auto ID direct: caller Critical state is restored
 PASS | ID capture timeout defaults to 3 seconds
 PASS | ID capture timeout clamps to 1..15
 PASS | ID capture deadline is fixed from start
@@ -253,12 +284,34 @@ PASS | F24 settings fits work area
 SKIP | ANSI x86 game ABI, module enumeration and HANDLE lifecycle need Windows A32 integration
 SKIP | Real Windows GUI/DPI, OBS capture, game offsets, remote-thread stress and screenshot files require target integration
 
-Checks: 242 | Failed: 0 | Skipped integration groups: 3
+Checks: 273 | Failed: 0 | Skipped integration groups: 3
 
-Current physical typing fixture: actual SendChatTyped, real Edit, keyboard hook and XTest events.
-Test-only loader shim supplies Wine layout handles; VkKeyScanEx in Wine 10 ignores HKL and cannot map Cyrillic.
-ASCII mapping is native and all 95 printable US characters are covered. This does not validate Windows RU/US layout loading or game chat.
-TEST LIMIT: Native Wine ASCII mapping only; RU/US KLID loader test shim. No Windows/game validation.
+Current physical typing: actual production SendChatTyped, SafeSend, SafeLayout, TickNow copied unchanged.
+Real Edit, keyboard hook and XTest. Only external game/chat-state predicates and Wine RU/US loader are fixtures.
+Wine 10 cannot map Cyrillic through VkKeyScanEx and ignores HKL; native ASCII is tested with actual layout handles.
+The 56 cases include accepted/non-accepted layout verification, all 95 printable ASCII characters, 10-ms physical press,
+delayed F6 opening, state-read races, exact-owner/context cancellation, no-submit append and zero RP interval.
+This does not validate Windows RU/US input or the game's chat handler.
+TEST LIMIT: Production SafeSend/SafeLayout copied unchanged from runtime; GameLocator/isInChat fixture and Wine RU/US loader shim. Native ASCII physical input; no Windows/game validation.
+PASS Chat wait accepts delayed open rather than fixed120ms race
+PASS Chat wait refuses failed read before typing
+PASS Chat wait times out with bounded closed state
+PASS Chat wait stops when epoch changes
+PASS Chat wait stops when custom context expires
+PASS Chat wait stops when active window changes
+PASS Open chat read cannot approve input after epoch changes inside read
+PASS Open chat read cannot approve input after context changes inside read
+PASS Open chat read cannot approve input after focus changes inside read
+PASS Actual layout accepts only matching physical key mapping
+PASS Actual layout rejects wrong Shift for same codepoint
+PASS Actual layout rejects wrong scancode for same codepoint
+PASS Actual layout refuses VK_PACKET key mapping
+PASS Compatible actual mapping accepts different requested handle
+PASS Different requested handle cannot accept incorrect actual mapping
+PASS Native layout request carries nonzero accepted reply
+PASS Real SafeLayout accepts verified current layout after nonzero reply
+PASS Real SafeLayout refuses acknowledged unconfirmed layout
+PASS Matching HKL cannot approve input if context expires during final readiness check
 PASS Low-level keyboard hook installed
 PASS Successful sender returns 1
 PASS ASCII command and punctuation typed literally with single final Enter
@@ -268,6 +321,8 @@ PASS Clipboard sequence preserved
 PASS Keyboard layout restored
 PASS Physical input owner released
 PASS Real keyboard stream has no VK_PACKET
+PASS Real keyboard letters have a measurable key-down interval
+MIN_KEY_PRESS=10ms
 PASS Real keyboard stream carries explicit letter VK/scancode
 PASS ASCII typing works with Wine native layout handle
 PASS No-submit typed mode never presses Enter
@@ -288,45 +343,109 @@ PASS Key settings and clipboard restored after focus loss
 PASS Context cancellation reports unknown result without epoch change
 PASS Context cancellation sends no Enter and stops partial typing
 PASS No stale context characters after custom stop
-PASS Context stop restores old layout in same game and epoch
+PASS Context stop leaves original layout in same game and epoch
 PASS Speed setting changes actual typing duration
-TIMING 10ms=259ms 50ms=918ms
+TIMING 10ms=458ms 50ms=1096ms
 PASS All 95 visible US keyboard characters typed literally
 ASCII_RESULT=1 ACTUAL= !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~ ERROR=
 PASS RP zero override types successfully and preserves user setting
 PASS RP zero override removes character wait from same text
-TIMING RP zero=105ms configured=50ms
+TIMING RP zero=276ms configured=50ms
 PASS XTest physical hotkey modifiers held before typing
 PASS Physical external Alt Ctrl Shift do not corrupt typed command
 PASS Entire fixture keyboard stream has no VK_PACKET
-Checks=36 failures=0
+Checks=56 failures=0
 
-Clipboard fallback fixture: extracted current PasteOnly, PasteChatForEpoch, SafeSend and ChatTyping_IsReady.
-Real Edit and Clipboard; external game/chat/layout predicates are explicit stubs.
-Cancellation and focus change occur deterministically at the actual check after ClipWait, before Ctrl+V.
-Cyrillic clipboard success does not establish physical Cyrillic typing.
-PASS actual editable clipboard paste
-PASS normal paste restores clipboard
-PASS normal wrapper owns input through checks and releases it
-PASS context cancel after ClipWait refuses Ctrl+V
-PASS cancel restores clipboard and releases input
-PASS cancel preserves game focus
-PASS focus loss after ClipWait sends nothing to either window
-PASS focus loss does not reactivate the game
-PASS focus loss restores clipboard and releases input
-PASS wrapper restores prior Critical after failure
-PASS busy refusal preserves another owner's flag
-PASS capture refusal leaves clipboard and ownership alone
-PASS direct paste cancellation releases its ownership
-PASS direct paste cancellation sends no text
-TOTAL PASS=14 FAIL=0
+Full keyboard transport: actual ChatTransport_Send, SendChatKeyboard, PasteOnly, SafeSend,
+ChatTyping_WaitForChatOpen/IsReady and UDF BOOL conversion extracted unchanged.
+Real Edit, Clipboard and keyboard hook. Explicit game/read-state/memory/profile fixtures.
+Clipboard paths no longer invoke SafeLayout; the fixture counter verifies no call.
+Cyrillic clipboard success is not evidence of physical Cyrillic typing.
+PASS Native keyboard event hook installed
+PASS Keyboard delayed F6 opens and submits real edit text
+PASS Keyboard waits for actual delayed chat opening
+PASS Keyboard restores clipboard and releases input owner
+PASS Keyboard clipboard path never calls layout change
+PASS Clipboard Russian and literal command punctuation survive
+PASS Russian clipboard restored after submission
+PASS Already-open noncanonical BOOL uses existing chat without F6
+PASS Timed-out chat does not paste or submit
+PASS Unknown chat read refuses before keyboard action
+PASS Memory unavailable before attempt uses keyboard fallback
+PASS Memory attempt failure does not repeat through keyboard
+PASS Outstanding remote operation refuses before any send
+PASS Remote operation appearing during handle check blocks fallback
+PASS Remote operation after memory attempt blocks keyboard repeat
+PASS Auto confirmed memory refusal falls back to real keyboard paste
+PASS Auto outstanding memory operation never repeats with keyboard
+PASS Auto cooldown skips memory and still sends keyboard
+PASS FactionTyping ordinary RP retains actual clipboard transport
+PASS Paste context refusal leaves clipboard and real edit untouched
+PASS Throwing context guard refuses paste safely
+PASS Cancelled epoch blocks paste and submit
+PASS Focus change during chat opening stops before paste
+PASS Paste losing focus reports refusal and restores clipboard
+PASS External clipboard change survives paste finally cleanup
+PASS Active ID capture refuses chat transport
+PASS No clipboard case uses forced keyboard layout
+TOTAL 27 passed 0 failed; Runtime=1.1.37.02 PtrSize=8 Unicode=1
 
-Auto ID memory fixture: actual RPM on an allocated 1004-player pool, real source mapping functions.
-Fixed GTA global addresses are remapped into owned fixture memory because Wine occupies that address range.
-External module/GTA pool predicates are fixtures. GTA game offsets are not validated by these allocated-memory cases.
+Chat-state RPM regression: actual isInChat/readDWORD and completed ReadProcessMemory in an allocated x86-address fixture.
+External process/module gates explicitly stubbed. Published raw0/1-only rejection reproduced on actual DWORD2/255/0xFFFFFFFF.
+New BOOL interpretation matches user-supplied UDF; failed read and invalid pointer remain -1.
+PASS Chat BOOL completed DWORD 0
+PASS Chat BOOL completed DWORD 1
+PASS Chat BOOL completed DWORD 2
+PASS Chat BOOL completed DWORD 255
+PASS Chat BOOL completed DWORD 4294967295
+PASS Chat BOOL failed DWORD stays unknown 0
+PASS Chat BOOL failed DWORD stays unknown 1
+PASS Chat BOOL failed DWORD stays unknown 2
+PASS Chat BOOL failed DWORD stays unknown 255
+PASS Chat BOOL failed DWORD stays unknown 4294967295
+PASS Chat BOOL memory error code stays unknown
+PASS Chat BOOL rejects malformed raw flag 1
+PASS Chat BOOL rejects malformed raw flag 2
+PASS Chat BOOL rejects malformed raw flag 3
+PASS Chat BOOL rejects malformed raw flag 4
+PASS Chat BOOL rejects malformed raw flag 5
+INFO handlePID=32 selfPID=32 lastError=183
+INFO mainPtr=541065216 RPM=1 count=4 rpmPtr=541065216 lastErr=183
+INFO ptr=541065216 base=536870912 got=0 raw=0 handle=-1 EL=0
+PASS Actual RPM chat BOOL 0
+PASS Published chat guard reproduction 0
+INFO mainPtr=541065216 RPM=1 count=4 rpmPtr=541065216 lastErr=183
+INFO ptr=541065216 base=536870912 got=1 raw=1 handle=-1 EL=0
+PASS Actual RPM chat BOOL 1
+PASS Published chat guard reproduction 1
+INFO mainPtr=541065216 RPM=1 count=4 rpmPtr=541065216 lastErr=183
+INFO ptr=541065216 base=536870912 got=1 raw=2 handle=-1 EL=0
+PASS Actual RPM chat BOOL 2
+PASS Published chat guard reproduction 2
+INFO mainPtr=541065216 RPM=1 count=4 rpmPtr=541065216 lastErr=183
+INFO ptr=541065216 base=536870912 got=1 raw=255 handle=-1 EL=0
+PASS Actual RPM chat BOOL 255
+PASS Published chat guard reproduction 255
+INFO mainPtr=541065216 RPM=1 count=4 rpmPtr=541065216 lastErr=183
+INFO ptr=541065216 base=536870912 got=1 raw=4294967295 handle=-1 EL=0
+PASS Actual RPM chat BOOL 4294967295
+PASS Published chat guard reproduction 4294967295
+PASS Invalid input-info pointer refused 0
+PASS Invalid input-info pointer refused 65535
+PASS Invalid input-info pointer refused 4294901760
+PASS Handle/module gate remains a refusal
+PASS Invalid process handle remains unknown
+PASS Fixture input flag confirmed unreadable by actual RPM
+PASS Unreadable input flag RPM remains unknown
+PASS Released input pointer RPM remains unknown
+TOTAL 34 passed 0 failed; runtime=1.1.37.02 PtrSize=8 Unicode=1
+
+Auto ID memory fixture: actual RPM on an allocated 1004-player pool, production mapping functions.
+Fixed GTA globals remapped into owned memory because Wine occupies the original addresses.
+Module/GTA-pool predicates explicitly stubbed. This validates mapping/guards, not GTA game offsets.
 PASS occupied high slot ID1003 resolves
 PASS previous scan agrees with high-slot fixture
-INFO current=237ms previous=267ms for 1004 streamed players
+INFO current=222ms previous=223ms for 1004 streamed players
 PASS ID0 valid
 PASS unlisted player rejected
 PASS duplicate CPed refused
@@ -353,39 +472,72 @@ PASS target missing matrix refused
 PASS target unaligned matrix refused
 SUMMARY PASS=26 FAIL=0
 
-Auto ID scheduling fixture: extracted current main functions, real SetTimer and Sleep.
-Game, memory and held-RMB predicates are stubs. It validates timing/latching/cancellation flow, not physical game targeting.
-PASS idle timer produces no memory reads
-PASS RMB begin performs no synchronous read
-PASS first game frame guard blocks immediate poll
-PASS timer accepts exact ID on first eligible observation
-PASS first read waits at least one frame
-PASS held RMB latch prevents repeated capture
-PASS RMB end clears capture state
-PASS RMB end stops timer
-PASS stream-in failure keeps retrying while RMB held
-PASS release stops failed-target retries
-PASS focus loss prevents read and stops timer
-PASS focus regain alone cannot resume held capture
-PASS new RMB activation resumes after focus loss
-PASS physical typing busy pauses memory capture
-PASS capture resumes after typing releases ownership
-PASS manual digit capture blocks activation
-PASS manual capture during held aim requires fresh RMB
-PASS release then fresh RMB works after manual capture
-PASS pending confirmation blocks second activation
-PASS disabled Auto ID blocks activation
-PASS Mock mode never reads game target
-PASS mask retains three observations plus verification
-PASS final independent guard rejects epoch
-PASS final independent guard rejects pid
-PASS final independent guard rejects generation
-PASS final independent guard rejects focus
-PASS final independent guard rejects release
-PASS final independent guard rejects busy
-PASS final independent guard rejects capture
-PASS final independent guard rejects target
-SUMMARY PASS=30 FAIL=0
+Direct Auto ID fixture: actual BeginAim/Poll/Apply/CaptureNow/ShowIDGui, real SetTimer/Sleep.
+Game/RMB/read predicates and HUD/overlay drawing are fixtures. Verifies values applied directly,
+changed aim while held, identical-value redraw suppression, ID0, complete mask and PID/epoch/focus guards.
+44 native cases plus 15 packaged pure regression cases =59; the same 15 are part of the 273-case suite.
+The previous 30-case confirmation/latch fixture is obsolete and is not counted for this direct behavior.
+PASS idle timer performs no target reads or displays
+PASS RMB starts passive timer without synchronous read
+PASS first game frame guard blocks premature read
+PASS first exact target directly sets current ID
+PASS direct aim opens no confirmation and preserves epoch
+PASS direct aim updates HUD and ID overlay together
+PASS first read waits at least one game frame
+PASS held aim remains live without repeated redraw
+PASS changed target updates without releasing RMB
+PASS ID0 becomes visible immediately
+PASS RMB release stops timer and clears candidate state
+PASS release retains last selected ID
+PASS missing streamed target retries without choosing ID
+PASS stream-in later applies without another RMB press
+PASS non-game foreground cannot start target timer
+PASS focus loss stops before target read
+PASS focus regain cannot revive stale RMB activation
+PASS physical typing ownership pauses target reading
+PASS typing completion lets held aim resume
+PASS manual digit entry blocks aim activation
+PASS manual capture protects entered ID until fresh RMB
+PASS fresh RMB can update after manual capture
+PASS target reading respects confirmation
+PASS target reading respects disabled
+PASS target reading respects mock
+PASS target reading respects chat
+PASS target reading respects unknown chat
+PASS target reading respects hash
+MASK DEBUG reads=6; updates=1; id=12345678901234567890; active=1; ismask=1; candidate=0; name=
+PASS mask waits three observations and independent verification
+PASS mask displays separately without nickname
+PASS final direct-apply guard rejects epoch
+PASS final direct-apply guard rejects pid
+PASS final direct-apply guard rejects generation
+PASS final direct-apply guard rejects focus
+PASS final direct-apply guard rejects release
+PASS final direct-apply guard rejects busy
+PASS final direct-apply guard rejects capture
+PASS final direct-apply guard rejects target
+PASS final direct-apply guard rejects ped
+PASS final direct-apply guard rejects confirmation
+PASS manual immediate capture applies highest ID without confirmation
+PASS manual capture rejects changed PID
+PASS invalid direct ID refuses mutation
+PASS invalid mask refuses mutation
+PASS Auto ID direct: exact target is selected without confirmation
+PASS Auto ID direct: selection opens no context dialog and keeps epoch
+PASS Auto ID direct: stable target is recognised and stays unchanged
+PASS Auto ID direct: another aimed player replaces selection immediately
+PASS Auto ID direct: changed nickname refreshes selected player
+PASS Auto ID direct: ID0 is valid and displayed
+PASS Auto ID direct: highest player slot remains valid
+PASS Auto ID direct: invalid IDs cannot overwrite selection
+PASS Auto ID direct: full mask number is preserved with no nickname
+PASS Auto ID direct: mask identity stays distinct from player ID
+PASS Auto ID direct: invalid masks cannot overwrite target
+PASS Auto ID direct: manual digit entry protects its target
+PASS Auto ID direct: active physical sender blocks selection change
+PASS Auto ID direct: existing confirmation retains ownership
+PASS Auto ID direct: caller Critical state is restored
+SUMMARY PASS=59 FAIL=0
 
 Unchanged ID capture module: separate native Wine hook/Edit/XTest fixture from the preceding release:
 PASS Held activation shortcut starts capture without accepting repeat
