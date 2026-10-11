@@ -7890,10 +7890,11 @@ RunSelfTestV1() {
         , V1_CheckCatalog(catalogDetails), catalogDetails)
     SelfTest_Add(report, "High", "active profile has no bind conflicts"
         , V1_CheckProfileConflicts(profilePath, conflictDetails), conflictDetails)
-    SelfTest_Add(report, "High", "text hotstrings are game/chat scoped"
+    textTriggerPredicate := V1_GetBetween(mainText, "GameText" . "TriggerAllowed(hotkeyName := """") {", "RegisterTextTrigger(")
+    SelfTest_Add(report, "High", "text hotstrings use a game-scoped hook without memory discovery (static)"
         , InStr(mainText, "Hotkey, If, % GameTextHotkeyContext")
-        && InStr(V1_GetBetween(mainText, "GameTextTriggerAllowed(", "RegisterTextTrigger("), "IsGameActive()")
-        && InStr(V1_GetBetween(mainText, "GameTextTriggerAllowed(", "RegisterTextTrigger("), "isInChat()"))
+        && InStr(textTriggerPredicate, "WinActive(") && InStr(textTriggerPredicate, "GAME_PROCESS_NAME")
+        && !InStr(textTriggerPredicate, "isInChat(") && !InStr(textTriggerPredicate, "IsGameActive("))
 
     SelfTest_Add(report, "Critical", "default F12/F5/Pause and independent Chase binds"
         , InStr(mainText, "Bind_ToggleHUD := ""F12""")
@@ -13534,7 +13535,14 @@ ResumeGameTextTriggersAfterBindMenu() {
 }
 
 GameTextTriggerAllowed(hotkeyName := "") {
-    return IsGameActive() && (isInChat() = 1)
+    global GAME_PROCESS_NAME, PhysicalInputBusy, IDCaptureState
+    ; Explicit TXT commands are recognized on Space in the foreground game.
+    ; Never discover modules/read memory in this synchronous keyboard-hook predicate:
+    ; an unavailable or slow chat read otherwise prevents Hotstring recognition.
+    ; The invoked action and its transport retain their own chat/focus checks.
+    if (GAME_PROCESS_NAME = "" || PhysicalInputBusy || IsObject(IDCaptureState))
+        return false
+    return WinActive("ahk_exe " . GAME_PROCESS_NAME) ? true : false
 }
 
 RegisterTextTrigger(triggerName, ByRef prevTrig, currentTrig, callbackName, ByRef errText, ByRef usedTriggers) {
