@@ -307,10 +307,13 @@ TerritoryMap_ShowCatalog(CtrlHwnd := "", GuiEvent := "", EventInfo := "", ErrLev
 
     Gui, TerritoryMaps:Destroy
     Gui, TerritoryMaps:New, +AlwaysOnTop +ToolWindow -MaximizeBox -MinimizeBox +HwndhTerritoryMapWnd, Карты территорий
+    GetThemeColors(bg, panel, text, accent, muted)
+    GetControlSurfaceColors(surface, inputFg, card, edge, panel, text, accent)
+    Gui, TerritoryMaps:Color, %panel%, %surface%
     Gui, TerritoryMaps:Margin, 14, 12
-    Gui, TerritoryMaps:Font, s10 Bold, Segoe UI
+    Gui, TerritoryMaps:Font, s10 Bold c%text%, Segoe UI
     Gui, TerritoryMaps:Add, Text, w610, Карты территорий с ограниченным доступом
-    Gui, TerritoryMaps:Font, s9 Norm, Segoe UI
+    Gui, TerritoryMaps:Font, s9 Norm c%text%, Segoe UI
     modeText := "Текущий режим: " . TerritoryMap_GetModeDisplay()
     Gui, TerritoryMaps:Add, Text, y+8 w610, %modeText%
     Gui, TerritoryMaps:Add, Text, y+6 w610 h58 +Wrap, Локальные копии показываются без увеличения выше исходного размера, поэтому миниатюры больше не размываются.`nОфициальные ссылки открывают соответствующий пост форума через системный браузер.
@@ -423,11 +426,13 @@ TerritoryMap_ShowLocal(groupIndex, assetIndex := 1)
     Gui, TerritoryMapView:Destroy
     title := meta.Name . " (" . assetIndex . "/" . files.Length() . ")"
     Gui, TerritoryMapView:New, +AlwaysOnTop +ToolWindow -MaximizeBox -MinimizeBox +HwndhTerritoryMapViewWnd, %title%
+    GetThemeColors(bg, panel, text, accent, muted)
+    Gui, TerritoryMapView:Color, %panel%
     Gui, TerritoryMapView:Margin, 12, 10
-    Gui, TerritoryMapView:Font, s10 Bold, Segoe UI
+    Gui, TerritoryMapView:Font, s10 Bold c%text%, Segoe UI
     Gui, TerritoryMapView:Add, Text, w%canvasW% Center, %title%
 
-    Gui, TerritoryMapView:Font, s8 Norm c606060, Segoe UI
+    Gui, TerritoryMapView:Font, s8 Norm c%muted%, Segoe UI
     if (sizeKnown)
     {
         sizeText := "Исходный размер: " . nativeW . "x" . nativeH . " px"
@@ -439,7 +444,7 @@ TerritoryMap_ShowLocal(groupIndex, assetIndex := 1)
     }
     if TerritoryMap_IsThumbnail(files[assetIndex])
     {
-        Gui, TerritoryMapView:Font, s8 Norm cA06000, Segoe UI
+        Gui, TerritoryMapView:Font, s8 Norm c%accent%, Segoe UI
         Gui, TerritoryMapView:Add, Text, y+3 w%canvasW% Center, Это официальная миниатюра. Полный вариант открывается кнопкой «Оригинал форума».
     }
 
@@ -448,7 +453,7 @@ TerritoryMap_ShowLocal(groupIndex, assetIndex := 1)
         picOptions .= " w" . displayW . " h" . displayH
     Gui, TerritoryMapView:Add, Picture, %picOptions%, %path%
 
-    Gui, TerritoryMapView:Font, s9 Norm c000000, Segoe UI
+    Gui, TerritoryMapView:Font, s9 Norm c%text%, Segoe UI
     Gui, TerritoryMapView:Add, Button, xm y+10 w130 h30 gTerritoryMap_PreviousAsset, Предыдущая
     Gui, TerritoryMapView:Add, Button, x+8 yp w130 h30 gTerritoryMap_NextAsset, Следующая
     Gui, TerritoryMapView:Add, Button, x+8 yp w145 h30 gTerritoryMap_OpenCurrentLocal, Открыть файл
@@ -1094,6 +1099,7 @@ LawGui_Show(state, title, body, officialExact := 0, docPrefix := "")
     BodyH := layout.BodyH
     LawBodyFontSize := layout.FontSize
     LawTitleFontSize := layout.TitleFontSize
+    UpdateLawGuiColors()
     LawTextColor := LawGuiTextColor = "" ? "FFFFFF" : LawGuiTextColor
     LawBgColor := LawGuiBgColor = "" ? "000000" : LawGuiBgColor
     LawAlpha := LawGuiTransparency = "" ? 222 : LawGuiTransparency
@@ -4259,6 +4265,7 @@ Search_ShowCurrentResult()
     if (partCount > 1)
         header .= " | Текст " . SearchCurrentPart . "/" . partCount
     meta := "Запрос: " . SearchLastQuery
+    UpdateLawGuiColors()
     textColor := LawGuiTextColor = "" ? "FFFFFF" : LawGuiTextColor
     bgColor := LawGuiBgColor = "" ? "000000" : LawGuiBgColor
     accentColor := LawSearch_GetShellAccentColor()
@@ -4431,6 +4438,7 @@ LawSearch_ShowNotice(text)
 {
     global LawGuiTextColor, LawGuiBgColor
 
+    UpdateLawGuiColors()
     textColor := LawGuiTextColor
     if (textColor = "")
         textColor := "FFFFFF"

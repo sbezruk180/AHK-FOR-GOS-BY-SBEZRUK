@@ -235,14 +235,15 @@ IDCapture_CreateGui(state) {
     global IDCaptureValueText, IDCaptureCountdownText, IDCaptureHelpText
     Gui, IDCapture:New, +AlwaysOnTop -Caption +ToolWindow +E0x08000020 +HwndcaptureHwnd +DPIScale
     state.GuiHwnd := captureHwnd
-    Gui, IDCapture:Color, 1B2430
+    GetThemeColors(bg, panel, fg, accent, muted)
+    Gui, IDCapture:Color, %panel%
     Gui, IDCapture:Margin, 0, 0
-    Gui, IDCapture:Font, s10 Norm cA8B5C7, Segoe UI
+    Gui, IDCapture:Font, s10 Norm c%muted%, Segoe UI
     Gui, IDCapture:Add, Text, x16 y12 w216 h20 BackgroundTrans, ¬¬ќƒ ID ÷≈Ћ»
     Gui, IDCapture:Add, Text, x252 y12 w76 h20 Right BackgroundTrans vIDCaptureCountdownText,
-    Gui, IDCapture:Font, s20 Norm cEBF0F7, Consolas
+    Gui, IDCapture:Font, s20 Norm c%fg%, Segoe UI
     Gui, IDCapture:Add, Text, x16 y38 w312 h34 +0x200 BackgroundTrans vIDCaptureValueText, Ч
-    Gui, IDCapture:Font, s9 Norm cA8B5C7, Segoe UI
+    Gui, IDCapture:Font, s9 Norm c%muted%, Segoe UI
     Gui, IDCapture:Add, Text, x16 y82 w312 h34 +Wrap BackgroundTrans vIDCaptureHelpText, ѕовтор бинда / Enter Ч сохранить`nBackspace Ч стереть Ј Esc Ч отменить
     scale := A_ScreenDPI / 96
     ownerHwnd := state.OwnerHwnd
@@ -283,9 +284,10 @@ IDCapture_Tick() {
         return
     }
     if (state.Dirty) {
+        GetThemeColors(bg, panel, fg, accent, muted)
         valueFontSize := StrLen(state.Value) > 16 ? 16 : 20
         if (state.ValueFontSize != valueFontSize) {
-            Gui, IDCapture:Font, s%valueFontSize% Norm cEBF0F7, Consolas
+            Gui, IDCapture:Font, s%valueFontSize% Norm c%fg%, Segoe UI
             GuiControl, IDCapture:Font, IDCaptureValueText
             state.ValueFontSize := valueFontSize
         }

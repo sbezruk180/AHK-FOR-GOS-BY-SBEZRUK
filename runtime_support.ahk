@@ -593,6 +593,7 @@ Capture_BeforeShow(guiName) {
         return false
     Gui, %guiName%:+HwndcaptureHwnd
     UI_PrepareWindow(captureHwnd)
+    UIStyle_Apply(guiName, captureHwnd)
     return Capture_ApplyWindow(captureHwnd)
 }
 
@@ -1090,15 +1091,31 @@ UI_PrepareWindow(hwnd) {
     oldHidden := A_DetectHiddenWindows
     DetectHiddenWindows, On
     try {
+        backgrounds := []
         WinGet, children, ControlListHwnd, ahk_id %hwnd%
         Loop, Parse, children, `n, `r
         {
             child := A_LoopField + 0
             VarSetCapacity(className, 128, 0)
             length := DllCall("GetClassNameW", "Ptr", child, "Ptr", &className, "Int", 64, "Int")
-            if (length > 0 && StrGet(&className, length, "UTF-16") = "msctls_progress32")
+            if (length > 0 && StrGet(&className, length, "UTF-16") = "msctls_progress32") {
                 try DllCall("uxtheme\SetWindowTheme", "Ptr", child, "WStr", " ", "WStr", " ", "Int")
+                ; Opaque card backgrounds must respect sibling labels/fields
+                ; when classic controls repaint after a theme change.
+                style := DllCall("GetWindowLong", "Ptr", child, "Int", -16, "UInt")
+                DllCall("SetWindowLong", "Ptr", child, "Int", -16, "UInt", style | 0x04000000)
+                WinGetPos,,, childW, childH, ahk_id %child%
+                entry := {Hwnd: child, Area: childW * childH}
+                index := 1
+                while (index <= backgrounds.Length() && backgrounds[index].Area <= entry.Area)
+                    index++
+                backgrounds.InsertAt(index, entry)
+            }
         }
+        ; Place decorative backgrounds behind interactive/text controls.
+        ; Largest surfaces go last to the bottom, underneath nested cards/rules.
+        for _, entry in backgrounds
+            DllCall("SetWindowPos", "Ptr", entry.Hwnd, "Ptr", 1, "Int", 0, "Int", 0, "Int", 0, "Int", 0, "UInt", 0x13)
     } finally {
         DetectHiddenWindows, %oldHidden%
     }
