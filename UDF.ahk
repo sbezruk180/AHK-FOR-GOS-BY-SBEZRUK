@@ -1011,12 +1011,9 @@ getPlayerDataByPed(targetPed, ByRef outId, ByRef outName, nearestLimit := 0) {
         return 0
     }
 
-    if !AZMP_IsPedInGtaPool(targetPed, targetSlot, 1) {
-        AZMP_ResetTargetCache("target PED is not an occupied GTA pool slot")
-        AZMP_TargetDiagSetContext(targetPed, 0)
-        AZMP_TargetDiagSet("TARGET_PED_OUTSIDE_GTA_POOL", "цель не является занятым слотом CPed GTA")
-        return 0
-    }
+    ; Exact player linkage is checked independently of GTA pool geometry.
+    ; Modified clients can move/resize that pool; repeated listed-slot and
+    ; CPed equality checks below are authoritative for a player ID.
     playerPool := AZMP_GetPlayerPool()
     if !IsLikelyPointer(playerPool) {
         AZMP_TargetDiagSetContext(targetPed, 0)

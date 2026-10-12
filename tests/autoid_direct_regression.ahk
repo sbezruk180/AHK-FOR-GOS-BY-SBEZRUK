@@ -3,10 +3,11 @@ Audit_AutoIDDirect() {
     global UserID, ActiveID, TargetNickname, TargetIsMask, AutomationEpoch
     global IDCaptureState, PhysicalInputBusy, ContextAssistantMode, hContextAssistantWnd
     global hHUDWnd, hIDOverlayWnd, IDOverlayVisible, AZMP_MAX_PLAYERS
+    global AutoTargetStatusText, AutoTargetDiagCode, AutoTargetDiagDetail
     saved := {ID: UserID, Active: ActiveID, Name: TargetNickname, Mask: TargetIsMask
         , Capture: IDCaptureState, Busy: PhysicalInputBusy, Mode: ContextAssistantMode
         , ContextWnd: hContextAssistantWnd, HUD: hHUDWnd, Overlay: hIDOverlayWnd
-        , OverlayVisible: IDOverlayVisible}
+        , OverlayVisible: IDOverlayVisible, Status: AutoTargetStatusText, Diag: AutoTargetDiagCode, Detail: AutoTargetDiagDetail}
     wasCritical := A_IsCritical
     try {
         IDCaptureState := "", PhysicalInputBusy := 0, ContextAssistantMode := ""
@@ -32,6 +33,11 @@ Audit_AutoIDDirect() {
         PhysicalInputBusy := 0, ContextAssistantMode := "confirm"
         AuditAssert("Auto ID direct: existing confirmation retains ownership", !AutoTargetID_ApplyAimedID(42) && ContextAssistantMode = "confirm" && TargetIsMask)
         ContextAssistantMode := ""
+        AutoTargetID_SetStatus("ID 42 · First_Player")
+        AutoTargetID_SetDiagnostic("TARGET_OK", "ID 42, ped=0x200000")
+        AuditAssert("Auto ID status: successful raw diagnostics keep clean ID/name", AutoTargetStatusText = "ID 42 · First_Player" && AutoTargetDiagDetail = "ID 42, ped=0x200000")
+        AutoTargetID_SetDiagnostic("NO_CROSSHAIR_PED", "raw target pointers")
+        AuditAssert("Auto ID status: absent target gives visible reason without raw pointers", InStr(AutoTargetStatusText, "NO_CROSSHAIR_PED") && !InStr(AutoTargetStatusText, "raw target"))
         Critical, 17
         changed := AutoTargetID_ApplyAimedID(42, 0x200000, -1, "audit", "First_Player")
         restored := A_IsCritical
@@ -42,6 +48,7 @@ Audit_AutoIDDirect() {
         IDCaptureState := saved.Capture, PhysicalInputBusy := saved.Busy, ContextAssistantMode := saved.Mode
         hContextAssistantWnd := saved.ContextWnd, hHUDWnd := saved.HUD, hIDOverlayWnd := saved.Overlay
         IDOverlayVisible := saved.OverlayVisible
+        AutoTargetStatusText := saved.Status, AutoTargetDiagCode := saved.Diag, AutoTargetDiagDetail := saved.Detail
         if (wasCritical)
             Critical, %wasCritical%
         else

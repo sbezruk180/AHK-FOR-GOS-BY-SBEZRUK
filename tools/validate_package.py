@@ -15,7 +15,7 @@ for path in sources:
     if b'\n' in data.replace(b'\r\n', b''):
         raise SystemExit(f'{path.name}: expected CRLF')
 
-for name in ('UDF.ahk', 'common.ahk', 'runtime_support.ahk', 'chat_typing.ahk', 'id_capture.ahk', 'service_ui.ahk',
+for name in ('UDF.ahk', 'common.ahk', 'runtime_support.ahk', 'chat_typing.ahk', 'id_capture.ahk', 'service_ui.ahk', 'ui_style.ahk', 'autoid_status.ahk',
              'tests/audit_regression.ahk', 'tests/chat_typing_regression.ahk',
              'tests/id_capture_regression.ahk', 'tests/chat_state_regression.ahk',
              'tests/autoid_direct_regression.ahk', 'tests/memory_compat_regression.ahk',

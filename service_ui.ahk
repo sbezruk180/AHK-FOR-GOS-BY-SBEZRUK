@@ -138,10 +138,11 @@ ServiceUI_ShowDetails(title, text) {
     bg := "", panel := "", fg := "", accent := "", muted := ""
     GetThemeColors(bg, panel, fg, accent, muted)
     Gui, ServiceDetails:New, +HwndServiceUIDetailsHwnd +AlwaysOnTop +ToolWindow -MinimizeBox -MaximizeBox
-    Gui, ServiceDetails:Color, %bg%, F7F8FA
+    GetControlSurfaceColors(surface, inputFg, card, edge, panel, fg, accent)
+    Gui, ServiceDetails:Color, %panel%, %surface%
     Gui, ServiceDetails:Font, s12 Bold c%fg%, Segoe UI
     Gui, ServiceDetails:Add, Text, x18 y14 w644 h30 +0x80 BackgroundTrans, %title%
-    Gui, ServiceDetails:Font, s10 Norm c111418, Segoe UI
+    Gui, ServiceDetails:Font, s10 Norm c%inputFg%, Segoe UI
     Gui, ServiceDetails:Add, Edit, x18 y54 w644 h350 ReadOnly -Wrap +VScroll, %text%
     Gui, ServiceDetails:Add, Button, x542 y416 w120 h32 HwndcloseButton, Закрыть
     closeCallback := Func("ServiceUI_CloseDetails")

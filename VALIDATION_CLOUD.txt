@@ -1,10 +1,46 @@
+Latest Auto ID / shared GUI update, 2026-10-12.
+20 shipped AHK sources; CP1251 without BOM and CRLF; target AHK 1.1.37.02 ANSI x86.
+
+Current final combined U64/Wine run: 389 checks, 0 failures, 3 integration skip groups; child exit 0.
+Additional current native fixtures: 73 shared-style checks (including real XTest Enter, Space/button actions,
+colors in Graphite/Light/Midnight, checkbox/disabled state, unrelated windows, brush/window cleanup),
+10 real physical RMB checks with bind editing OFF and watchdog disabled,
+34 timer/ownership/chat-state Auto ID checks, 26 actual owned-memory player-pool checks,
+and 131 protected service GUI/InputHook/confirmation checks with the shared style enabled. All passed.
+Only the physical input, own controls and owned test memory are real; game targeting data/actions are explicit seams.
+The owned-memory fixture includes ID0/ID1003, duplicate/stale links, differing optional GTA pool metadata,
+primary/fallback targeting and exact linkage that does not require a coordinate matrix.
+
+Profile/HUD/bind list were inspected in a scratch U64 preview; the profile uses its real first three pages.
+An initial preview caught a missing global declaration for the new HUD control, which was corrected.
+Screenshots then reproduced opaque background cards hiding fields even with the new styler disabled.
+Progress backgrounds now respect siblings and are placed below labels/fields; nested fills retain their order.
+The corrected profile screenshot shows all fields and the bottom patrol/post cards. Remaining pages 4-13
+hit the previously known U64/Wine multiline Edit construction limitation; they are not counted as native passes.
+All 23 own-window show paths call the shared style and capture wrapper before Show.
+
+A final run initially had 10 memory failures from Wine returning ERROR_ACCESS_DENIED to explicit own-process
+ReadProcessMemory handles. A minimal independent probe reproduced it for VM_READ and ALL_ACCESS, while the
+current-process pseudo-handle read the same bytes. No production memory change was made. After closing our
+preview and restarting our Wine server, the same memory helpers and the complete final suite passed.
+Do not leave an older sandbox's Wine server/preview running across native-memory test contexts; close only
+processes started by the task and restart the dedicated Wine prefix before the combined suite if this occurs.
+This is distinct from the earlier binary-buffer ownership fixes described below.
+
+Actual game offsets/API, Windows ANSI x86 physical Russian input, all DPI combinations, and OBS frames remain
+unverified here. OBS hiding was previously reported working by the user; the new status window follows the same
+NoActivate/capture path. Install the whole archive, retain your INI files, enable Auto ID, then hold RMB on a player.
+The status window shows ID/name or a specific failure; confirmed open chat and manual input still pause capture.
+
+Historical validation for the prior working-example repair follows (18 sources at that time):
+
 Validation of working-example repair, 2026-10-12.
 Linux AutoHotkey 1.1.37.02 U64/Wine; shipped code is CP1251/CRLF ANSI x86.
 The user clarified the legislation change was visual only; law texts were preserved.
 Actual game API/offsets, Windows ANSI x86 physical Russian input, and OBS capture are not verified.
 User previously reported working OBS hiding; current own GUI/dialog capture code is validated for ownership/lifecycle only.
 
-Current combined suite: 387 checks, zero failures, three integration skip groups.
+Prior combined suite: 387 checks, zero failures, three integration skip groups.
 TWO full runs after explicit local binary-buffer initialization returned child exit code0;
 all18 AHK source SHA256 hashes in the two preserved generations are identical.
 The same memory source passed three consecutive64-check native runs (192/0).

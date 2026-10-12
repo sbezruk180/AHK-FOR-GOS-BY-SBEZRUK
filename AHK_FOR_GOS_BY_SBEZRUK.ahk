@@ -25,6 +25,8 @@ if (A_PtrSize != 4 || A_IsUnicode)
 #Include %A_ScriptDir%\chat_typing.ahk
 #Include %A_ScriptDir%\id_capture.ahk
 #Include %A_ScriptDir%\service_ui.ahk
+#Include %A_ScriptDir%\ui_style.ahk
+#Include %A_ScriptDir%\autoid_status.ahk
 #Include %A_ScriptDir%\tests\chat_typing_regression.ahk
 #Include %A_ScriptDir%\tests\chat_state_regression.ahk
 #Include %A_ScriptDir%\tests\autoid_direct_regression.ahk
@@ -342,10 +344,13 @@ TerritoryMap_ShowCatalog(CtrlHwnd := "", GuiEvent := "", EventInfo := "", ErrLev
 
     Gui, TerritoryMaps:Destroy
     Gui, TerritoryMaps:New, +AlwaysOnTop +ToolWindow -MaximizeBox -MinimizeBox +HwndhTerritoryMapWnd, Карты территорий
+    GetThemeColors(bg, panel, text, accent, muted)
+    GetControlSurfaceColors(surface, inputFg, card, edge, panel, text, accent)
+    Gui, TerritoryMaps:Color, %panel%, %surface%
     Gui, TerritoryMaps:Margin, 14, 12
-    Gui, TerritoryMaps:Font, s10 Bold, Segoe UI
+    Gui, TerritoryMaps:Font, s10 Bold c%text%, Segoe UI
     Gui, TerritoryMaps:Add, Text, w610, Карты территорий с ограниченным доступом
-    Gui, TerritoryMaps:Font, s9 Norm, Segoe UI
+    Gui, TerritoryMaps:Font, s9 Norm c%text%, Segoe UI
     modeText := "Текущий режим: " . TerritoryMap_GetModeDisplay()
     Gui, TerritoryMaps:Add, Text, y+8 w610, %modeText%
     Gui, TerritoryMaps:Add, Text, y+6 w610 h58 +Wrap, Локальные копии показываются без увеличения выше исходного размера, поэтому миниатюры больше не размываются.`nОфициальные ссылки открывают соответствующий пост форума через системный браузер.
@@ -458,11 +463,13 @@ TerritoryMap_ShowLocal(groupIndex, assetIndex := 1)
     Gui, TerritoryMapView:Destroy
     title := meta.Name . " (" . assetIndex . "/" . files.Length() . ")"
     Gui, TerritoryMapView:New, +AlwaysOnTop +ToolWindow -MaximizeBox -MinimizeBox +HwndhTerritoryMapViewWnd, %title%
+    GetThemeColors(bg, panel, text, accent, muted)
+    Gui, TerritoryMapView:Color, %panel%
     Gui, TerritoryMapView:Margin, 12, 10
-    Gui, TerritoryMapView:Font, s10 Bold, Segoe UI
+    Gui, TerritoryMapView:Font, s10 Bold c%text%, Segoe UI
     Gui, TerritoryMapView:Add, Text, w%canvasW% Center, %title%
 
-    Gui, TerritoryMapView:Font, s8 Norm c606060, Segoe UI
+    Gui, TerritoryMapView:Font, s8 Norm c%muted%, Segoe UI
     if (sizeKnown)
     {
         sizeText := "Исходный размер: " . nativeW . "x" . nativeH . " px"
@@ -474,7 +481,7 @@ TerritoryMap_ShowLocal(groupIndex, assetIndex := 1)
     }
     if TerritoryMap_IsThumbnail(files[assetIndex])
     {
-        Gui, TerritoryMapView:Font, s8 Norm cA06000, Segoe UI
+        Gui, TerritoryMapView:Font, s8 Norm c%accent%, Segoe UI
         Gui, TerritoryMapView:Add, Text, y+3 w%canvasW% Center, Это официальная миниатюра. Полный вариант открывается кнопкой «Оригинал форума».
     }
 
@@ -483,7 +490,7 @@ TerritoryMap_ShowLocal(groupIndex, assetIndex := 1)
         picOptions .= " w" . displayW . " h" . displayH
     Gui, TerritoryMapView:Add, Picture, %picOptions%, %path%
 
-    Gui, TerritoryMapView:Font, s9 Norm c000000, Segoe UI
+    Gui, TerritoryMapView:Font, s9 Norm c%text%, Segoe UI
     Gui, TerritoryMapView:Add, Button, xm y+10 w130 h30 gTerritoryMap_PreviousAsset, Предыдущая
     Gui, TerritoryMapView:Add, Button, x+8 yp w130 h30 gTerritoryMap_NextAsset, Следующая
     Gui, TerritoryMapView:Add, Button, x+8 yp w145 h30 gTerritoryMap_OpenCurrentLocal, Открыть файл
@@ -1129,6 +1136,7 @@ LawGui_Show(state, title, body, officialExact := 0, docPrefix := "")
     BodyH := layout.BodyH
     LawBodyFontSize := layout.FontSize
     LawTitleFontSize := layout.TitleFontSize
+    UpdateLawGuiColors()
     LawTextColor := LawGuiTextColor = "" ? "FFFFFF" : LawGuiTextColor
     LawBgColor := LawGuiBgColor = "" ? "000000" : LawGuiBgColor
     LawAlpha := LawGuiTransparency = "" ? 222 : LawGuiTransparency
@@ -4294,6 +4302,7 @@ Search_ShowCurrentResult()
     if (partCount > 1)
         header .= " | Текст " . SearchCurrentPart . "/" . partCount
     meta := "Запрос: " . SearchLastQuery
+    UpdateLawGuiColors()
     textColor := LawGuiTextColor = "" ? "FFFFFF" : LawGuiTextColor
     bgColor := LawGuiBgColor = "" ? "000000" : LawGuiBgColor
     accentColor := LawSearch_GetShellAccentColor()
@@ -4466,6 +4475,7 @@ LawSearch_ShowNotice(text)
 {
     global LawGuiTextColor, LawGuiBgColor
 
+    UpdateLawGuiColors()
     textColor := LawGuiTextColor
     if (textColor = "")
         textColor := "FFFFFF"
@@ -8899,7 +8909,7 @@ GetControlSurfaceColors(ByRef controlBg, ByRef controlText, ByRef cardBg, ByRef 
         cardEdge := ShiftHexColor(panel, 20)
         controlText := "EBF0F7"
     }
-    controlText := EnsureTextContrast(controlText, controlBg, controlBg)
+    controlText := EnsureTextContrast(controlText, [controlBg], 4.5)
 }
 
 HexToBGR(hex) {
@@ -9409,13 +9419,13 @@ GetCrosshairTargetPed(ByRef errorCode := "", ByRef errorDetail := "") {
     targetSource := ""
 
     ; Сначала используем старый рабочий источник. Резерв выбирается только если
-    ; первый не даёт живой CPed из GTA pool. Так fixed8 больше не подменяет цель
+    ; первый не даёт CPed, подтверждённый пулом или точной связью с игроком. Так fixed8 больше не подменяет цель
     ; полем из другого объекта, но остаётся запасной путь для обычной GTA SA.
-    if (IsLikelyPointer(primaryTarget) && AZMP_IsPedInGtaPool(primaryTarget, primarySlot, 1)) {
+    if (IsLikelyPointer(primaryTarget) && AutoTargetID_ValidateTargetPed(primaryTarget)) {
         localPed := primaryBase
         pedPtr1 := primaryTarget
         targetSource := "B6F3B8"
-    } else if (IsLikelyPointer(fallbackTarget) && AZMP_IsPedInGtaPool(fallbackTarget, fallbackSlot, 1)) {
+    } else if (IsLikelyPointer(fallbackTarget) && AutoTargetID_ValidateTargetPed(fallbackTarget)) {
         localPed := fallbackBase
         pedPtr1 := fallbackTarget
         targetSource := "B6F5F0_FALLBACK"
@@ -9436,7 +9446,7 @@ GetCrosshairTargetPed(ByRef errorCode := "", ByRef errorDetail := "") {
         errorCode := "TARGET_PED_OUTSIDE_GTA_POOL"
         errorDetail := "B6F3B8 target=" . Format("0x{:08X}", primaryTarget)
             . ", B6F5F0 target=" . Format("0x{:08X}", fallbackTarget)
-            . ", ни один адрес не является занятым CPed GTA pool"
+            . ", ни один адрес не подтверждён GTA pool или точной связью с игроком"
         return 0
     }
 
@@ -9449,19 +9459,15 @@ GetCrosshairTargetPed(ByRef errorCode := "", ByRef errorDetail := "") {
         return 0
     }
 
-    if !AZMP_IsPedInGtaPool(pedPtr1, pedSlot, 1) {
+    if !AutoTargetID_ValidateTargetPed(pedPtr1) {
         errorCode := "TARGET_PED_OUTSIDE_GTA_POOL"
         errorDetail := targetSource . ": target=" . Format("0x{:08X}", pedPtr1)
-            . ", адрес перестал быть занятым элементом GTA CPed pool"
+            . ", адрес больше не подтверждён пулом или точной связью с игроком"
         return 0
     }
 
-    matrixPtr := readDWORD(hGTA, pedPtr1 + 0x14)
-    if (!IsLikelyPointer(matrixPtr) || Mod(matrixPtr, 4) != 0) {
-        errorCode := "TARGET_PED_STALE"
-        errorDetail := targetSource . ": ped=" . Format("0x{:08X}", pedPtr1) . ", matrix=" . matrixPtr
-        return 0
-    }
+    ; Exact remote-player linkage does not depend on a GTA matrix/coordinate
+    ; snapshot. Coordinate users validate the matrix separately.
     return pedPtr1
 }
 
@@ -9532,6 +9538,10 @@ AutoTargetID_SetDiagnostic(code, detail := "") {
     global AutoTargetDiagCode, AutoTargetDiagDetail
     AutoTargetDiagCode := (code = "") ? "UNKNOWN" : code
     AutoTargetDiagDetail := detail
+    ; Success details contain memory addresses/layouts for the diagnostic log.
+    ; Keep the clean ID/nickname shown by Poll/Apply instead of flashing raw data.
+    if (code != "TARGET_OK" && code != "TARGET_MASK_LINKED" && code != "TARGET_MASK_ONLY")
+        AutoTargetID_SetStatus(AutoTargetID_CodeDescription(code) . " [" . AutoTargetDiagCode . "]")
     return AutoTargetDiagCode
 }
 
@@ -9865,6 +9875,7 @@ AutoTargetID_ApplyAimedID(aimedValue, targetPed := 0, angle := -1, source := "RM
                 return false
             targetName := Trim(targetName)
         }
+        AutoTargetID_SetStatus((isMask ? "Маска " : "ID ") . value . (targetName != "" ? " · " . targetName : ""))
         ; Stable aim must not redraw controls, create windows, play sounds or
         ; change AutomationEpoch on every polling tick.
         if AutoTargetID_IsCurrentSelection(value, targetName, isMask)
@@ -9949,6 +9960,8 @@ AutoTargetID_BeginAim() {
     AutoTargetRButtonLatched := 0
     AutoTargetLastScanTick := 0
     AutoTargetAimStartedTick := TickNow()
+    AutoTargetID_SetStatus("Наведите прицел на игрока")
+    AutoTargetID_ShowStatus()
     AutoTargetID_ResetCandidate()
     ; Let GTA process the new RMB before reading its target on the next frame.
     SetTimer, AutoTargetIDTick, 20
@@ -9963,13 +9976,14 @@ AutoTargetID_EndAim() {
     AutoTargetRButtonLatched := 0
     AutoTargetID_ResetCandidate()
     AutoTargetID_ClearFailure()
+    AutoTargetID_HideStatus()
 }
 
 AutoTargetID_WatchAim() {
     global AutoTargetIDEnabled, MockMode, AutoTargetAimStartedTick
     global AutoTargetRButtonLatched, AutoTargetLastScanTick
     ; Cheap watchdog: no RPM, module hashing, pool walk or allocations while idle.
-    if (!GetKeyState("RButton", "P")) {
+    if (!AutoTargetID_IsAimHeld()) {
         if (AutoTargetAimStartedTick || AutoTargetLastScanTick || AutoTargetRButtonLatched)
             AutoTargetID_EndAim()
         return false
@@ -10009,7 +10023,7 @@ AutoTargetID_Poll() {
         AutoTargetID_ResetCandidate()
         return
     }
-    if (!GetKeyState("RButton", "P")) {
+    if (!AutoTargetID_IsAimHeld()) {
         AutoTargetID_EndAim()
         return
     }
@@ -10017,10 +10031,16 @@ AutoTargetID_Poll() {
         SetTimer, AutoTargetIDTick, Off
         return
     }
-    if (PhysicalInputBusy || (AutoTargetAimStartedTick && AZMP_TickElapsed(AutoTargetAimStartedTick) < 20))
+    if (PhysicalInputBusy) {
+        AutoTargetID_SetStatus("Ожидание завершения ввода")
         return
-    if ContextAssistant_ConfirmHotkeysActive()
+    }
+    if (AutoTargetAimStartedTick && AZMP_TickElapsed(AutoTargetAimStartedTick) < 20)
         return
+    if ContextAssistant_ConfirmHotkeysActive() {
+        AutoTargetID_SetStatus("Закройте окно подтверждения")
+        return
+    }
     if !GameLocator_IsActive() {
         SetTimer, AutoTargetIDTick, Off
         AutoTargetID_ResetCandidate()
@@ -10031,15 +10051,19 @@ AutoTargetID_Poll() {
     captureGeneration := g_HandleGeneration
 
     chatState := isInChat()
-    if (chatState != 0) {
+    if (chatState = 1) {
+        AutoTargetID_SetStatus("Чат открыт — закройте его для выбора цели")
         AutoTargetID_ResetCandidate()
         return
     }
+    ; An unreadable chat flag must not block read-only aimed-player lookup.
+    ; No chat command or key is sent by this path; exact PED mapping is required.
 
     if (AutoTargetLastScanTick != 0 && AZMP_TickElapsed(AutoTargetLastScanTick) < 20)
         return
     AutoTargetLastScanTick := TickNow()
     if !AzmpAllowsTargetRead() {
+        AutoTargetID_SetStatus("Не удалось прочитать память: " . MemoryGetShortError())
         AutoTargetID_ResetCandidate()
         return
     }
@@ -10054,6 +10078,7 @@ AutoTargetID_Poll() {
     }
     AutoTargetID_ClearFailure()
 
+    AutoTargetID_SetStatus((isMask ? "Маска " : "ID ") . aimedValue . (targetName != "" ? " · " . targetName : ""))
     ; The same selected value still keeps the timer running: moving aim to a
     ; different player while RMB remains held must update the ID immediately.
     if AutoTargetID_IsCurrentSelection(aimedValue, targetName, isMask) {
@@ -10081,7 +10106,7 @@ AutoTargetID_Poll() {
     angle := verifyAngle
     if (captureEpoch != AutomationEpoch || capturePID != dwGTAPID
         || captureGeneration != g_HandleGeneration || !GameLocator_IsActive()
-        || !GetKeyState("RButton", "P") || PhysicalInputBusy || IsObject(IDCaptureState)) {
+        || !AutoTargetID_IsAimHeld() || PhysicalInputBusy || IsObject(IDCaptureState)) {
         AutoTargetID_ResetCandidate()
         return
     }
@@ -10869,7 +10894,7 @@ CheckID() {
         return true
     if HasCurrentID()
         return true
-    if (GetKeyState("RButton", "P") && AutoTargetID_CaptureNow(0))
+    if (AutoTargetID_IsAimHeld() && AutoTargetID_CaptureNow(0))
         return HasCurrentID()
     Notify("warn")
     GameNotify("ID не задан. Зажми ПКМ, наведи на игрока или используй !цель.", "WARN")
@@ -16413,7 +16438,7 @@ SafePicture(guiId, x, y, w, h, varName, imageFile := "") {
 CreateHUD() {
     global hHUDWnd, HudX, HudY, BackgroundImageFile, HUDTransparency, UIRoundness, HUDMode, InnerRoundness
     global ThemeMode, TabGuiHeaderText
-    global HUDTimeText, HUDProfileText, HUDIDText, HUDMenuText, HUDBindListText
+    global HUDTimeText, HUDProfileText, HUDIDText, HUDMenuText, HUDBindListText, HUDAutoIDText
     global HUDBG, HUDBorderTop, HUDBorderBottom, HUDBorderLeft, HUDBorderRight, HUDDragZone
 
     bg := "", panel := "", text := "", accent := "", muted := ""
@@ -16428,6 +16453,8 @@ CreateHUD() {
     else
         hudW := 304, hudH := 186
 
+    hudH += 28
+    autoStatusY := hudH - 24
     hudRight := hudW - 2
     hudBottom := hudH - 2
     accentH := hudH - 20
@@ -16489,6 +16516,8 @@ CreateHUD() {
         Gui, 12:Add, Text, x%valueX% y%rowY% vHUDBindListText w%valueW% h20 Right +0x4000 BackgroundTrans, --
     }
 
+    Gui, 12:Font, Norm s8 c%muted%, Segoe UI
+    Gui, 12:Add, Text, x20 y%autoStatusY% w%lineW% h20 vHUDAutoIDText +0x4000 BackgroundTrans, Auto ID: ПКМ — выбрать
     Capture_BeforeShow("12")
 
     Gui, 12:Show, x%HudX% y%HudY% NoActivate w%hudW% h%hudH%, AMZHUD
@@ -16523,6 +16552,7 @@ UpdateHUD() {
         GuiControl, 12:, HUDTimeText, %timeNow%
     GuiControl, 12:, HUDProfileText, %CurrentProfile%
     GuiControl, 12:, HUDIDText, %currentTarget%
+    GuiControl, 12:, HUDAutoIDText, % AutoTargetID_GetHUDStatus()
 
     if (HUDMode = "Полный")
     {
@@ -21827,6 +21857,8 @@ HandleAppExit:
 ServiceUI_Shutdown()
 Capture_ShutdownDialogHook()
 IDCapture_Shutdown()
+AutoTargetID_HideStatus()
+UIStyle_Shutdown()
 SetTimer, ActionTimerTick, Off
 Gui, ActionTimers:Destroy
 TerritoryMap_CloseAll()
@@ -23078,6 +23110,7 @@ HandleBindMenuApplyHotkey()
 return
 #If
 
+#If
 ; Passive hooks leave RMB available to the game and stop polling on any release.
 ~*RButton::
 AutoTargetID_BeginAim()
