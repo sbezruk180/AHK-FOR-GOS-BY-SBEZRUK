@@ -38,6 +38,8 @@ global g_MemoryInjectionBusy := 0
 
 global GAME_MP_ModulePath := ""
 global g_RemoteOperation := ""
+global g_RemoteLaunchSerial := 0
+global g_CompatibilityLayoutCache := ""
 global g_CompatibilityCache := ""
 global g_ReadCompatibilityCache := ""
 global ConfigWriteFailed := 0
@@ -281,6 +283,7 @@ ReleaseGameHandle() {
     dwSAMP := 0
     GAME_MP_ModulePath := ""
     g_CompatibilityCache := ""
+    g_CompatibilityLayoutCache := ""
     g_ReadCompatibilityCache := ""
     pMemory := 0
     pParam1 := 0
@@ -350,6 +353,7 @@ MemoryInvalidateGameHandle(reason := "") {
     dwSAMP := 0
     GAME_MP_ModulePath := ""
     g_CompatibilityCache := ""
+    g_CompatibilityLayoutCache := ""
     g_ReadCompatibilityCache := ""
     pMemory := 0
     pParam1 := 0
@@ -430,6 +434,7 @@ waitForSingleObject(hThread, dwMilliseconds) {
 	return dwRet
 }
 createRemoteThread(hProcess, lpThreadAttributes, dwStackSize, lpStartAddress, lpParameter, dwCreationFlags, lpThreadId) {
+	global g_RemoteLaunchSerial
 	if (!hProcess) {
 		ErrorLevel := ERROR_INVALID_HANDLE
 		return 0
@@ -441,6 +446,8 @@ createRemoteThread(hProcess, lpThreadAttributes, dwStackSize, lpStartAddress, lp
 		return 0
 	}
 
+	; Never reset this serial when a handle is replaced: it records launch attempts.
+	g_RemoteLaunchSerial += 1
 	ErrorLevel := ERROR_OK
 	return dwRet
 }
@@ -710,9 +717,10 @@ refreshSAMP(forceValidation := false) {
     newBase := getModuleBaseAddress(GAME_MP_ModuleName, hGTA)
     if (!newBase) {
         dwSAMP := 0
-    GAME_MP_ModulePath := ""
-    g_CompatibilityCache := ""
-    g_ReadCompatibilityCache := ""
+        GAME_MP_ModulePath := ""
+        g_CompatibilityCache := ""
+        g_CompatibilityLayoutCache := ""
+        g_ReadCompatibilityCache := ""
         g_LastSampValidationTick := TickNow()
         if IsFunc("AZMP_ResetAutoIDRuntime")
             Func("AZMP_ResetAutoIDRuntime").Call("azmp.dll unavailable")
@@ -759,18 +767,20 @@ refreshGTA() {
             dwGTAPID := 0
             hGTA := 0
             dwSAMP := 0
-    GAME_MP_ModulePath := ""
-    g_CompatibilityCache := ""
-    g_ReadCompatibilityCache := ""
+            GAME_MP_ModulePath := ""
+            g_CompatibilityCache := ""
+            g_CompatibilityLayoutCache := ""
+            g_ReadCompatibilityCache := ""
             pMemory := 0
             MemoryFail("OPEN_PROCESS", ERROR_OPEN_PROCESS, g_LastHandleError)
             return false
         }
         dwGTAPID := newPID
         dwSAMP := 0
-    GAME_MP_ModulePath := ""
-    g_CompatibilityCache := ""
-    g_ReadCompatibilityCache := ""
+        GAME_MP_ModulePath := ""
+        g_CompatibilityCache := ""
+        g_CompatibilityLayoutCache := ""
+        g_ReadCompatibilityCache := ""
         pMemory := 0
         pParam1 := 0
         pParam2 := 0
@@ -814,7 +824,7 @@ checkHandles() {
 }
 
 ; Read-only discovery never calls refreshMemory or launches game code. An explicit
-; build hash remains mandatory for writes/injection via the unchanged checkHandles.
+; writes retain separate PE32/executable-page validation and optional explicit hash checks.
 checkReadHandles() {
     global hGTA, dwGTAPID, dwSAMP, g_HandleGeneration, g_LastSampValidationTick
     global GAME_MP_ModulePath, AzmpExpectedSHA256, g_ReadCompatibilityCache
@@ -834,7 +844,7 @@ checkReadHandles() {
         return MemoryFail("READ_LAYOUT_INVALID", ERROR_MODULE_NOT_FOUND, "azmp.dll не является читаемым модулем PE x86 с ожидаемым диапазоном данных.")
     ; No hash is inferred or learned from an unknown build. Only structural reads
     ; are allowed when expected is empty; the caller must validate pool/PED links.
-    allowed := MemoryReadBuildPolicy(expected, true, expected = "" ? false : MemoryBuildCompatible())
+    allowed := MemoryReadBuildPolicy(expected, true, expected = "" ? false : MemoryExpectedBuildMatches(expected))
     key := dwGTAPID . "|" . g_HandleGeneration . "|" . dwSAMP . "|" . expected
     g_ReadCompatibilityCache := {Key: key, Tick: TickNow(), Ready: allowed}
     return allowed
@@ -846,19 +856,25 @@ MemoryReadBuildPolicy(expected, moduleX86, hashMatches := false) {
 }
 
 MemoryReadModuleIsX86(process, base) {
+    local
+    local header := ""
     if (!process || !IsLikelyPointer(base))
         return false
     VarSetCapacity(header, 4096, 0)
     bytes := 0
-    if (!DllCall("ReadProcessMemory", "Ptr", process, "Ptr", base, "Ptr", &header
-        , "UPtr", 4096, "UPtr*", bytes) || bytes != 4096)
+    readOk := DllCall("ReadProcessMemory", "Ptr", process, "Ptr", base, "Ptr", &header
+        , "UPtr", 4096, "UPtr*", bytes)
+    if (!readOk || bytes != 4096)
         return false
+    ; Refresh AHK's cached length after API writes before passing the binary buffer ByRef.
+    VarSetCapacity(header, -1)
     imageBase := base < 0 ? base + 0x100000000 : base
     return MemoryReadPe32Header(header, bytes)
         && imageBase + NumGet(header, NumGet(header, 0x3C, "UInt") + 80, "UInt") <= 0x100000000
 }
 
 MemoryReadPe32Header(ByRef header, bytes) {
+    local
     if (bytes < 64 || VarSetCapacity(header) < bytes || NumGet(header, 0, "UShort") != 0x5A4D)
         return false
     pe := NumGet(header, 0x3C, "UInt")
@@ -918,18 +934,131 @@ TryReadFloat(hProcess, address, ByRef value) {
     return true
 }
 
+; Blank SHA restores the working fixed-offset example. A configured SHA remains strict.
+; This checks the in-memory ABI shape; no hash is learned from the current installation.
 MemoryBuildCompatible() {
-    global GAME_MP_ModulePath, AzmpExpectedSHA256, dwGTAPID, dwSAMP, g_HandleGeneration, g_CompatibilityCache
+    global hGTA, dwGTAPID, dwSAMP, g_HandleGeneration, AzmpExpectedSHA256
+    global g_CompatibilityLayoutCache
     expected := Trim(AzmpExpectedSHA256)
     StringUpper, expected, expected
+    if (expected != "" && !RegExMatch(expected, "^[A-F0-9]{64}$"))
+        return MemoryFail("BUILD_INVALID", ERROR_MODULE_NOT_FOUND, "Некорректный ожидаемый SHA-256; доступ к функциям памяти заблокирован.")
+    hashMatches := expected != "" ? MemoryExpectedBuildMatches(expected) : false
+    if (expected != "" && !hashMatches)
+        return false
+    key := hGTA . "|" . dwGTAPID . "|" . g_HandleGeneration . "|" . dwSAMP . "|" . expected
+    if (!IsObject(g_CompatibilityLayoutCache) || g_CompatibilityLayoutCache.Key != key
+        || MemoryTickElapsed(g_CompatibilityLayoutCache.Tick) >= 500
+        || !ProcessHandleIsValid(hGTA, dwGTAPID)) {
+        layoutReady := MemoryLegacyLayoutCompatible(hGTA, dwSAMP)
+        g_CompatibilityLayoutCache := {Key: key, Tick: TickNow(), Ready: layoutReady}
+    } else
+        layoutReady := g_CompatibilityLayoutCache.Ready
+    if !MemoryBuildPolicy(expected, layoutReady, hashMatches)
+        return MemoryFail("BUILD_LAYOUT_INVALID", ERROR_MODULE_NOT_FOUND, "azmp.dll: требуется читаемый PE32 и исполняемые страницы функций совместимого примера.")
+    ErrorLevel := ERROR_OK
+    return true
+}
+
+MemoryBuildPolicy(expected, legacyLayoutReady, hashMatches := false) {
+    local
+    expected := Trim(expected)
+    return legacyLayoutReady && (expected = ""
+        || (RegExMatch(expected, "i)^[A-F0-9]{64}$") && hashMatches))
+}
+
+; Hash checking is shared with read-only discovery, which never allocates remote buffers.
+MemoryExpectedBuildMatches(expected) {
+    global GAME_MP_ModulePath, dwGTAPID, dwSAMP, g_HandleGeneration, g_CompatibilityCache
+    expected := Trim(expected)
+    StringUpper, expected, expected
     if (!RegExMatch(expected, "^[A-F0-9]{64}$") || !FileExist(GAME_MP_ModulePath))
-        return MemoryFail("BUILD_UNVERIFIED", ERROR_MODULE_NOT_FOUND, "Укажите SHA-256 проверенной совместимой сборки azmp.dll; доступ к смещениям отключён.")
+        return MemoryFail("BUILD_UNVERIFIED", ERROR_MODULE_NOT_FOUND, "Ожидаемый SHA-256 указан, но совместимая сборка azmp.dll не проверена.")
     FileGetSize, size, %GAME_MP_ModulePath%
     FileGetTime, modified, %GAME_MP_ModulePath%, M
     key := dwGTAPID . "|" . g_HandleGeneration . "|" . dwSAMP . "|" . GAME_MP_ModulePath . "|" . size . "|" . modified . "|" . expected
     if (!IsObject(g_CompatibilityCache) || g_CompatibilityCache.Key != key)
         g_CompatibilityCache := {Key: key, Match: FileSHA256(GAME_MP_ModulePath) = expected}
-    return g_CompatibilityCache.Match ? true : MemoryFail("BUILD_MISMATCH", ERROR_MODULE_NOT_FOUND, "SHA-256 azmp.dll не совпадает; чтение и запись заблокированы.")
+    return g_CompatibilityCache.Match ? true : MemoryFail("BUILD_MISMATCH", ERROR_MODULE_NOT_FOUND, "SHA-256 azmp.dll не совпадает; доступ к памяти заблокирован.")
+}
+
+MemoryLegacyLayoutCompatible(process, base) {
+    local
+    if !MemoryReadModuleIsX86(process, base)
+        return false
+    base := base < 0 ? base + 0x100000000 : base
+    ; Both chat paths and the remaining legacy injected APIs share this module.
+    for index, offset in [0x5820, 0x69190, 0x67970, 0x6F8C0]
+        if !MemoryCodeIsExecutable(process, base + offset, base)
+            return false
+    return true
+}
+
+MemoryCodeIsExecutable(process, address, allocationBase := 0, readBytes := 16) {
+    local
+    local info := "", code := ""
+    if (!process || !IsLikelyPointer(address) || readBytes < 1 || readBytes > 4096)
+        return false
+    address := address < 0 ? address + 0x100000000 : address
+    infoSize := A_PtrSize = 8 ? 48 : 28
+    VarSetCapacity(info, infoSize, 0)
+    gotInfo := DllCall("VirtualQueryEx", "Ptr", process, "Ptr", address
+        , "Ptr", &info, "UPtr", infoSize, "UPtr")
+    ; The query writes a binary variable outside AHK; refresh before the ByRef guard.
+    VarSetCapacity(info, -1)
+    if !MemoryExecutableRegionAllows(info, gotInfo, address, readBytes, allocationBase)
+        return false
+    VarSetCapacity(code, readBytes, 0)
+    gotBytes := 0
+    readOk := DllCall("ReadProcessMemory", "Ptr", process, "Ptr", address
+        , "Ptr", &code, "UPtr", readBytes, "UPtr*", gotBytes)
+    if (!readOk || gotBytes != readBytes)
+        return false
+    ; Executable padding does not identify a callable function.
+    nonPadding := false
+    Loop % readBytes {
+        byte := NumGet(code, A_Index - 1, "UChar")
+        if (byte != 0 && byte != 0xFF) {
+            nonPadding := true
+            break
+        }
+    }
+    return nonPadding
+}
+
+MemoryExecutableRegionAllows(ByRef info, infoBytes, address, readBytes := 16, allocationBase := 0) {
+    local
+    infoSize := A_PtrSize = 8 ? 48 : 28
+    if (infoBytes < infoSize || VarSetCapacity(info) < infoSize || readBytes < 1)
+        return false
+    address := address < 0 ? address + 0x100000000 : address
+    stateOffset := A_PtrSize = 8 ? 32 : 16
+    sizeOffset := A_PtrSize = 8 ? 24 : 12
+    state := NumGet(info, stateOffset, "UInt")
+    protection := NumGet(info, stateOffset + 4, "UInt")
+    basicProtection := protection & 0xFF
+    if (state != 0x1000 || (protection & 0x100)
+        || !(basicProtection = 0x10 || basicProtection = 0x20
+            || basicProtection = 0x40 || basicProtection = 0x80))
+        return false
+    regionBase := NumGet(info, 0, "UPtr")
+    regionSize := NumGet(info, sizeOffset, "UPtr")
+    ownerBase := NumGet(info, A_PtrSize, "UPtr")
+    allocationBase := allocationBase < 0 ? allocationBase + 0x100000000 : allocationBase
+    return regionBase <= address && regionSize >= readBytes
+        && address - regionBase <= regionSize - readBytes
+        && (!allocationBase || ownerBase = allocationBase)
+}
+
+; A launched call may already have sent text even when its thread reports failure.
+; Its result must suppress keyboard fallback and queue retries after object cleanup.
+MemoryAttemptResult(result, beforeLaunchSerial, afterLaunchSerial := "") {
+    global g_RemoteLaunchSerial
+    if (afterLaunchSerial = "")
+        afterLaunchSerial := g_RemoteLaunchSerial
+    if (result = 1)
+        return 1
+    return (result = -2 || afterLaunchSerial > beforeLaunchSerial) ? -2 : -1
 }
 
 MemoryWaitRemote(thread, process, timeoutMs := 2000) {

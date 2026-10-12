@@ -15,10 +15,12 @@ for path in sources:
     if b'\n' in data.replace(b'\r\n', b''):
         raise SystemExit(f'{path.name}: expected CRLF')
 
-for name in ('UDF.ahk', 'common.ahk', 'runtime_support.ahk', 'chat_typing.ahk', 'id_capture.ahk',
+for name in ('UDF.ahk', 'common.ahk', 'runtime_support.ahk', 'chat_typing.ahk', 'id_capture.ahk', 'service_ui.ahk',
              'tests/audit_regression.ahk', 'tests/chat_typing_regression.ahk',
              'tests/id_capture_regression.ahk', 'tests/chat_state_regression.ahk',
-             'tests/autoid_direct_regression.ahk'):
+             'tests/autoid_direct_regression.ahk', 'tests/memory_compat_regression.ahk',
+             'tests/service_ui_regression.ahk', 'tests/service_flows_regression.ahk',
+             'tests/native_dialog_regression.ahk'):
     if not (root / name).is_file():
         raise SystemExit(f'Missing required include: {name}')
 subprocess.run([sys.executable, str(root / 'tools/sync_helper.py'), '--check'], check=True)
