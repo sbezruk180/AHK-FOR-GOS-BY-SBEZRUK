@@ -557,6 +557,10 @@ getCameraCoordinates() {
 }
 
 SendChatMemory(text) {
+    global g_RemoteLaunchSerial, PhysicalInputBusy, IDCaptureState
+    if (PhysicalInputBusy || IsObject(IDCaptureState)
+        || (IsFunc("ServiceUI_IsInputActive") && Func("ServiceUI_IsInputActive").Call()))
+        return -1
     text := "" . text
     if (text = "" || StrLen(text) > 1023) {
         MemoryFail("WRITE_STRING", ERROR_STRING_TOO_LONG, "сообщение пустое или длиннее 1023 символов")
@@ -569,10 +573,16 @@ SendChatMemory(text) {
     try {
         functionAddress := (SubStr(text, 1, 1) = "/") ? (dwSAMP + 0x69190) : (dwSAMP + 0x5820)
         MemorySetStage("WRITE_STRING", 0, "подготовка сообщения чата")
-        if !callWithParams(hGTA, functionAddress, [["s", text]], false) {
-            errorCode := ErrorLevel
-            MemoryFail("SEND_CALL", errorCode, "не удалось выполнить функцию игрового чата")
-            return -1
+        beforeLaunch := g_RemoteLaunchSerial
+        completed := callWithParams(hGTA, functionAddress, [["s", text]], false)
+        errorCode := ErrorLevel
+        result := MemoryAttemptResult(completed ? 1 : -1, beforeLaunch)
+        if (result != 1) {
+            if (result = -2)
+                MemoryFail("SEND_UNCERTAIN", errorCode, "Удалённый вызов уже запускался; повтор отправки отключён.")
+            else
+                MemoryFail("SEND_CALL", errorCode, "не удалось подготовить функцию игрового чата")
+            return result
         }
         MemorySetStage("SEND_OK", 0, (SubStr(text, 1, 1) = "/") ? "команда отправлена" : "сообщение отправлено")
         return 1

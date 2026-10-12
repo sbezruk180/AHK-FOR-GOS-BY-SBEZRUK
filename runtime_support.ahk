@@ -16,6 +16,11 @@ global CaptureStatus := "Защита захвата выключена"
 global CaptureLastError := 0
 global CaptureDiagnostics := {}
 global CaptureRefreshBusy := 0
+global CaptureDialogHook := 0
+global CaptureDialogCallbackAddress := 0
+global CaptureDialogHookBusy := 0
+global CaptureDialogHookThread := 0
+global CaptureDialogHookError := 0
 global InputLayoutLastError := ""
 global ChatKeyboardLastError := ""
 global HistoricalHotstrings := {}
@@ -295,6 +300,8 @@ QueueRpAction(template, command, source, menu) {
 }
 
 SafeSend(keys, mode := "Input", epoch := "") {
+    if ServiceUI_IsInputActive()
+        return false
     if IsObject(IDCaptureState)
         return false
     global MockMode
@@ -447,7 +454,114 @@ Capture_IsOwnGui(hwnd) {
     ; Native class lookup also sees a just-created, still-hidden GUI.
     VarSetCapacity(className, 256, 0)
     length := DllCall("user32\GetClassNameA", "Ptr", hwnd, "Ptr", &className, "Int", 256, "Int")
-    return length && StrGet(&className, length, "CP0") = "AutoHotkeyGUI"
+    className := length ? StrGet(&className, length, "CP0") : ""
+    return className = "AutoHotkeyGUI" || className = "#32770"
+}
+
+Capture_InstallDialogHook() {
+    global CaptureDialogHook, CaptureDialogCallbackAddress, CaptureDialogHookThread, CaptureDialogHookError
+    savedError := ErrorLevel, previousCritical := A_IsCritical
+    Critical, On
+    try {
+        if (CaptureDialogHook)
+            return true
+        CaptureDialogHookError := 0
+        if (!CaptureDialogCallbackAddress)
+            CaptureDialogCallbackAddress := RegisterCallback("Capture_DialogHookProc", "Fast", 3)
+        if (!CaptureDialogCallbackAddress) {
+            CaptureDialogHookError := -1
+            return false
+        }
+        ; WH_CBT on this script's GUI thread only: never hook another process/thread.
+        threadID := DllCall("kernel32\GetCurrentThreadId", "UInt")
+        CaptureDialogHook := DllCall("user32\SetWindowsHookExA", "Int", 5
+            , "Ptr", CaptureDialogCallbackAddress, "Ptr", 0, "UInt", threadID, "Ptr")
+        if (!CaptureDialogHook) {
+            CaptureDialogHookError := A_LastError
+            DllCall("kernel32\GlobalFree", "Ptr", CaptureDialogCallbackAddress, "Ptr")
+            CaptureDialogCallbackAddress := 0
+            return false
+        }
+        CaptureDialogHookThread := threadID
+        return true
+    } catch e {
+        CaptureDialogHookError := -1
+        if (!CaptureDialogHook && CaptureDialogCallbackAddress) {
+            DllCall("kernel32\GlobalFree", "Ptr", CaptureDialogCallbackAddress, "Ptr")
+            CaptureDialogCallbackAddress := 0
+        }
+        return false
+    } finally {
+        Critical, %previousCritical%
+        ErrorLevel := savedError
+    }
+}
+
+Capture_DialogHookProc(nCode, wParam, lParam) {
+    global CaptureDialogHook, CaptureDialogHookBusy, CaptureDialogHookError
+    savedError := ErrorLevel, previousCritical := A_IsCritical
+    Critical, On
+    ownsCallback := !CaptureDialogHookBusy
+    if (ownsCallback)
+        CaptureDialogHookBusy := 1
+    try {
+        ; Negative hook codes must pass through untouched. CREATEWND may be too
+        ; early for affinity on some Windows builds; ACTIVATE and refresh retry it.
+        if (nCode > 0x7FFFFFFF)
+            nCode -= 0x100000000
+        if (ownsCallback && (nCode = 3 || nCode = 5) && Capture_IsOwnGui(wParam)) {
+            VarSetCapacity(classBuffer, 32, 0)
+            length := DllCall("user32\GetClassNameA", "Ptr", wParam, "Ptr", &classBuffer, "Int", 32, "Int")
+            if (length && StrGet(&classBuffer, length, "CP0") = "#32770")
+                Capture_ApplyWindow(wParam)
+        }
+    } catch e {
+        CaptureDialogHookError := -1
+    } finally {
+        ; Always continue the hook chain. Preserve the interrupted AHK thread's
+        ; ErrorLevel/Critical state even if affinity probing or another hook fails.
+        nextResult := 0
+        try {
+            nextResult := DllCall("user32\CallNextHookEx", "Ptr", CaptureDialogHook
+                , "Int", nCode, "Ptr", wParam, "Ptr", lParam, "Ptr")
+        } catch e {
+            CaptureDialogHookError := -1
+        } finally {
+            if (ownsCallback)
+                CaptureDialogHookBusy := 0
+            Critical, %previousCritical%
+            ErrorLevel := savedError
+        }
+    }
+    return nextResult
+}
+
+Capture_ShutdownDialogHook() {
+    global CaptureDialogHook, CaptureDialogCallbackAddress, CaptureDialogHookThread, CaptureDialogHookBusy, CaptureDialogHookError
+    savedError := ErrorLevel, previousCritical := A_IsCritical
+    Critical, On
+    try {
+        ; Keep executable callback memory alive if Windows still references it.
+        if (CaptureDialogHookBusy)
+            return false
+        if (CaptureDialogHook) {
+            removed := DllCall("user32\UnhookWindowsHookEx", "Ptr", CaptureDialogHook, "Int")
+            if (!removed && A_LastError != 1404) {
+                CaptureDialogHookError := A_LastError
+                return false
+            }
+            CaptureDialogHook := 0
+        }
+        CaptureDialogHookThread := 0
+        if (CaptureDialogCallbackAddress) {
+            DllCall("kernel32\GlobalFree", "Ptr", CaptureDialogCallbackAddress, "Ptr")
+            CaptureDialogCallbackAddress := 0
+        }
+        return true
+    } finally {
+        Critical, %previousCritical%
+        ErrorLevel := savedError
+    }
 }
 
 Capture_ReadAffinity(hwnd, ByRef affinity, ByRef lastError) {

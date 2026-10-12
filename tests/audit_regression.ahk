@@ -158,7 +158,7 @@ RunAuditSelfTest() {
     Loop, 650
         MockPreview_Append("preview " . A_Index)
     AuditAssert("F12 preview bounded", StrSplit(ChatQueuePreviewText, "`n").Length() <= 500 && StrLen(ChatQueuePreviewText) <= 131072)
-    AuditAssert("F07 no reference build blocks memory writes", !MemoryBuildCompatible())
+    AuditAssert("F07 missing game module refuses memory writes", !MemoryBuildCompatible())
     sha := ""
     Loop, 64
         sha .= "A"
@@ -204,6 +204,10 @@ RunAuditSelfTest() {
     AuditAssert("OBS changed option retries immediately", Capture_ShouldRetry(retryState, 0, 0))
     RunChatTypingRegression()
     RunChatStateRegression()
+    RunMemoryCompatRegression()
+    RunServiceUIRegression()
+    RunServiceFlowsRegression()
+    RunNativeDialogRegressionTests()
     Audit_AutoIDDirect()
     IDCapture_RunRegression()
     Audit_ChatIDIntegration(scratch)
