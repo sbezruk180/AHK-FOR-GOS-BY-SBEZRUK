@@ -1,3 +1,21 @@
+Current source Auto ID restoration, 2026-10-13.
+19 shipped AHK sources; CP1251 without BOM and CRLF; target AHK 1.1.37.02 ANSI x86.
+
+19 target-resolution/Auto ID functions match the uploaded reference after CRLF normalization.
+Polling, source stability rules, confirmation/latch, GTA pool/matrix guards and player lookup are restored.
+The new status module/HUD row, direct selection, watchdog and passive RMB bindings have been removed.
+The shared GUI theme, OBS wrapper, manual digit capture and working chat transports remain.
+
+Current complete suite: 375 checks, 0 failures, 3 integration skip groups; child exit 0.
+8 assertions exercise the real reference request plus current confirmation accept/reject handlers in mock mode.
+The external source-poll fixture passes 20 checks with actual 120ms timers and explicit game/input seams.
+A separate 20-digit mask probe is XFAIL: the restored reference numeric comparison coerces its value
+beyond signed 64-bit range. This inherited limitation is recorded, not fixed or counted as a pass.
+Normal-length masks and direct confirmation of an uncoerced long mask pass their respective checks.
+Windows ANSI x86/game offsets/input and actual OBS frames are not verified here.
+
+The reports below are historical (direct Auto ID and its status UI were subsequently reverted):
+
 Latest Auto ID / shared GUI update, 2026-10-12.
 20 shipped AHK sources; CP1251 without BOM and CRLF; target AHK 1.1.37.02 ANSI x86.
 
