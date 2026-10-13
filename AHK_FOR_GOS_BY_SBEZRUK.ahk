@@ -26,10 +26,9 @@ if (A_PtrSize != 4 || A_IsUnicode)
 #Include %A_ScriptDir%\id_capture.ahk
 #Include %A_ScriptDir%\service_ui.ahk
 #Include %A_ScriptDir%\ui_style.ahk
-#Include %A_ScriptDir%\autoid_status.ahk
 #Include %A_ScriptDir%\tests\chat_typing_regression.ahk
 #Include %A_ScriptDir%\tests\chat_state_regression.ahk
-#Include %A_ScriptDir%\tests\autoid_direct_regression.ahk
+#Include %A_ScriptDir%\tests\autoid_source_regression.ahk
 #Include %A_ScriptDir%\tests\id_capture_regression.ahk
 #Include %A_ScriptDir%\tests\service_ui_regression.ahk
 #Include %A_ScriptDir%\tests\service_flows_regression.ahk
@@ -6427,9 +6426,8 @@ global AutoTargetCandidateReads := 0
 global AutoTargetCandidatePed := 0
 global AutoTargetCandidateMatchType := 0
 global AutoTargetRButtonLatched := 0
-global AutoTargetStableReads := 1
+global AutoTargetStableReads := 2
 global AutoTargetLastScanTick := 0
-global AutoTargetAimStartedTick := 0
 global AutoTargetDiagCode := "INIT"
 global AutoTargetDiagDetail := ""
 global AutoTargetDiagFailStreak := 0
@@ -7313,8 +7311,7 @@ SetTimer, UpdateHUDTimer, 1000
 SetTimer, TaskSchedulerTimerTick, 100
 SetTimer, ChatQueueTimerTick, 150
 SetTimer, ChatLogReaderTick, 250
-SetTimer, AutoTargetIDTick, Off
-SetTimer, AutoTargetIDAimWatchdogTick, 120
+SetTimer, AutoTargetIDTick, 120
 LogError("System", "Script start", "INFO")
 return
 
@@ -9371,7 +9368,11 @@ RunMemoryLiveTest(showPrompt := 1) {
 }
 
 AzmpAllowsTargetRead() {
-    return checkReadHandles()
+    global AzmpExpectedSHA256
+    if (Trim(AzmpExpectedSHA256) = "")
+        return true
+    info := GetAzmpModuleInfo(0)
+    return info.Ready && info.Match
 }
 
 HasCurrentID() {
@@ -9400,7 +9401,7 @@ GetCrosshairTargetPed(ByRef errorCode := "", ByRef errorDetail := "") {
     global hGTA
     errorCode := ""
     errorDetail := ""
-    if (!checkReadHandles()) {
+    if (!checkHandles()) {
         errorCode := "HANDLE_CHECK_FAILED"
         errorDetail := MemoryGetStatusText()
         return 0
@@ -9419,13 +9420,13 @@ GetCrosshairTargetPed(ByRef errorCode := "", ByRef errorDetail := "") {
     targetSource := ""
 
     ; Сначала используем старый рабочий источник. Резерв выбирается только если
-    ; первый не даёт CPed, подтверждённый пулом или точной связью с игроком. Так fixed8 больше не подменяет цель
+    ; первый не даёт живой CPed из GTA pool. Так fixed8 больше не подменяет цель
     ; полем из другого объекта, но остаётся запасной путь для обычной GTA SA.
-    if (IsLikelyPointer(primaryTarget) && AutoTargetID_ValidateTargetPed(primaryTarget)) {
+    if (IsLikelyPointer(primaryTarget) && AZMP_IsPedInGtaPool(primaryTarget, primarySlot, 1)) {
         localPed := primaryBase
         pedPtr1 := primaryTarget
         targetSource := "B6F3B8"
-    } else if (IsLikelyPointer(fallbackTarget) && AutoTargetID_ValidateTargetPed(fallbackTarget)) {
+    } else if (IsLikelyPointer(fallbackTarget) && AZMP_IsPedInGtaPool(fallbackTarget, fallbackSlot, 1)) {
         localPed := fallbackBase
         pedPtr1 := fallbackTarget
         targetSource := "B6F5F0_FALLBACK"
@@ -9446,11 +9447,12 @@ GetCrosshairTargetPed(ByRef errorCode := "", ByRef errorDetail := "") {
         errorCode := "TARGET_PED_OUTSIDE_GTA_POOL"
         errorDetail := "B6F3B8 target=" . Format("0x{:08X}", primaryTarget)
             . ", B6F5F0 target=" . Format("0x{:08X}", fallbackTarget)
-            . ", ни один адрес не подтверждён GTA pool или точной связью с игроком"
+            . ", ни один адрес не является занятым CPed GTA pool"
         return 0
     }
 
-    ; Два чтения защищают от смены цели; после поиска ID цель проверяется заново.
+    ; Два чтения защищают от смены цели в середине обработки.
+    Sleep, 12
     pedPtr2 := readDWORD(hGTA, localPed + 0x79C)
     if (pedPtr2 != pedPtr1) {
         errorCode := "TARGET_PED_UNSTABLE"
@@ -9459,15 +9461,19 @@ GetCrosshairTargetPed(ByRef errorCode := "", ByRef errorDetail := "") {
         return 0
     }
 
-    if !AutoTargetID_ValidateTargetPed(pedPtr1) {
+    if !AZMP_IsPedInGtaPool(pedPtr1, pedSlot, 1) {
         errorCode := "TARGET_PED_OUTSIDE_GTA_POOL"
         errorDetail := targetSource . ": target=" . Format("0x{:08X}", pedPtr1)
-            . ", адрес больше не подтверждён пулом или точной связью с игроком"
+            . ", адрес перестал быть занятым элементом GTA CPed pool"
         return 0
     }
 
-    ; Exact remote-player linkage does not depend on a GTA matrix/coordinate
-    ; snapshot. Coordinate users validate the matrix separately.
+    matrixPtr := readDWORD(hGTA, pedPtr1 + 0x14)
+    if (!IsLikelyPointer(matrixPtr) || Mod(matrixPtr, 4) != 0) {
+        errorCode := "TARGET_PED_STALE"
+        errorDetail := targetSource . ": ped=" . Format("0x{:08X}", pedPtr1) . ", matrix=" . matrixPtr
+        return 0
+    }
     return pedPtr1
 }
 
@@ -9538,10 +9544,6 @@ AutoTargetID_SetDiagnostic(code, detail := "") {
     global AutoTargetDiagCode, AutoTargetDiagDetail
     AutoTargetDiagCode := (code = "") ? "UNKNOWN" : code
     AutoTargetDiagDetail := detail
-    ; Success details contain memory addresses/layouts for the diagnostic log.
-    ; Keep the clean ID/nickname shown by Poll/Apply instead of flashing raw data.
-    if (code != "TARGET_OK" && code != "TARGET_MASK_LINKED" && code != "TARGET_MASK_ONLY")
-        AutoTargetID_SetStatus(AutoTargetID_CodeDescription(code) . " [" . AutoTargetDiagCode . "]")
     return AutoTargetDiagCode
 }
 
@@ -9608,7 +9610,6 @@ AutoTargetID_WriteDiagnostic(code, detail, targetPed := 0, repaired := "") {
         snapshot := MemoryGetStatusText()
     line := "[" . A_Now . "] code=" . code . "; detail=" . detail
         . "; repaired=" . repaired . "; " . snapshot . "`r`n"
-    RotateOwnedLog(AutoTargetDiagFile)
     try FileAppend, %line%, %AutoTargetDiagFile%, CP1251
     LogError("AutoID-DIAG", code . ": " . detail . " | repaired=" . repaired . " | " . snapshot, "WARN")
     return snapshot
@@ -9688,7 +9689,7 @@ AutoTargetID_DiagnoseAndRecover(showNotice := 1, attemptRepair := 1, knownTarget
                 ? MemoryInvalidateGameHandle("Auto ID diagnostic: " . code) : false
             if (recoveryStarted) {
                 Sleep, 30
-                handleOk := checkReadHandles()
+                handleOk := checkHandles()
                 poolOk := handleOk && IsFunc("AZMP_GetGtaPedPoolInfo")
                     && AZMP_GetGtaPedPoolInfo(recoverPool, recoverObjects, recoverFlags, recoverSize, 1)
                 repaired := handleOk ? (poolOk ? "полностью переоткрыты память и CPed pool"
@@ -9711,7 +9712,7 @@ AutoTargetID_DiagnoseAndRecover(showNotice := 1, attemptRepair := 1, knownTarget
         repaired := "полностью сброшены состояние Auto ID и кэш GTA CPed pool"
     }
 
-    AutoTargetDiagLastRunTick := TickNow()
+    AutoTargetDiagLastRunTick := A_TickCount
     snapshot := AutoTargetID_WriteDiagnostic(code, detail, knownTargetPed, repaired)
     if (showNotice) {
         shortDetail := detail
@@ -9720,7 +9721,7 @@ AutoTargetID_DiagnoseAndRecover(showNotice := 1, attemptRepair := 1, knownTarget
         humanError := AutoTargetID_CodeDescription(code)
         GameNotify("Auto ID: " . humanError . " [" . code . "]. " . shortDetail
             . ". Лог: logs\\autoid_diagnostics.log", recoverable ? "ERROR" : "WARN")
-        AutoTargetDiagLastNoticeTick := TickNow()
+        AutoTargetDiagLastNoticeTick := A_TickCount
     }
     return code
 }
@@ -9735,7 +9736,7 @@ AutoTargetID_RecordFailure(code, detail := "", targetPed := 0) {
         return false
     }
     if (AutoTargetDiagFailStreak = 0)
-        AutoTargetDiagFirstFailTick := TickNow()
+        AutoTargetDiagFirstFailTick := A_TickCount
     AutoTargetDiagFailStreak += 1
 
     ; Диагностика запускается только при устойчивом отказе, чтобы обычное
@@ -9782,13 +9783,6 @@ AutoTargetID_ReadAimedID(ByRef targetPed := 0, ByRef angle := -1, ByRef targetNa
     ; выбор по псевдоуглу камера->локальный игрок был неточным и удалён.
     playerMatch := getPlayerDataByPed(targetPed, aimedId, targetName, 0)
     if (playerMatch = 1 && aimedId >= 0) {
-        ; The pool scan may take longer on a populated server. A live target
-        ; check after it must agree, even when the exact mapping was found.
-        finalTarget := GetCrosshairTargetPed(finalTargetCode, finalTargetDetail)
-        if (finalTarget != targetPed) {
-            AutoTargetID_SetDiagnostic("TARGET_CHANGED_DURING_SCAN", "цель изменилась после точного поиска CPed")
-            return -1
-        }
         matchType := 1
         if AZMP_IsMaskDisplayName(targetName)
             targetName := ""
@@ -9848,77 +9842,30 @@ AutoTargetID_ReadAimedID(ByRef targetPed := 0, ByRef angle := -1, ByRef targetNa
     return -1
 }
 
-AutoTargetID_IsCurrentSelection(aimedValue, targetName := "", isMask := 0) {
-    global UserID, ActiveID, TargetNickname, TargetIsMask
-    targetName := isMask ? "" : Trim(targetName)
-    return (ActiveID && TargetIsMask = (isMask ? 1 : 0)
-        && "V" . UserID = "V" . aimedValue && TargetNickname = targetName)
-}
+
 
 ; A verified aimed target is applied immediately. The existing HUD/ID overlay
 ; stays NoActivate and keeps the configured OBS exclusion; no confirmation opens.
-AutoTargetID_ApplyAimedID(aimedValue, targetPed := 0, angle := -1, source := "RMB", targetName := "", isMask := 0) {
-    global AZMP_MAX_PLAYERS
-    wasCritical := A_IsCritical
-    Critical, 30
-    try {
-        if (IsObject(IDCaptureState) || PhysicalInputBusy || ContextAssistant_ConfirmHotkeysActive())
-            return false
-        isMask := isMask ? 1 : 0
-        if (isMask) {
-            if !RegExMatch("" . aimedValue, "^[0-9]{5,20}$")
-                return false
-            value := "" . aimedValue
-            targetName := ""
-        } else {
-            if !ContextAssistant_ValidateNumber(aimedValue, AZMP_MAX_PLAYERS - 1, value, 0)
-                return false
-            targetName := Trim(targetName)
-        }
-        AutoTargetID_SetStatus((isMask ? "Маска " : "ID ") . value . (targetName != "" ? " · " . targetName : ""))
-        ; Stable aim must not redraw controls, create windows, play sounds or
-        ; change AutomationEpoch on every polling tick.
-        if AutoTargetID_IsCurrentSelection(value, targetName, isMask)
-            return true
-        ShowIDGui(value, targetName, isMask)
-        valueText := isMask ? ("Маска " . value) : ("ID " . value)
-        nameText := (!isMask && targetName != "") ? (" | ник " . targetName) : ""
-        LogError("AutoTargetID", source . ": " . valueText . nameText . ", ped " . targetPed, "INFO")
-        return true
-    } finally {
-        if (wasCritical)
-            Critical, %wasCritical%
-        else
-            Critical, Off
-    }
-}
 
-AutoTargetID_ObserveCandidate(aimedValue, targetName, targetPed, matchType) {
-    global AutoTargetCandidateID, AutoTargetCandidateReads
-    global AutoTargetCandidatePed, AutoTargetCandidateMatchType
-    candidateKey := aimedValue . "|" . targetName . "|" . targetPed . "|" . matchType
-    if (candidateKey = AutoTargetCandidateID)
-        AutoTargetCandidateReads += 1
-    else {
-        AutoTargetCandidateID := candidateKey
-        AutoTargetCandidateReads := 1
-        AutoTargetCandidatePed := targetPed
-        AutoTargetCandidateMatchType := matchType
-    }
-    return AutoTargetCandidateReads
-}
+AutoTargetID_RequestConfirmation(aimedValue, targetPed := 0, angle := -1, source := "RMB", targetName := "", isMask := 0) {
+    if (aimedValue = -1 || aimedValue = "")
+        return false
+    if ContextAssistant_ConfirmHotkeysActive()
+        return false
 
-AutoTargetID_RequiredReads(matchType, isMask) {
-    return (!isMask && matchType = 1) ? 1 : 3
+    requestValue := isMask ? ("__MASK__:" . aimedValue) : aimedValue
+    if !ContextAssistant_Request("EnterID", requestValue, "", targetName)
+        return false
+
+    angleText := (angle >= 0) ? " | угол " . Round(angle, 1) . "°" : ""
+    valueText := isMask ? ("Маска " . aimedValue) : ("ID " . aimedValue)
+    nameText := (!isMask && targetName != "") ? (" | ник " . targetName) : ""
+    LogError("AutoTargetID", source . ": " . valueText . nameText . ", ped " . targetPed . angleText, "INFO")
+    return true
 }
 
 AutoTargetID_CaptureNow(showFailure := 1) {
-    global AutoTargetIDEnabled, AutoTargetDiagCode, AutoTargetDiagDetail, MockMode
-    if (IsObject(IDCaptureState) || PhysicalInputBusy || ContextAssistant_ConfirmHotkeysActive())
-        return false
-    captureEpoch := AutomationEpoch
-    if (MockMode = "On" || !GameLocator_IsActive())
-        return false
+    global AutoTargetIDEnabled, AutoTargetDiagCode, AutoTargetDiagDetail
     if (AutoTargetIDEnabled != "On") {
         if (showFailure)
             GameNotify("Автозахват ID отключён в профиле.", "WARN")
@@ -9926,192 +9873,100 @@ AutoTargetID_CaptureNow(showFailure := 1) {
     }
     if !AzmpAllowsTargetRead() {
         if (showFailure)
-            GameNotify("Захват ID недоступен: " . MemoryGetShortError(), "ERROR")
+            GameNotify("Захват ID заблокирован: SHA-256 azmp.dll не совпадает.", "ERROR")
         return false
     }
-    capturePID := dwGTAPID
-    captureGeneration := g_HandleGeneration
     aimedValue := AutoTargetID_ReadAimedID(targetPed, angle, targetName, isMask, matchType)
-    if ("V" . aimedValue = "V-1" || "V" . aimedValue = "V") {
+    if (aimedValue = -1 || aimedValue = "") {
         AutoTargetID_RecordFailure(AutoTargetDiagCode, AutoTargetDiagDetail, targetPed)
         if (showFailure)
             AutoTargetID_DiagnoseAndRecover(1, 1, targetPed)
         return false
     }
     AutoTargetID_ClearFailure()
-    finalTarget := GetCrosshairTargetPed(finalCode, finalDetail)
-    if (finalTarget != targetPed || captureEpoch != AutomationEpoch || capturePID != dwGTAPID
-        || captureGeneration != g_HandleGeneration || !GameLocator_IsActive())
-        return false
-    return AutoTargetID_ApplyAimedID(aimedValue, targetPed, angle, "Ручной захват", targetName, isMask)
-}
-
-AutoTargetID_BeginAim() {
-    global AutoTargetIDEnabled, MockMode, AutoTargetLastScanTick
-    global AutoTargetAimStartedTick, AutoTargetRButtonLatched
-    if (AutoTargetIDEnabled != "On" || MockMode = "On" || !GameLocator_IsActive())
-        return false
-    if IsObject(IDCaptureState) {
-        AutoTargetRButtonLatched := 1
-        return false
-    }
-    if ContextAssistant_ConfirmHotkeysActive()
-        return false
-    AutoTargetRButtonLatched := 0
-    AutoTargetLastScanTick := 0
-    AutoTargetAimStartedTick := TickNow()
-    AutoTargetID_SetStatus("Наведите прицел на игрока")
-    AutoTargetID_ShowStatus()
-    AutoTargetID_ResetCandidate()
-    ; Let GTA process the new RMB before reading its target on the next frame.
-    SetTimer, AutoTargetIDTick, 20
-    return true
-}
-
-AutoTargetID_EndAim() {
-    global AutoTargetLastScanTick, AutoTargetAimStartedTick, AutoTargetRButtonLatched
-    SetTimer, AutoTargetIDTick, Off
-    AutoTargetLastScanTick := 0
-    AutoTargetAimStartedTick := 0
-    AutoTargetRButtonLatched := 0
-    AutoTargetID_ResetCandidate()
-    AutoTargetID_ClearFailure()
-    AutoTargetID_HideStatus()
-}
-
-AutoTargetID_WatchAim() {
-    global AutoTargetIDEnabled, MockMode, AutoTargetAimStartedTick
-    global AutoTargetRButtonLatched, AutoTargetLastScanTick
-    ; Cheap watchdog: no RPM, module hashing, pool walk or allocations while idle.
-    if (!AutoTargetID_IsAimHeld()) {
-        if (AutoTargetAimStartedTick || AutoTargetLastScanTick || AutoTargetRButtonLatched)
-            AutoTargetID_EndAim()
-        return false
-    }
-    ; Preserve the manual capture's latch across focus/profile changes until release.
-    if IsObject(IDCaptureState) {
-        AutoTargetRButtonLatched := 1
-        AutoTargetID_ResetCandidate()
-        return false
-    }
-    if (AutoTargetRButtonLatched)
-        return false
-    if (AutoTargetIDEnabled != "On" || MockMode = "On" || !GameLocator_IsActive()) {
-        if (AutoTargetAimStartedTick)
-            AutoTargetID_EndAim()
-        return false
-    }
-    if (PhysicalInputBusy || ContextAssistant_ConfirmHotkeysActive())
-        return false
-    if (!AutoTargetAimStartedTick)
-        return AutoTargetID_BeginAim()
-    ; Idempotent rearm covers a lost RMB callback, hot-reload with held RMB,
-    ; temporary focus loss, or a timer stopped during handle recovery.
-    SetTimer, AutoTargetIDTick, 20
-    return true
+    return AutoTargetID_RequestConfirmation(aimedValue, targetPed, angle, "Ручной захват", targetName, isMask)
 }
 
 AutoTargetID_Poll() {
     global AutoTargetIDEnabled, MockMode, AutoTargetCandidateID, AutoTargetCandidateReads
     global AutoTargetCandidatePed, AutoTargetCandidateMatchType
     global AutoTargetRButtonLatched, AutoTargetStableReads, AutoTargetLastScanTick
-    global AutoTargetAimStartedTick
     global UserID, ActiveID, AutoTargetDiagCode, AutoTargetDiagDetail
 
-    if IsObject(IDCaptureState) {
-        AutoTargetRButtonLatched := 1
+    if (!GetKeyState("RButton", "P")) {
+        AutoTargetRButtonLatched := 0
         AutoTargetID_ResetCandidate()
+        AutoTargetID_ClearFailure()
         return
     }
-    if (!AutoTargetID_IsAimHeld()) {
-        AutoTargetID_EndAim()
+    if (AutoTargetIDEnabled != "On" || MockMode = "On" || AutoTargetRButtonLatched)
         return
-    }
-    if (AutoTargetIDEnabled != "On" || MockMode = "On" || AutoTargetRButtonLatched) {
-        SetTimer, AutoTargetIDTick, Off
+    if ContextAssistant_ConfirmHotkeysActive()
         return
-    }
-    if (PhysicalInputBusy) {
-        AutoTargetID_SetStatus("Ожидание завершения ввода")
+    if !GameLocator_IsActive()
         return
-    }
-    if (AutoTargetAimStartedTick && AZMP_TickElapsed(AutoTargetAimStartedTick) < 20)
-        return
-    if ContextAssistant_ConfirmHotkeysActive() {
-        AutoTargetID_SetStatus("Закройте окно подтверждения")
-        return
-    }
-    if !GameLocator_IsActive() {
-        SetTimer, AutoTargetIDTick, Off
-        AutoTargetID_ResetCandidate()
-        return
-    }
-    captureEpoch := AutomationEpoch
-    capturePID := dwGTAPID
-    captureGeneration := g_HandleGeneration
 
     chatState := isInChat()
-    if (chatState = 1) {
-        AutoTargetID_SetStatus("Чат открыт — закройте его для выбора цели")
-        AutoTargetID_ResetCandidate()
+    if (chatState != 0) {
+        if (chatState < 0)
+            AutoTargetID_ResetCandidate()
         return
     }
-    ; An unreadable chat flag must not block read-only aimed-player lookup.
-    ; No chat command or key is sent by this path; exact PED mapping is required.
 
-    if (AutoTargetLastScanTick != 0 && AZMP_TickElapsed(AutoTargetLastScanTick) < 20)
+    if (AutoTargetLastScanTick != 0 && AZMP_TickElapsed(AutoTargetLastScanTick) < 180)
         return
-    AutoTargetLastScanTick := TickNow()
-    if !AzmpAllowsTargetRead() {
-        AutoTargetID_SetStatus("Не удалось прочитать память: " . MemoryGetShortError())
-        AutoTargetID_ResetCandidate()
-        return
-    }
-    capturePID := dwGTAPID
-    captureGeneration := g_HandleGeneration
+    AutoTargetLastScanTick := A_TickCount
 
     aimedValue := AutoTargetID_ReadAimedID(targetPed, angle, targetName, isMask, matchType)
-    if ("V" . aimedValue = "V-1" || "V" . aimedValue = "V") {
+    if (aimedValue = -1 || aimedValue = "") {
         AutoTargetID_RecordFailure(AutoTargetDiagCode, AutoTargetDiagDetail, targetPed)
         AutoTargetID_ResetCandidate()
         return
     }
     AutoTargetID_ClearFailure()
 
-    AutoTargetID_SetStatus((isMask ? "Маска " : "ID ") . aimedValue . (targetName != "" ? " · " . targetName : ""))
-    ; The same selected value still keeps the timer running: moving aim to a
-    ; different player while RMB remains held must update the ID immediately.
-    if AutoTargetID_IsCurrentSelection(aimedValue, targetName, isMask) {
-        AutoTargetID_ResetCandidate()
-        return
-    }
-
     ; PED включён в ключ стабильности: один и тот же ID от другой сущности
     ; не может продолжить счётчик предыдущей цели.
-    AutoTargetID_ObserveCandidate(aimedValue, targetName, targetPed, matchType)
+    candidateKey := aimedValue . "|" . targetName . "|" . targetPed . "|" . matchType
+    if (candidateKey = AutoTargetCandidateID) {
+        AutoTargetCandidateReads += 1
+    } else {
+        AutoTargetCandidateID := candidateKey
+        AutoTargetCandidateReads := 1
+        AutoTargetCandidatePed := targetPed
+        AutoTargetCandidateMatchType := matchType
+    }
 
-    ; Exact ID/PED mapping is accepted on the first scan; masks and indirect
-    ; matches retain three observations. Every path still verifies again below.
-    requiredReads := AutoTargetID_RequiredReads(matchType, isMask)
+    requiredReads := isMask ? 3 : AutoTargetStableReads
+    if (matchType != 1 && requiredReads < 3)
+        requiredReads := 3
     if (AutoTargetCandidateReads < requiredReads)
         return
 
-    ; Финальная проверка сразу перед обновлением ID в HUD.
+    ; Финальная проверка сразу перед показом подтверждения.
     verifyValue := AutoTargetID_ReadAimedID(verifyPed, verifyAngle, verifyName, verifyIsMask, verifyMatch)
-    if ("V" . verifyValue != "V" . aimedValue || verifyPed != targetPed || verifyIsMask != isMask || verifyMatch != matchType) {
+    if (verifyValue != aimedValue || verifyPed != targetPed || verifyIsMask != isMask || verifyMatch != matchType) {
         AutoTargetID_ResetCandidate()
         return
     }
     targetName := verifyName
     angle := verifyAngle
-    if (captureEpoch != AutomationEpoch || capturePID != dwGTAPID
-        || captureGeneration != g_HandleGeneration || !GameLocator_IsActive()
-        || !AutoTargetID_IsAimHeld() || PhysicalInputBusy || IsObject(IDCaptureState)) {
-        AutoTargetID_ResetCandidate()
-        return
+
+    if (ActiveID) {
+        if (!isMask && HasCurrentID() && (UserID + 0 = aimedValue + 0)) {
+            AutoTargetRButtonLatched := 1
+            AutoTargetID_ResetCandidate()
+            return
+        }
+        if (isMask && ("M" . UserID = "M" . aimedValue)) {
+            AutoTargetRButtonLatched := 1
+            AutoTargetID_ResetCandidate()
+            return
+        }
     }
 
-    AutoTargetID_ApplyAimedID(aimedValue, targetPed, angle, "Автозахват ПКМ", targetName, isMask)
+    if AutoTargetID_RequestConfirmation(aimedValue, targetPed, angle, "Автозахват ПКМ", targetName, isMask)
+        AutoTargetRButtonLatched := 1
     AutoTargetID_ResetCandidate()
 }
 
@@ -10894,7 +10749,7 @@ CheckID() {
         return true
     if HasCurrentID()
         return true
-    if (AutoTargetID_IsAimHeld() && AutoTargetID_CaptureNow(0))
+    if (GetKeyState("RButton", "P") && AutoTargetID_CaptureNow(0))
         return HasCurrentID()
     Notify("warn")
     GameNotify("ID не задан. Зажми ПКМ, наведи на игрока или используй !цель.", "WARN")
@@ -16438,7 +16293,7 @@ SafePicture(guiId, x, y, w, h, varName, imageFile := "") {
 CreateHUD() {
     global hHUDWnd, HudX, HudY, BackgroundImageFile, HUDTransparency, UIRoundness, HUDMode, InnerRoundness
     global ThemeMode, TabGuiHeaderText
-    global HUDTimeText, HUDProfileText, HUDIDText, HUDMenuText, HUDBindListText, HUDAutoIDText
+    global HUDTimeText, HUDProfileText, HUDIDText, HUDMenuText, HUDBindListText
     global HUDBG, HUDBorderTop, HUDBorderBottom, HUDBorderLeft, HUDBorderRight, HUDDragZone
 
     bg := "", panel := "", text := "", accent := "", muted := ""
@@ -16453,8 +16308,6 @@ CreateHUD() {
     else
         hudW := 304, hudH := 186
 
-    hudH += 28
-    autoStatusY := hudH - 24
     hudRight := hudW - 2
     hudBottom := hudH - 2
     accentH := hudH - 20
@@ -16516,8 +16369,6 @@ CreateHUD() {
         Gui, 12:Add, Text, x%valueX% y%rowY% vHUDBindListText w%valueW% h20 Right +0x4000 BackgroundTrans, --
     }
 
-    Gui, 12:Font, Norm s8 c%muted%, Segoe UI
-    Gui, 12:Add, Text, x20 y%autoStatusY% w%lineW% h20 vHUDAutoIDText +0x4000 BackgroundTrans, Auto ID: ПКМ — выбрать
     Capture_BeforeShow("12")
 
     Gui, 12:Show, x%HudX% y%HudY% NoActivate w%hudW% h%hudH%, AMZHUD
@@ -16552,7 +16403,6 @@ UpdateHUD() {
         GuiControl, 12:, HUDTimeText, %timeNow%
     GuiControl, 12:, HUDProfileText, %CurrentProfile%
     GuiControl, 12:, HUDIDText, %currentTarget%
-    GuiControl, 12:, HUDAutoIDText, % AutoTargetID_GetHUDStatus()
 
     if (HUDMode = "Полный")
     {
@@ -21408,12 +21258,6 @@ return
 
 AutoTargetIDTick:
 AutoTargetID_Poll()
-if (AutoTargetRButtonLatched)
-    SetTimer, AutoTargetIDTick, Off
-return
-
-AutoTargetIDAimWatchdogTick:
-AutoTargetID_WatchAim()
 return
 
 RunMemoryLiveTestCliLabel:
@@ -21857,7 +21701,6 @@ HandleAppExit:
 ServiceUI_Shutdown()
 Capture_ShutdownDialogHook()
 IDCapture_Shutdown()
-AutoTargetID_HideStatus()
 UIStyle_Shutdown()
 SetTimer, ActionTimerTick, Off
 Gui, ActionTimers:Destroy
@@ -22108,7 +21951,6 @@ SetTimer, ChatQueueTimerTick, Off
 SetTimer, ChatLogReaderTick, Off
 SetTimer, EvidenceScreenshotTimer, Off
 SetTimer, AutoTargetIDTick, Off
-SetTimer, AutoTargetIDAimWatchdogTick, Off
 ServiceUI_Shutdown()
 Capture_ShutdownDialogHook()
 SetTimer, StopTimerTick, Off
@@ -23109,16 +22951,6 @@ $!f::
 HandleBindMenuApplyHotkey()
 return
 #If
-
-#If
-; Passive hooks leave RMB available to the game and stop polling on any release.
-~*RButton::
-AutoTargetID_BeginAim()
-return
-
-~*RButton Up::
-AutoTargetID_EndAim()
-return
 
 #If IsGameActive()
 Numpad1::
