@@ -6425,8 +6425,8 @@ global AutoTargetCandidateID := -1
 global AutoTargetCandidateReads := 0
 global AutoTargetCandidatePed := 0
 global AutoTargetCandidateMatchType := 0
-global AutoTargetRButtonLatched := 0
-global AutoTargetStableReads := 2
+global AutoTargetOfferedKey := ""
+global AutoTargetPendingKey := ""
 global AutoTargetLastScanTick := 0
 global AutoTargetDiagCode := "INIT"
 global AutoTargetDiagDetail := ""
@@ -7311,7 +7311,7 @@ SetTimer, UpdateHUDTimer, 1000
 SetTimer, TaskSchedulerTimerTick, 100
 SetTimer, ChatQueueTimerTick, 150
 SetTimer, ChatLogReaderTick, 250
-SetTimer, AutoTargetIDTick, 120
+SetTimer, AutoTargetIDTick, 30
 LogError("System", "Script start", "INFO")
 return
 
@@ -9616,10 +9616,10 @@ AutoTargetID_WriteDiagnostic(code, detail, targetPed := 0, repaired := "") {
 }
 
 AutoTargetID_HardReset(reason := "") {
-    global AutoTargetLastScanTick, AutoTargetRButtonLatched
+    global AutoTargetLastScanTick, AutoTargetOfferedKey
 
     AutoTargetLastScanTick := 0
-    AutoTargetRButtonLatched := 0
+    AutoTargetOfferedKey := ""
     AutoTargetID_ResetCandidate()
     AutoTargetID_ClearFailure()
     AutoTargetID_ResetDiagnosticState()
@@ -9844,24 +9844,55 @@ AutoTargetID_ReadAimedID(ByRef targetPed := 0, ByRef angle := -1, ByRef targetNa
 
 
 
-; A verified aimed target is applied immediately. The existing HUD/ID overlay
-; stays NoActivate and keeps the configured OBS exclusion; no confirmation opens.
+; Verified aimed targets use the original passive F1/F2 confirmation overlay.
+; Another target replaces its text while RMB remains held.
 
-AutoTargetID_RequestConfirmation(aimedValue, targetPed := 0, angle := -1, source := "RMB", targetName := "", isMask := 0) {
-    if (aimedValue = -1 || aimedValue = "")
+AutoTargetID_RequestConfirmation(aimedValue, targetPed := 0, angle := -1, source := "RMB", targetName := "", isMask := 0, inputEpoch := 0) {
+    global AutoTargetPendingKey, AutoTargetOfferedKey, ContextAssistantMode, ContextAssistantAction
+    global ContextAssistantInput, ContextAssistantTargetName, ContextAssistantStatus
+    global ContextNotificationMode, ContextNotificationTimeoutSec, hContextAssistantWnd
+    if ("V" . aimedValue = "V-1" || "V" . aimedValue = "V")
         return false
-    if ContextAssistant_ConfirmHotkeysActive()
-        return false
+    previousCritical := A_IsCritical
+    Critical, On
+    try {
+        if (IsObject(IDCaptureState) || PhysicalInputBusy || (inputEpoch && inputEpoch != AutomationEpoch))
+            return false
+        ownsConfirmation := AutoTargetPendingKey != "" && ContextAssistantMode = "confirm" && ContextAssistantAction = "EnterID"
+        if (ContextAssistantMode != "" && !ownsConfirmation)
+            return false
+        key := AutoTargetID_TargetKey(aimedValue, targetPed, isMask)
+        if (key = AutoTargetOfferedKey)
+            return false
+        requestValue := isMask ? ("__MASK__:" . aimedValue) : aimedValue
+        if (ownsConfirmation) {
+            ; Меняем текст существующей плашки без пересоздания и захвата фокуса.
+            ContextAssistantInput := requestValue
+            ContextAssistantTargetName := targetName
+            prompt := ContextAssistant_GetConfirmationPrompt("EnterID", requestValue, "", targetName)
+            if (hContextAssistantWnd) {
+                GuiControl, 42:, AutoTargetConfirmationPrompt, %prompt%
+                WinSet, Redraw,, ahk_id %hContextAssistantWnd%
+            } else
+                GameNotify(prompt . "  [" . ContextAssistantStatus . "]", "INFO")
+            timeoutMs := -Abs(ContextNotificationTimeoutSec * 1000)
+            SetTimer, ContextAssistantTimeoutLabel, %timeoutMs%
+        } else if !ContextAssistant_Request("EnterID", requestValue, "", targetName)
+            return false
+        AutoTargetPendingKey := key
+        AutoTargetOfferedKey := key
+        angleText := (angle >= 0) ? " | угол " . Round(angle, 1) . "°" : ""
+        valueText := isMask ? ("Маска " . aimedValue) : ("ID " . aimedValue)
+        nameText := (!isMask && targetName != "") ? (" | ник " . targetName) : ""
+        LogError("AutoTargetID", source . ": " . valueText . nameText . ", ped " . targetPed . angleText, "INFO")
+        return true
+    } finally {
+        Critical, %previousCritical%
+    }
+}
 
-    requestValue := isMask ? ("__MASK__:" . aimedValue) : aimedValue
-    if !ContextAssistant_Request("EnterID", requestValue, "", targetName)
-        return false
-
-    angleText := (angle >= 0) ? " | угол " . Round(angle, 1) . "°" : ""
-    valueText := isMask ? ("Маска " . aimedValue) : ("ID " . aimedValue)
-    nameText := (!isMask && targetName != "") ? (" | ник " . targetName) : ""
-    LogError("AutoTargetID", source . ": " . valueText . nameText . ", ped " . targetPed . angleText, "INFO")
-    return true
+AutoTargetID_TargetKey(value, ped, isMask) {
+    return "T|" . value . "|" . ped . "|" . isMask
 }
 
 AutoTargetID_CaptureNow(showFailure := 1) {
@@ -9877,7 +9908,7 @@ AutoTargetID_CaptureNow(showFailure := 1) {
         return false
     }
     aimedValue := AutoTargetID_ReadAimedID(targetPed, angle, targetName, isMask, matchType)
-    if (aimedValue = -1 || aimedValue = "") {
+    if ("V" . aimedValue = "V-1" || "V" . aimedValue = "V") {
         AutoTargetID_RecordFailure(AutoTargetDiagCode, AutoTargetDiagDetail, targetPed)
         if (showFailure)
             AutoTargetID_DiagnoseAndRecover(1, 1, targetPed)
@@ -9889,84 +9920,67 @@ AutoTargetID_CaptureNow(showFailure := 1) {
 
 AutoTargetID_Poll() {
     global AutoTargetIDEnabled, MockMode, AutoTargetCandidateID, AutoTargetCandidateReads
-    global AutoTargetCandidatePed, AutoTargetCandidateMatchType
-    global AutoTargetRButtonLatched, AutoTargetStableReads, AutoTargetLastScanTick
-    global UserID, ActiveID, AutoTargetDiagCode, AutoTargetDiagDetail
+    global AutoTargetCandidatePed, AutoTargetCandidateMatchType, AutoTargetLastScanTick
+    global AutoTargetOfferedKey, AutoTargetPendingKey, ContextAssistantMode, ContextAssistantAction
+    global UserID, ActiveID, TargetIsMask, AutoTargetDiagCode, AutoTargetDiagDetail
 
     if (!GetKeyState("RButton", "P")) {
-        AutoTargetRButtonLatched := 0
+        AutoTargetOfferedKey := ""
+        AutoTargetLastScanTick := 0
         AutoTargetID_ResetCandidate()
         AutoTargetID_ClearFailure()
         return
     }
-    if (AutoTargetIDEnabled != "On" || MockMode = "On" || AutoTargetRButtonLatched)
+    if (AutoTargetIDEnabled != "On" || MockMode = "On" || IsObject(IDCaptureState) || PhysicalInputBusy)
         return
-    if ContextAssistant_ConfirmHotkeysActive()
+    ownsConfirmation := AutoTargetPendingKey != "" && ContextAssistantMode = "confirm" && ContextAssistantAction = "EnterID"
+    if (ContextAssistantMode != "" && !ownsConfirmation)
         return
     if !GameLocator_IsActive()
         return
-
     chatState := isInChat()
     if (chatState != 0) {
-        if (chatState < 0)
-            AutoTargetID_ResetCandidate()
+        AutoTargetID_ResetCandidate()
         return
     }
-
-    if (AutoTargetLastScanTick != 0 && AZMP_TickElapsed(AutoTargetLastScanTick) < 180)
+    if (AutoTargetLastScanTick != 0 && AZMP_TickElapsed(AutoTargetLastScanTick) < 30)
         return
     AutoTargetLastScanTick := A_TickCount
-
+    inputEpoch := AutomationEpoch
     aimedValue := AutoTargetID_ReadAimedID(targetPed, angle, targetName, isMask, matchType)
-    if (aimedValue = -1 || aimedValue = "") {
+    if ("V" . aimedValue = "V-1" || "V" . aimedValue = "V") {
         AutoTargetID_RecordFailure(AutoTargetDiagCode, AutoTargetDiagDetail, targetPed)
         AutoTargetID_ResetCandidate()
         return
     }
     AutoTargetID_ClearFailure()
-
-    ; PED включён в ключ стабильности: один и тот же ID от другой сущности
-    ; не может продолжить счётчик предыдущей цели.
-    candidateKey := aimedValue . "|" . targetName . "|" . targetPed . "|" . matchType
-    if (candidateKey = AutoTargetCandidateID) {
+    key := AutoTargetID_TargetKey(aimedValue, targetPed, isMask)
+    if (key = AutoTargetOfferedKey)
+        return
+    if (key = AutoTargetCandidateID)
         AutoTargetCandidateReads += 1
-    } else {
-        AutoTargetCandidateID := candidateKey
+    else {
+        AutoTargetCandidateID := key
         AutoTargetCandidateReads := 1
         AutoTargetCandidatePed := targetPed
         AutoTargetCandidateMatchType := matchType
     }
-
-    requiredReads := isMask ? 3 : AutoTargetStableReads
-    if (matchType != 1 && requiredReads < 3)
-        requiredReads := 3
-    if (AutoTargetCandidateReads < requiredReads)
+    ; Точный CPed проверяем дважды сразу; запасному поиску даём ещё один такт.
+    if ((isMask || matchType != 1) && AutoTargetCandidateReads < 2)
         return
-
-    ; Финальная проверка сразу перед показом подтверждения.
     verifyValue := AutoTargetID_ReadAimedID(verifyPed, verifyAngle, verifyName, verifyIsMask, verifyMatch)
-    if (verifyValue != aimedValue || verifyPed != targetPed || verifyIsMask != isMask || verifyMatch != matchType) {
+    if ("V" . verifyValue != "V" . aimedValue || verifyPed != targetPed || verifyIsMask != isMask || verifyMatch != matchType) {
         AutoTargetID_ResetCandidate()
         return
     }
-    targetName := verifyName
-    angle := verifyAngle
-
-    if (ActiveID) {
-        if (!isMask && HasCurrentID() && (UserID + 0 = aimedValue + 0)) {
-            AutoTargetRButtonLatched := 1
-            AutoTargetID_ResetCandidate()
-            return
-        }
-        if (isMask && ("M" . UserID = "M" . aimedValue)) {
-            AutoTargetRButtonLatched := 1
-            AutoTargetID_ResetCandidate()
-            return
-        }
-    }
-
-    if AutoTargetID_RequestConfirmation(aimedValue, targetPed, angle, "Автозахват ПКМ", targetName, isMask)
-        AutoTargetRButtonLatched := 1
+    if (inputEpoch != AutomationEpoch || !GameLocator_IsActive() || isInChat() != 0)
+        return
+    if (ActiveID && TargetIsMask = isMask && "V" . UserID = "V" . aimedValue) {
+        if (AutoTargetPendingKey != "" && ContextAssistantAction = "EnterID")
+            ContextAssistant_Close()
+        AutoTargetOfferedKey := key
+    } else
+        AutoTargetID_RequestConfirmation(aimedValue, targetPed, verifyAngle, "Автозахват ПКМ", verifyName, isMask, inputEpoch)
     AutoTargetID_ResetCandidate()
 }
 
@@ -10904,18 +10918,24 @@ ContextAssistant_ShowStatus(statusText) {
 
 ContextAssistant_Close(clearState := 1) {
     global ContextAssistantAction, ContextAssistantInput, ContextAssistantVariant, ContextAssistantTargetName
-    global ContextAssistantStatus, ContextAssistantMode, hContextAssistantWnd
-    SetTimer, ContextAssistantTimeoutLabel, Off
-    Gui, 42:Destroy
-    hContextAssistantWnd := 0
-    if (clearState)
-    {
-        ContextAssistantAction := ""
-        ContextAssistantInput := ""
-        ContextAssistantVariant := ""
-        ContextAssistantTargetName := ""
-        ContextAssistantStatus := ""
-        ContextAssistantMode := ""
+    global ContextAssistantStatus, ContextAssistantMode, hContextAssistantWnd, AutoTargetPendingKey
+    previousCritical := A_IsCritical
+    Critical, On
+    try {
+        AutoTargetPendingKey := ""
+        SetTimer, ContextAssistantTimeoutLabel, Off
+        Gui, 42:Destroy
+        hContextAssistantWnd := 0
+        if (clearState) {
+            ContextAssistantAction := ""
+            ContextAssistantInput := ""
+            ContextAssistantVariant := ""
+            ContextAssistantTargetName := ""
+            ContextAssistantStatus := ""
+            ContextAssistantMode := ""
+        }
+    } finally {
+        Critical, %previousCritical%
     }
 }
 
@@ -10959,7 +10979,7 @@ ContextAssistant_MakeWindowPassive(hwnd) {
 }
 
 ContextAssistant_ShowConfirmationOverlay(title, prompt, statusText) {
-    global hContextAssistantWnd, UIRoundness
+    global hContextAssistantWnd, UIRoundness, AutoTargetConfirmationPrompt
 
     bg := "", panel := "", textColor := "", accent := "", muted := ""
     GetThemeColors(bg, panel, textColor, accent, muted)
@@ -10973,7 +10993,7 @@ ContextAssistant_ShowConfirmationOverlay(title, prompt, statusText) {
     Gui, 42:Margin, 0, 0
     Gui, 42:Add, Progress, -Theme x0 y0 w4 h%overlayH% Disabled Vertical Background%panel% c%accent%, 100
     Gui, 42:Font, s8 Bold c%textColor%, Segoe UI
-    Gui, 42:Add, Text, x14 y6 w286 h20 0x200 BackgroundTrans, %prompt%
+    Gui, 42:Add, Text, x14 y6 w286 h20 0x200 vAutoTargetConfirmationPrompt BackgroundTrans, %prompt%
     Gui, 42:Font, Norm s8 c%muted%, Segoe UI
     Gui, 42:Add, Text, x14 y29 w286 h17 vContextAssistantStatus BackgroundTrans, %statusText%
     Capture_BeforeShow("42")
@@ -11262,15 +11282,19 @@ ContextAssistant_Execute(actionName, rawValue, variant := "", targetName := "") 
 ContextAssistant_Submit(variant := "") {
     global ContextAssistantAction, ContextAssistantInput, ContextAssistantVariant, ContextAssistantTargetName, ContextAssistantMode
 
+    previousCritical := A_IsCritical
+    Critical, On
     actionName := ContextAssistantAction
     rawValue := ContextAssistantInput
     targetName := ContextAssistantTargetName
-    if (ContextAssistantMode = "confirm")
-    {
+    confirming := ContextAssistantMode = "confirm"
+    if (confirming) {
         selectedVariant := (variant != "") ? variant : ContextAssistantVariant
         ContextAssistant_Close()
-        return ContextAssistant_Execute(actionName, rawValue, selectedVariant, targetName)
     }
+    Critical, %previousCritical%
+    if (confirming)
+        return ContextAssistant_Execute(actionName, rawValue, selectedVariant, targetName)
 
     Gui, 42:Submit, NoHide
     rawValue := ContextAssistantInput
