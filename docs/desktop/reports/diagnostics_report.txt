@@ -1,0 +1,115 @@
+AHK FOR GOS BY SBEZRUK diagnostics report
+Time: 2026-10-16 12:37:47
+Project: Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-sxqcxyio\data
+Script: Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-sxqcxyio\standalone\AHK_FOR_GOS_TEST_U64.exe
+Mode: CLI read-only diagnostics
+
+
+== Runtime safety ==
+No GUI, hotkeys, timers, clipboard, GTA memory, profiles/themes writes, or game actions are intentionally used in this mode.
+[PASS] High | diagnostics guard before normal startup (static) | guard is in auto-execute before InitProfiles/ApplyAllBinds/CreateHUD
+
+== Capture ==
+Защита захвата: состояние ещё не проверено.
+
+== Files ==
+[PASS] High | main exists | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-sxqcxyio\standalone\AHK_FOR_GOS_TEST_U64.exe
+[PASS] High | main non-empty | size=5449216
+[PASS] High | main has no BOM | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-sxqcxyio\standalone\AHK_FOR_GOS_TEST_U64.exe
+[PASS] High | helper embedded source present | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-sxqcxyio\data\helper.ahk
+[PASS] High | common embedded source present | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-sxqcxyio\data\common.ahk
+[PASS] High | UDF embedded source present | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-sxqcxyio\data\UDF.ahk
+[PASS] High | active profiles config exists | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-sxqcxyio\data\profiles.ini
+[PASS] High | active profiles config non-empty | size=18643
+[PASS] High | active profiles config has no BOM | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-sxqcxyio\data\profiles.ini
+themes.ini: optional file is not present; built-in themes remain available
+
+== Self-test summary ==
+[WARN] Medium | selftest_report.txt exists | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-sxqcxyio\data\selftest_report.txt
+
+== Error log tail ==
+Source: Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-sxqcxyio\data\logs\amz_gos.log
+[20261016123656] [INFO] [Config] Migrated config from v0 to v14
+[20261016123657] [INFO] [System] Script start
+[20261016123700] [INFO] [desktop-smoke] Queued chat line: /r Desktop smoke
+[20261016123700] [INFO] [desktop-smoke] Chat transport: Mock (без игры)
+[20261016123701] [INFO] [AutoTargetID] desktop-smoke: ID 42 | ник First_Player, ped 0x200000
+[20261016123701] [INFO] [AutoTargetID] desktop-smoke: ID 43 | ник Second_Player, ped 0x300000
+[20261016123701] [INFO] [AutoTargetID] desktop-smoke: ID 44 | ник Third_Player, ped 0x400000
+[20261016123702] [INFO] [System] Script exit: Exit
+
+
+== Profile and theme summary ==
+Active config: Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-sxqcxyio\data\profiles.ini
+Active profile: Основной
+ThemeMode: <missing>
+themes.ini: missing
+
+== Safe settings ==
+SafeModeEnabled=<missing>
+SafeBlockWhenChat=<missing>
+SafeVehicleChecks=<missing>
+SafeRequireChatForEditable=<missing>
+SafeTooltipWarnings=<missing>
+SafeDistanceChecks=<missing>
+SafeDistanceLimit=<missing>
+
+== Chat transport ==
+TextSendMode=Auto
+GameWindowTitle=AMAZING ONLINE
+GameProcessName=gta_sa.exe
+AzmpExpectedSHA256=
+MockMode=Off
+[PASS] Critical | unified chat transport wrapper
+[PASS] High | Auto send mode is available
+[PASS] High | window-title locator and EXE fallback are present
+
+== ChatLog and target ID ==
+ChatLog.Enabled=On
+ChatLog.Path=C:\Amazing Games\Amazing Online\PC\amazing\chatlog.txt
+ChatLog.PlayerNickname=Semen_Lukashenko
+ChatLog.AutoCleanup=On
+ChatLog.MaxSizeKB=512
+ChatLog.KeepTailKB=32
+AutoTargetIDEnabled=On
+[PASS] High | ChatLogReader routes lookups through queue
+[PASS] High | RMB target resolver is present
+
+== Context assistant (legacy/internal) ==
+AssistOOPEnabled=On
+AssistStunEnabled=On
+AssistChaseEnabled=On
+AssistHouseEnabled=On
+AssistDrugsEnabled=On
+AssistPDPCuffEnabled=On
+Registration: disabled; profile values are retained only for backward compatibility
+[PASS] High | six context actions remain internal and unregistered | 90 unique items; 8 required; 6 Assist internal; 2 Hijack legacy
+[PASS] Critical | context actions use queue
+
+== Official legislation corpus ==
+Source: https://forum.amazing-online.com/forums/zakonodatelstvo.732/
+TerritoryMapMode=Local
+[PASS] Critical | 20 official documents are readable | docs=20, chars=664495
+[PASS] Critical | every detected article heading is indexed | pages=176, headings=726, failures=0
+[WARN] Medium | optional local assets for 11 territory map groups | groups=11, failures=17
+[PASS] Critical | law-query capture never submits chat
+
+== Bind-list summary ==
+Catalog items: 90
+Hotkey fields: 60
+Trigger fields: 73
+
+== Bind conflict scan ==
+[PASS] High | duplicate catalog tokens
+[PASS] Medium | duplicate non-empty hotkeys
+[PASS] Medium | duplicate non-empty triggers
+[PASS] High | missing labels for hotkey catalog actions
+[PASS] Medium | WantedList trigger is present | Trig_WantedList=!р
+[PASS] Medium | fixed search trigger conflict | !пнайти
+
+== Summary ==
+Status: WARN
+Total checks: 28
+Failures: 0
+Warnings: 2
+Notes: 0
