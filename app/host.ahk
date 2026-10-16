@@ -195,8 +195,8 @@ AppHost_Shutdown() {
 
 AppHost_RuntimeInfo() {
     ; ASCII probe is usable even on a Windows ANSI codepage other than 1251.
-    report := "Product=AHK FOR GOS`r`nCompiled=" . A_IsCompiled . "`r`n"
-    report .= "Runtime=" . A_AhkVersion . "`r`nPointerSize=" . A_PtrSize . "`r`nUnicode=" . A_IsUnicode . "`r`n"
+    report := "Product=AHK FOR GOS`r`nCompiled=" . (A_IsCompiled ? 1 : 0) . "`r`n"
+    report .= "Runtime=" . A_AhkVersion . "`r`nPointerSize=" . A_PtrSize . "`r`nUnicode=" . (A_IsUnicode ? 1 : 0) . "`r`n"
     report .= "SystemCodepage=" . DllCall("GetACP") . "`r`nDataDir=" . AppHost_DataDir() . "`r`n"
     hasSource := InStr(AppHost_SourceText(), "AutoTargetID_Poll() {") > 0
     laws := 0
