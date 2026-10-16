@@ -3,7 +3,8 @@ See docs/desktop/TEST_RESULTS_RU.md and reports/summary.json for current raw out
 Release is ANSI x86; executable cloud checks use explicitly marked TEST_U64.
 396 behavioural checks: zero failures, 3 integration skip groups. Native desktop smoke: 40/0.
 Legacy selftest retains one expected ABI failure on U64, not counted as a pass.
-Real game, target Windows A32 ABI and actual OBS frames are not verified.
+Native Windows build/startup/resource probe of the shipped ANSI x86 EXE passed in GitHub Actions run 38904779329.
+Real game ABI, native client input/GUI integration and actual OBS frames are not verified.
 
 The reports below are historical:
 

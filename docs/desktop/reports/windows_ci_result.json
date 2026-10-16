@@ -1,0 +1,25 @@
+{
+  "workflow": "Standalone Windows EXE",
+  "run_id": "38904779329",
+  "url": "https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK/actions/runs/38904779329",
+  "commit": "7ac2bbf1a83b535f5080d736f1aefb857a765435",
+  "conclusion": "SUCCESS",
+  "duration_seconds": 22,
+  "release_exe_sha256": "39fa414bbd565bdc7bb5cf087b808c87facee83f14b1857e62c6c209d07e1067",
+  "verified": [
+    "native Windows build",
+    "fresh-build and shipped-release PE/source verification",
+    "shipped ANSI x86 executable startup",
+    "Compiled=1",
+    "PointerSize=4",
+    "Unicode=0",
+    "LawDocuments=20",
+    "SourceIntrospection=1"
+  ],
+  "not_claimed": [
+    "real game ABI/commands",
+    "native Windows GUI/input integration",
+    "actual OBS capture frames",
+    "full Cyrillic native regressions when hosted ACP is not 1251"
+  ]
+}
