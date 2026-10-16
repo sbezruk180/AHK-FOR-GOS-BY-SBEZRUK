@@ -1,0 +1,12 @@
+﻿Product=AHK FOR GOS
+Compiled=1
+Runtime=1.1.37.02
+PointerSize=8
+Unicode=1
+SystemCodepage=1251
+DataDir=Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-sxqcxyio\data
+SourceIntrospection=1
+LawDocuments=20
+GameCompatibility=NOT_TESTED
+OBSFrames=NOT_TESTED
+CyrillicLegacyRequirement=Windows system ANSI codepage 1251

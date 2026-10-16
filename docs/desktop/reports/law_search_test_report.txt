@@ -1,0 +1,22 @@
+AHK FOR GOS BY SBEZRUK v1.0 law-search regression
+Documents=20 Pages=176 ArticleHeadings=726 AuditFailures=0
+OfficialCorpusDocs=20 CorpusChars=664495 MapGroups=11
+PASS | all documents/pages/headings indexed
+PASS | official corpus 20/20
+PASS | territory map catalog and official URLs
+PASS | exact reference
+PASS | compact reference
+PASS | natural query
+PASS | word permutation
+PASS | word form
+PASS | bounded typo
+PASS | negative query
+PASS | KAS article reference
+PASS | current KOAP 17.5
+PASS | current KAS 135
+PASS | deleted FZOP 8.10 absent
+PASS | dynamic full-document pages preserve every character
+PASS | 30-result cap and total
+WARN | missing optional local map images: 17
+RESULT=PASS
+LIVE GAME: NOT RUN

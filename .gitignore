@@ -23,3 +23,6 @@ Desktop.ini
 dist/
 __pycache__/
 *.pyc
+
+# Public reports use disposable test data, not user logs.
+!docs/desktop/reports/*.txt

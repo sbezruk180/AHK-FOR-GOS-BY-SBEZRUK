@@ -1,0 +1,47 @@
+﻿Desktop integration probe
+Runtime=1.1.37.02 | Unicode=1 | PtrSize=8
+Compiled=1 | Data=Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-sxqcxyio\data
+No real game or OBS verification.
+INFO | startup WorkingSetMiB=57.49 PeakMiB=57.49
+PASS | compiled standalone host
+PASS | application mutex acquired
+PASS | duplicate application mutex detected
+PASS | first startup creates compatible INI
+PASS | configuration schema 14
+PASS | hotkeys really registered
+PASS | all catalog handlers including direct UI/GPS dispatch
+PASS | settings page profile
+PASS | settings page safety
+PASS | settings page appearance
+PASS | settings page reports
+PASS | settings page operations
+PASS | settings page hotkeys_main
+PASS | settings page hotkeys_transport
+PASS | settings page text_triggers
+PASS | settings page documents
+PASS | settings page rp_person
+PASS | settings page rp_vehicle
+PASS | settings page automation
+PASS | settings page screenshots
+PASS | settings catalog keeps all 13 pages
+PASS | native HUD exists
+PASS | native bind list exists
+PASS | actual atomic profile save
+PASS | identity and binds survive profile reload
+PASS | profile save preserves unknown keys
+PASS | real queue reaches mock transport
+PASS | custom function persistence
+PASS | custom function reload and parser
+PASS | 20 documents available without external laws folder
+PASS | native legislation viewer opens
+PASS | auto ID updates existing native confirmation
+PASS | confirmation applies the displayed ID
+PASS | confirmation decline preserves selection
+PASS | cancellation drains pending work
+PASS | diagnostic launch returns owned process HANDLE
+PASS | same-EXE diagnostic finishes in custom data directory
+PASS | diagnostic does not replace parent instance
+PASS | diagnostic report opens in own application GUI
+PASS | closing settings destroys its native window
+INFO | after native smoke WorkingSetMiB=70.84 PeakMiB=70.84
+Checks=40 | Failed=0
