@@ -1,19 +1,19 @@
 @echo off
 setlocal
-set "AHK_EXE=%~1"
-if not defined AHK_EXE set "AHK_EXE=%LOCALAPPDATA%\Programs\AutoHotkey-AHK-FOR-GOS\v1.1.37.02\AutoHotkeyA32.exe"
-if not exist "%AHK_EXE%" (
-    echo AutoHotkey 1.1.37.02 ANSI x86 not found.
-    exit /b 2
+set "APP_EXE=%~1"
+if not defined APP_EXE set "APP_EXE=%~dp0..\release\AHK_FOR_GOS.exe"
+if not exist "%APP_EXE%" set "APP_EXE=%~dp0..\dist\AHK_FOR_GOS.exe"
+if not exist "%APP_EXE%" (
+  echo Build with build.ps1 or download the standalone EXE first.
+  exit /b 2
 )
-set "AUDIT_LIB=%TEMP%\ahk-audit-libraries-%RANDOM%-%RANDOM%.txt"
-"%AHK_EXE%" /ErrorStdOut /CP1251 /iLib "%AUDIT_LIB%" "%~dp0..\AHK_FOR_GOS_BY_SBEZRUK.ahk"
-if errorlevel 1 exit /b 1
-if exist "%AUDIT_LIB%" del "%AUDIT_LIB%"
-if exist "%~dp0..\audit_selftest_report.txt" del "%~dp0..\audit_selftest_report.txt"
-"%AHK_EXE%" /f /ErrorStdOut /CP1251 "%~dp0..\AHK_FOR_GOS_BY_SBEZRUK.ahk" --audit-selftest
-set "AUDIT_EXIT=%errorlevel%"
-if not exist "%~dp0..\audit_selftest_report.txt" exit /b 1
-echo Regression exit code: %AUDIT_EXIT%
-echo Report: %~dp0..\audit_selftest_report.txt
-exit /b %AUDIT_EXIT%
+for %%I in ("%APP_EXE%") do if /I "%%~nI"=="AutoHotkeyA32" goto source
+set "TEST_DATA=%TEMP%\AHK-GOS-audit-%RANDOM%-%RANDOM%"
+"%APP_EXE%" --data-dir "%TEST_DATA%" --audit-selftest
+set "RC=%ERRORLEVEL%"
+if exist "%TEST_DATA%\audit_selftest_report.txt" type "%TEST_DATA%\audit_selftest_report.txt"
+echo Report: %TEST_DATA%\audit_selftest_report.txt
+exit /b %RC%
+:source
+"%APP_EXE%" /ErrorStdOut /CP1251 "%~dp0..\AHK_FOR_GOS_BY_SBEZRUK.ahk" --audit-selftest
+exit /b %ERRORLEVEL%

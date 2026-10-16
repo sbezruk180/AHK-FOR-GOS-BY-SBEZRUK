@@ -13,7 +13,9 @@ r = Path(__file__).resolve().parents[1]
 if len(sys.argv) != 2:
     raise SystemExit(__doc__)
 output = Path(sys.argv[1])
-s=(r/'AHK_FOR_GOS_BY_SBEZRUK.ahk').read_bytes().decode('cp1251').replace('\r\n','\n')
+sys.path.insert(0, str(r / 'tools/build'))
+from source_graph import SourceGraph
+s = SourceGraph(r).flatten().replace('\r\n', '\n')
 def fn(name):
  i=s.index('\n'+name+'(')+1; return s[i:s.index('\n}',i)+2]
 names=['AutoTargetID_Poll','AutoTargetID_ResetCandidate','AutoTargetID_ClearFailure','AutoTargetID_RequestConfirmation','AutoTargetID_TargetKey','ContextAssistant_Close','ContextAssistant_ShowConfirmationOverlay','ContextAssistant_GetOverlayPosition','ContextAssistant_MakeWindowPassive','ContextAssistant_GetConfirmationPrompt','ContextAssistant_Submit','ContextAssistant_ConfirmHotkeysActive']

@@ -1,0 +1,70 @@
+{
+  "architecture": "TEST_U64",
+  "real_game": "NOT_TESTED",
+  "real_OBS": "NOT_TESTED",
+  "results": [
+    {
+      "mode": "--runtime-info",
+      "status": "PASS",
+      "exit_code": 0,
+      "seconds": 2.89,
+      "report": "runtime_info_report.txt"
+    },
+    {
+      "mode": "--desktop-smoke",
+      "status": "PASS",
+      "exit_code": 0,
+      "seconds": 8.86,
+      "report": "desktop_smoke_report.txt"
+    },
+    {
+      "mode": "--audit-selftest",
+      "status": "PASS",
+      "exit_code": 0,
+      "seconds": 42.98,
+      "report": "audit_selftest_report.txt"
+    },
+    {
+      "mode": "--diagnostics",
+      "status": "PASS",
+      "exit_code": 0,
+      "seconds": 14.88,
+      "report": "diagnostics_report.txt"
+    },
+    {
+      "mode": "--selftest",
+      "status": "EXPECTED_ABI_FAILURE",
+      "exit_code": 1,
+      "seconds": 28.82,
+      "report": "selftest_report.txt"
+    },
+    {
+      "mode": "--context-mocktest",
+      "status": "PASS",
+      "exit_code": 0,
+      "seconds": 2.8,
+      "report": "context_assistant_test.txt"
+    },
+    {
+      "mode": "--autoreport-mocktest",
+      "status": "PASS",
+      "exit_code": 0,
+      "seconds": 2.79,
+      "report": "autoreport_mocktest_report.txt"
+    },
+    {
+      "mode": "--law-search-test",
+      "status": "PASS",
+      "exit_code": 0,
+      "seconds": 26.52,
+      "report": "law_search_test_report.txt"
+    },
+    {
+      "mode": "--v1-mocktest",
+      "status": "PASS",
+      "exit_code": 0,
+      "seconds": 2.74,
+      "report": "v1_mocktest_report.txt"
+    }
+  ]
+}

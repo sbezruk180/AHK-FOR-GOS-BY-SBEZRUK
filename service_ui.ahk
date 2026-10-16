@@ -128,9 +128,9 @@ ServiceUI_Message(title, text, severity := "INFO") {
     return ServiceUI_Notify(Trim(title . "") . ": " . text, 6000, severity)
 }
 
-ServiceUI_ShowDetails(title, text) {
+ServiceUI_ShowDetails(title, text, forceDisplay := false) {
     global ServiceUIDetailsHwnd
-    if ServiceUI_IsTest() {
+    if (ServiceUI_IsTest() && !forceDisplay) {
         MockPreview_Append("[AHK DETAILS] " . title . ": " . text)
         return true
     }

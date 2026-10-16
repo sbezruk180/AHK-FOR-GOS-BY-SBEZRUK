@@ -837,10 +837,14 @@ LawSearch_CorpusFingerprint() {
     LawSearch_InitCatalog()
     signature := ""
     for _, doc in LawSearchDocCatalog {
-        path := A_ScriptDir . "\laws\" . doc.FileName
-        FileGetSize, size, %path%
-        FileGetTime, modified, %path%, M
-        signature .= doc.Code . ":" . (FileExist(path) ? size . ":" . modified . ":" . FileSHA256(path) : "missing") . "|"
+        path := AppHost_LawPath(doc.FileName)
+        if FileExist(path) {
+            FileGetSize, size, %path%
+            FileGetTime, modified, %path%, M
+            identity := size . ":" . modified . ":" . FileSHA256(path)
+        } else
+            identity := A_IsCompiled ? "embedded:" . AppHost_ResourceText("LAW_DIGEST_" . doc.Code, "UTF-8") : "missing"
+        signature .= doc.Code . ":" . identity . "|"
     }
     return signature
 }

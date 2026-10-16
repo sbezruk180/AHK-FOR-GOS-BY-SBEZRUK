@@ -1,0 +1,15 @@
+{
+  "version": "1.1.37.02",
+  "url": "https://github.com/AutoHotkey/AutoHotkey/releases/download/v1.1.37.02/AutoHotkey_1.1.37.02.zip",
+  "sha256": "6f3663f7cdd25063c8c8728f5d9b07813ced8780522fd1f124ba539e2854215f",
+  "base": "Compiler/ANSI 32-bit.bin",
+  "base_sha256": "f5a5c05bf0fedcc451ade5676a5647e828a6f08cf6c21970e6c035f4311b5a3c",
+  "source_url": "https://codeload.github.com/AutoHotkey/AutoHotkey/zip/refs/tags/v1.1.37.02",
+  "source_sha256": "2b1d94e5d9b94b6a6dc3a2565bc65e74fef93ac2c34bb57fe182ffb4ab20fe92",
+  "files": {
+    "Compiler/ANSI 32-bit.bin": "f5a5c05bf0fedcc451ade5676a5647e828a6f08cf6c21970e6c035f4311b5a3c",
+    "Compiler/Unicode 64-bit.bin": "6e7c9ae1daabdb958a4d9c8e7297ba956c9504b5f76ce61fc31281f5bb0b0b55",
+    "AutoHotkeyU64.exe": "effdea83c6b7a1dc2ce9e9d40e91dfd59bed9fcbd580903423648b7ca97d9696",
+    "license.txt": "b27c1a7c92686e47f8740850ad24877a50be23fd3dbd44edee50ac1223135e38"
+  }
+}
