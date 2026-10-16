@@ -1,36 +1,44 @@
 #!/usr/bin/env python3
-"""Validate release bytes, required includes, helper synchronization and checksums."""
+"""Validate exact release bytes, include graph, source preservation and manifest."""
 from pathlib import Path
 import hashlib
 import subprocess
 import sys
 
 root = Path(__file__).resolve().parents[1]
-sources = sorted(root.rglob('*.ahk'))
+sys.path.insert(0,str(root/'tools/build'))
+from source_graph import SourceGraph
+
+graph=SourceGraph(root);graph.flatten()
+sources=graph.files+[root/'tools/audit_gui.ahk',root/'tools/build/compile_resources.ahk']
 for path in sources:
-    data = path.read_bytes()
-    if data.startswith((b'\xef\xbb\xbf', b'\xff\xfe', b'\xfe\xff')):
+    data=path.read_bytes()
+    if data.startswith((b'\xef\xbb\xbf',b'\xff\xfe',b'\xfe\xff')):
         raise SystemExit(f'{path.name}: unexpected BOM')
     data.decode('cp1251')
-    if b'\n' in data.replace(b'\r\n', b''):
+    if b'\n' in data.replace(b'\r\n',b''):
         raise SystemExit(f'{path.name}: expected CRLF')
+for path in (root/'laws').glob('*.txt'):
+    data=path.read_bytes();data.decode('cp1251')
+    if data.startswith((b'\xef\xbb\xbf',b'\xff\xfe',b'\xfe\xff')) or b'\n' in data.replace(b'\r\n',b''):
+        raise SystemExit('Unexpected LAW encoding/newlines: '+path.name)
+subprocess.run([sys.executable,str(root/'tools/sync_helper.py'),'--check'],check=True)
+subprocess.run([sys.executable,str(root/'tools/check_migration.py')],check=True)
 
-for name in ('UDF.ahk', 'common.ahk', 'runtime_support.ahk', 'chat_typing.ahk', 'id_capture.ahk', 'service_ui.ahk', 'ui_style.ahk',
-             'tests/audit_regression.ahk', 'tests/chat_typing_regression.ahk',
-             'tests/id_capture_regression.ahk', 'tests/chat_state_regression.ahk',
-             'tests/autoid_source_regression.ahk', 'tests/memory_compat_regression.ahk',
-             'tests/service_ui_regression.ahk', 'tests/service_flows_regression.ahk',
-             'tests/native_dialog_regression.ahk'):
-    if not (root / name).is_file():
-        raise SystemExit(f'Missing required include: {name}')
-subprocess.run([sys.executable, str(root / 'tools/sync_helper.py'), '--check'], check=True)
-
-count = 0
-for line in (root / 'CHECKSUMS.sha256').read_text().splitlines():
-    expected, name = line.split('  ', 1)
-    actual = hashlib.sha256((root / name).read_bytes()).hexdigest()
-    if actual != expected:
-        raise SystemExit(f'Checksum mismatch: {name}')
-    count += 1
-print(f'Package valid: {len(sources)} CP1251/CRLF sources; {count} verified files')
-print('This checks packaging; run --audit-selftest for behavioural tests.')
+listed=set()
+for line in (root/'CHECKSUMS.sha256').read_text().splitlines():
+    expected,name=line.split('  ',1)
+    if name in listed:raise SystemExit('Repeated manifest file: '+name)
+    listed.add(name)
+    if hashlib.sha256((root/name).read_bytes()).hexdigest()!=expected:
+        raise SystemExit('Checksum mismatch: '+name)
+tracked=set(p for p in subprocess.check_output(['git','ls-files','-z'],cwd=root).decode().split('\0') if p and p!='CHECKSUMS.sha256')
+if listed!=tracked:
+    raise SystemExit('Manifest/tracked set mismatch: '+str(sorted(listed^tracked)))
+exe=root/'release/AHK_FOR_GOS.exe'
+if exe.is_file():
+    subprocess.run([sys.executable,str(root/'tools/verify_exe.py'),str(exe)],check=True)
+    forbidden=list((root/'release').glob('*TEST_U64*'))
+    if forbidden:raise SystemExit('Test-only binary in release directory')
+print(f'Package valid: {len(sources)} CP1251/CRLF sources; {len(graph.files)} embedded modules; {len(listed)} verified tracked files')
+print('This validates packaging and code correspondence, not the actual game or OBS.')

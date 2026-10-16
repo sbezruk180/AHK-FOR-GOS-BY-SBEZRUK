@@ -1,3 +1,12 @@
+Current standalone desktop build, 2026-10-16.
+See docs/desktop/TEST_RESULTS_RU.md and reports/summary.json for current raw outcomes.
+Release is ANSI x86; executable cloud checks use explicitly marked TEST_U64.
+396 behavioural checks: zero failures, 3 integration skip groups. Native desktop smoke: 40/0.
+Legacy selftest retains one expected ABI failure on U64, not counted as a pass.
+Real game, target Windows A32 ABI and actual OBS frames are not verified.
+
+The reports below are historical:
+
 Current fast Auto ID confirmation update, 2026-10-13.
 19 shipped AHK sources; CP1251 without BOM and CRLF; target AHK 1.1.37.02 ANSI x86.
 

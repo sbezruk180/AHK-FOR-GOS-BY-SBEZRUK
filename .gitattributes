@@ -1,9 +1,11 @@
-.gitattributes text eol=lf
-.gitignore text eol=lf
-CHECKSUMS.sha256 text eol=lf
-LICENSE text eol=lf
+# Release manifests pin exact bytes across Linux and Windows checkouts.
+# AHK/LAW files are intentionally CP1251 + CRLF; do not normalize them.
+* -text
 *.ahk -text linguist-language=AutoHotkey
-laws/*.txt -text
-*.cmd text eol=crlf
-*.ps1 text eol=crlf
-*.md text eol=lf
+*.exe binary
+*.zip binary
+# Preserve whitespace inside legacy continuation strings and moved startup blocks.
+app/ui_documents.ahk whitespace=-blank-at-eol,cr-at-eol
+app/bootstrap.ahk whitespace=-blank-at-eof,cr-at-eol
+app/cli.ahk whitespace=-blank-at-eof,cr-at-eol
+app/state.ahk whitespace=-blank-at-eof,cr-at-eol

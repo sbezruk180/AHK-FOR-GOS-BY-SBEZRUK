@@ -203,6 +203,14 @@ RunAuditSelfTest() {
     RunServiceFlowsRegression()
     RunNativeDialogRegressionTests()
     Audit_AutoIDSource()
+    Audit_DesktopHost(scratch)
+    cancelIdempotent := true
+    try {
+        CancelAllAutomation(0)
+    } catch inactiveInputError {
+        cancelIdempotent := false
+    }
+    AuditAssert("Desktop: cancellation is safe with no legacy Input even inside try", cancelIdempotent)
     IDCapture_RunRegression()
     Audit_ChatIDIntegration(scratch)
     Audit_MemoryRetention()
@@ -233,7 +241,7 @@ RunAuditSelfTest() {
         AuditSkip("ANSI x86 game ABI, module enumeration and HANDLE lifecycle need Windows A32 integration")
     AuditSkip("Real Windows GUI/DPI, OBS capture, game offsets, remote-thread stress and screenshot files require target integration")
     AuditReport .= "`r`nChecks: " . AuditChecks . " | Failed: " . AuditFailures . " | Skipped integration groups: " . AuditSkipped . "`r`n"
-    reportPath := A_ScriptDir . "\audit_selftest_report.txt"
+    reportPath := AppHost_DataDir() . "\audit_selftest_report.txt"
     FileDelete, %reportPath%
     FileAppend, %AuditReport%, %reportPath%, CP1251
     reportFailed := ErrorLevel
@@ -261,7 +269,7 @@ AuditSkip(name) {
 Audit_CorpusReload() {
     global LawSearchDocCatalog, LawCorpusCache, LawCorpusPages, SearchInitialized
     fileName := "_audit_" . DllCall("GetCurrentProcessId") . ".txt"
-    path := A_ScriptDir . "\laws\" . fileName
+    path := AppHost_DataDir() . "\laws\" . fileName
     if FileExist(path) {
         AuditSkip("owned temporary LAW filename collision")
         return

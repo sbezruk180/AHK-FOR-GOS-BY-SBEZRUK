@@ -1,11 +1,14 @@
 @echo off
 setlocal
-set "AHK_EXE=%~1"
-if not defined AHK_EXE set "AHK_EXE=%LOCALAPPDATA%\Programs\AutoHotkey-AHK-FOR-GOS\v1.1.37.02\AutoHotkeyA32.exe"
-if not exist "%AHK_EXE%" (
-    echo AutoHotkey 1.1.37.02 ANSI x86 not found.
-    echo Pass its full path as the first argument.
-    exit /b 2
+if not "%~1"=="" goto legacy
+set "APP_EXE=%~dp0release\AHK_FOR_GOS.exe"
+if not exist "%APP_EXE%" set "APP_EXE=%~dp0dist\AHK_FOR_GOS.exe"
+if not exist "%APP_EXE%" (
+  echo Build with build.ps1 or download release\AHK_FOR_GOS.exe.
+  exit /b 2
 )
-"%AHK_EXE%" /CP1251 "%~dp0AHK_FOR_GOS_BY_SBEZRUK.ahk"
-exit /b %errorlevel%
+start "" "%APP_EXE%"
+exit /b 0
+:legacy
+"%~1" /CP1251 "%~dp0AHK_FOR_GOS_BY_SBEZRUK.ahk"
+exit /b %ERRORLEVEL%

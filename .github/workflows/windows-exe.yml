@@ -1,0 +1,49 @@
+name: Standalone Windows EXE
+on:
+  workflow_dispatch:
+  push:
+    branches: [audit-fixes-obs-search-gui-20261009]
+    paths: ['**/*.ahk', 'tools/**', 'laws/**', 'build.ps1', '.github/workflows/windows-exe.yml']
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Build and verify official ANSI x86 executable
+        shell: pwsh
+        run: |
+          ./build.ps1
+          python tools/verify_exe.py dist/AHK_FOR_GOS.exe
+          if ($LASTEXITCODE -ne 0) { throw 'Artifact verification failed' }
+      - name: Native x86 boot and embedded-resource probe
+        shell: pwsh
+        run: |
+          $data = Join-Path $env:RUNNER_TEMP 'ahk-gos-native-probe'
+          $exe = (Resolve-Path 'dist/AHK_FOR_GOS.exe').Path
+          $process = Start-Process -FilePath $exe -ArgumentList @('--runtime-info', '--data-dir', "`"$data`"") -PassThru -Wait
+          if ($process.ExitCode -ne 0) { throw "Native boot failed: $($process.ExitCode)" }
+          $report = Get-Content (Join-Path $data 'runtime_info_report.txt') -Raw
+          $report
+          foreach ($line in @('Compiled=1','PointerSize=4','Unicode=0','LawDocuments=20','SourceIntrospection=1')) {
+            if (-not $report.Contains($line)) { throw "Missing native invariant: $line" }
+          }
+          if ($report.Contains('SystemCodepage=1251')) {
+            $process = Start-Process -FilePath $exe -ArgumentList @('--audit-selftest', '--data-dir', "`"$data`"") -PassThru -Wait
+            Get-Content (Join-Path $data 'audit_selftest_report.txt')
+            if ($process.ExitCode -ne 0) { throw "Native regressions failed: $($process.ExitCode)" }
+          } else {
+            Write-Output 'SKIP full Cyrillic ANSI regressions: the hosted runner does not use system codepage 1251.'
+          }
+      - uses: actions/upload-artifact@v4
+        with:
+          name: AHK-FOR-GOS-Windows-ANSI-x86
+          path: |
+            dist/AHK_FOR_GOS.exe
+            dist/AHK_FOR_GOS.sha256
+            dist/AHK_FOR_GOS.build.json
+          if-no-files-found: error

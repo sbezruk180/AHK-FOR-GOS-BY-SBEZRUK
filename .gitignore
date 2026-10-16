@@ -17,3 +17,9 @@ backups/
 .idea/
 Thumbs.db
 Desktop.ini
+
+# Build outputs and downloaded verified toolchain
+.build/
+dist/
+__pycache__/
+*.pyc
