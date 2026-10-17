@@ -80,26 +80,35 @@ DllCall("UnhookWindowsHookEx", "Ptr", probeHandle)
 DllCall("GlobalFree", "Ptr", probeAddress)
 Check("paced key has at least 40ms hold", KeyDuration >= 40)
 Check("paced key restores caller delay", A_KeyDelay = beforeDelay && A_KeyDuration = beforeDuration)
+; A plain Win32 target uses DefWindowProc for language requests. An AHK GUI
+; can intercept WM_INPUTLANGCHANGEREQUEST and does not represent a game target.
+MainWindow := DllCall("CreateWindowExW", "UInt", 0, "WStr", "STATIC", "WStr", "Native typing target"
+    , "UInt", 0x10CF0000, "Int", 400, "Int", 300, "Int", 340, "Int", 150
+    , "Ptr", 0, "Ptr", 0, "Ptr", 0, "Ptr", 0, "Ptr")
+MainText := DllCall("CreateWindowExW", "UInt", 0, "WStr", "EDIT", "WStr", ""
+    , "UInt", 0x50010080, "Int", 15, "Int", 15, "Int", 280, "Int", 30
+    , "Ptr", MainWindow, "Ptr", 0, "Ptr", 0, "Ptr", 0, "Ptr")
+WinActivate, ahk_id %MainWindow%
 FixtureChatOpen := 1, Leaked := ""
 ControlFocus,, ahk_id %MainText%
-GuiControl, Main:, %MainText%,
+ControlSetText,,, ahk_id %MainText%
 textStarted := TickNow()
 Check("real character typing succeeds", SendChatTyped("12345678901234567890", false, false, "", 0) = 1)
 textElapsed := TickNow() - textStarted
 Report .= "TypingError=" . ChatTypingLastError . "`r`n"
 Sleep, 80
-GuiControlGet, typedDigits, Main:, %MainText%
+ControlGetText, typedDigits,, ahk_id %MainText%
 Report .= "TypedDigits=" . typedDigits . "`r`n"
 Check("real character typing delivers exact text", ("text:" . typedDigits) == "text:12345678901234567890")
 Check("20 characters do not inherit menu key delays", textElapsed < 1400)
 Check("typing releases input ownership and restores caller delay", !PhysicalInputBusy && A_KeyDelay = beforeDelay && A_KeyDuration = beforeDuration)
 Leaked := ""
-GuiControl, Main:, %MainText%,
+ControlSetText,,, ahk_id %MainText%
 if (!FixtureLayoutFallback) {
     russianResult := SendChatTyped("/m Стоп! ID:42", false, false, "", 0)
-    Check("Russian physical typing result=" . russianResult . " error=" . ChatTypingLastError, russianResult = 1)
+    Check("Russian physical typing result=" . russianResult . " error=" . ChatTypingLastError . " layout=" . InputLayoutLastError, russianResult = 1)
     Sleep, 80
-    GuiControlGet, typedRussian, Main:, %MainText%
+    ControlGetText, typedRussian,, ahk_id %MainText%
     Check("Russian exact text actual=[" . typedRussian . "]", typedRussian == "/m Стоп! ID:42")
 } else
     Report .= "SKIP | Mixed RU/US typing: Wine cannot load both layouts; digit timing uses current layout.`r`n"
