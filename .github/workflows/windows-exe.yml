@@ -47,6 +47,12 @@ jobs:
           python tools/verify_exe.py dist/AHK_FOR_GOS_TEST_U64.exe --test-u64
           if ($LASTEXITCODE -ne 0) { throw 'Test host verification failed' }
           $data = Join-Path $env:RUNNER_TEMP 'ahk-gos-gui-probe'
+          # The test host is Unicode; avoid CP1252 corrupting Russian INI metadata
+          # on the English runner. Production ANSI/CP1251 compatibility is separate.
+          New-Item -ItemType Directory -Path $data -Force | Out-Null
+          foreach ($name in @('profiles.ini','themes.ini','custom_functions.ini')) {
+            [System.IO.File]::WriteAllText((Join-Path $data $name), "; Unicode native GUI fixture`r`n", [System.Text.Encoding]::Unicode)
+          }
           $exe = (Resolve-Path 'dist/AHK_FOR_GOS_TEST_U64.exe').Path
           $process = Start-Process -FilePath $exe -ArgumentList @('--desktop-smoke', '--data-dir', "`"$data`"") -PassThru
           if (-not $process.WaitForExit(120000)) { $process.Kill(); throw 'Native GUI check timed out' }
