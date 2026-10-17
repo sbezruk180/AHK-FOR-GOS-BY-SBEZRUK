@@ -96,10 +96,11 @@ Check("typing releases input ownership and restores caller delay", !PhysicalInpu
 Leaked := ""
 GuiControl, Main:, %MainText%,
 if (!FixtureLayoutFallback) {
-    Check("Russian commands and punctuation use physical typing", SendChatTyped("/m Стоп! ID:42", false, false, "", 0) = 1)
+    russianResult := SendChatTyped("/m Стоп! ID:42", false, false, "", 0)
+    Check("Russian physical typing result=" . russianResult . " error=" . ChatTypingLastError, russianResult = 1)
     Sleep, 80
     GuiControlGet, typedRussian, Main:, %MainText%
-    Check("Russian command is delivered without corrupted symbols", typedRussian == "/m Стоп! ID:42")
+    Check("Russian exact text actual=[" . typedRussian . "]", typedRussian == "/m Стоп! ID:42")
 } else
     Report .= "SKIP | Mixed RU/US typing: Wine cannot load both layouts; digit timing uses current layout.`r`n"
 Report .= "Typing20CharsMs=" . textElapsed . "`r`n"
