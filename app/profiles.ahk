@@ -143,6 +143,8 @@ LoadUIAppearanceFromIni(fileName) {
     IniRead, GuiTransparency, %fileName%, UI, GuiTransparency, 225
     IniRead, BackgroundImageURL, %fileName%, UI, BackgroundImageURL, %A_Space%
     BackgroundImageURL := Trim(BackgroundImageURL)
+    IniRead, TextTriggerInputMode, %fileName%, UI, TextTriggerInputMode, Игровой чат
+    PrivateText_NormalizeMode(TextTriggerInputMode)
     IniRead, FullscreenSafeGui, %fileName%, UI, FullscreenSafeGui, Auto
     IniRead, ProfileMode, %fileName%, UI, ProfileMode, ППС
     IniRead, HUDMode, %fileName%, UI, HUDMode, Полный
@@ -380,6 +382,7 @@ WriteUIAppearanceToIni(fileName) {
     CheckedIniWrite(InnerRoundness, fileName, "UI", "InnerRoundness")
     CheckedIniWrite(GuiTransparency, fileName, "UI", "GuiTransparency")
     CheckedIniWrite(BackgroundImageURL, fileName, "UI", "BackgroundImageURL")
+    CheckedIniWrite(TextTriggerInputMode, fileName, "UI", "TextTriggerInputMode")
     CheckedIniWrite(FullscreenSafeGui, fileName, "UI", "FullscreenSafeGui")
     CheckedIniWrite(ProfileMode, fileName, "UI", "ProfileMode")
     CheckedIniWrite(HUDMode, fileName, "UI", "HUDMode")
@@ -906,6 +909,7 @@ MigrateV6Configuration(fileName) {
     defaults["AutoTargetIDEnabled"] := "On"
     defaults["Bind_OpenBindsTab"] := ""
     defaults["Bind_ConfirmID"] := "F1"
+    defaults["Bind_TextCommandInput"] := "!t"
     defaults["Bind_RejectID"] := "F2"
     defaults["Bind_MaskCall"] := ""
     defaults["Bind_RecordCheck"] := ""
@@ -1888,6 +1892,7 @@ LoadProfile(profileName) {
     IniRead, Bind_HideLawGui, %ConfigFile%, %section%, Bind_HideLawGui, Pause
     IniRead, Bind_ToggleHUD, %ConfigFile%, %section%, Bind_ToggleHUD, F12
     IniRead, Bind_IDOverlay, %ConfigFile%, %section%, Bind_IDOverlay, F5
+    IniRead, Bind_TextCommandInput, %ConfigFile%, %section%, Bind_TextCommandInput, !t
     IniRead, Bind_ConfirmID, %ConfigFile%, %section%, Bind_ConfirmID, F1
     IniRead, Bind_RejectID, %ConfigFile%, %section%, Bind_RejectID, F2
     IniRead, Bind_ResetID, %ConfigFile%, %section%, Bind_ResetID, ^Numpad0

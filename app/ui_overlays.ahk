@@ -1,11 +1,10 @@
 ; ui overlays subsystem. Definitions only; initialization is in bootstrap.
 
-PromoteOverlayWindow(hwnd, keepShown := 1, noActivate := 0) {
+PromoteOverlayWindow(hwnd, keepShown := 1, noActivate := 1) {
     if (!hwnd || !DllCall("IsWindow", "Ptr", hwnd))
         return
     flags := 0x0001 | 0x0002
-    if (noActivate)
-        flags |= 0x0010
+    flags |= 0x0010
     if (keepShown && DllCall("IsWindowVisible", "Ptr", hwnd))
         flags |= 0x0040
     WinSet, AlwaysOnTop, On, ahk_id %hwnd%
@@ -614,7 +613,7 @@ CreateHUD() {
     lineW := hudW - 40
 
     Gui, 12:Destroy
-    Gui, 12:+HwndhHUDWnd +AlwaysOnTop -Caption +ToolWindow +LastFound
+    Gui, 12:+HwndhHUDWnd +AlwaysOnTop -Caption +ToolWindow +LastFound +E0x08000000
     Gui, 12:Color, %panel%
     Gui, 12:Margin, 0, 0
     SafePicture(12, 0, 0, hudW, hudH, "HUDBG", BackgroundImageFile)
@@ -933,7 +932,7 @@ CreateBindList() {
 
     UIStyle_SetTextRole(countHwnd, "accent")
     Capture_BeforeShow("13")
-    Gui, 13:Show, % "x" BindListX " y" BindListY " w" BindListW " h" BindListH, BindList
+    Gui, 13:Show, % "x" BindListX " y" BindListY " w" BindListW " h" BindListH . (GameUi_ShouldShowPassive() ? " NoActivate" : ""), BindList
     PromoteOverlayWindow(hBindListWnd, 1, 0)
     bindListAlpha := BindListTransparency
     NormalizeNumberRange(bindListAlpha, 225, 150, 255)

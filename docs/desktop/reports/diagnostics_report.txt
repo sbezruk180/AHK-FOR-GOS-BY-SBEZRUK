@@ -1,7 +1,7 @@
 AHK FOR GOS BY SBEZRUK diagnostics report
-Time: 2026-10-17 09:51:35
-Project: Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-gf2wswi2\data
-Script: Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-gf2wswi2\standalone\AHK_FOR_GOS_TEST_U64.exe
+Time: 2026-10-17 14:05:44
+Project: Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-cfmvt62l\data
+Script: Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-cfmvt62l\standalone\AHK_FOR_GOS_TEST_U64.exe
 Mode: CLI read-only diagnostics
 
 
@@ -13,61 +13,61 @@ No GUI, hotkeys, timers, clipboard, GTA memory, profiles/themes writes, or game 
 Защита захвата: состояние ещё не проверено.
 
 == Files ==
-[PASS] High | main exists | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-gf2wswi2\standalone\AHK_FOR_GOS_TEST_U64.exe
-[PASS] High | main non-empty | size=5494272
-[PASS] High | main has no BOM | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-gf2wswi2\standalone\AHK_FOR_GOS_TEST_U64.exe
-[PASS] High | helper embedded source present | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-gf2wswi2\data\helper.ahk
-[PASS] High | common embedded source present | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-gf2wswi2\data\common.ahk
-[PASS] High | UDF embedded source present | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-gf2wswi2\data\UDF.ahk
-[PASS] High | active profiles config exists | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-gf2wswi2\data\profiles.ini
-[PASS] High | active profiles config non-empty | size=18643
-[PASS] High | active profiles config has no BOM | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-gf2wswi2\data\profiles.ini
+[PASS] High | main exists | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-cfmvt62l\standalone\AHK_FOR_GOS_TEST_U64.exe
+[PASS] High | main non-empty | size=5564928
+[PASS] High | main has no BOM | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-cfmvt62l\standalone\AHK_FOR_GOS_TEST_U64.exe
+[PASS] High | helper embedded source present | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-cfmvt62l\data\helper.ahk
+[PASS] High | common embedded source present | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-cfmvt62l\data\common.ahk
+[PASS] High | UDF embedded source present | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-cfmvt62l\data\UDF.ahk
+[PASS] High | active profiles config exists | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-cfmvt62l\data\profiles.ini
+[PASS] High | active profiles config non-empty | size=20583
+[PASS] High | active profiles config has no BOM | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-cfmvt62l\data\profiles.ini
 themes.ini: optional file is not present; built-in themes remain available
 
 == Self-test summary ==
-[WARN] Medium | selftest_report.txt exists | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-gf2wswi2\data\selftest_report.txt
+[WARN] Medium | selftest_report.txt exists | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-cfmvt62l\data\selftest_report.txt
 
 == Error log tail ==
-Source: Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-gf2wswi2\data\logs\amz_gos.log
-[20261017095043] [INFO] [Config] Migrated config from v0 to v14
-[20261017095044] [INFO] [System] Script start
-[20261017095047] [INFO] [desktop-smoke] Queued chat line: /r Desktop smoke
-[20261017095047] [INFO] [desktop-smoke] Chat transport: Mock (без игры)
-[20261017095048] [INFO] [AutoTargetID] desktop-smoke: ID 42 | ник First_Player, ped 0x200000
-[20261017095048] [INFO] [AutoTargetID] desktop-smoke: ID 43 | ник Second_Player, ped 0x300000
-[20261017095048] [INFO] [AutoTargetID] desktop-smoke: ID 44 | ник Third_Player, ped 0x400000
-[20261017095049] [INFO] [System] Script exit: Exit
+Source: Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-cfmvt62l\data\logs\amz_gos.log
+[20261017140444] [INFO] [Config] Migrated config from v0 to v14
+[20261017140446] [INFO] [System] Script start
+[20261017140449] [INFO] [desktop-smoke] Queued chat line: /r Desktop smoke
+[20261017140449] [INFO] [desktop-smoke] Chat transport: Mock (без игры)
+[20261017140449] [INFO] [AutoTargetID] desktop-smoke: ID 42 | ник First_Player, ped 0x200000
+[20261017140449] [INFO] [AutoTargetID] desktop-smoke: ID 43 | ник Second_Player, ped 0x300000
+[20261017140449] [INFO] [AutoTargetID] desktop-smoke: ID 44 | ник Third_Player, ped 0x400000
+[20261017140450] [INFO] [System] Script exit: Exit
 
 
 == Profile and theme summary ==
-Active config: Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-gf2wswi2\data\profiles.ini
+Active config: Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-cfmvt62l\data\profiles.ini
 Active profile: Основной
-ThemeMode: <missing>
+ThemeMode: Graphite
 themes.ini: missing
 
 == Safe settings ==
-SafeModeEnabled=<missing>
-SafeBlockWhenChat=<missing>
-SafeVehicleChecks=<missing>
-SafeRequireChatForEditable=<missing>
-SafeTooltipWarnings=<missing>
-SafeDistanceChecks=<missing>
-SafeDistanceLimit=<missing>
+SafeModeEnabled=Off
+SafeBlockWhenChat=Off
+SafeVehicleChecks=Off
+SafeRequireChatForEditable=Off
+SafeTooltipWarnings=Off
+SafeDistanceChecks=Off
+SafeDistanceLimit=12
 
 == Chat transport ==
 TextSendMode=Auto
 GameWindowTitle=AMAZING ONLINE
 GameProcessName=gta_sa.exe
 AzmpExpectedSHA256=
-MockMode=Off
+MockMode=On
 [PASS] Critical | unified chat transport wrapper
 [PASS] High | Auto send mode is available
 [PASS] High | window-title locator and EXE fallback are present
 
 == ChatLog and target ID ==
 ChatLog.Enabled=On
-ChatLog.Path=C:\Amazing Games\Amazing Online\PC\amazing\chatlog.txt
-ChatLog.PlayerNickname=Semen_Lukashenko
+ChatLog.Path=H1:54:433A5C416D617A696E672047616D65735C416D617A696E67204F6E6C696E655C50435C616D617A696E675C636861746C6F672E747874
+ChatLog.PlayerNickname=H1:16:53656D656E5F4C756B617368656E6B6F
 ChatLog.AutoCleanup=On
 ChatLog.MaxSizeKB=512
 ChatLog.KeepTailKB=32
@@ -83,7 +83,7 @@ AssistHouseEnabled=On
 AssistDrugsEnabled=On
 AssistPDPCuffEnabled=On
 Registration: disabled; profile values are retained only for backward compatibility
-[PASS] High | six context actions remain internal and unregistered | 90 unique items; 8 required; 6 Assist internal; 2 Hijack legacy
+[PASS] High | six context actions remain internal and unregistered | 91 unique items; 8 required; 6 Assist internal; 2 Hijack legacy
 [PASS] Critical | context actions use queue
 
 == Official legislation corpus ==
@@ -95,8 +95,8 @@ TerritoryMapMode=Local
 [PASS] Critical | law-query capture never submits chat
 
 == Bind-list summary ==
-Catalog items: 90
-Hotkey fields: 60
+Catalog items: 91
+Hotkey fields: 61
 Trigger fields: 73
 
 == Bind conflict scan ==

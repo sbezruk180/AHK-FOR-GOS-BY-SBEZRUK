@@ -225,10 +225,11 @@ ShowSettingsWindow() {
     Settings_NormalizeViewport()
     Gui, 2:-DPIScale
     Capture_BeforeShow("2")
-    Gui, 2:Show, % "x" . SettingsX . " y" . SettingsY . " w" . SettingsW . " h" . SettingsH, Настройки профиля
+    Gui, 2:Show, % "x" . SettingsX . " y" . SettingsY . " w" . SettingsW . " h" . SettingsH . (GameUi_ShouldShowPassive() ? " NoActivate" : ""), Настройки профиля
     Gui, 2:+DPIScale
     Settings_UpdateScrollbars()
-    WinActivate, ahk_id %hSettingsWnd%
+    if !GameUi_ShouldShowPassive()
+        WinActivate, ahk_id %hSettingsWnd%
     settingsAlpha := 255
     PromoteOverlayWindow(hSettingsWnd)
     WinSet, Transparent, %settingsAlpha%, ahk_id %hSettingsWnd%
@@ -930,7 +931,11 @@ BuildSettingsGui() {
     SettingsBuildingPage := 8
     Gui, 2:Tab, 8
     Settings_AddPageFrame("TXT-команды", "Триггеры вводятся в чат с префиксом ! и сохраняются в профиль.", cardBg, cardEdge, text, muted)
-    Settings_AddGrid(Settings_GetCatalogItems("Trigger", "commands"), 240, 166, 5, 180, 52, "Edit", text, inputText)
+    AddOutlinedPanel(2, 240, 166, 904, 96, panel, cardEdge, 1)
+    Settings_AddControl("Ввод текстовых команд", "CFG_TextTriggerInputMode", TextTriggerInputMode, 256, 176, 340, "DropDown", "Игровой чат|Окно AHK", text, inputText)
+    Gui, 2:Font, s9 Norm c%muted%, Segoe UI
+    Gui, 2:Add, Text, x622 y180 w494 h60 +Wrap BackgroundTrans, !бинд или горячая клавиша «Окно текстовых команд» (по умолчанию Alt+T). Клавишу можно изменить в разделе основных биндов.
+    Settings_AddGrid(Settings_GetCatalogItems("Trigger", "commands"), 240, 280, 5, 180, 52, "Edit", text, inputText)
 
     SettingsBuildingPage := 9
     Gui, 2:Tab, 9
@@ -1114,6 +1119,8 @@ ApplyCfgCatalogValuesToGlobals() {
 
 ApplyCfgUiValuesToGlobals() {
     global
+    TextTriggerInputMode := CFG_TextTriggerInputMode
+    PrivateText_NormalizeMode(TextTriggerInputMode)
     OBSHideWindows := CFG_OBSHideWindows
     NormalizeOnOff(OBSHideWindows, "Off")
     Capture_RefreshWindows()

@@ -27,6 +27,8 @@ AppHost_Init()
 #Include %A_ScriptDir%\chat_typing.ahk
 #Include %A_ScriptDir%\id_capture.ahk
 #Include %A_ScriptDir%\service_ui.ahk
+#Include %A_ScriptDir%\app\game_input.ahk
+#Include %A_ScriptDir%\app\private_text.ahk
 #Include %A_ScriptDir%\ui_style.ahk
 #Include %A_ScriptDir%\tests\chat_typing_regression.ahk
 #Include %A_ScriptDir%\tests\chat_state_regression.ahk

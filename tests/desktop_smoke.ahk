@@ -24,7 +24,13 @@ DesktopSmoke_Run() {
         labelsOK := V1_CheckCatalog(catalogDetails)
         DesktopSmoke_Assert("all catalog handlers including direct UI/GPS dispatch", labelsOK)
         DesktopSmoke_Assert("violet navigation blend uses real hex channels", UIStyle_BlendColors("845EFF", "161A29", 0.19) = "2B2752")
+        savedFullscreen := FullscreenSafeGui
+        FullscreenSafeGui := "On"
+        Gui, FocusProbe:New, +HwndfocusProbeWindow -Caption +ToolWindow
+        Gui, FocusProbe:Show, x650 y420 w260 h60, Foreground fixture
+        WinActivate, ahk_id %focusProbeWindow%
         OpenSettings("profile")
+        DesktopSmoke_Assert("fullscreen-safe settings preserve foreground", DllCall("GetForegroundWindow", "Ptr") = focusProbeWindow)
         pages := GetSettingsPageCatalog()
         for index, page in pages {
             switched := Settings_SwitchPage(index)
@@ -67,8 +73,34 @@ DesktopSmoke_Run() {
             DllCall("GetWindowRect", "Ptr", hBindListLV, "Ptr", &listRect)
             DesktopSmoke_Assert("bind list fits window " . size[1] . "x" . size[2], NumGet(listRect, 8, "Int") <= NumGet(clientRect, 8, "Int") && NumGet(listRect, 12, "Int") < NumGet(clientRect, 12, "Int"))
         }
+        DesktopSmoke_Assert("HUD/list promotion does not activate another window", DllCall("GetForegroundWindow", "Ptr") = focusProbeWindow)
+        FullscreenSafeGui := savedFullscreen
+        Gui, FocusProbe:Destroy
+        savedMode := TextTriggerInputMode
+        TextTriggerInputMode := "Окно AHK"
+        savedPreviewFlag := UiPreviewMode
+        UiPreviewMode := 0
+        savedUi := SaveUISettings()
+        UiPreviewMode := savedPreviewFlag
+        TextTriggerInputMode := "Игровой чат"
+        LoadUIAppearanceFromIni(ConfigFile)
+        DesktopSmoke_Assert("private TXT input mode survives INI reload", savedUi && TextTriggerInputMode = "Окно AHK")
+        TextTriggerInputMode := savedMode
+        Bind_TextCommandInput := "^!t"
+        DesktopSmoke_Assert("private TXT opener is registered in dispatch map", GetBoundLabelByToken("TextCommandInput") = "DoPrivateTextInput")
+        captureState := ServiceUI_NewInputState("TXT", "Private test", 180, 60, "!audit", false, AutomationEpoch, 0, CurrentProfile, TickNow())
+        captureState.ForcePrivacy := true
+        ServiceUI_CreateInputGui(captureState)
+        DesktopSmoke_Assert("private TXT window requests privacy independently of global switch", CapturePrivateWindows.HasKey(captureState.GuiHwnd))
+        actualPrivacy := CaptureWindowStates[captureState.GuiHwnd]
+        DesktopSmoke_Assert("private window stays hidden without confirmed OS exclusion", (IsObject(actualPrivacy) && actualPrivacy.Verified && actualPrivacy.Enabled) || !DllCall("IsWindowVisible", "Ptr", captureState.GuiHwnd))
+        extended := DllCall("GetWindowLong", "Ptr", captureState.GuiHwnd, "Int", -20, "UInt")
+        DesktopSmoke_Assert("private TXT window never activates and is click-through", (extended & 0x08000020) = 0x08000020)
+        Gui, ServiceInput:Destroy
+        CapturePrivateWindows.Delete(captureState.GuiHwnd)
         unknownSection := "DesktopCompatibility"
         CheckedIniWrite("keep-me", ConfigFile, unknownSection, "UnknownKey")
+        expectedPrivateBind := Bind_TextCommandInput
         expectedRole := "Должность проверки"
         IntroRole := expectedRole
         Bind_Intro := "^!8"
@@ -76,6 +108,7 @@ DesktopSmoke_Run() {
         DesktopSmoke_Assert("actual atomic profile save", SaveProfile(CurrentProfile))
         IntroRole := "changed", Bind_Intro := "", Trig_Intro := ""
         LoadProfile(CurrentProfile)
+        DesktopSmoke_Assert("private opener key survives profile reload", Bind_TextCommandInput = expectedPrivateBind)
         DesktopSmoke_Assert("identity and binds survive profile reload", IntroRole = expectedRole && Bind_Intro = "^!8" && Trig_Intro = "!desktopcheck")
         IniRead, unknown, %ConfigFile%, %unknownSection%, UnknownKey, missing
         DesktopSmoke_Assert("profile save preserves unknown keys", unknown = "keep-me")

@@ -64,6 +64,21 @@ jobs:
           $process.Refresh()
           if ($failed.Count -gt 0 -or $process.ExitCode -ne 0) { throw "Native GUI failed: $($process.ExitCode)" }
           Write-Output 'GUI tested in Unicode x64 host; game ABI, real input and OBS are not verified by this test.'
+      - name: Native private TXT hook and paced menu input
+        shell: pwsh
+        run: |
+          $fixture = Join-Path $env:RUNNER_TEMP 'ahk-input-fixture/native.ahk'
+          python tools/build_private_input_fixture.py $fixture
+          $ahk = (Resolve-Path '.build/toolchain/1.1.37.02/AutoHotkeyU64.exe').Path
+          $process = Start-Process -FilePath $ahk -ArgumentList @('/ErrorStdOut', "`"$fixture`"") -PassThru
+          if (-not $process.WaitForExit(30000)) { $process.Kill(); throw 'Input fixture timed out' }
+          $report = Get-Content (Join-Path (Split-Path $fixture) 'private_input_report.txt') -Encoding utf8
+          $report
+          $failed = @($report | Where-Object { $_ -match '^FAIL' })
+          foreach ($line in $failed) { Write-Output "::error title=Native input regression::$line" }
+          $process.Refresh()
+          if ($failed.Count -gt 0 -or $process.ExitCode -ne 0) { throw "Native input failed: $($process.ExitCode)" }
+          Write-Output 'Actual InputHook and key events; game predicate/action sink/decoration are explicit fixture seams.'
       - uses: actions/upload-artifact@v4
         with:
           name: AHK-FOR-GOS-Windows-ANSI-x86

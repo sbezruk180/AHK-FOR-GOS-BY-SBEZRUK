@@ -483,7 +483,7 @@ ChatQueue_Tick() {
     global ChatQueueItems, ChatQueueBusy, ChatQueueLastSendTick, ChatQueueNextSendTick
     global ChatQueueMinDelay, ChatQueueMaxRetries, AutoReportSentCount, AutoReportSkippedCount
     global QueueFailureGeneration, AuditTransportResult, AuditTestMode, QueueBatchStates
-    if (ChatQueueBusy || PhysicalInputBusy || IsObject(IDCaptureState) || !IsObject(ChatQueueItems) || !ChatQueueItems.Length())
+    if (IsObject(GameMenuStarting) || IsObject(GameMenuLease) || ChatQueueBusy || PhysicalInputBusy || IsObject(IDCaptureState) || !IsObject(ChatQueueItems) || !ChatQueueItems.Length())
         return
     if (ChatQueueNextSendTick > TickNow())
         return

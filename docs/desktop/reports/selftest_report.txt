@@ -1,6 +1,6 @@
 AHK FOR GOS BY SBEZRUK v1.0 regression self-test
 Runtime: AutoHotkey 1.1.37.02 | ANSI=0 | PtrSize=8
-Project: Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-gf2wswi2\data
+Project: Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-cfmvt62l\data
 LIVE GAME: NOT RUN
 
 [PASS] Critical | file exists: AHK_FOR_GOS_TEST_U64.exe
@@ -98,7 +98,7 @@ LIVE GAME: NOT RUN
 [PASS] Critical | 13 unique settings pages
 [PASS] High | profile UI exposes both role forms
 [PASS] High | civil reports visible; Hijack rows hidden
-[PASS] Critical | catalog tokens, visibility and handlers | 90 unique items; 8 required; 6 Assist internal; 2 Hijack legacy
+[PASS] Critical | catalog tokens, visibility and handlers | 91 unique items; 8 required; 6 Assist internal; 2 Hijack legacy
 [PASS] High | active profile has no bind conflicts | no conflicts
 [PASS] High | text hotstrings use a game-scoped hook without memory discovery (static)
 [PASS] Critical | default F12/F5/Pause and independent Chase binds

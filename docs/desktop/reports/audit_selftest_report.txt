@@ -79,6 +79,28 @@ PASS | OBS missing state retries
 PASS | OBS errors throttled before deadline
 PASS | OBS error retry reaches deadline
 PASS | OBS changed option retries immediately
+PASS | Private TXT: catalog command resolves without chat
+PASS | Private TXT: GPS argument remains complete
+PASS | Private TXT: organization GPS argument
+PASS | Private TXT: GPS without ID requests it separately
+PASS | Private TXT: unknown command never dispatches
+PASS | Private TXT: custom functions remain available
+PASS | Private TXT: law search mode resolves
+PASS | Private TXT: game hotstrings are disabled in private mode
+PASS | Private TXT: invalid setting preserves legacy mode
+PASS | Fullscreen input: baton option remains available
+PASS | Fullscreen input: assistant state always closes
+PASS | Menu: ownership acquired atomically
+PASS | Menu: second transaction cannot acquire input
+PASS | Menu: unrelated key sends are blocked
+PASS | Menu: owner can send paced key
+PASS | Menu: cancelled generation stops before next key
+PASS | Menu: ownership released after cancellation
+PASS | Menu: stale completion cannot release another owner
+PASS | GPS: stale callback cannot open GPS
+PASS | GPS: complete production sequence runs in mock
+PASS | GPS: home plus all 15 down steps precede value
+PASS | GPS: all paths release reservation and input
 PASS | Typing speed range 1
 PASS | Typing speed range 2
 PASS | Typing speed range 3
@@ -401,4 +423,4 @@ PASS | F24 settings fits work area
 SKIP | ANSI x86 game ABI, module enumeration and HANDLE lifecycle need Windows A32 integration
 SKIP | Real Windows GUI/DPI, OBS capture, game offsets, remote-thread stress and screenshot files require target integration
 
-Checks: 396 | Failed: 0 | Skipped integration groups: 3
+Checks: 418 | Failed: 0 | Skipped integration groups: 3

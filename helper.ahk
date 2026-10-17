@@ -455,7 +455,7 @@ TerritoryMap_ShowLocal(groupIndex, assetIndex := 1)
     Gui, TerritoryMapView:Add, Button, x+8 yp w165 h36 gTerritoryMap_OpenCurrentForum, Оригинал форума
     Gui, TerritoryMapView:Add, Button, x+8 yp w130 h36 gTerritoryMap_CloseView, Закрыть
     Capture_BeforeShow("TerritoryMapView")
-    Gui, TerritoryMapView:Show, AutoSize Center
+    Gui, TerritoryMapView:Show, % "AutoSize Center" . (GameUi_ShouldShowPassive() ? " NoActivate" : "")
     TerritoryMapViewVisible := 1
     TerritoryMapGuiVisible := 1
     return true

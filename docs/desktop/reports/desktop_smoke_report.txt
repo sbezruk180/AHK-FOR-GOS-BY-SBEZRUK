@@ -1,8 +1,8 @@
 ﻿Desktop integration probe
 Runtime=1.1.37.02 | Unicode=1 | PtrSize=8
-Compiled=1 | Data=Z:\workspace\.ahk-cloud\desktop\redesign-confirmed
+Compiled=1 | Data=Z:\workspace\.ahk-cloud\desktop\input-last-check
 No real game or OBS verification.
-INFO | startup WorkingSetMiB=53.63 PeakMiB=53.63
+INFO | startup WorkingSetMiB=53.98 PeakMiB=53.98
 PASS | compiled standalone host
 PASS | application mutex acquired
 PASS | duplicate application mutex detected
@@ -11,6 +11,7 @@ PASS | configuration schema 14
 PASS | hotkeys really registered
 PASS | all catalog handlers including direct UI/GPS dispatch
 PASS | violet navigation blend uses real hex channels
+PASS | fullscreen-safe settings preserve foreground
 PASS | settings page profile
 PASS | sidebar button dispatch profile
 PASS | interactive controls do not overlap profile
@@ -63,7 +64,14 @@ PASS | bind list controls do not overlap 520x390
 PASS | bind list fits window 520x390
 PASS | bind list controls do not overlap 760x740
 PASS | bind list fits window 760x740
+PASS | HUD/list promotion does not activate another window
+PASS | private TXT input mode survives INI reload
+PASS | private TXT opener is registered in dispatch map
+PASS | private TXT window requests privacy independently of global switch
+PASS | private window stays hidden without confirmed OS exclusion
+PASS | private TXT window never activates and is click-through
 PASS | actual atomic profile save
+PASS | private opener key survives profile reload
 PASS | identity and binds survive profile reload
 PASS | profile save preserves unknown keys
 PASS | real queue reaches mock transport
@@ -80,5 +88,5 @@ PASS | same-EXE diagnostic finishes in custom data directory
 PASS | diagnostic does not replace parent instance
 PASS | diagnostic report opens in own application GUI
 PASS | closing settings destroys its native window
-INFO | after native smoke WorkingSetMiB=63.85 PeakMiB=68.11
-Checks=77 | Failed=0
+INFO | after native smoke WorkingSetMiB=68.89 PeakMiB=68.89
+Checks=85 | Failed=0

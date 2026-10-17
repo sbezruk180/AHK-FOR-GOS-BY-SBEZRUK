@@ -7,7 +7,7 @@
       "mode": "--runtime-info",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 5.6,
+      "seconds": 5.59,
       "report": "runtime_info_report.txt"
     },
     {
@@ -15,62 +15,72 @@
       "status": "PASS",
       "exit_code": 0,
       "report": "desktop_smoke_report.txt",
-      "checks": 77,
-      "failures": 0,
-      "final_recheck": true
+      "final_recheck": true,
+      "checks": 85,
+      "failures": 0
     },
     {
       "mode": "--audit-selftest",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 40.58,
-      "report": "audit_selftest_report.txt"
+      "report": "audit_selftest_report.txt",
+      "final_recheck": true,
+      "checks": 418,
+      "failures": 0
     },
     {
       "mode": "--diagnostics",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 17.5,
+      "seconds": 17.6,
       "report": "diagnostics_report.txt"
     },
     {
       "mode": "--selftest",
       "status": "EXPECTED_ABI_FAILURE",
       "exit_code": 1,
-      "seconds": 29.21,
+      "seconds": 29.97,
       "report": "selftest_report.txt"
     },
     {
       "mode": "--context-mocktest",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 5.6,
+      "seconds": 5.63,
       "report": "context_assistant_test.txt"
     },
     {
       "mode": "--autoreport-mocktest",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 5.62,
+      "seconds": 5.63,
       "report": "autoreport_mocktest_report.txt"
     },
     {
       "mode": "--law-search-test",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 26.92,
+      "seconds": 28.72,
       "report": "law_search_test_report.txt"
     },
     {
       "mode": "--v1-mocktest",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 5.6,
+      "seconds": 5.73,
       "report": "v1_mocktest_report.txt"
     }
   ],
-  "full_suite_test_exe_sha256": "b8b83265f0ed0ffca115498599a3f1c460727c7315fdb7f20d6a27b8fb23c032",
-  "final_gui_test_exe_sha256": "d1358a7d1bf39b8683b6d12a2cd3d48dd48c933501b6d7afad053b823b9debb8",
-  "final_source_sha256": "bc64779ea2a87a8a9758b4137774eb13b6912ee36b621e95beac70e4a6fdec8e",
-  "note": "After the full regression pass, custom window colors were retained and native GUI smoke repeated: 77 checks / 0 failures. No additional game/input changes."
+  "full_suite_test_exe_sha256": "4301172a8600ac0381d377a35f81d7db99b78b27c277cca26da3eef2282b2457",
+  "final_test_exe_sha256": "56498e4dd162a14aae586abf263f7ae857db448d59e2ab4aa52a6ab10555c597",
+  "final_source_sha256": "aa279765322f7113ee5e896c62c16bb2db65fc2944ab70ecc433105d6eea1b11",
+  "note": "Full suite passed. After final passive assistant/confirmation compatibility changes, audit (418) and desktop smoke (85) were repeated on the final source. Separate native input fixture: 18 checks, no game/OBS claim.",
+  "native_input_fixture": {
+    "checks": 18,
+    "failures": 0,
+    "measured_key_hold_ms": 51,
+    "game_predicate": "fixture seam",
+    "action_execution": "fixture sink",
+    "privacy_api": "explicit success/refusal seam; actual flags checked in desktop smoke"
+  }
 }
