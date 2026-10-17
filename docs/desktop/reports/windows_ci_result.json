@@ -1,11 +1,24 @@
 {
   "workflow": "Standalone Windows EXE",
-  "conclusion": "PENDING_CURRENT_CODE_PUSH",
+  "run_id": "39060054085",
+  "url": "https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK/actions/runs/39060054085",
+  "job_url": "https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK/actions/runs/39060054085/job/117475971003",
+  "commit": "6bc4d3cf4c1cac796ad38ef946cac9fb7b260814",
+  "conclusion": "SUCCESS",
   "release_exe_sha256": "e898a640c2dad2f532e060b6cf6ef28d3aebc7d6fa4f2f3c954604c42699031c",
+  "verified": [
+    "native Windows build and PE/source validation",
+    "shipped ANSI x86 EXE boot: Compiled=1, PointerSize=4, Unicode=0, SourceIntrospection=1, LawDocuments=20",
+    "native Windows GUI: 88 checks, 0 failed, Unicode host / UTF-16 INI",
+    "native Windows InputHook/typing: 31 checks, 0 failed; both real RU/US layouts, exact /m Стоп! ID:42, early GPS capture and state release",
+    "native Windows Win32 GPS/menu fixture: 14 checks, 0 failed; closed/open chat, physical digit entry, menu ownership, cancellation"
+  ],
+  "fixture_note": "Game predicate, chat state, memory sender and input-fixture action/privacy/decoration are explicit seams. Windows runner ACP differs from1251, so full native Cyrillic ANSI regressions are explicitly skipped. Cloud Unicode/ACP1251 audit was run separately.",
   "not_claimed": [
-    "real game ABI/commands",
-    "actual OBS capture frames",
-    "exclusive fullscreen",
-    "full native Cyrillic ANSI tests when hosted Windows ACP differs from1251"
+    "real GTA/Amazing ABI or commands",
+    "physical input inside game",
+    "actual OBS frames",
+    "exclusive Direct3D fullscreen",
+    "native Cyrillic ANSI regressions on non-1251 hosted ACP"
   ]
 }
