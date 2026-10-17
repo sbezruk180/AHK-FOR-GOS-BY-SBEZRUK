@@ -233,7 +233,7 @@ RunCustomFunction(index) {
         GameNotify("Ошибка функции «" . fn.Name . "»: " . errorText, "ERROR")
         return false
     }
-    CustomFunctionRunState := {Name: fn.Name, Steps: steps, Index: 1, NextTick: TickNow(), WaitingForQueue: 0, Epoch: AutomationEpoch, Profile: CurrentProfile, Target: UserID, Failures: QueueFailureGeneration}
+    CustomFunctionRunState := {Name: fn.Name, Steps: steps, Index: 1, NextTick: TickNow(), WaitingForQueue: 0, PendingBatch: 0, Epoch: AutomationEpoch, Profile: CurrentProfile, Target: UserID, Failures: QueueFailureGeneration}
     SetTimer, CustomFunctionRunnerTick, 60
     GameNotify("Запущена функция: " . fn.Name)
     return true
@@ -243,6 +243,8 @@ StopCustomFunctionRun(showNotice := 1) {
     global CustomFunctionRunState
     SetTimer, CustomFunctionRunnerTick, Off
     wasActive := IsObject(CustomFunctionRunState)
+    if (wasActive && CustomFunctionRunState.PendingBatch)
+        ChatQueue_CancelBatch(CustomFunctionRunState.PendingBatch)
     CustomFunctionRunState := ""
     if (showNotice && wasActive)
         GameNotify("Пользовательская функция остановлена.", "WARN")
@@ -251,8 +253,8 @@ StopCustomFunctionRun(showNotice := 1) {
 CustomFunction_InputIsCurrent(state) {
     global CustomFunctionRunState, AutomationEpoch, CurrentProfile, UserID, QueueFailureGeneration
     return IsObject(state) && IsObject(CustomFunctionRunState) && CustomFunctionRunState == state
-        && state.Epoch = AutomationEpoch && state.Profile = CurrentProfile && state.Target = UserID
-        && state.Failures = QueueFailureGeneration
+        && state.Epoch = AutomationEpoch && state.Profile = CurrentProfile && "ID:" . state.Target = "ID:" . UserID
+
 }
 
 CustomFunction_StopIfCurrent(state) {
@@ -270,7 +272,7 @@ CustomFunctionRunner_Process(inputEpoch := 0) {
         return
     }
     state := CustomFunctionRunState
-    if (state.Epoch != AutomationEpoch || state.Failures != QueueFailureGeneration || state.Profile != CurrentProfile || state.Target != UserID) {
+    if (state.Epoch != AutomationEpoch || state.Profile != CurrentProfile || "ID:" . state.Target != "ID:" . UserID) {
         StopCustomFunctionRun(0)
         return
     }
@@ -280,9 +282,15 @@ CustomFunctionRunner_Process(inputEpoch := 0) {
         return
     if (state.WaitingForQueue)
     {
-        if (ChatQueue_Count() > 0 || ChatQueueBusy)
+        if (!state.PendingBatch || !QueueBatchStates.HasKey(state.PendingBatch)
+            || QueueBatchStates[state.PendingBatch].State != "sent") {
+            if (state.PendingBatch && QueueBatchStates.HasKey(state.PendingBatch) && QueueBatchStates[state.PendingBatch].State = "queued")
+                return
+            CustomFunction_StopIfCurrent(state)
             return
+        }
         state.WaitingForQueue := 0
+        state.PendingBatch := 0
     }
     Loop, 20
     {
@@ -312,7 +320,9 @@ CustomFunctionRunner_Process(inputEpoch := 0) {
                 return
             }
             text := ApplyActionTemplate(step.Value)
-            if (ChatQueue_Enqueue(text, "CustomFunction." . state.Name, 0, 0, 1)) {
+            batchId := ChatQueue_EnqueueBatch([text], "CustomFunction." . state.Name, 0)
+            if (batchId) {
+                state.PendingBatch := batchId
                 state.WaitingForQueue := 1
             } else {
                 state.Index -= 1

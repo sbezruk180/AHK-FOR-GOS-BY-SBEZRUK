@@ -292,7 +292,39 @@ ServiceUI_ModifierHeld() {
     return false
 }
 
-ServiceUI_Request(title, prompt, ByRef value, maxLen := 180, timeoutSeconds := 45, seed := "", confirmOnSpace := false, forcePrivacy := false) {
+ServiceUI_CreateInputHook(state, timeoutSeconds := 45) {
+    endKeys := "{Enter}{Escape}" . (state.ConfirmOnSpace ? "{Space}" : "")
+    hook := InputHook("T" . Min(180, Max(1, Round(timeoutSeconds))), endKeys)
+    hook.VisibleText := false
+    hook.VisibleNonText := true
+    hook.BackspaceIsUndo := false
+    hook.MinSendLevel := 1
+    hook.KeyOpt("{All}", "N")
+    hook.KeyOpt("{Enter}{Escape}{Backspace}" . (state.ConfirmOnSpace ? "{Space}" : ""), "S")
+    hook.OnKeyDown := Func("ServiceUI_InputKeyDown").Bind(state)
+    hook.OnChar := Func("ServiceUI_InputChar").Bind(state)
+    state.Hook := hook
+    return hook
+}
+
+ServiceUI_ReleaseInputCapture(state) {
+    if !IsObject(state)
+        return
+    if IsObject(state.Timer) {
+        timerCallback := state.Timer
+        SetTimer, % timerCallback, Delete
+        state.Timer := ""
+        timerCallback := ""
+    }
+    if IsObject(state.Hook) {
+        state.Hook.Stop()
+        state.Hook.OnKeyDown := ""
+        state.Hook.OnChar := ""
+        state.Hook := ""
+    }
+}
+
+ServiceUI_Request(title, prompt, ByRef value, maxLen := 180, timeoutSeconds := 45, seed := "", confirmOnSpace := false, forcePrivacy := false, preparedState := "") {
     global ServiceUIInputState, ServiceUIAuditInputs, PhysicalInputBusy, IDCaptureState, AutomationEpoch, CurrentProfile
     ServiceUILastInputError := ""
     if (ServiceUI_IsInputActive() || PhysicalInputBusy || IsObject(IDCaptureState))
@@ -314,40 +346,43 @@ ServiceUI_Request(title, prompt, ByRef value, maxLen := 180, timeoutSeconds := 4
         Critical, %previousCritical%
         return false
     }
-    state := ServiceUI_NewInputState(title, prompt, maxLen, timeoutSeconds, seed, confirmOnSpace
-        , AutomationEpoch, DllCall("GetForegroundWindow", "Ptr"), CurrentProfile, TickNow())
+    if IsObject(preparedState) {
+        if (!ServiceUI_ContextIsCurrent(preparedState) || !IsObject(preparedState.Hook)) {
+            Critical, %previousCritical%
+            return false
+        }
+        state := preparedState
+    } else
+        state := ServiceUI_NewInputState(title, prompt, maxLen, timeoutSeconds, seed, confirmOnSpace
+            , AutomationEpoch, DllCall("GetForegroundWindow", "Ptr"), CurrentProfile, TickNow())
     state.ForcePrivacy := !!forcePrivacy
     ServiceUIInputState := state
     PhysicalInputBusy := 1
     Critical, %previousCritical%
     try {
-        if !ServiceUI_CreateInputGui(state)
+        if (!ServiceUI_ContextIsCurrent(state) || state.Pending != "" || TickNow() >= state.Deadline)
             return false
-        ; A hotkey's already-held Alt/Ctrl must be released before capture starts.
-        started := TickNow()
-        while ServiceUI_ModifierHeld() {
-            if (!ServiceUI_ContextIsCurrent(state) || state.Pending != "" || TickNow() - started >= 1200)
+        if !IsObject(state.Hook) {
+            started := TickNow()
+            while ServiceUI_ModifierHeld() {
+                if (!ServiceUI_ContextIsCurrent(state) || state.Pending != "" || TickNow() - started >= 1200)
+                    return false
+                Sleep, 10
+            }
+            if (!ServiceUI_ContextIsCurrent(state) || state.Pending != "")
                 return false
-            Sleep, 10
+            hook := ServiceUI_CreateInputHook(state, timeoutSeconds)
+            hook.Start()
+        } else
+            hook := state.Hook
+        ; Capture precedes painting. GPS can adopt a hook started before chat cleanup.
+        if (hook.InProgress) {
+            if !ServiceUI_CreateInputGui(state)
+                return false
+            state.Timer := Func("ServiceUI_InputTick").Bind(state)
+            timerCallback := state.Timer
+            SetTimer, % timerCallback, 30
         }
-        if (!ServiceUI_ContextIsCurrent(state) || state.Pending != "")
-            return false
-        endKeys := "{Enter}{Escape}" . (state.ConfirmOnSpace ? "{Space}" : "")
-        hook := InputHook("T" . Min(180, Max(1, Round(timeoutSeconds))), endKeys)
-        state.Hook := hook
-        hook.VisibleText := false
-        hook.VisibleNonText := true
-        ; The displayed buffer owns Backspace, including deletion of a seed.
-        hook.BackspaceIsUndo := false
-        hook.MinSendLevel := 1
-        hook.KeyOpt("{All}", "N")
-        hook.KeyOpt("{Enter}{Escape}{Backspace}" . (state.ConfirmOnSpace ? "{Space}" : ""), "S")
-        hook.OnKeyDown := Func("ServiceUI_InputKeyDown").Bind(state)
-        hook.OnChar := Func("ServiceUI_InputChar").Bind(state)
-        state.Timer := Func("ServiceUI_InputTick").Bind(state)
-        timerCallback := state.Timer
-        SetTimer, % timerCallback, 30
-        hook.Start()
         hook.Wait()
         result := state.Value
         endKey := hook.EndKey
@@ -362,15 +397,9 @@ ServiceUI_Request(title, prompt, ByRef value, maxLen := 180, timeoutSeconds := 4
         ServiceUILastInputError := e.Message
         return false
     } finally {
-        if IsObject(state.Timer) {
-            timerCallback := state.Timer
-            SetTimer, % timerCallback, Off
-        }
-        if IsObject(state.Hook) {
-            state.Hook.Stop()
-            state.Hook.OnKeyDown := ""
-            state.Hook.OnChar := ""
-        }
+        ; Disabling a timer does not release state.Timer's BoundFunc -> state cycle.
+        ServiceUI_ReleaseInputCapture(state)
+        timerCallback := ""
         Gui, ServiceInput:Destroy
         previousCritical := A_IsCritical
         Critical, On

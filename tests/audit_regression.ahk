@@ -218,6 +218,7 @@ RunAuditSelfTest() {
     Audit_ChatIDIntegration(scratch)
     Audit_MemoryRetention()
     Audit_CustomRunIdentity()
+    RunLogicAuditRegression()
     AuditAssert("F10 reader never truncates chatlog", !ChatLogReader_MaybeCleanup(file) && FileExist(file))
 
     LawSearchCorpusSignature := "", SearchInitialized := 0
@@ -502,7 +503,7 @@ RunInputMenuRegression() {
         ActionCooldownMs := 0, ChatQueuePreviewText := ""
         AuditAssert("GPS: complete production sequence runs in mock", RunGpsDialogAction("audit GPS", 15, "155"))
         StrReplace(ChatQueuePreviewText, "{Down}", "", downs)
-        AuditAssert("GPS: home plus all 15 down steps precede value", downs = 15 && InStr(ChatQueuePreviewText, "{Home}") < InStr(ChatQueuePreviewText, "{Down}") && InStr(ChatQueuePreviewText, "[TYPE] 155"))
+        AuditAssert("GPS: home plus all 15 down steps precede value", downs = 15 && InStr(ChatQueuePreviewText, "{Home}") < InStr(ChatQueuePreviewText, "{Down}") && InStr(ChatQueuePreviewText, "[INPUT Event] {1}") && InStr(ChatQueuePreviewText, "[INPUT Event] {5}"))
         AuditAssert("GPS: all paths release reservation and input", !IsObject(GameMenuLease) && !IsObject(GameMenuStarting) && !PhysicalInputBusy)
     } finally {
         TextTriggerInputMode := savedMode, CustomFunctions := savedCustom, AutomationEpoch := savedEpoch

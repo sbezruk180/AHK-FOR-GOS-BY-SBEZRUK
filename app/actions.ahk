@@ -79,22 +79,18 @@ CanRunCuffFollowup() {
     return true
 }
 
-DoCuffFollowup(inputEpoch := 0) {
+DoCuffFollowup(inputEpoch := 0, target := "") {
     global UserID
-    inputEpoch := AutomationEpoch
-    if (SendChatForEpoch(inputEpoch, "/frac " . UserID) != 1)
-        return
-    Sleep, 250
-    if (SendChatForEpoch(inputEpoch, "/fracid " . UserID) != 1)
-        return
-    Sleep, 250
-    SafeSend("{1}", "Input", inputEpoch)
-    Sleep, 80
-    SafeSend("{1}", "Input", inputEpoch)
-    Sleep, 120
-    SafeSend("{4}", "Input", inputEpoch)
-    Sleep, 80
-    SafeSend("{4}", "Input", inputEpoch)
+    if (!inputEpoch)
+        inputEpoch := AutomationEpoch
+    if (target = "")
+        target := UserID
+    if (inputEpoch != AutomationEpoch || "ID:" . target != "ID:" . UserID)
+        return false
+    steps := [{Kind: "Command", Text: "/fracid " . target, Delay: 250}
+        , {Kind: "Key", Value: "1", Delay: 80}, {Kind: "Key", Value: "1", Delay: 120}
+        , {Kind: "Key", Value: "4", Delay: 80}, {Kind: "Key", Value: "4", Delay: 0}]
+    return GameMenu_Run("CuffFollowup", "/frac " . target, steps, 250, inputEpoch, target)
 }
 
 CanRunDejectFollowup() {
@@ -108,15 +104,13 @@ CanRunDejectFollowup() {
     return true
 }
 
-SendDejectRPAfterCommand() {
+SendDejectRPAfterCommand(inputEpoch := 0, target := "") {
     global RP_Deject
-    SplitConfigSequenceMiddle(RP_Deject, rpBefore, rpAfter)
-    if (rpBefore != "")
-        SendConfigSequence(rpBefore, 700)
-    if (rpAfter != "")
-        SendConfigSequence(rpAfter, 700)
-    if (rpBefore = "" && rpAfter = "" && RP_Deject != "")
-        SendConfigSequence(RP_Deject, 700)
+    if (!inputEpoch)
+        inputEpoch := AutomationEpoch
+    if (inputEpoch != AutomationEpoch || (target != "" && "ID:" . target != "ID:" . UserID))
+        return false
+    return SendConfigSequence(ApplyActionTemplate(RP_Deject), 700)
 }
 
 ContextAssistant_IsEnabled(actionName) {
@@ -243,7 +237,7 @@ ContextAssistant_ConfirmHotkeysActive() {
 }
 
 ContextAssistant_IDHotkeyContext() {
-    if (PhysicalInputBusy || ServiceUI_IsInputActive())
+    if (PhysicalInputBusy || IsObject(GameMenuStarting) || IsObject(GameMenuLease) || ServiceUI_IsInputActive())
         return false
     if !ContextAssistant_ConfirmHotkeysActive()
         return false
@@ -649,9 +643,9 @@ ReadMDSFormationMinutes(inputEpoch := 0) {
     return minutes
 }
 
-ReadGpsInputNumber(ByRef wasCancelled, ByRef endKey, seed := "") {
+ReadGpsInputNumber(ByRef wasCancelled, ByRef endKey, seed := "", preparedState := "") {
     gpsNumber := ""
-    ok := ServiceUI_Request("GPS", "Введите номер метки GPS и подтвердите пробелом или Enter.", gpsNumber, 4, 45, seed, true)
+    ok := ServiceUI_Request("GPS", "Введите номер метки GPS и подтвердите пробелом или Enter.", gpsNumber, 5, 45, seed, true, false, preparedState)
     wasCancelled := !ok
     endKey := ok ? "gui" : ""
     return ok ? Trim(gpsNumber) : ""
@@ -666,23 +660,40 @@ RunGpsInputTrigger(triggerText, actionName, downCount, firstDigit) {
     if !IsGameActive()
         return ""
     epoch := AutomationEpoch
-    ; B0 GPS triggers leave only their prefix and first digit in the game chat.
-    ; The rest is collected privately in the service overlay, not echoed to chat.
-    if (isInChat() = 1) {
-        EraseGpsTypedCommand(triggerText, firstDigit, "", epoch)
-        if (epoch != AutomationEpoch || !IsGameActive())
-            return ""
-        SafeSend("{Esc}", "Input", epoch)
-    }
-    gpsNumber := ReadGpsInputNumber(wasCancelled, endKey, firstDigit)
-    if (wasCancelled || epoch != AutomationEpoch || !RegExMatch(gpsNumber, "^\d{1,4}$"))
+    reservation := GameMenu_Reserve("GPS.Input", epoch)
+    if !IsObject(reservation)
         return ""
-    RunGpsDialogAction(actionName, downCount, gpsNumber)
+    prepared := "", wasCancelled := true
+    try {
+        if !ServiceUI_IsTest() {
+            prepared := ServiceUI_NewInputState("GPS", "Введите номер метки GPS и подтвердите пробелом или Enter.", 5, 45
+                , firstDigit, true, epoch, DllCall("GetForegroundWindow", "Ptr"), CurrentProfile, TickNow())
+            hook := ServiceUI_CreateInputHook(prepared, 45)
+            hook.Start()
+        }
+        ; Consume the remaining digits before any prefix erasure, waits or GUI work.
+        if (isInChat() = 1) {
+            if !EraseGpsTypedCommand(triggerText, firstDigit, "", epoch)
+                return ""
+            if (epoch != AutomationEpoch || !IsGameActive() || !SafeSend("{Esc}", "Event", epoch))
+                return ""
+        }
+        gpsNumber := ReadGpsInputNumber(wasCancelled, endKey, firstDigit, prepared)
+    } finally {
+        ServiceUI_ReleaseInputCapture(prepared)
+        GameMenu_Close(reservation)
+    }
+    if (!wasCancelled && epoch = AutomationEpoch && RegExMatch(gpsNumber, "^[0-9]{1,5}$"))
+        RunGpsDialogAction(actionName, downCount, gpsNumber, epoch)
     return ""
 }
 
 ChatWizard_Begin(modeName, inputEpoch := 0) {
     global ChatWizardMode, ChatWizardPrompt, ChatWizardOpenedFromChat, BindMenuEditMode
+    if (!inputEpoch)
+        inputEpoch := AutomationEpoch
+    if (inputEpoch != AutomationEpoch)
+        return false
     if (ChatWizardMode != "" || ServiceUI_IsInputActive()) {
         GameNotify("Уже включён режим ввода. Нажмите Esc для отмены.", "WARN")
         return false
@@ -695,6 +706,8 @@ ChatWizard_Begin(modeName, inputEpoch := 0) {
         return false
     ChatWizardOpenedFromChat := isInChat() = 1
     ChatWizardMode := modeName
+    ChatWizardEpoch := inputEpoch
+    ChatWizardProfile := CurrentProfile
     ChatWizardPrompt := "Введите значение и нажмите пробел или Enter."
     return true
 }
@@ -702,6 +715,10 @@ ChatWizard_Begin(modeName, inputEpoch := 0) {
 ChatWizard_ReadToken(ByRef cancelled, maxLength := 40, timeoutSeconds := 90) {
     global ChatWizardMode, ChatWizardPrompt
     typedText := ""
+    if (ChatWizardMode = "" || ChatWizardEpoch != AutomationEpoch || ChatWizardProfile != CurrentProfile) {
+        cancelled := true
+        return ""
+    }
     ok := ServiceUI_Request(ChatWizardMode, ChatWizardPrompt, typedText
         , Min(80, Max(1, Round(maxLength))), Min(180, Max(10, Round(timeoutSeconds))), "", true)
     cancelled := !ok
@@ -720,11 +737,15 @@ ChatWizard_NormalizeToken(rawText) {
 ChatWizard_Finish(closeChat := true, inputEpoch := 0) {
     global ChatWizardMode, ChatWizardPrompt, ChatWizardOpenedFromChat
     ServiceUI_CancelInput("wizard-finish")
-    if (closeChat && ChatWizardOpenedFromChat && isInChat() = 1)
-        SafeSend("{Esc}", "Input", AutomationEpoch)
+    if (!inputEpoch)
+        inputEpoch := ChatWizardEpoch
+    if (closeChat && inputEpoch = AutomationEpoch && ChatWizardOpenedFromChat && isInChat() = 1)
+        SafeSend("{Esc}", "Event", inputEpoch)
     ChatWizardMode := ""
     ChatWizardPrompt := ""
     ChatWizardOpenedFromChat := false
+    ChatWizardEpoch := 0
+    ChatWizardProfile := ""
 }
 
 ChatWizard_Cancel(message := "") {
@@ -813,7 +834,8 @@ VehicleLookup_GetRegionListPosition(countryIndex, regionIndex) {
 }
 
 VehicleLookup_RunWizard() {
-    if !ChatWizard_Begin("поиск ТС")
+    wizardEpoch := AutomationEpoch
+    if !ChatWizard_Begin("поиск ТС", wizardEpoch)
         return false
 
     GameNotify("Поиск ТС включён. Введите страну, например !россия, и нажмите пробел.", "INFO")
@@ -857,35 +879,24 @@ VehicleLookup_RunWizard() {
     }
 
     GameNotify("Поиск: " . countryName . ", регион " . regionCode . ", номер " . plate . ".", "INFO")
-    ChatWizard_Finish(true)
-    return VehicleLookup_Execute(countryIndex, regionIndex, plate)
+    ChatWizard_Finish(true, wizardEpoch)
+    return VehicleLookup_Execute(countryIndex, regionIndex, plate, wizardEpoch)
 }
 
 VehicleLookup_Execute(countryIndex, regionIndex, plate, inputEpoch := 0) {
-    inputEpoch := AutomationEpoch
-    if !CanRunAction("поиск ТС по номеру", false, true)
+    if (!inputEpoch)
+        inputEpoch := AutomationEpoch
+    if (inputEpoch != AutomationEpoch || !CanRunAction("поиск ТС по номеру", false, true))
         return false
-    if (SendChatForEpoch(inputEpoch, "/frac") != 1)
-        return
-    Sleep, 320
-    SendRadialNumberTwice(1, 280)
-    SendRadialNumberTwice(3, 280)
-    SendRadialNumberTwice(6, 320)
-    SendListSelection(countryIndex, 45, 250)
     regionListPosition := VehicleLookup_GetRegionListPosition(countryIndex, regionIndex)
-    if (regionListPosition < 1) {
-        GameNotify("Выбранный регион отсутствует в игровом списке.", "ERROR")
-        return false
-    }
-    SendListSelection(regionListPosition, 35, 280)
-    EnsureEnglishLayout()
-    if !PasteOnlyForEpoch(inputEpoch, plate)
-        return false
-    Sleep, 80
-    SafeSend("{Enter}", "Event", inputEpoch)
-    Sleep, 80
-    EnsureRussianLayout()
-    return true
+    if (regionListPosition < 1)
+        return SafeWarn("Выбранный регион отсутствует в игровом списке.")
+    steps := [{Kind: "Radial", Value: 1, Delay: 280, Gap: 0}, {Kind: "Radial", Value: 3, Delay: 280, Gap: 0}
+        , {Kind: "Radial", Value: 6, Delay: 320, Gap: 0}, {Kind: "Select", Value: countryIndex, Gap: 45, Delay: 250}
+        , {Kind: "Select", Value: regionListPosition, Gap: 35, Delay: 280}
+        , {Kind: "Paste", Value: plate, Delay: 80}, {Kind: "Key", Value: "Enter", Delay: 80}
+        , {Kind: "Layout", Value: 0x4190419}]
+    return GameMenu_Run("VehicleLookup", "/frac", steps, 320, inputEpoch)
 }
 
 WantedRemoval_GetReason(reasonNumber, ByRef reasonText) {
@@ -914,7 +925,8 @@ WantedRemoval_GetDepartmentTag() {
 }
 
 WantedRemoval_RunWizard() {
-    if !ChatWizard_Begin("снятие розыска")
+    wizardEpoch := AutomationEpoch
+    if !ChatWizard_Begin("снятие розыска", wizardEpoch)
         return false
 
     GameNotify("Снятие розыска включено. Введите жетон игрока, например !321, и нажмите пробел.", "INFO")
@@ -947,36 +959,25 @@ WantedRemoval_RunWizard() {
     }
 
     GameNotify("Выбрано: жетон " . targetId . ", п." . reasonNumber . " — " . reasonText . ".", "INFO")
-    ChatWizard_Finish(true)
-    return WantedRemoval_Execute(targetId, reasonNumber)
+    ChatWizard_Finish(true, wizardEpoch)
+    return WantedRemoval_Execute(targetId, reasonNumber, wizardEpoch)
 }
 
 WantedRemoval_Execute(targetId, reasonNumber, inputEpoch := 0) {
     global ReportRank, Surname
-    inputEpoch := AutomationEpoch
-    if !CanRunAction("снятие розыска", false, true)
+    if (!inputEpoch)
+        inputEpoch := AutomationEpoch
+    if (inputEpoch != AutomationEpoch || !CanRunAction("снятие розыска", false, true))
         return false
     departmentTag := WantedRemoval_GetDepartmentTag()
     report := "/d [" . departmentTag . "] Говорит " . ReportRank . " полиции " . Surname
         . ",выношу из базы розыска жетон " . targetId
         . ",на основании ФЗоП гл.3 ст.7 ч.1 п." . reasonNumber
-    sendResult := SendChatForEpoch(inputEpoch, report, "WantedRemovalReport")
-    if (sendResult != 1) {
-        GameNotify("Доклад о снятии розыска не отправлен. Действие отменено.", "ERROR")
-        return false
-    }
-    Sleep, 700
-    if (SendChatForEpoch(inputEpoch, "/frac") != 1)
-        return
-    Sleep, 320
-    SendRadialNumberTwice(1, 280)
-    SendRadialNumberTwice(4, 280)
-    SendRadialNumberTwice(2, 320)
-    if !PasteOnlyForEpoch(inputEpoch, targetId . "")
-        return false
-    Sleep, 80
-    SafeSend("{Enter}", "Event", inputEpoch)
-    return true
+    steps := [{Kind: "Command", Text: "/frac", Delay: 320}
+        , {Kind: "Radial", Value: 1, Delay: 280, Gap: 0}, {Kind: "Radial", Value: 4, Delay: 280, Gap: 0}
+        , {Kind: "Radial", Value: 2, Delay: 320, Gap: 0}, {Kind: "Digits", Value: targetId . "", Delay: 80}
+        , {Kind: "Key", Value: "Enter", Delay: 0}]
+    return GameMenu_Run("WantedRemoval", report, steps, 700, inputEpoch)
 }
 
 Fine_ParseArticle(rawText, ByRef article, ByRef chapterPosition, ByRef itemPosition, ByRef errorText) {
@@ -1022,7 +1023,8 @@ Fine_ParseArticle(rawText, ByRef article, ByRef chapterPosition, ByRef itemPosit
 }
 
 Fine_RunWizard() {
-    if !ChatWizard_Begin("выбор статьи КоАП")
+    wizardEpoch := AutomationEpoch
+    if !ChatWizard_Begin("выбор статьи КоАП", wizardEpoch)
         return false
     GameNotify("Режим штрафа включён. Введите статью КоАП, например !20.6, и нажмите пробел.", "INFO")
     Loop
@@ -1035,41 +1037,35 @@ Fine_RunWizard() {
         GameNotify(parseError, "WARN")
     }
     GameNotify("КоАП ст. " . article . ": глава " . chapterPosition . ", позиция " . itemPosition . ".", "INFO")
-    ChatWizard_Finish(true)
-    return Fine_ExecuteArticle(article, chapterPosition, itemPosition)
+    ChatWizard_Finish(true, wizardEpoch)
+    return Fine_ExecuteArticle(article, chapterPosition, itemPosition, wizardEpoch)
 }
 
 Fine_ExecuteArticle(article, chapterPosition, itemPosition, inputEpoch := 0) {
     global RP_Fine, UserID
-    inputEpoch := AutomationEpoch
-    if !CanRunAction("штраф КоАП " . article, true)
+    if (!inputEpoch)
+        inputEpoch := AutomationEpoch
+    if (inputEpoch != AutomationEpoch || !CanRunAction("штраф КоАП " . article, true))
         return false
+    target := UserID
     Evidence_Arm("FINE", 60000)
     SplitConfigSequenceMiddle(RP_Fine, rpBefore, rpAfter)
+    rpBefore := ApplyActionTemplate(rpBefore), rpAfter := ApplyActionTemplate(rpAfter)
     if (rpBefore != "") {
-        SendConfigSequence(rpBefore, 700)
-        if !WaitForChatQueueIdle(20000) {
-            GameNotify("Не удалось дождаться RP-подготовки штрафа.", "ERROR")
+        if (!SendConfigSequence(rpBefore, 700, batch) || !QueueBatch_Wait(batch, 20000))
             return false
-        }
         Sleep, 900
     }
-    sendResult := SendChatForEpoch(inputEpoch, "/frac " . UserID, "Fine.OpenMenu")
-    if (sendResult != 1) {
-        GameNotify("Не удалось открыть /frac " . UserID . ". Оформление штрафа отменено.", "ERROR")
+    if (inputEpoch != AutomationEpoch || "ID:" . target != "ID:" . UserID)
         return false
-    }
-    Sleep, 800
-    SendRadialNumberTwice(1, 480, 110)
-    SendRadialNumberTwice(6, 480, 110)
-    SendRadialNumberTwice(1, 550, 110)
-    SafeSend("{Enter}", "Event", inputEpoch)
-    Sleep, 450
-    SendListSelection(chapterPosition, 45, 350)
-    SendListSelection(itemPosition, 45, 450)
-    if (rpAfter != "")
-        SendConfigSequence(rpAfter, 700)
-    return true
+    steps := [{Kind: "Radial", Value: 1, Delay: 480, Gap: 110}, {Kind: "Radial", Value: 6, Delay: 480, Gap: 110}
+        , {Kind: "Radial", Value: 1, Delay: 550, Gap: 110}, {Kind: "Key", Value: "Enter", Delay: 450}
+        , {Kind: "Select", Value: chapterPosition, Gap: 45, Delay: 350}, {Kind: "Select", Value: itemPosition, Gap: 45, Delay: 450}]
+    if !GameMenu_Run("Fine.OpenMenu", "/frac " . target, steps, 800, inputEpoch, target)
+        return false
+    if (inputEpoch != AutomationEpoch)
+        return false
+    return rpAfter = "" || SendConfigSequence(rpAfter, 700)
 }
 
 MatchGpsEnterCommand(lineText, triggerText, ByRef gpsNumber) {
@@ -1136,14 +1132,16 @@ TryHandleGpsEnterCommand(inputEpoch := 0) {
 }
 
 SendGpsDialogDown(count, delayMs := 35, inputEpoch := 0) {
-    inputEpoch := AutomationEpoch
-    if (count <= 0)
-        return
-    Loop %count%
-    {
-        SafeSend("{Down}", "Event", inputEpoch)
+    if (!inputEpoch)
+        inputEpoch := AutomationEpoch
+    if (inputEpoch != AutomationEpoch || !RegExMatch(count . "", "^[0-9]+$") || count > 80)
+        return false
+    Loop %count% {
+        if !SafeSend("{Down}", "Event", inputEpoch)
+            return false
         Sleep, %delayMs%
     }
+    return inputEpoch = AutomationEpoch
 }
 
 RunGpsDialogAction(actionName, downCount, gpsNumber, inputEpoch := 0) {
@@ -1152,44 +1150,27 @@ RunGpsDialogAction(actionName, downCount, gpsNumber, inputEpoch := 0) {
     if (inputEpoch != AutomationEpoch)
         return false
     gpsNumber := Trim(gpsNumber)
-    if (!RegExMatch(gpsNumber, "^\d{1,5}$") || downCount < 0 || downCount > 80)
-    {
+    if (!RegExMatch(gpsNumber, "^[0-9]{1,5}$") || gpsNumber + 0 < 1 || gpsNumber + 0 > 10000
+        || !RegExMatch(downCount . "", "^[0-9]+$") || downCount > 80) {
         Notify("warn")
         return false
     }
-
-    gpsValue := gpsNumber + 0
-    if (gpsValue < 1 || gpsValue > 10000)
-    {
-        Notify("warn")
-        return false
-    }
-
     if !CanRunAction(actionName, false, false)
         return false
-
-    previous := A_IsCritical
-    Critical, On
-    if (PhysicalInputBusy || IsObject(GameMenuStarting) || IsObject(GameMenuLease)) {
-        Critical, %previous%
-        return false
-    }
-    reservation := {Epoch: inputEpoch}
-    GameMenuStarting := reservation
-    Critical, %previous%
-    lease := "", ok := false, stage := "открытие /gps"
+    reservation := GameMenu_Reserve("GPS", inputEpoch)
+    if !IsObject(reservation)
+        return SafeWarn("GPS: ввод занят другим действием.")
+    ok := false, stage := "закрытие чата"
     try {
-        if (SendChatForEpoch(inputEpoch, "/gps", "GPS") != 1)
+        if !GameMenu_Prepare(reservation)
             return false
-        stage := "ожидание меню"
-        lease := GameMenu_Acquire(inputEpoch)
+        stage := "открытие /gps"
+        lease := GameMenu_SendCommand(reservation, "/gps", 650)
         if !IsObject(lease)
             return false
-        ; Wait for the chat to really close, then allow the server dialog to settle.
-        ; No retry of /gps or unverified writes to dialog internals.
-        if (!GameMenu_WaitChatClosed(lease) || !GameMenu_Wait(lease, 650) || !GameMenu_Tap(lease, "Home"))
-            return false
         stage := "выбор пункта"
+        if !GameMenu_Tap(lease, "Home")
+            return false
         Loop %downCount%
             if (!GameMenu_Tap(lease, "Down") || !GameMenu_Wait(lease, 35))
                 return false
@@ -1197,19 +1178,17 @@ RunGpsDialogAction(actionName, downCount, gpsNumber, inputEpoch := 0) {
         if (!GameMenu_Tap(lease, "Enter") || !GameMenu_Wait(lease, 500))
             return false
         stage := "ввод номера"
-        if (!GameMenu_IsCurrent(lease) || !PasteOnly(gpsNumber, 1, Func("GameMenu_IsCurrent").Bind(lease), lease.Hwnd, lease) || !GameMenu_Wait(lease, 100))
+        if (!GameMenu_TypeDigits(lease, gpsNumber) || !GameMenu_Wait(lease, 100))
             return false
         stage := "подтверждение"
         ok := GameMenu_Tap(lease, "Enter")
         return ok
     } finally {
-        if IsObject(lease)
-            GameMenu_Release(lease)
-        if (GameMenuStarting == reservation)
-            GameMenuStarting := ""
+        GameMenu_Close(reservation)
         if (!ok) {
             LogError("GPS", "Остановлено: " . stage . "; поколение " . inputEpoch . ". Повтор /gps не выполнялся.", "WARN")
-            ServiceUI_Notify("GPS остановлен: " . stage . ". Активируйте игру и попробуйте снова.", 3500, "WARN")
+            if (inputEpoch = AutomationEpoch)
+                ServiceUI_Notify("GPS остановлен: " . stage . ". Проверьте активное окно игры.", 3500, "WARN")
         }
     }
 }
@@ -1255,35 +1234,29 @@ Action_DoSearch() {
 }
 
 InputAction_DoSOS(inputEpoch := 0) {
-    global
-    inputEpoch := AutomationEpoch
-if !CanRunAction("SOS", false, true)
-    return
-if (SendChatForEpoch(inputEpoch, "/sos") != 1)
-    return
-Sleep 300
-SafeSend("{Down}", "Input", inputEpoch)
-Sleep 300
-SafeSend("{Enter}", "Input", inputEpoch)
-return
+    if (!inputEpoch)
+        inputEpoch := AutomationEpoch
+    if (inputEpoch != AutomationEpoch || !CanRunAction("SOS", false, true))
+        return false
+    return GameMenu_Run("SOS", "/sos", [{Kind: "Key", Value: "Down", Delay: 300}
+        , {Kind: "Key", Value: "Enter", Delay: 0}], 300, inputEpoch)
 }
 
 InputAction_DoWantedList(inputEpoch := 0) {
-    global
-    inputEpoch := AutomationEpoch
-if !CanRunAction("Розыскиваемые", false, true)
-    return
-Sendchat("/frac")
-Sleep 300
-Loop, 8
-{
-    SafeSend("{1}", "Input", inputEpoch)
-    Sleep, 50
-}
-StopTimerActive := 1
-StopTimerCounter := 60
-ShowStopTimerGUI()
-return
+    global StopTimerActive, StopTimerCounter
+    if (!inputEpoch)
+        inputEpoch := AutomationEpoch
+    if (inputEpoch != AutomationEpoch || !CanRunAction("Розыскиваемые", false, true))
+        return false
+    steps := []
+    Loop, 8
+        steps.Push({Kind: "Key", Value: "1", Delay: 50})
+    if (!GameMenu_Run("WantedList", "/frac", steps, 300, inputEpoch) || inputEpoch != AutomationEpoch)
+        return false
+    StopTimerActive := 1
+    StopTimerCounter := 60
+    ShowStopTimerGUI()
+    return true
 }
 
 Action_DoArrest() {
@@ -1304,4 +1277,115 @@ ReadAutoReportMinutes(mode, inputEpoch := 0) {
         return 0
     }
     return minutesText + 0
+}
+
+QueueNamedAction(lines, source, onFirstSent := "") {
+    id := ChatQueue_EnqueueBatch(lines, source, 700, "", onFirstSent)
+    if (!id)
+        SafeWarn("Действие не поставлено в очередь: " . source . ". Очередь заполнена или действие отменено.")
+    return id
+}
+
+Action_StartStopTimer(batch) {
+    global StopTimerActive, StopTimerCounter
+    if (batch.Epoch != AutomationEpoch || (batch.State != "queued" && batch.State != "sent"))
+        return false
+    StopTimerActive := 1
+    StopTimerCounter := 15
+    ShowStopTimerGUI()
+    return true
+}
+
+Action_SuReminderAfterSent(target, batch) {
+    if (batch.Epoch != AutomationEpoch || (batch.State != "queued" && batch.State != "sent"))
+        return false
+    return TaskScheduler_Set("SuReminder", 20000, "SuElapsedNotify", "Напоминание /su", target)
+}
+
+Action_DoCuff() {
+    global LastCuffActionTick, LastCuffActionTarget, LastCuffActionEpoch, CuffFollowupWindowMs, UserID
+    epoch := AutomationEpoch, target := UserID, now := TickNow()
+    followup := LastCuffActionTick > 0 && now - LastCuffActionTick <= CuffFollowupWindowMs
+        && LastCuffActionEpoch = epoch && "ID:" . LastCuffActionTarget = "ID:" . target
+    LastCuffActionTick := 0
+    if (followup)
+        return CanRunCuffFollowup() && DoCuffFollowup(epoch, target)
+    if !CanRunAction("cuff", true, true)
+        return false
+    target := UserID
+    if (SendChatForEpoch(epoch, "/cuff " . target) != 1)
+        return false
+    if (epoch = AutomationEpoch) {
+        LastCuffActionTarget := target, LastCuffActionEpoch := epoch
+        LastCuffActionTick := TickNow()
+    }
+    Sleep, 1200
+    return true
+}
+
+Action_DoDeject() {
+    global LastDejectActionTick, LastDejectActionTarget, LastDejectActionEpoch, DejectFollowupWindowMs, UserID
+    epoch := AutomationEpoch, target := UserID, now := TickNow()
+    followup := LastDejectActionTick > 0 && now - LastDejectActionTick <= DejectFollowupWindowMs
+        && LastDejectActionEpoch = epoch && "ID:" . LastDejectActionTarget = "ID:" . target
+    LastDejectActionTick := 0
+    if (followup)
+        return CanRunDejectFollowup() && SendDejectRPAfterCommand(epoch, target)
+    if !CanRunAction("deject", true, true, true)
+        return false
+    target := UserID
+    if (SendChatForEpoch(epoch, (target < 1000 ? "/deject " : "/dejectid ") . target) != 1)
+        return false
+    if (epoch = AutomationEpoch) {
+        LastDejectActionTarget := target, LastDejectActionEpoch := epoch
+        LastDejectActionTick := TickNow()
+    }
+    Sleep, 500
+    return true
+}
+
+Action_DoTowStart() {
+    global RP_TowStart
+    epoch := AutomationEpoch
+    if !CanRunAction("эвакуация старт", false, true, true)
+        return false
+    Evidence_Arm("EVAC_START", 60000)
+    towTemplate := TowStart_EnsureTowLast(RP_TowStart)
+    if SplitConfigReportLine(towTemplate, reportLine, towSequence) {
+        if (SendChatForEpoch(epoch, ApplyActionTemplate(reportLine), "TowStartReport") != 1)
+            return false
+        Sleep, 500
+    } else
+        towSequence := towTemplate
+    if (epoch != AutomationEpoch || !SendConfigSequence(TowStart_EnsureTowLast(towSequence), 700, batch) || !QueueBatch_Wait(batch, 25000))
+        return false
+    return epoch = AutomationEpoch && ActionTimer_StartEvacuation()
+}
+
+Action_DoTowEnd() {
+    global RP_TowEnd
+    epoch := AutomationEpoch
+    if !CanRunAction("эвакуация конец", false, true, true)
+        return false
+    Evidence_Arm("EVAC_END", 90000)
+    if (!SendConfigSequence(RP_TowEnd, 700, batch) || !QueueBatch_Wait(batch, 20000))
+        return false
+    if (epoch != AutomationEpoch)
+        return false
+    ActionTimer_Stop("Evac")
+    Sleep, 650
+    return GameMenu_Run("TowEnd", "/frac", [{Kind: "Radial", Value: 1, Gap: 0, Delay: 280}
+        , {Kind: "Radial", Value: 4, Gap: 0, Delay: 280}, {Kind: "Radial", Value: 5, Gap: 0, Delay: 320}], 320, epoch)
+}
+
+Action_DoCarSearch() {
+    global RP_CarSearch
+    epoch := AutomationEpoch
+    if !CanRunAction("осмотр ТС", false, true)
+        return false
+    if (!SendConfigSequence(RP_CarSearch, 700, batch) || !QueueBatch_Wait(batch, 20000) || epoch != AutomationEpoch)
+        return false
+    Evidence_Arm("SEARCH_TRUNK", 45000)
+    return GameMenu_Run("CarSearch", "/frac", [{Kind: "Radial", Value: 1, Gap: 0, Delay: 280}
+        , {Kind: "Radial", Value: 4, Gap: 0, Delay: 280}, {Kind: "Radial", Value: 1, Gap: 0, Delay: 320}], 320, epoch)
 }

@@ -50,7 +50,7 @@ PrivateText_Resolve(text) {
         if (trigger != "" && trigger = text)
             return {Kind: "custom", Index: index}
     }
-    modes := {"!пвсе": "ALL", "!пук": "UK", "!пкоап": "KOAP", "!пупк": "UPK", "!пкас": "KAS", "!пфсб": "FSB", "!пфсин": "FSIN", "!пвс": "VS", "!псуд": "SUD", "!порд": "ORD", "!пгт": "GT", "!ппдд": "PDD", "!пфзоп": "FZOP", "!птк": "TK", "!птер": "TER", "!парг": "ARG", "!пву": "VU", "!пвв": "VV", "!поружие": "ORUZH", "!пкон": "KON"}
+    modes := PrivateText_SearchModes()
     if (modes.HasKey(text) || text = "!пнайти")
         return {Kind: "search", Mode: modes.HasKey(text) ? modes[text] : ""}
     return ""
@@ -146,4 +146,16 @@ PrivateText_RegisterOpener() {
 
 PrivateText_Opener(params*) {
     SetTimer, DoPrivateTextInput, -1
+}
+
+PrivateText_SearchModes() {
+    static modes := {"!пвсе": "ALL", "!пук": "UK", "!пкоап": "KOAP", "!пупк": "UPK", "!пкас": "KAS", "!пфсб": "FSB", "!пфсин": "FSIN", "!пвс": "VS", "!псуд": "SUD", "!порд": "ORD", "!пгт": "GT", "!ппдд": "PDD", "!пфзоп": "FZOP", "!птк": "TK", "!птер": "TER", "!парг": "ARG", "!пву": "VU", "!пвв": "VV", "!поружие": "ORUZH", "!пкон": "KON"}
+    return modes
+}
+
+GetReservedTextTriggerSet() {
+    fixed := {"!меню": "BindMenu", "!menu": "BindMenu", "!бинд": "PrivateText", "!коды": "Codes", "!пнайти": "Search_RUN"}
+    for trigger, mode in PrivateText_SearchModes()
+        fixed[trigger] := "Search_" . mode
+    return fixed
 }

@@ -207,41 +207,50 @@ ChatLogReader_FileIdentity(file) {
     return identity . (wine ? "" : "|" . NumGet(info, 4, "Int64"))
 }
 
-ChatQueue_EnqueueBatch(lines, source, delayAfter := 700, menu := "") {
+ChatQueue_EnqueueBatch(lines, source, delayAfter := 700, menu := "", onFirstSent := "") {
     global ChatQueueItems, ChatQueueMaxItems
     if (!IsObject(lines) || !lines.Length())
         return 0
     if !IsObject(ChatQueueItems)
         ChatQueueItems := []
+    epoch := AutomationEpoch
     NormalizeNumberRange(ChatQueueMaxItems, 200, 10, 1000)
+    NormalizeNumberRange(delayAfter, 700, 0, 30000)
     prepared := []
     for _, text in lines {
         if IsObject(text) {
-            if (text.Kind = "Menu" && IsObject(text.Steps))
-                prepared.Push({Kind: "Menu", Steps: text.Steps.Clone(), Text: "[MENU]", Source: source, Tries: 0, ForceMock: 0, DelayAfter: 300, Epoch: AutomationEpoch})
-            else if (text.Role = "RP" && text.HasKey("Text") && Trim(text.Text) != "")
-                prepared.Push({Text: text.Text, Role: "RP", Source: source, Tries: 0, ForceMock: 0, DelayAfter: delayAfter, Epoch: AutomationEpoch})
-            else
+            if (text.Kind = "Menu" && IsObject(text.Steps)) {
+                prepared.Push({Kind: "Menu", Steps: text.Steps.Clone(), Text: "[MENU]", Source: source, Tries: 0, ForceMock: 0, DelayAfter: 300, Epoch: epoch})
+                continue
+            }
+            if (!text.HasKey("Text") || Trim(text.Text) = "" || (text.HasKey("Role") && text.Role != "RP"))
                 return 0
+            pause := text.HasKey("DelayAfter") ? text.DelayAfter : delayAfter
+            NormalizeNumberRange(pause, delayAfter, 0, 30000)
+            item := {Text: text.Text, Source: source, Tries: 0, ForceMock: 0, DelayAfter: pause, Epoch: epoch}
+            if (text.Role = "RP")
+                item.Role := "RP"
+            prepared.Push(item)
         } else {
             if (Trim(text) = "")
                 return 0
-            prepared.Push({Text: text, Source: source, Tries: 0, ForceMock: 0, DelayAfter: delayAfter, Epoch: AutomationEpoch})
+            prepared.Push({Text: text, Source: source, Tries: 0, ForceMock: 0, DelayAfter: delayAfter, Epoch: epoch})
         }
     }
     previous := A_IsCritical
     Critical, On
-    if (ChatQueueItems.Length() + prepared.Length() > ChatQueueMaxItems) {
+    try {
+        if (epoch != AutomationEpoch || ChatQueueItems.Length() + prepared.Length() > ChatQueueMaxItems)
+            return 0
+        id := ++QueueBatchNextId
+        QueueBatchStates[id] := {Pending: prepared.Length(), State: "queued", Epoch: epoch, Menu: menu, FirstSent: 0, OnFirstSent: onFirstSent}
+        for _, item in prepared {
+            item.Batch := id
+            ChatQueueItems.Push(item)
+        }
+    } finally {
         Critical, %previous%
-        return 0
     }
-    id := ++QueueBatchNextId
-    QueueBatchStates[id] := {Pending: prepared.Length(), State: "queued", Epoch: AutomationEpoch, Menu: menu}
-    for _, item in prepared {
-        item.Batch := id
-        ChatQueueItems.Push(item)
-    }
-    Critical, %previous%
     QueueBatch_Prune()
     return id
 }
@@ -251,19 +260,33 @@ ChatQueue_CompleteItem(item, result) {
     if (!item.HasKey("Batch") || !item.Batch || !QueueBatchStates.HasKey(item.Batch))
         return
     batch := QueueBatchStates[item.Batch]
-    batch.Pending--
+    batch.Pending := Max(0, batch.Pending - 1)
+    if (batch.State = "cancelled")
+        return
     if (result != "sent") {
         batch.State := result
         kept := []
         for _, pending in ChatQueueItems {
             if (pending.HasKey("Batch") && pending.Batch = item.Batch)
-                batch.Pending--
+                batch.Pending := Max(0, batch.Pending - 1)
             else
                 kept.Push(pending)
         }
         ChatQueueItems := kept
-    } else if (!batch.Pending && batch.State = "queued")
-        batch.State := "sent"
+    } else {
+        if (!batch.Pending && batch.State = "queued")
+            batch.State := "sent"
+        if (!batch.FirstSent) {
+            batch.FirstSent := TickNow()
+            if IsObject(batch.OnFirstSent) {
+                try {
+                    batch.OnFirstSent.Call(batch)
+                } catch callbackError {
+                    LogError(item.Source, "Сообщение отправлено, но обработчик завершения завершился ошибкой: " . callbackError.Message, "WARN")
+                }
+            }
+        }
+    }
 }
 
 ChatQueue_CancelBatches() {
@@ -871,19 +894,27 @@ LawSearch_CorpusFingerprint() {
 }
 
 LawSearch_QueryFilters(query) {
-    phrases := [], excluded := [], searchText := query
-    offset := 1
-    while (found := RegExMatch(query, """([^""`r`n]+)""", match, offset)) {
-        phrases.Push(LawSearch_Normalize(match1))
-        offset := found + StrLen(match)
+    phrases := [], excluded := [], searchText := "", pos := 1
+    while (pos <= StrLen(query)) {
+        ch := SubStr(query, pos, 1)
+        if (ch = Chr(34) && (closing := InStr(query, Chr(34), false, pos + 1))) {
+            phrase := SubStr(query, pos + 1, closing - pos - 1)
+            if (phrase != "")
+                phrases.Push(LawSearch_Normalize(phrase))
+            searchText .= " " . phrase . " "
+            pos := closing + 1
+            continue
+        }
+        if (ch = "-" && (pos = 1 || RegExMatch(SubStr(query, pos - 1, 1), "^\s$"))
+            && RegExMatch(SubStr(query, pos), "^-([A-Za-zА-Яа-яЁё0-9]+)", match)) {
+            excluded.Push(LawSearch_Normalize(match1))
+            searchText .= " "
+            pos += StrLen(match)
+            continue
+        }
+        searchText .= ch = Chr(34) ? " " : ch
+        pos++
     }
-    offset := 1
-    while (found := RegExMatch(query, "(?:^|\s)-([A-Za-zА-Яа-яЁё0-9]+)", match, offset)) {
-        excluded.Push(LawSearch_Normalize(match1))
-        searchText := StrReplace(searchText, match, " ")
-        offset := found + StrLen(match)
-    }
-    searchText := StrReplace(searchText, Chr(34), " ")
     return {Phrases: phrases, Excluded: excluded, SearchText: searchText}
 }
 
@@ -913,8 +944,10 @@ ChatQueue_CancelBatch(id) {
             kept.Push(item)
     }
     ChatQueueItems := kept
-    if QueueBatchStates.HasKey(id)
+    if (QueueBatchStates.HasKey(id) && QueueBatchStates[id].State = "queued") {
         QueueBatchStates[id].State := "cancelled"
+        QueueBatchStates[id].Pending := 0
+    }
 }
 
 ImageDimensionsBounded(path, ByRef width, ByRef height) {
@@ -1007,7 +1040,7 @@ LawSearch_CorrectToken(word) {
 SendChatForEpoch(epoch, text, source := "Direct") {
     if (epoch != AutomationEpoch)
         return -1
-    return SendChat(text, source)
+    return SendChat(text, source, Func("AutomationEpoch_IsCurrent").Bind(epoch))
 }
 
 PasteOnlyForEpoch(epoch, text) {
@@ -1192,4 +1225,29 @@ ChatTransport_TypingDelayOverride(source, role, text) {
     if (role = "RP" || (source = "RPSequence" && RegExMatch(Trim(text), "i)^/(?:me|do|todo|m)(?:\s|$)")))
         return 0
     return ""
+}
+
+AutomationEpoch_IsCurrent(epoch) {
+    return epoch = AutomationEpoch
+}
+
+QueueItem_IsCurrent(item) {
+    if (!IsObject(item) || (item.HasKey("Epoch") && item.Epoch != AutomationEpoch))
+        return false
+    return !item.Batch || (QueueBatchStates.HasKey(item.Batch) && QueueBatchStates[item.Batch].State = "queued")
+}
+
+QueueBatch_Wait(id, timeoutMs := 20000) {
+    if (!id || !QueueBatchStates.HasKey(id))
+        return false
+    batch := QueueBatchStates[id]
+    started := TickNow()
+    while (batch.State = "queued") {
+        if (batch.Epoch != AutomationEpoch || TickNow() - started >= timeoutMs) {
+            ChatQueue_CancelBatch(id)
+            return false
+        }
+        Sleep, 30
+    }
+    return batch.Epoch = AutomationEpoch && batch.State = "sent"
 }

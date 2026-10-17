@@ -496,12 +496,13 @@ RunSelfTestV1() {
 
     SelfTest_Add(report, "Critical", "two role forms and exact templates"
         , V1_CheckTemplates(templateDetails), templateDetails)
-    towStartSection := V1_GetBetween(mainText, "DoTow" . "Start:", "DoTow" . "End:")
+    towStartSection := V1_GetBetween(mainText, "Action_DoTow" . "Start() {", "Action_DoTowEnd() {")
     formationFinishOk := InStr(mainText, "Время на сбор — окончено") > 0
     towStartTextOk := InStr(mainText, "начал эвакуировать ТС на штрафстоянку.") > 0
     towEnsureOk := InStr(mainText, "TowStart_EnsureTowLast") > 0
     towLastOk := InStr(mainText, "Крюк эвакуатора закреплен на автомобиле.``n/tow") > 0
     towTimerOk := InStr(towStartSection, "ActionTimer_StartEvacuation()") > 0
+        && InStr(V1_GetBetween(mainText, "DoTow" . "Start:", "DoTowEnd:"), "Action_DoTowStart()")
     removedMdsOk := !InStr(mainText, "Token: ""MDSEvacReminder""")
     towEndTextOk := InStr(mainText, "эвакуировал ТС на штрафстоянку.") > 0
     formationTowOk := formationFinishOk && towStartTextOk && towEnsureOk && towLastOk && towTimerOk && removedMdsOk && towEndTextOk
@@ -517,14 +518,15 @@ RunSelfTestV1() {
         && InStr(mainText, "AutoReport_IsValidDuration(minutesText)"))
     patrolHooks := V1_GetBetween(mainText, "DoPatrol" . "Start:", "DoPost" . "Start:")
     postHooks := V1_GetBetween(mainText, "DoPost" . "Start:", "DoConvoy" . "Start:")
-    towHooks := V1_GetBetween(mainText, "DoTow" . "Start:", "DoCar" . "Search:")
+    towHooks := towStartSection . V1_GetBetween(mainText, "Action_DoTow" . "End() {", "Action_DoCarSearch() {")
     SelfTest_Add(report, "Critical", "action timers are wired to patrol, post and evacuation"
         , InStr(patrolHooks, "ActionTimer_StartManualService(""Патруль"")")
         && InStr(patrolHooks, "ActionTimer_Stop(""Patrol"")")
         && InStr(postHooks, "ActionTimer_StartManualService(""Пост"")")
         && InStr(postHooks, "ActionTimer_Stop(""Post"")")
         && InStr(towHooks, "ActionTimer_StartEvacuation()")
-        && InStr(towHooks, "ActionTimer_Stop(""Evac"")"))
+        && InStr(towHooks, "ActionTimer_Stop(""Evac"")")
+        && InStr(V1_GetBetween(mainText, "DoTow" . "End:", "DoCarSearch:"), "Action_DoTowEnd()"))
     SelfTest_Add(report, "High", "action timer lifecycle and position persistence"
         , InStr(mainText, "ActionTimer" . "Tick:")
         && InStr(mainText, "StartActionTimer" . "Drag:")

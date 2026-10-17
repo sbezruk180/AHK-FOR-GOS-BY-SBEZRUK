@@ -1,0 +1,21 @@
+﻿Native GPS/menu fixture
+Game window, chat flag and memory command are explicit seams.
+PASS | stale GPS never opens a command
+TRACE | GPS | Остановлено: ввод номера; поколение 10. Повтор /gps не выполнялся.
+FAIL | closed-chat GPS completes with real key events
+FAIL | house GPS selects item 15 and types exact number
+TRACE closed: selected=15 applied= down=15 calls=1
+PASS | completed GPS releases all ownership
+TRACE | GPS | Остановлено: ожидание меню; поколение 10. Повтор /gps не выполнялся.
+FAIL | open-chat GPS closes chat before command and completes
+FAIL | organization GPS retains all five digits
+PASS | open-chat path releases ownership
+PASS | SOS navigates with real keys under the shared menu owner
+FAIL | SOS blocks unrelated transport until menu input is released
+FAIL | cancelled vehicle lookup sends no later radial or list keys
+PASS | cancelled vehicle lookup releases the menu owner
+TRACE | GPS | Остановлено: выбор пункта; поколение 11. Повтор /gps не выполнялся.
+PASS | cancellation during real scrolling stops GPS
+PASS | cancelled GPS does not enter number or finish scroll
+PASS | cancelled GPS releases all ownership
+Checks=14 Failed=6

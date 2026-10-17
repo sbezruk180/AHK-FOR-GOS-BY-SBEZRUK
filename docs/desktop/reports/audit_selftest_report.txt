@@ -408,6 +408,29 @@ PASS | Custom TYPE guard accepts its current run
 PASS | Custom TYPE guard stops input after constructor Stop
 PASS | Custom TYPE guard rejects a replaced run
 PASS | Custom TYPE failure does not stop a new run
+PASS | Logic: stale radial step refuses its first key
+PASS | Logic: stale list selection refuses all keys
+PASS | Logic: stale GPS scroll refuses all keys
+PASS | Logic: stale GPS cleanup refuses all backspaces
+PASS | Logic: GPS input accepts its documented upper bound 10000
+PASS | Logic: cancelled wizard cannot resume at its next prompt
+PASS | Logic: excluded words with a common prefix leave no positive token
+PASS | Logic: minus inside a quoted phrase is not an exclusion
+PASS | Logic: reserved TXT cannot replace a saved user command !בטםה
+PASS | Logic: reserved TXT cannot replace a saved user command !ךמהû
+PASS | Logic: reserved TXT cannot replace a saved user command !ןךאס
+PASS | Logic: reserved TXT cannot replace a saved user command !ןפסב
+PASS | Logic: reserved TXT cannot replace a saved user command !ןדע
+PASS | Logic: exhausted GPS registration reports refusal
+PASS | Logic: custom SEND was actually accepted before Stop
+PASS | Logic: stopping a custom function removes its pending SEND
+PASS | Logic: different 20-digit masks cancel the old custom run
+PASS | Logic: Cuff on a new ID is a new command, not the old follow-up
+PASS | Logic: Deject on a new ID is a new command, not old RP
+PASS | Logic: a full queue never accepts just the mask-call prefix
+PASS | Logic: a rejected stop request cannot start a countdown
+PASS | Logic: queued stop request waits for delivery before countdown
+PASS | Logic: first delivered stop request starts the 15-second countdown
 PASS | F10 reader never truncates chatlog
 PASS | F21 official LAW corpus loaded
 PASS | search exact reference TER
@@ -425,4 +448,4 @@ PASS | F24 settings fits work area
 SKIP | ANSI x86 game ABI, module enumeration and HANDLE lifecycle need Windows A32 integration
 SKIP | Real Windows GUI/DPI, OBS capture, game offsets, remote-thread stress and screenshot files require target integration
 
-Checks: 420 | Failed: 0 | Skipped integration groups: 3
+Checks: 443 | Failed: 0 | Skipped integration groups: 3

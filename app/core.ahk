@@ -437,7 +437,10 @@ CloseEmptyChatAfterMDSInput(inputEpoch := 0) {
 }
 
 EraseGpsTypedCommand(triggerText, gpsNumber, endKey := "space", inputEpoch := 0) {
-    inputEpoch := AutomationEpoch
+    if (!inputEpoch)
+        inputEpoch := AutomationEpoch
+    if (inputEpoch != AutomationEpoch)
+        return false
     eraseCount := StrLen(triggerText) + StrLen(gpsNumber)
     if (endKey = "space")
         eraseCount += 1
@@ -445,9 +448,11 @@ EraseGpsTypedCommand(triggerText, gpsNumber, endKey := "space", inputEpoch := 0)
         return
     Loop, %eraseCount%
     {
-        SafeSend("{BS}", "Input", inputEpoch)
+        if !SafeSend("{BS}", "Input", inputEpoch)
+            return false
         Sleep, 10
     }
+    return inputEpoch = AutomationEpoch
 }
 
 GetTargetFullLabel() {
