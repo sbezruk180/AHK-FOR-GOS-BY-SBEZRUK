@@ -40,6 +40,19 @@ jobs:
           } else {
             Write-Output 'SKIP full Cyrillic ANSI regressions: the hosted runner does not use system codepage 1251.'
           }
+      - name: Native Windows GUI and sidebar compatibility (Unicode test host)
+        shell: pwsh
+        run: |
+          python tools/build_exe.py --test-u64
+          python tools/verify_exe.py dist/AHK_FOR_GOS_TEST_U64.exe --test-u64
+          if ($LASTEXITCODE -ne 0) { throw 'Test host verification failed' }
+          $data = Join-Path $env:RUNNER_TEMP 'ahk-gos-gui-probe'
+          $exe = (Resolve-Path 'dist/AHK_FOR_GOS_TEST_U64.exe').Path
+          $process = Start-Process -FilePath $exe -ArgumentList @('--desktop-smoke', '--data-dir', "`"$data`"") -PassThru
+          if (-not $process.WaitForExit(120000)) { $process.Kill(); throw 'Native GUI check timed out' }
+          Get-Content (Join-Path $data 'desktop_smoke_report.txt') -Encoding utf8
+          if ($process.ExitCode -ne 0) { throw "Native GUI failed: $($process.ExitCode)" }
+          Write-Output 'GUI tested in Unicode x64 host; game ABI, real input and OBS are not verified by this test.'
       - uses: actions/upload-artifact@v4
         with:
           name: AHK-FOR-GOS-Windows-ANSI-x86

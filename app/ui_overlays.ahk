@@ -87,26 +87,22 @@ MockPreview_Show() {
     global hMockPreviewWnd, MockPreviewEdit, MockPreviewCountText, ChatQueuePreviewText, ThemeMode
     bg := "", panel := "", text := "", accent := "", muted := ""
     GetThemeColors(bg, panel, text, accent, muted)
-    controlBg := "F7F8FA", inputText := "111418", cardBg := "2A3037", cardEdge := "3A434D"
-    if (ThemeMode = "Graphite")
-        controlBg := bg, inputText := text
-    else
-        GetControlSurfaceColors(controlBg, inputText, cardBg, cardEdge, panel, text, accent)
+    GetControlSurfaceColors(controlBg, inputText, cardBg, cardEdge, panel, text, accent)
     count := MockPreview_LineCount()
     if (!hMockPreviewWnd)
     {
         Gui, 41:Destroy
         Gui, 41:+HwndhMockPreviewWnd +AlwaysOnTop +ToolWindow -Resize
         Gui, 41:Color, %bg%, %controlBg%
-        Gui, 41:Font, s14 Bold c%text%, Segoe UI
-        Gui, 41:Add, Text, x14 y12 w400 h28 BackgroundTrans, Тестовый чат
+        Gui, 41:Font, s13 Bold c%text%, Segoe UI
+        Gui, 41:Add, Text, x20 y16 w400 h28 BackgroundTrans, Тестовый чат
         Gui, 41:Font, Norm s9 c%muted%, Segoe UI
-        Gui, 41:Add, Text, x430 y18 w190 h20 Right vMockPreviewCountText BackgroundTrans, % "Строк: " . count
+        Gui, 41:Add, Text, x430 y22 w190 h20 Right vMockPreviewCountText BackgroundTrans, % "Строк: " . count
         Gui, 41:Font, Norm s10 c%inputText%, Consolas
-        Gui, 41:Add, Edit, x14 y50 w612 h310 ReadOnly -Wrap vMockPreviewEdit, %ChatQueuePreviewText%
+        Gui, 41:Add, Edit, x20 y60 w600 h290 ReadOnly -Wrap vMockPreviewEdit, %ChatQueuePreviewText%
         Gui, 41:Font, Norm s10 c%text%, Segoe UI
-        Gui, 41:Add, Button, x14 y374 w130 h30 gClearMockPreviewLabel, Очистить
-        Gui, 41:Add, Button, x496 y374 w130 h30 gCloseMockPreviewLabel, Закрыть
+        Gui, 41:Add, Button, x20 y370 w130 h34 gClearMockPreviewLabel, Очистить
+        Gui, 41:Add, Button, x490 y370 w130 h34 gCloseMockPreviewLabel, Закрыть
         Capture_BeforeShow("41")
         Gui, 41:Show, w640 h420 NoActivate, AMZ MockMode - тест без игры
         WinSet, Transparent, 255, ahk_id %hMockPreviewWnd%
@@ -294,15 +290,15 @@ ShowChatBindMenu() {
     Gui, 19:Color, %panel%
     Gui, 19:Margin, 0, 0
 
-    AddOutlinedPanel(19, 10, 10, overlayW - 20, overlayH - 20, cardBg, accent, 2)
+    AddOutlinedPanel(19, 0, 0, overlayW, overlayH, panel, cardEdge, 1)
 
     Gui, 19:Font, s14 Bold c%text%, Segoe UI
-    Gui, 19:Add, Text, % "x" contentX " y" headerY " w" contentW " h26 Center BackgroundTrans +0x200 +0x4000", Меню биндов
+    Gui, 19:Add, Text, % "x" contentX " y" headerY " w" contentW " h26 BackgroundTrans +0x200 +0x4000", Меню биндов
     Gui, 19:Font, Norm s8 c%muted%, Segoe UI
-    Gui, 19:Add, Text, % "x" contentX " y" helpY " w" contentW " h16 Center BackgroundTrans +0x200 +0x4000", Закрыть: напиши !меню и нажми Alt+F
-    Gui, 19:Add, Text, % "x" contentX " y" formatY " w" contentW " h16 Center BackgroundTrans +0x200 +0x4000", Format: !name hotkey or !name !trigger
-    Gui, 19:Add, Text, % "x" contentX " y" examplesY " w" contentW " h16 Center BackgroundTrans +0x200 +0x4000", Examples: !wanted alt+r | !dep !департамент | !cuff ctrl+f8
-    Gui, 19:Add, Progress, % "-Theme " . "x" contentX " y108 w" contentW " h2 Disabled Background" cardBg " c" accent, 100
+    Gui, 19:Add, Text, % "x" contentX " y" helpY " w" contentW " h16 BackgroundTrans +0x200 +0x4000", Закрыть: напиши !меню и нажми Alt+F
+    Gui, 19:Add, Text, % "x" contentX " y" formatY " w" contentW " h16 BackgroundTrans +0x200 +0x4000", Формат: !имя клавиша или !имя !триггер
+    Gui, 19:Add, Text, % "x" contentX " y" examplesY " w" contentW " h16 BackgroundTrans +0x200 +0x4000", Примеры: !wanted alt+r · !dep !департамент · !cuff ctrl+f8
+    Gui, 19:Add, Progress, % "-Theme " . "x" contentX " y108 w" contentW " h1 Disabled Background" panel " c" cardEdge, 100
 
     Loop, 2
     {
@@ -315,11 +311,13 @@ ShowChatBindMenu() {
         cmdX := colX + nameW + 4
         hkX := cmdX + cmdW + 4
         trigX := hkX + hkW + 4
-        Gui, 19:Font, s7 Bold c%accent%, Segoe UI
-        Gui, 19:Add, Text, % "x" colX " y" tableHeaderY " w" nameW " h16 +0x200 +0x4000 BackgroundTrans", Функция
-        Gui, 19:Add, Text, % "x" cmdX " y" tableHeaderY " w" cmdW " h16 +0x200 +0x4000 BackgroundTrans", Имя
-        Gui, 19:Add, Text, % "x" hkX " y" tableHeaderY " w" hkW " h16 +0x200 +0x4000 BackgroundTrans", HK
-        Gui, 19:Add, Text, % "x" trigX " y" tableHeaderY " w" trigW " h16 +0x200 +0x4000 BackgroundTrans", TXT
+        Gui, 19:Font, s8 Bold c%accent%, Segoe UI
+        Gui, 19:Add, Text, % "x" colX " y" tableHeaderY " w" nameW " h16 +0x200 +0x4000 BackgroundTrans hwndnameHeadHwnd", Функция
+        Gui, 19:Add, Text, % "x" cmdX " y" tableHeaderY " w" cmdW " h16 +0x200 +0x4000 BackgroundTrans hwndcmdHeadHwnd", Имя
+        Gui, 19:Add, Text, % "x" hkX " y" tableHeaderY " w" hkW " h16 +0x200 +0x4000 BackgroundTrans hwndhkHeadHwnd", HK
+        Gui, 19:Add, Text, % "x" trigX " y" tableHeaderY " w" trigW " h16 +0x200 +0x4000 BackgroundTrans hwndtrigHeadHwnd", TXT
+        for _, headerHwnd in [nameHeadHwnd, cmdHeadHwnd, hkHeadHwnd, trigHeadHwnd]
+            UIStyle_SetTextRole(headerHwnd, "accent")
     }
 
     totalRows := rows.Length()
@@ -364,8 +362,9 @@ ShowChatBindMenu() {
 
         if (row.Category != lastCategory)
         {
-            Gui, 19:Font, s7 Bold c%accent%, Segoe UI
-            Gui, 19:Add, Text, % "x" x " y" y " w" colW " h" categoryH " +0x200 +0x4000 BackgroundTrans", % row.Category
+            Gui, 19:Font, s8 Bold c%accent%, Segoe UI
+            Gui, 19:Add, Text, % "x" x " y" y " w" colW " h" categoryH " +0x200 +0x4000 BackgroundTrans hwndcategoryHwnd", % row.Category
+            UIStyle_SetTextRole(categoryHwnd, "accent")
             y += categoryH + gap
             if (useCol = 0)
                 lastCategory1 := row.Category
@@ -383,9 +382,9 @@ ShowChatBindMenu() {
         if (cmdText = "")
             cmdText := "-"
 
-        Gui, 19:Font, Norm s7 c%text%, Segoe UI
+        Gui, 19:Font, Norm s8 c%text%, Segoe UI
         Gui, 19:Add, Text, % "x" x " y" y " w" nameW " h" rowH " +0x200 +0x4000 BackgroundTrans", % row.Label
-        Gui, 19:Font, Norm s7 c%muted%, Segoe UI
+        Gui, 19:Font, Norm s8 c%muted%, Segoe UI
         Gui, 19:Add, Text, % "x" cmdX " y" y " w" cmdW " h" rowH " +0x200 +0x4000 BackgroundTrans", % cmdText
         Gui, 19:Add, Text, % "x" hkX " y" y " w" hkW " h" rowH " +0x200 +0x4000 BackgroundTrans", % hkText
         Gui, 19:Add, Text, % "x" trigX " y" y " w" trigW " h" rowH " +0x200 +0x4000 BackgroundTrans", % trigText
@@ -470,8 +469,8 @@ NormalizeWindowStates() {
     NormalizeNumberRange(HudY, 10, -4000, 8000)
     NormalizeNumberRange(BindListX, 300, -4000, 8000)
     NormalizeNumberRange(BindListY, 70, -4000, 8000)
-    NormalizeNumberRange(BindListW, 520, 420, 720)
-    NormalizeNumberRange(BindListH, 390, 300, 700)
+    NormalizeNumberRange(BindListW, 520, 420, 760)
+    NormalizeNumberRange(BindListH, 390, 320, 740)
     NormalizeNumberRange(SettingsX, 120, -4000, 8000)
     NormalizeNumberRange(SettingsY, 60, -4000, 8000)
     Settings_NormalizeViewport()
@@ -596,6 +595,7 @@ CreateHUD() {
 
     bg := "", panel := "", text := "", accent := "", muted := ""
     GetThemeColors(bg, panel, text, accent, muted)
+    GetControlSurfaceColors(controlBg, inputFg, cardBg, cardEdge, panel, text, accent)
     hudAlpha := HUDTransparency
     NormalizeNumberRange(hudAlpha, 245, 180, 255)
 
@@ -606,10 +606,9 @@ CreateHUD() {
     else
         hudW := 304, hudH := 186
 
-    hudRight := hudW - 2
-    hudBottom := hudH - 2
-    accentH := hudH - 20
-    valueX := 100
+    hudRight := hudW - 1
+    hudBottom := hudH - 1
+    valueX := 88
     valueW := hudW - valueX - 12
     labelW := 64
     lineW := hudW - 40
@@ -619,38 +618,37 @@ CreateHUD() {
     Gui, 12:Color, %panel%
     Gui, 12:Margin, 0, 0
     SafePicture(12, 0, 0, hudW, hudH, "HUDBG", BackgroundImageFile)
-    Gui, 12:Add, Progress, -Theme x0 y0 w%hudW% h2 Disabled Background%panel% c%accent% vHUDBorderTop, 100
-    Gui, 12:Add, Progress, -Theme x0 y%hudBottom% w%hudW% h2 Disabled Background%panel% c%accent% vHUDBorderBottom, 100
-    Gui, 12:Add, Progress, -Theme x0 y0 w2 h%hudH% Disabled Vertical Background%panel% c%accent% vHUDBorderLeft, 100
-    Gui, 12:Add, Progress, -Theme x%hudRight% y0 w2 h%hudH% Disabled Vertical Background%panel% c%accent% vHUDBorderRight, 100
-    Gui, 12:Add, Progress, -Theme x8 y10 w4 h%accentH% Disabled Vertical Background%panel% c%accent%, 100
+    Gui, 12:Add, Progress, -Theme x0 y0 w%hudW% h1 Disabled Background%panel% c%cardEdge% vHUDBorderTop, 100
+    Gui, 12:Add, Progress, -Theme x0 y%hudBottom% w%hudW% h1 Disabled Background%panel% c%cardEdge% vHUDBorderBottom, 100
+    Gui, 12:Add, Progress, -Theme x0 y0 w1 h%hudH% Disabled Vertical Background%panel% c%cardEdge% vHUDBorderLeft, 100
+    Gui, 12:Add, Progress, -Theme x%hudRight% y0 w1 h%hudH% Disabled Vertical Background%panel% c%cardEdge% vHUDBorderRight, 100
     Gui, 12:Add, Text, x0 y0 w%hudW% h34 vHUDDragZone gStartHUDDrag BackgroundTrans,
 
     Gui, 12:Font, s10 Bold c%text%, Segoe UI
-    Gui, 12:Add, Text, x20 y10 gStartHUDDrag w%lineW% h22 +0x4000 BackgroundTrans, %TabGuiHeaderText%
-    Gui, 12:Font, Norm s7 c%muted%, Segoe UI
-    Gui, 12:Add, Text, x20 y36 w%lineW% h16 BackgroundTrans, Статус персонажа
+    Gui, 12:Add, Text, x18 y10 gStartHUDDrag w%lineW% h22 +0x4000 BackgroundTrans, %TabGuiHeaderText%
+    Gui, 12:Font, Norm s8 c%muted%, Segoe UI
+    Gui, 12:Add, Text, x18 y36 w%lineW% h16 BackgroundTrans, Статус персонажа
 
     rowY := 60
     Gui, 12:Font, Norm s8 c%muted%, Segoe UI
     if (HUDMode != "Профиль + ID")
     {
-        Gui, 12:Add, Text, x20 y%rowY% w%labelW% h18 BackgroundTrans, Время
+        Gui, 12:Add, Text, x18 y%rowY% w%labelW% h18 BackgroundTrans, Время
         rowY += 24
     }
-    Gui, 12:Add, Text, x20 y%rowY% w%labelW% h18 BackgroundTrans, Профиль
+    Gui, 12:Add, Text, x18 y%rowY% w%labelW% h18 BackgroundTrans, Профиль
     rowY += 24
-    Gui, 12:Add, Text, x20 y%rowY% w%labelW% h18 BackgroundTrans, Цель
+    Gui, 12:Add, Text, x18 y%rowY% w%labelW% h18 BackgroundTrans, Цель
     if (HUDMode = "Полный")
     {
         rowY += 24
-        Gui, 12:Add, Text, x20 y%rowY% w%labelW% h18 BackgroundTrans, Меню
+        Gui, 12:Add, Text, x18 y%rowY% w%labelW% h18 BackgroundTrans, Меню
         rowY += 24
-        Gui, 12:Add, Text, x20 y%rowY% w%labelW% h18 BackgroundTrans, Бинды
+        Gui, 12:Add, Text, x18 y%rowY% w%labelW% h18 BackgroundTrans, Бинды
     }
 
     rowY := 60
-    Gui, 12:Font, s8 Bold c%text%, Segoe UI
+    Gui, 12:Font, s9 Bold c%text%, Segoe UI
     if (HUDMode != "Профиль + ID")
     {
         Gui, 12:Add, Text, x%valueX% y%rowY% vHUDTimeText w%valueW% h20 Right +0x4000 BackgroundTrans, --
@@ -834,6 +832,41 @@ UpdateBindListColumnLayout(listWidth := "") {
     LV_ModifyCol(4, 0)
 }
 
+BindList_GetLayout(width, height) {
+    contentW := width - 32
+    searchW := Max(150, contentW - 220)
+    return {ContentW: contentW, TitleW: width - 160, CountX: width - 122, CloseX: width - 48
+        , SearchW: searchW, CategoryX: 28 + searchW, CategoryW: contentW - searchW - 12
+        , ListY: 110, ListH: Max(136, height - 152), FooterY: height - 28
+        , FooterW: width - 64, GripX: width - 38}
+}
+
+ResizeBindListGui(width, height) {
+    global BindListW, BindListH, hBindListWnd, UIRoundness, InnerRoundness
+    if (!hBindListWnd || !DllCall("IsWindow", "Ptr", hBindListWnd, "Int"))
+        return
+    BindListW := width, BindListH := height
+    layout := BindList_GetLayout(width, height)
+    GuiControl, 13:Move, BindListDragZone, % "x0 y0 w" . width . " h58"
+    GuiControl, 13:Move, BindListTitleText, % "x16 y14 w" . layout.TitleW . " h22"
+    GuiControl, 13:Move, BindListProfileText, % "x16 y40 w" . (width - 88) . " h18"
+    GuiControl, 13:Move, BindListCountText, % "x" . layout.CountX . " y18 w60 h18"
+    GuiControl, 13:Move, BindListCloseText, % "x" . layout.CloseX . " y12 w32 h30"
+    GuiControl, 13:Move, BindListSearchEdit, % "x16 y68 w" . layout.SearchW . " h30"
+    GuiControl, 13:Move, BindListCategoryDDL, % "x" . layout.CategoryX . " y68 w" . layout.CategoryW . " h30"
+    GuiControl, 13:Move, BindListLV, % "x16 y" . layout.ListY . " w" . layout.ContentW . " h" . layout.ListH
+    GuiControl, 13:Move, BindListInfoText, % "x16 y" . layout.FooterY . " w" . layout.FooterW . " h18"
+    GuiControl, 13:Move, BindListResizeGripText, % "x" . layout.GripX . " y" . layout.FooterY . " w22 h18"
+    GuiControl, 13:Move, BindListBG, % "x0 y0 w" . width . " h" . height
+    GuiControl, 13:Move, BindListBorderTop, % "x0 y0 w" . width . " h1"
+    GuiControl, 13:Move, BindListBorderBottom, % "x0 y" . (height - 1) . " w" . width . " h1"
+    GuiControl, 13:Move, BindListBorderLeft, % "x0 y0 w1 h" . height
+    GuiControl, 13:Move, BindListBorderRight, % "x" . (width - 1) . " y0 w1 h" . height
+    UpdateBindListColumnLayout(layout.ContentW)
+    ApplyRoundedCorners(hBindListWnd, UIRoundness)
+    ApplyRoundedPanelsForGui(hBindListWnd, InnerRoundness)
+}
+
 CreateBindList() {
     global hBindListWnd, hBindListLV, BindListX, BindListY, BindListW, BindListH, UIRoundness, InnerRoundness, BackgroundImageFile
     global BindListBG, BindListBorderTop, BindListBorderBottom, BindListBorderLeft, BindListBorderRight, BindListDragZone
@@ -841,8 +874,8 @@ CreateBindList() {
     global BindListLV, BindListInfoText, BindListTitleText, BindListProfileText, BindListResizeGripText, BindListRefreshText, BindListCloseText
     global BindListSearch, BindListCategory, BindListSearchEdit, BindListCategoryDDL, hBindListCategoryDDL, BindListCountText
 
-    NormalizeNumberRange(BindListW, 460, 400, 540)
-    NormalizeNumberRange(BindListH, 330, 280, 430)
+    NormalizeNumberRange(BindListW, 520, 420, 760)
+    NormalizeNumberRange(BindListH, 390, 320, 740)
 
     bg := "", panel := "", text := "", accent := "", muted := ""
     GetThemeColors(bg, panel, text, accent, muted)
@@ -854,71 +887,60 @@ CreateBindList() {
             if (ColorBrightness(panel) >= 140)
                 text := "1D232B", muted := "66727F"
             else
-                text := "F4F6F8", muted := "A9B1BA"
+                text := "ECECFA", muted := "9DA5BD"
         }
     }
-    controlBg := "", bindInputText := "", cardBg := "", cardEdge := ""
     GetControlSurfaceColors(controlBg, bindInputText, cardBg, cardEdge, panel, text, accent)
-
-    listW := BindListW - 24
-    listH := BindListH - 128
-    if (listH < 160)
-        listH := 160
-    infoY := 100 + listH + 6
-    infoW := BindListW - 54
-    bindRight := BindListW - 2
-    bindBottom := BindListH - 2
-    countX := BindListW - 130
-    closeX := BindListW - 52
-    gripX := BindListW - 34
+    layout := BindList_GetLayout(BindListW, BindListH)
+    listW := layout.ContentW, listH := layout.ListH, infoY := layout.FooterY, infoW := layout.FooterW
+    searchW := layout.SearchW, catX := layout.CategoryX, catW := layout.CategoryW
+    titleW := layout.TitleW, countX := layout.CountX, closeX := layout.CloseX, gripX := layout.GripX
+    bindRight := BindListW - 1, bindBottom := BindListH - 1
 
     Gui, 13:Destroy
-    Gui, 13:+HwndhBindListWnd +AlwaysOnTop -Caption +ToolWindow +LastFound +Resize +MinSize400x280 +MaxSize620x520
+    Gui, 13:+HwndhBindListWnd +AlwaysOnTop -Caption +ToolWindow +LastFound +Resize +MinSize420x320 +MaxSize760x740
     Gui, 13:Color, %panel%, %controlBg%
     Gui, 13:Margin, 0, 0
     SafePicture(13, 0, 0, BindListW, BindListH, "BindListBG", BackgroundImageFile)
-    Gui, 13:Add, Progress, -Theme x0 y0 w%BindListW% h2 Disabled Background%panel% c%accent% vBindListBorderTop, 100
-    Gui, 13:Add, Progress, -Theme x0 y%bindBottom% w%BindListW% h2 Disabled Background%panel% c%accent% vBindListBorderBottom, 100
-    Gui, 13:Add, Progress, -Theme x0 y0 w2 h%BindListH% Disabled Vertical Background%panel% c%accent% vBindListBorderLeft, 100
-    Gui, 13:Add, Progress, -Theme x%bindRight% y0 w2 h%BindListH% Disabled Vertical Background%panel% c%accent% vBindListBorderRight, 100
-    Gui, 13:Add, Progress, -Theme x10 y10 w4 h40 Disabled Vertical Background%panel% c%accent%, 100
-    Gui, 13:Add, Text, x0 y0 w%BindListW% h48 vBindListDragZone gStartBindListDrag BackgroundTrans,
+    Gui, 13:Add, Progress, -Theme x0 y0 w%BindListW% h1 Disabled Background%panel% c%cardEdge% vBindListBorderTop, 100
+    Gui, 13:Add, Progress, -Theme x0 y%bindBottom% w%BindListW% h1 Disabled Background%panel% c%cardEdge% vBindListBorderBottom, 100
+    Gui, 13:Add, Progress, -Theme x0 y0 w1 h%BindListH% Disabled Vertical Background%panel% c%cardEdge% vBindListBorderLeft, 100
+    Gui, 13:Add, Progress, -Theme x%bindRight% y0 w1 h%BindListH% Disabled Vertical Background%panel% c%cardEdge% vBindListBorderRight, 100
+    Gui, 13:Add, Text, x0 y0 w%BindListW% h58 vBindListDragZone gStartBindListDrag BackgroundTrans,
 
-    Gui, 13:Font, s10 Bold c%text%, Segoe UI
-    Gui, 13:Add, Text, x22 y8 w260 h20 vBindListTitleText gStartBindListDrag BackgroundTrans, БИНДЫ
-    Gui, 13:Font, Norm s8 c%muted%, Segoe UI
-    Gui, 13:Add, Text, x22 y29 w280 h16 vBindListProfileText gStartBindListDrag BackgroundTrans, %CurrentProfile%
+    Gui, 13:Font, s11 Bold c%text%, Segoe UI
+    Gui, 13:Add, Text, x16 y14 w%titleW% h22 vBindListTitleText gStartBindListDrag +0x4000 BackgroundTrans, Бинды
+    Gui, 13:Font, Norm s9 c%muted%, Segoe UI
+    profileW := BindListW - 88
+    Gui, 13:Add, Text, x16 y40 w%profileW% h18 vBindListProfileText gStartBindListDrag +0x4000 BackgroundTrans, %CurrentProfile%
     Gui, 13:Font, s8 Bold c%accent%, Segoe UI
-    Gui, 13:Add, Text, x%countX% y12 w70 h18 Right vBindListCountText BackgroundTrans, 0 шт.
-    Gui, 13:Font, s9 Bold c%text%, Segoe UI
-    Gui, 13:Add, Button, x%closeX% y8 w34 h24 Center vBindListCloseText g13GuiClose BackgroundTrans, X
+    Gui, 13:Add, Text, x%countX% y18 w60 h18 Right vBindListCountText hwndcountHwnd BackgroundTrans, 0 шт.
+    Gui, 13:Font, s9 Norm c%text%, Segoe UI
+    Gui, 13:Add, Button, x%closeX% y12 w32 h30 vBindListCloseText g13GuiClose, X
     Gui, 13:Add, Text, x0 y0 w0 h0 vBindListRefreshText Hidden,
 
-    searchW := Max(150, BindListW - 286)
-    catX := 18 + searchW
     Gui, 13:Font, Norm s9 c%bindInputText%, Segoe UI
-    Gui, 13:Add, Edit, x12 y56 w%searchW% h26 vBindListSearchEdit gBindListFilterChanged, %BindListSearch%
-    Gui, 13:Add, DropDownList, x%catX% y56 w190 r10 vBindListCategoryDDL hwndhBindListCategoryDDL gBindListFilterChanged, Все|Системные|Задержание и RP|Доклады|Транспорт / прочее|Документы|Пользовательское
+    Gui, 13:Add, Edit, x16 y68 w%searchW% h30 -Multi -WantReturn -VScroll -HScroll vBindListSearchEdit hwndsearchHwnd gBindListFilterChanged, %BindListSearch%
+    DllCall("SendMessageW", "Ptr", searchHwnd, "UInt", 0x1501, "Ptr", 1, "WStr", "Поиск по биндам")
+    Gui, 13:Add, DropDownList, x%catX% y68 w%catW% r10 vBindListCategoryDDL hwndhBindListCategoryDDL gBindListFilterChanged, Все|Системные|Задержание и RP|Доклады|Транспорт / прочее|Документы|Пользовательское
     GuiControl, 13:ChooseString, BindListCategoryDDL, %BindListCategory%
-    Gui, 13:Font, Norm s8 c%bindInputText%, Segoe UI
-    Gui, 13:Add, ListView, x12 y94 w%listW% h%listH% vBindListLV hwndhBindListLV gBindListViewEvent AltSubmit -Multi Background%controlBg%, Команда|Клавиша|TXT|Token
+    Gui, 13:Font, Norm s9 c%bindInputText%, Segoe UI
+    Gui, 13:Add, ListView, x16 y110 w%listW% h%listH% vBindListLV hwndhBindListLV gBindListViewEvent AltSubmit -Multi Background%controlBg%, Команда|Клавиша|TXT|Token
     Gui, 13:Font, Norm s8 c%muted%, Segoe UI
-    Gui, 13:Add, Text, x12 y%infoY% w%infoW% h18 vBindListInfoText BackgroundTrans, Бинды загружены.
-    Gui, 13:Font, s9 Bold c%accent%, Segoe UI
+    Gui, 13:Add, Text, x16 y%infoY% w%infoW% h18 vBindListInfoText +0x4000 BackgroundTrans, Бинды загружены.
+    Gui, 13:Font, s9 Norm c%muted%, Segoe UI
     Gui, 13:Add, Text, x%gripX% y%infoY% w22 h18 Right vBindListResizeGripText BackgroundTrans, //
 
+    UIStyle_SetTextRole(countHwnd, "accent")
     Capture_BeforeShow("13")
-
     Gui, 13:Show, % "x" BindListX " y" BindListY " w" BindListW " h" BindListH, BindList
     PromoteOverlayWindow(hBindListWnd, 1, 0)
     bindListAlpha := BindListTransparency
     NormalizeNumberRange(bindListAlpha, 225, 150, 255)
     WinSet, Transparent, %bindListAlpha%, ahk_id %hBindListWnd%
-    ApplyRoundedCorners(hBindListWnd, UIRoundness)
-    ApplyRoundedPanelsForGui(hBindListWnd, InnerRoundness)
+    ResizeBindListGui(BindListW, BindListH)
     ApplyListViewColors(hBindListLV, controlBg, bindInputText)
     ApplyPersistentAlwaysOnTop()
-    UpdateBindListColumnLayout(listW)
 }
 
 GetBindListHintText(summaryText := "") {
@@ -1293,13 +1315,13 @@ ShowBindOverlay() {
     Gui, 18:Color, %panel%
     Gui, 18:Margin, 0, 0
 
-    AddOutlinedPanel(18, 10, 10, overlayW - 20, overlayH - 20, cardBg, accent, 2)
+    AddOutlinedPanel(18, 0, 0, overlayW, overlayH, panel, cardEdge, 1)
 
     Gui, 18:Font, s10 Bold c%text%, Segoe UI
-    Gui, 18:Add, Text, % "x" contentX " y16 w" contentW " h20 Center BackgroundTrans", Бинды
+    Gui, 18:Add, Text, % "x" contentX " y16 w" contentW " h20 BackgroundTrans", Бинды
     Gui, 18:Font, Norm s7 c%muted%, Segoe UI
-    Gui, 18:Add, Text, % "x" contentX " y38 w" contentW " h16 Center BackgroundTrans", Alt+X - скрыть | F11 - полный
-    Gui, 18:Add, Progress, % "-Theme " . "x" contentX " y58 w" contentW " h2 Disabled Background" cardBg " c" accent, 100
+    Gui, 18:Add, Text, % "x" contentX " y38 w" contentW " h16 BackgroundTrans", Alt+X — скрыть · F11 — полный список
+    Gui, 18:Add, Progress, % "-Theme " . "x" contentX " y58 w" contentW " h1 Disabled Background" panel " c" cardEdge, 100
 
     if (!IsObject(rows) || rows.Length() = 0)
     {
@@ -1320,8 +1342,9 @@ ShowBindOverlay() {
                     skippedRows := rows.Length() - A_Index + 1
                     break
                 }
-                Gui, 18:Font, s7 Bold c%accent%, Segoe UI
-                Gui, 18:Add, Text, % "x" contentX " y" rowY " w" contentW " h18 +0x200 BackgroundTrans", % row.Category
+                Gui, 18:Font, s8 Bold c%accent%, Segoe UI
+                Gui, 18:Add, Text, % "x" contentX " y" rowY " w" contentW " h18 +0x200 BackgroundTrans hwndcategoryHwnd", % row.Category
+                UIStyle_SetTextRole(categoryHwnd, "accent")
                 rowY += 18
                 lastCategory := row.Category
             }
@@ -1373,7 +1396,8 @@ ShowStopTimerGUI() {
     bg := "", panel := "", text := "", accent := "", muted := ""
     GetThemeColors(bg, panel, text, accent, muted)
 
-    borderColor := (StopTimerBorderColor != "" ? StopTimerBorderColor : accent)
+    GetControlSurfaceColors(surface, inputFg, card, edge, panel, text, accent)
+    borderColor := (StopTimerBorderColor != "" ? StopTimerBorderColor : edge)
     timerTextColor := (StopTimerTextColor != "" ? StopTimerTextColor : text)
     timerBgColor := (StopTimerBgColor != "" ? StopTimerBgColor : panel)
     timerW := StopTimerWidth
@@ -1391,18 +1415,19 @@ ShowStopTimerGUI() {
         alpha := 235
 
     Gui, 15:Destroy
-    Gui, 15:+HwndhStopTimerWnd +AlwaysOnTop -Caption +ToolWindow +E0x08000000 +Border +LastFound
+    Gui, 15:+HwndhStopTimerWnd +AlwaysOnTop -Caption +ToolWindow +E0x08000000 +LastFound
     Gui, 15:Color, %timerBgColor%
     Gui, 15:Margin, 0, 0
-    Gui, 15:Add, Progress, -Theme x0 y0 w%timerW% h2 Disabled Background%timerBgColor% c%borderColor%, 100
-    bottomY := timerH - 2
-    Gui, 15:Add, Progress, -Theme x0 y%bottomY% w%timerW% h2 Disabled Background%timerBgColor% c%borderColor%, 100
-    Gui, 15:Add, Progress, -Theme x0 y0 w2 h%timerH% Disabled Vertical Background%timerBgColor% c%borderColor%, 100
-    rightX := timerW - 2
-    Gui, 15:Add, Progress, -Theme x%rightX% y0 w2 h%timerH% Disabled Vertical Background%timerBgColor% c%borderColor%, 100
-    Gui, 15:Add, Text, x0 y0 w%timerW% h%timerH% Center 0x200 gStartStopTimerDrag vStopTimerCount BackgroundTrans, %StopTimerCounter%
+    Gui, 15:Add, Progress, -Theme x0 y0 w%timerW% h1 Disabled Background%timerBgColor% c%borderColor%, 100
+    bottomY := timerH - 1
+    Gui, 15:Add, Progress, -Theme x0 y%bottomY% w%timerW% h1 Disabled Background%timerBgColor% c%borderColor%, 100
+    Gui, 15:Add, Progress, -Theme x0 y0 w1 h%timerH% Disabled Vertical Background%timerBgColor% c%borderColor%, 100
+    rightX := timerW - 1
+    Gui, 15:Add, Progress, -Theme x%rightX% y0 w1 h%timerH% Disabled Vertical Background%timerBgColor% c%borderColor%, 100
+    Gui, 15:Add, Text, x0 y0 w%timerW% h%timerH% Center 0x200 gStartStopTimerDrag vStopTimerCount hwndhStopTimerCountText BackgroundTrans, %StopTimerCounter%
     Gui, 15:Font, s26 Bold c%timerTextColor%, Segoe UI
     GuiControl, 15:Font, StopTimerCount
+    UIStyle_SetTextRole(hStopTimerCountText, "text")
     showOpts := "x" . StopTimerX . " y" . StopTimerY . " w" . timerW . " h" . timerH . " NoActivate"
     Capture_BeforeShow("15")
     Gui, 15:Show, %showOpts%, StopTimer
@@ -1454,6 +1479,7 @@ ShowIDOverlay() {
 
     bg := "", panel := "", text := "", accent := "", muted := ""
     GetThemeColors(bg, panel, text, accent, muted)
+    GetControlSurfaceColors(surface, inputFg, card, edge, panel, text, accent)
 
     overlayW := IDOverlayW
     overlayH := IDOverlayH
@@ -1464,18 +1490,18 @@ ShowIDOverlay() {
     if (IDOverlayY = "")
         IDOverlayY := 420
 
-    borderRight := overlayW - 2
-    borderBottom := overlayH - 2
+    borderRight := overlayW - 1
+    borderBottom := overlayH - 1
     textW := overlayW - 16
 
     Gui, IDOverlay:Destroy
     Gui, IDOverlay:New, +HwndhIDOverlayWnd +AlwaysOnTop -Caption +ToolWindow +E0x08000000 +LastFound
     Gui, IDOverlay:Color, %panel%
     Gui, IDOverlay:Margin, 0, 0
-    Gui, IDOverlay:Add, Progress, -Theme x0 y0 w%overlayW% h2 Disabled Background%panel% c%accent%, 100
-    Gui, IDOverlay:Add, Progress, -Theme x0 y%borderBottom% w%overlayW% h2 Disabled Background%panel% c%accent%, 100
-    Gui, IDOverlay:Add, Progress, -Theme x0 y0 w2 h%overlayH% Disabled Vertical Background%panel% c%accent%, 100
-    Gui, IDOverlay:Add, Progress, -Theme x%borderRight% y0 w2 h%overlayH% Disabled Vertical Background%panel% c%accent%, 100
+    Gui, IDOverlay:Add, Progress, -Theme x0 y0 w%overlayW% h1 Disabled Background%panel% c%edge%, 100
+    Gui, IDOverlay:Add, Progress, -Theme x0 y%borderBottom% w%overlayW% h1 Disabled Background%panel% c%edge%, 100
+    Gui, IDOverlay:Add, Progress, -Theme x0 y0 w1 h%overlayH% Disabled Vertical Background%panel% c%edge%, 100
+    Gui, IDOverlay:Add, Progress, -Theme x%borderRight% y0 w1 h%overlayH% Disabled Vertical Background%panel% c%edge%, 100
     Gui, IDOverlay:Font, s10 Bold c%text%, Segoe UI
     Gui, IDOverlay:Add, Text, x8 y0 w%textW% h%overlayH% Center 0x200 vIDOverlayText BackgroundTrans, % "ID: " . GetCurrentDisplayID()
     Capture_BeforeShow("IDOverlay")

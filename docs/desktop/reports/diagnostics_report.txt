@@ -1,7 +1,7 @@
 AHK FOR GOS BY SBEZRUK diagnostics report
-Time: 2026-10-16 12:37:47
-Project: Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-sxqcxyio\data
-Script: Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-sxqcxyio\standalone\AHK_FOR_GOS_TEST_U64.exe
+Time: 2026-10-17 09:51:35
+Project: Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-gf2wswi2\data
+Script: Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-gf2wswi2\standalone\AHK_FOR_GOS_TEST_U64.exe
 Mode: CLI read-only diagnostics
 
 
@@ -13,34 +13,34 @@ No GUI, hotkeys, timers, clipboard, GTA memory, profiles/themes writes, or game 
 Защита захвата: состояние ещё не проверено.
 
 == Files ==
-[PASS] High | main exists | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-sxqcxyio\standalone\AHK_FOR_GOS_TEST_U64.exe
-[PASS] High | main non-empty | size=5449216
-[PASS] High | main has no BOM | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-sxqcxyio\standalone\AHK_FOR_GOS_TEST_U64.exe
-[PASS] High | helper embedded source present | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-sxqcxyio\data\helper.ahk
-[PASS] High | common embedded source present | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-sxqcxyio\data\common.ahk
-[PASS] High | UDF embedded source present | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-sxqcxyio\data\UDF.ahk
-[PASS] High | active profiles config exists | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-sxqcxyio\data\profiles.ini
+[PASS] High | main exists | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-gf2wswi2\standalone\AHK_FOR_GOS_TEST_U64.exe
+[PASS] High | main non-empty | size=5494272
+[PASS] High | main has no BOM | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-gf2wswi2\standalone\AHK_FOR_GOS_TEST_U64.exe
+[PASS] High | helper embedded source present | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-gf2wswi2\data\helper.ahk
+[PASS] High | common embedded source present | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-gf2wswi2\data\common.ahk
+[PASS] High | UDF embedded source present | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-gf2wswi2\data\UDF.ahk
+[PASS] High | active profiles config exists | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-gf2wswi2\data\profiles.ini
 [PASS] High | active profiles config non-empty | size=18643
-[PASS] High | active profiles config has no BOM | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-sxqcxyio\data\profiles.ini
+[PASS] High | active profiles config has no BOM | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-gf2wswi2\data\profiles.ini
 themes.ini: optional file is not present; built-in themes remain available
 
 == Self-test summary ==
-[WARN] Medium | selftest_report.txt exists | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-sxqcxyio\data\selftest_report.txt
+[WARN] Medium | selftest_report.txt exists | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-gf2wswi2\data\selftest_report.txt
 
 == Error log tail ==
-Source: Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-sxqcxyio\data\logs\amz_gos.log
-[20261016123656] [INFO] [Config] Migrated config from v0 to v14
-[20261016123657] [INFO] [System] Script start
-[20261016123700] [INFO] [desktop-smoke] Queued chat line: /r Desktop smoke
-[20261016123700] [INFO] [desktop-smoke] Chat transport: Mock (без игры)
-[20261016123701] [INFO] [AutoTargetID] desktop-smoke: ID 42 | ник First_Player, ped 0x200000
-[20261016123701] [INFO] [AutoTargetID] desktop-smoke: ID 43 | ник Second_Player, ped 0x300000
-[20261016123701] [INFO] [AutoTargetID] desktop-smoke: ID 44 | ник Third_Player, ped 0x400000
-[20261016123702] [INFO] [System] Script exit: Exit
+Source: Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-gf2wswi2\data\logs\amz_gos.log
+[20261017095043] [INFO] [Config] Migrated config from v0 to v14
+[20261017095044] [INFO] [System] Script start
+[20261017095047] [INFO] [desktop-smoke] Queued chat line: /r Desktop smoke
+[20261017095047] [INFO] [desktop-smoke] Chat transport: Mock (без игры)
+[20261017095048] [INFO] [AutoTargetID] desktop-smoke: ID 42 | ник First_Player, ped 0x200000
+[20261017095048] [INFO] [AutoTargetID] desktop-smoke: ID 43 | ник Second_Player, ped 0x300000
+[20261017095048] [INFO] [AutoTargetID] desktop-smoke: ID 44 | ник Third_Player, ped 0x400000
+[20261017095049] [INFO] [System] Script exit: Exit
 
 
 == Profile and theme summary ==
-Active config: Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-sxqcxyio\data\profiles.ini
+Active config: Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-gf2wswi2\data\profiles.ini
 Active profile: Основной
 ThemeMode: <missing>
 themes.ini: missing
@@ -90,7 +90,7 @@ Registration: disabled; profile values are retained only for backward compatibil
 Source: https://forum.amazing-online.com/forums/zakonodatelstvo.732/
 TerritoryMapMode=Local
 [PASS] Critical | 20 official documents are readable | docs=20, chars=664495
-[PASS] Critical | every detected article heading is indexed | pages=176, headings=726, failures=0
+[PASS] Critical | every detected article heading is indexed | pages=177, headings=726, failures=0
 [WARN] Medium | optional local assets for 11 territory map groups | groups=11, failures=17
 [PASS] Critical | law-query capture never submits chat
 

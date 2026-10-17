@@ -58,7 +58,7 @@ ServiceUI_MeasureText(text, width, pointSize := 10) {
 }
 
 ServiceUI_Notify(text, timeoutMs := 5000, severity := "INFO") {
-    global ServiceUINoticeHwnd, ServiceUINoticeDeadline, ServiceUINoticeTimer
+    global ServiceUINoticeHwnd, ServiceUINoticeDeadline, ServiceUINoticeTimer, ServiceUIInputState, UIRoundness
     text := Trim(text . "")
     if (text = "")
         return false
@@ -78,9 +78,9 @@ ServiceUI_Notify(text, timeoutMs := 5000, severity := "INFO") {
     lines := 0
     Loop, Parse, text, `n, `r
         lines += Max(1, Ceil(StrLen(A_LoopField) / 58))
-    measuredHeight := ServiceUI_MeasureText(text, 424)
+    measuredHeight := ServiceUI_MeasureText(text, 420)
     contentHeight := measuredHeight ? measuredHeight + 10 : lines * 22
-    height := Max(96, 50 + contentHeight)
+    height := Max(108, 62 + contentHeight)
     if (height > 390)
         return ServiceUI_ShowDetails("AHK FOR GOS · " . severity, text)
     displayText := text
@@ -89,19 +89,24 @@ ServiceUI_Notify(text, timeoutMs := 5000, severity := "INFO") {
     Gui, ServiceNotice:Color, %panel%
     Gui, ServiceNotice:Margin, 0, 0
     Gui, ServiceNotice:Font, s9 Bold c%accent%, Segoe UI
-    Gui, ServiceNotice:Add, Text, x18 y12 w424 h20 +0x80 BackgroundTrans, % "AHK FOR GOS  ·  " . severity
+    Gui, ServiceNotice:Add, Text, x20 y16 w280 h20 +0x80 BackgroundTrans hwndnoticeTitleHwnd, AHK FOR GOS
+    Gui, ServiceNotice:Font, s8 Norm c%muted%, Segoe UI
+    severityText := severity = "ERROR" ? "ÎØÈÁÊÀ" : (severity = "WARN" ? "ÂÍÈÌÀÍÈÅ" : "ÓÂÅÄÎÌËÅÍÈÅ")
+    Gui, ServiceNotice:Add, Text, x304 y17 w136 h18 Right BackgroundTrans, %severityText%
     Gui, ServiceNotice:Font, s10 Norm c%fg%, Segoe UI
-    contentHeight := height - 50
-    Gui, ServiceNotice:Add, Text, x18 y38 w424 h%contentHeight% +0x80 +Wrap BackgroundTrans, %displayText%
+    contentHeight := height - 62
+    Gui, ServiceNotice:Add, Text, x20 y46 w420 h%contentHeight% +0x80 +Wrap BackgroundTrans, %displayText%
     scale := A_ScreenDPI / 96.0
     pixelW := Round(width * scale), pixelH := Round(height * scale)
     ServiceUI_Position(pixelW, pixelH, showX, showY)
     if IsObject(ServiceUIInputState)
         showY := Max(12, showY - Round(248 * scale))
     Gui, ServiceNotice:-DPIScale
+    UIStyle_SetTextRole(noticeTitleHwnd, severity = "ERROR" ? "danger" : (severity = "WARN" ? "warning" : "accent"))
     Capture_BeforeShow("ServiceNotice")
     Gui, ServiceNotice:Show, % "x" . showX . " y" . showY . " w" . pixelW . " h" . pixelH . " NoActivate", AHK service notice
     Gui, ServiceNotice:+DPIScale
+    ApplyRoundedCorners(ServiceUINoticeHwnd, UIRoundness)
     ServiceUINoticeDeadline := TickNow() + timeoutMs
     if !IsObject(ServiceUINoticeTimer)
         ServiceUINoticeTimer := Func("ServiceUI_NoticeTick")
@@ -140,13 +145,20 @@ ServiceUI_ShowDetails(title, text, forceDisplay := false) {
     Gui, ServiceDetails:New, +HwndServiceUIDetailsHwnd +AlwaysOnTop +ToolWindow -MinimizeBox -MaximizeBox
     GetControlSurfaceColors(surface, inputFg, card, edge, panel, fg, accent)
     Gui, ServiceDetails:Color, %panel%, %surface%
-    Gui, ServiceDetails:Font, s12 Bold c%fg%, Segoe UI
-    Gui, ServiceDetails:Add, Text, x18 y14 w644 h30 +0x80 BackgroundTrans, %title%
-    Gui, ServiceDetails:Font, s10 Norm c%inputFg%, Segoe UI
-    Gui, ServiceDetails:Add, Edit, x18 y54 w644 h350 ReadOnly -Wrap +VScroll, %text%
-    Gui, ServiceDetails:Add, Button, x542 y416 w120 h32 HwndcloseButton, Çàêðûòü
+    Gui, ServiceDetails:Font, s8 Bold c%accent%, Segoe UI
+    Gui, ServiceDetails:Add, Text, x24 y16 w632 h18 BackgroundTrans hwnddetailsCaptionHwnd, AHK FOR GOS / ÑÂÅÄÅÍÈß
+    Gui, ServiceDetails:Font, s13 Bold c%fg%, Segoe UI
+    Gui, ServiceDetails:Add, Text, x24 y38 w632 h30 +0x80 BackgroundTrans, %title%
+    Gui, ServiceDetails:Font, s10 Norm c%inputFg%, Consolas
+    Gui, ServiceDetails:Add, Edit, x24 y82 w632 h310 ReadOnly -Wrap +VScroll, %text%
+    Gui, ServiceDetails:Font, s8 Norm c%muted%, Segoe UI
+    Gui, ServiceDetails:Add, Text, x24 y422 w442 h18 BackgroundTrans, Âûäåëè íóæíûé òåêñò è íàæìè Ctrl+C äëÿ êîïèðîâàíèÿ.
+    Gui, ServiceDetails:Font, s10 Norm c%fg%, Segoe UI
+    Gui, ServiceDetails:Add, Button, x528 y410 w128 h36 HwndcloseButton, Çàêðûòü
     closeCallback := Func("ServiceUI_CloseDetails")
     GuiControl, ServiceDetails:+g, %closeButton%, % closeCallback
+    UIStyle_SetTextRole(detailsCaptionHwnd, "accent")
+    UIStyle_SetButtonRole(closeButton, "primary")
     Capture_BeforeShow("ServiceDetails")
     Gui, ServiceDetails:Show, w680 h466 NoActivate, AHK service details
     return !!ServiceUIDetailsHwnd
@@ -185,30 +197,35 @@ ServiceUI_ContextIsCurrent(state) {
 }
 
 ServiceUI_CreateInputGui(state) {
-    global ServiceUIInputValue, ServiceUIInputCountdown
+    global ServiceUIInputValue, ServiceUIInputCountdown, UIRoundness
     bg := "", panel := "", fg := "", accent := "", muted := ""
     GetThemeColors(bg, panel, fg, accent, muted)
     width := 540, height := 232
     Gui, ServiceInput:New, +HwndinputHwnd +AlwaysOnTop -Caption +ToolWindow +E0x08000020 +DPIScale
     state.GuiHwnd := inputHwnd
     Gui, ServiceInput:Color, %panel%
+    GetControlSurfaceColors(surface, inputFg, card, edge, panel, fg, accent)
+    AddOutlinedPanel("ServiceInput", 16, 110, 508, 72, surface, edge, 1)
     Gui, ServiceInput:Font, s12 Bold c%fg%, Segoe UI
-    Gui, ServiceInput:Add, Text, x18 y14 w416 h26 +0x80 BackgroundTrans, % state.Title
+    Gui, ServiceInput:Add, Text, x20 y16 w400 h26 +0x80 BackgroundTrans, % state.Title
+    Gui, ServiceInput:Font, s9 Bold c%accent%, Segoe UI
+    Gui, ServiceInput:Add, Text, x438 y18 w82 h22 Right BackgroundTrans vServiceUIInputCountdown hwndcountdownHwnd,
     Gui, ServiceInput:Font, s9 Norm c%muted%, Segoe UI
-    Gui, ServiceInput:Add, Text, x444 y16 w78 h22 Right BackgroundTrans vServiceUIInputCountdown,
-    Gui, ServiceInput:Add, Text, x18 y50 w504 h58 +0x80 +Wrap BackgroundTrans, % state.Prompt
+    Gui, ServiceInput:Add, Text, x20 y52 w500 h50 +0x80 +Wrap BackgroundTrans, % state.Prompt
     Gui, ServiceInput:Font, s13 Norm c%fg%, Segoe UI
-    Gui, ServiceInput:Add, Text, x18 y118 w504 h64 +0x80 +Wrap BackgroundTrans vServiceUIInputValue, % state.Value
-    Gui, ServiceInput:Font, s9 Norm c%muted%, Segoe UI
+    Gui, ServiceInput:Add, Text, x28 y122 w484 h48 +0x80 +Wrap BackgroundTrans vServiceUIInputValue, % state.Value
+    Gui, ServiceInput:Font, s8 Norm c%muted%, Segoe UI
     hint := (state.ConfirmOnSpace ? "Ïðîáåë / Enter" : "Enter") . " — ïîäòâåðäèòü · Backspace — ñòåðåòü · Esc — îòìåíèòü"
-    Gui, ServiceInput:Add, Text, x18 y196 w504 h22 BackgroundTrans, %hint%
+    Gui, ServiceInput:Add, Text, x20 y198 w500 h20 BackgroundTrans, %hint%
     scale := A_ScreenDPI / 96.0
     pixelW := Round(width * scale), pixelH := Round(height * scale)
     ServiceUI_Position(pixelW, pixelH, showX, showY)
     Gui, ServiceInput:-DPIScale
+    UIStyle_SetTextRole(countdownHwnd, "accent")
     Capture_BeforeShow("ServiceInput")
     Gui, ServiceInput:Show, % "x" . showX . " y" . showY . " w" . pixelW . " h" . pixelH . " NoActivate", AHK service input
     Gui, ServiceInput:+DPIScale
+    ApplyRoundedCorners(inputHwnd, UIRoundness)
     return !!inputHwnd && ServiceUI_ContextIsCurrent(state)
 }
 
@@ -422,20 +439,24 @@ ServiceUI_Confirm(title, text) {
         if (parentHwnd)
             Gui, ServiceConfirm:+Owner%parentHwnd%
         Gui, ServiceConfirm:Color, %panel%
+        bodyHeight := Max(64, ServiceUI_MeasureText(text, 472) + 12)
+        buttonY := 64 + bodyHeight + 24
+        confirmHeight := buttonY + 58
         Gui, ServiceConfirm:Font, s12 Bold c%fg%, Segoe UI
-        Gui, ServiceConfirm:Add, Text, x18 y14 w484 h28 +0x80 BackgroundTrans, %title%
+        Gui, ServiceConfirm:Add, Text, x24 y20 w472 h28 +0x80 BackgroundTrans, %title%
         Gui, ServiceConfirm:Font, s10 Norm c%fg%, Segoe UI
-        Gui, ServiceConfirm:Add, Text, x18 y56 w484 h92 +0x80 +Wrap BackgroundTrans, %text%
-        Gui, ServiceConfirm:Add, Button, x234 y168 w128 h34 HwndyesButton, Äà
-        Gui, ServiceConfirm:Add, Button, x374 y168 w128 h34 Default HwndnoButton, Íåò
+        Gui, ServiceConfirm:Add, Text, x24 y64 w472 h%bodyHeight% +0x80 +Wrap BackgroundTrans, %text%
+        Gui, ServiceConfirm:Add, Button, x228 y%buttonY% w128 h36 HwndyesButton, Äà
+        Gui, ServiceConfirm:Add, Button, x368 y%buttonY% w128 h36 Default HwndnoButton, Íåò
         yesCallback := Func("ServiceUI_ResolveConfirm").Bind(state, true)
         noCallback := Func("ServiceUI_ResolveConfirm").Bind(state, false)
         GuiControl, ServiceConfirm:+g, %yesButton%, % yesCallback
         GuiControl, ServiceConfirm:+g, %noButton%, % noCallback
         if (state.ParentWasEnabled)
             DllCall("EnableWindow", "Ptr", parentHwnd, "Int", false, "Int")
+        UIStyle_SetButtonRole(yesButton, "primary")
         Capture_BeforeShow("ServiceConfirm")
-        Gui, ServiceConfirm:Show, w520 h222, AHK confirmation
+        Gui, ServiceConfirm:Show, w520 h%confirmHeight%, AHK confirmation
         while (state.Pending = "") {
             if (state.Epoch != AutomationEpoch || state.Profile != CurrentProfile || TickNow() >= state.Deadline
                 || !DllCall("IsWindow", "Ptr", confirmHwnd, "Int")

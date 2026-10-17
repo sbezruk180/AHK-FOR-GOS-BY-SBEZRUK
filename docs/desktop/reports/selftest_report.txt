@@ -1,6 +1,6 @@
 AHK FOR GOS BY SBEZRUK v1.0 regression self-test
 Runtime: AutoHotkey 1.1.37.02 | ANSI=0 | PtrSize=8
-Project: Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-sxqcxyio\data
+Project: Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-gf2wswi2\data
 LIVE GAME: NOT RUN
 
 [PASS] Critical | file exists: AHK_FOR_GOS_TEST_U64.exe
@@ -107,7 +107,7 @@ LIVE GAME: NOT RUN
 [PASS] High | law-search submit key is configurable Ctrl+Shift+F
 [PASS] Critical | evidence recognition matrix | 32/32
 [PASS] High | evidence retains report identity, pending, focus-retry and cooldown guards
-[PASS] Critical | law index covers 20 documents and every article heading | docs=20, pages=176, headings=726, failures=0
+[PASS] Critical | law index covers 20 documents and every article heading | docs=20, pages=177, headings=726, failures=0
 [PASS] Critical | official offline corpus: 20 readable documents | docs=20, chars=664495, failures=0
 [PASS] Critical | territory map groups and official URLs are valid
 [WARN] Medium | optional local map images for 11 groups | groups=11, failures=17

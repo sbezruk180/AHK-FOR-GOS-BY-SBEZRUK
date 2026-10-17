@@ -141,7 +141,8 @@ LoadUIAppearanceFromIni(fileName) {
     IniRead, UIRoundness, %fileName%, UI, UIRoundness, 18
     IniRead, InnerRoundness, %fileName%, UI, InnerRoundness, 14
     IniRead, GuiTransparency, %fileName%, UI, GuiTransparency, 225
-    IniRead, BackgroundImageURL, %fileName%, UI, BackgroundImageURL,
+    IniRead, BackgroundImageURL, %fileName%, UI, BackgroundImageURL, %A_Space%
+    BackgroundImageURL := Trim(BackgroundImageURL)
     IniRead, FullscreenSafeGui, %fileName%, UI, FullscreenSafeGui, Auto
     IniRead, ProfileMode, %fileName%, UI, ProfileMode, ППС
     IniRead, HUDMode, %fileName%, UI, HUDMode, Полный

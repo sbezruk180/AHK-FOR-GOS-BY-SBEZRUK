@@ -852,37 +852,7 @@ return
 13GuiSize:
 if (A_EventInfo = 1)
     return
-
-global BindListW, BindListH, hBindListWnd, UIRoundness, InnerRoundness
-BindListW := A_GuiWidth
-BindListH := A_GuiHeight
-listW := BindListW - 24
-listH := BindListH - 128
-if (listH < 160)
-    listH := 160
-infoY := 100 + listH + 6
-infoW := BindListW - 54
-searchW := Max(150, BindListW - 286)
-catX := 18 + searchW
-
-GuiControl, 13:Move, BindListDragZone, % "x0 y0 w" . A_GuiWidth . " h48"
-GuiControl, 13:Move, BindListTitleText, % "x22 y8 w260 h20"
-GuiControl, 13:Move, BindListProfileText, % "x22 y29 w280 h16"
-GuiControl, 13:Move, BindListCountText, % "x" . (A_GuiWidth - 130) . " y12 w70 h18"
-GuiControl, 13:Move, BindListCloseText, % "x" . (A_GuiWidth - 52) . " y8 w34 h24"
-GuiControl, 13:Move, BindListSearchEdit, % "x12 y56 w" . searchW . " h26"
-GuiControl, 13:Move, BindListCategoryDDL, % "x" . catX . " y56 w190 h26"
-GuiControl, 13:Move, BindListLV, % "x12 y94 w" . listW . " h" . listH
-GuiControl, 13:Move, BindListInfoText, % "x12 y" . infoY . " w" . infoW . " h18"
-GuiControl, 13:Move, BindListResizeGripText, % "x" . (A_GuiWidth - 34) . " y" . infoY . " w22 h18"
-GuiControl, 13:Move, BindListBG, % "x0 y0 w" . A_GuiWidth . " h" . A_GuiHeight
-GuiControl, 13:Move, BindListBorderTop, % "x0 y0 w" . A_GuiWidth . " h2"
-GuiControl, 13:Move, BindListBorderBottom, % "x0 y" . (A_GuiHeight - 2) . " w" . A_GuiWidth . " h2"
-GuiControl, 13:Move, BindListBorderLeft, % "x0 y0 w2 h" . A_GuiHeight
-GuiControl, 13:Move, BindListBorderRight, % "x" . (A_GuiWidth - 2) . " y0 w2 h" . A_GuiHeight
-UpdateBindListColumnLayout(listW)
-ApplyRoundedCorners(hBindListWnd, UIRoundness)
-ApplyRoundedPanelsForGui(hBindListWnd, InnerRoundness)
+ResizeBindListGui(A_GuiWidth, A_GuiHeight)
 SetTimer, SaveUiDebounced, -500
 return
 

@@ -232,19 +232,22 @@ IDCapture_HandleKey(state, vk, sc, flags, isDown, isUp, now) {
 }
 
 IDCapture_CreateGui(state) {
-    global IDCaptureValueText, IDCaptureCountdownText, IDCaptureHelpText
+    global IDCaptureValueText, IDCaptureCountdownText, IDCaptureHelpText, UIRoundness
     Gui, IDCapture:New, +AlwaysOnTop -Caption +ToolWindow +E0x08000020 +HwndcaptureHwnd +DPIScale
     state.GuiHwnd := captureHwnd
     GetThemeColors(bg, panel, fg, accent, muted)
     Gui, IDCapture:Color, %panel%
     Gui, IDCapture:Margin, 0, 0
-    Gui, IDCapture:Font, s10 Norm c%muted%, Segoe UI
-    Gui, IDCapture:Add, Text, x16 y12 w216 h20 BackgroundTrans, ¬¬ќƒ ID ÷≈Ћ»
+    GetControlSurfaceColors(surface, inputFg, card, edge, panel, fg, accent)
+    AddOutlinedPanel("IDCapture", 12, 38, 320, 42, surface, edge, 1)
+    Gui, IDCapture:Font, s9 Bold c%accent%, Segoe UI
+    Gui, IDCapture:Add, Text, x16 y12 w216 h20 BackgroundTrans hwndcaptureTitleHwnd, ¬вод ID цели
+    Gui, IDCapture:Font, s9 Norm c%muted%, Segoe UI
     Gui, IDCapture:Add, Text, x252 y12 w76 h20 Right BackgroundTrans vIDCaptureCountdownText,
     Gui, IDCapture:Font, s20 Norm c%fg%, Segoe UI
-    Gui, IDCapture:Add, Text, x16 y38 w312 h34 +0x200 BackgroundTrans vIDCaptureValueText, Ч
-    Gui, IDCapture:Font, s9 Norm c%muted%, Segoe UI
-    Gui, IDCapture:Add, Text, x16 y82 w312 h34 +Wrap BackgroundTrans vIDCaptureHelpText, ѕовтор бинда / Enter Ч сохранить`nBackspace Ч стереть Ј Esc Ч отменить
+    Gui, IDCapture:Add, Text, x22 y42 w300 h34 +0x200 BackgroundTrans vIDCaptureValueText, Ч
+    Gui, IDCapture:Font, s8 Norm c%muted%, Segoe UI
+    Gui, IDCapture:Add, Text, x16 y88 w312 h32 +Wrap BackgroundTrans vIDCaptureHelpText, ѕовтор бинда / Enter Ч сохранить`nBackspace Ч стереть Ј Esc Ч отменить
     scale := A_ScreenDPI / 96
     ownerHwnd := state.OwnerHwnd
     WinGetPos, gameX, gameY, gameW, gameH, ahk_id %ownerHwnd%
@@ -256,9 +259,11 @@ IDCapture_CreateGui(state) {
         showY := Max(8, Round(A_ScreenHeight - 208 * scale))
     }
     Gui, IDCapture:-DPIScale
+    UIStyle_SetTextRole(captureTitleHwnd, "accent")
     Capture_BeforeShow("IDCapture")
     Gui, IDCapture:Show, % "x" . showX . " y" . showY . " w" . Round(344 * scale) . " h" . Round(128 * scale) . " NoActivate", ¬вод ID
     Gui, IDCapture:+DPIScale
+    ApplyRoundedCorners(captureHwnd, UIRoundness)
     return DllCall("IsWindow", "Ptr", captureHwnd, "Int") && IDCapture_ContextIsCurrent(state)
 }
 
