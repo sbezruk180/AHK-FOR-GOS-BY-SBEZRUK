@@ -87,12 +87,13 @@
     "skipped_groups": [
       "Mixed RU/US layout typing unavailable under Wine"
     ],
-    "final_20_characters_ms": 474,
-    "measured_key_hold_ms": 51,
+    "final_20_characters_ms": 482,
+    "measured_key_hold_ms": 52,
     "game_predicate": "fixture seam",
     "chat_open_state": "fixture seam",
     "action_execution": "fixture sink",
     "privacy_api": "explicit success/refusal seam; actual flags checked in desktop smoke",
-    "wine_layout": "only for digit test: current HKL substituted if real RU/US load fails; Windows uses both real layouts"
+    "wine_layout": "only for digit test: current HKL substituted if real RU/US load fails; Windows uses both real layouts",
+    "typing_target": "plain Win32 STATIC/EDIT window with DefWindowProc; no AutoHotkey GUI layout interception"
   }
 }
