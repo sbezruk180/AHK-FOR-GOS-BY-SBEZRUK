@@ -128,7 +128,13 @@
     "autoid_tracking_report.txt": "ea09dbf4a903c9d092448117be6eff500602686718c0df5e147b634f3b9f4773"
   },
   "native_windows_ci": {
-    "status": "PENDING_CURRENT_CODE_PUSH",
+    "url": "https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK/actions/runs/39060054085",
+    "commit": "6bc4d3cf4c1cac796ad38ef946cac9fb7b260814",
+    "status": "PASS",
+    "gui_checks": 88,
+    "input_checks": 31,
+    "menu_checks": 14,
+    "mixed_ru_us_layouts": "PASS: both actual layouts, exact /m Стоп! ID:42",
     "release_sha256": "e898a640c2dad2f532e060b6cf6ef28d3aebc7d6fa4f2f3c954604c42699031c",
     "real_game_OBS": "NOT_TESTED"
   }

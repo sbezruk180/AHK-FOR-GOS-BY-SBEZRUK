@@ -24,7 +24,7 @@
 | Отдельный Auto ID стенд | **37 проверок, 0 ошибок** | Замена неотвеченного предложения, F1/F2, тот же HWND, маски, реальный таймер 30 мс; игровой резолвер подставлен |
 | Остальные CLI-режимы | См. [summary.json](reports/summary.json) | runtime-info, diagnostics, context-mocktest, autoreport-mocktest, law-search-test, v1-mocktest |
 | `--selftest` на тестовом U64 | Ожидаемый отказ только ANSI x86 ABI | Остальные проверки должны пройти; ограничение не скрывается |
-| Нативный Windows CI | См. [windows_ci_result.json](reports/windows_ci_result.json) | Отдельно фиксируются commit, запуск опубликованного ANSI x86 EXE, GUI и настоящие раскладки/клавиши |
+| Нативный Windows CI | **PASS: ANSI x86 запуск; GUI 88/0; ввод 31/0; меню 14/0** | [Run 39060054085](https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK/actions/runs/39060054085), commit `6bc4d3cf4c1cac796ad38ef946cac9fb7b260814`; настоящий Windows, обе реальные раскладки. [Подробности](reports/windows_ci_result.json) |
 
 В Win32-стендах предикат игры, состояние её чата и отправитель команды памятью — явно обозначенные подстановки. Оформление/успех privacy API в стенде ввода также подставлены; возвраты реального Capture API проверяются отдельно в desktop smoke. Это не проверка кадров OBS.
 
