@@ -222,7 +222,11 @@ ServiceUI_CreateInputGui(state) {
     ServiceUI_Position(pixelW, pixelH, showX, showY)
     Gui, ServiceInput:-DPIScale
     UIStyle_SetTextRole(countdownHwnd, "accent")
-    Capture_BeforeShow("ServiceInput")
+    protected := Capture_BeforeShow("ServiceInput", state.ForcePrivacy)
+    if (state.ForcePrivacy && !protected) {
+        ServiceUILastInputError := "Windows не подтвердила защиту окна от захвата. Ввод не открыт."
+        return false
+    }
     Gui, ServiceInput:Show, % "x" . showX . " y" . showY . " w" . pixelW . " h" . pixelH . " NoActivate", AHK service input
     Gui, ServiceInput:+DPIScale
     ApplyRoundedCorners(inputHwnd, UIRoundness)
@@ -288,7 +292,7 @@ ServiceUI_ModifierHeld() {
     return false
 }
 
-ServiceUI_Request(title, prompt, ByRef value, maxLen := 180, timeoutSeconds := 45, seed := "", confirmOnSpace := false) {
+ServiceUI_Request(title, prompt, ByRef value, maxLen := 180, timeoutSeconds := 45, seed := "", confirmOnSpace := false, forcePrivacy := false) {
     global ServiceUIInputState, ServiceUIAuditInputs, PhysicalInputBusy, IDCaptureState, AutomationEpoch, CurrentProfile
     ServiceUILastInputError := ""
     if (ServiceUI_IsInputActive() || PhysicalInputBusy || IsObject(IDCaptureState))
@@ -312,6 +316,7 @@ ServiceUI_Request(title, prompt, ByRef value, maxLen := 180, timeoutSeconds := 4
     }
     state := ServiceUI_NewInputState(title, prompt, maxLen, timeoutSeconds, seed, confirmOnSpace
         , AutomationEpoch, DllCall("GetForegroundWindow", "Ptr"), CurrentProfile, TickNow())
+    state.ForcePrivacy := !!forcePrivacy
     ServiceUIInputState := state
     PhysicalInputBusy := 1
     Critical, %previousCritical%
@@ -411,6 +416,10 @@ ServiceUI_Confirm(title, text) {
         if (!IsObject(ServiceUIAuditConfirmations) || !ServiceUIAuditConfirmations.Length())
             return false
         return ServiceUIAuditConfirmations.RemoveAt(1) = 1
+    }
+    if (GameUi_ShouldShowPassive() && GameLocator_IsActive()) {
+        answer := ""
+        return ServiceUI_Request(title, text . "`n1 — Да, 0 — Нет. Подтвердите Enter.", answer, 1, 60) && answer = "1"
     }
     parentHwnd := DllCall("GetForegroundWindow", "Ptr")
     if (parentHwnd) {

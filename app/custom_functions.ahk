@@ -545,7 +545,7 @@ OpenCustomFunctionBuilder(selectIndex := 1) {
 
     Capture_BeforeShow("40")
 
-    Gui, 40:Show, w940 h680, AHK FOR GOS BY SBEZRUK - Конструктор функций
+    Gui, 40:Show, % "w940 h680" . (GameUi_ShouldShowPassive() ? " NoActivate" : ""), AHK FOR GOS BY SBEZRUK - Конструктор функций
     CustomFunctionGuiVisible := 1
     if (selectIndex < 1)
         selectIndex := CustomFunctionSelected > 0 ? CustomFunctionSelected : 1

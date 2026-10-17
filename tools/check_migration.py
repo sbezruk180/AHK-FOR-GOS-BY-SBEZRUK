@@ -32,6 +32,8 @@ for item in manifest['functions']:
         result='Тело совпадает с исходником; это не отдельное подтверждение игрового сценария'
     elif item['name'].startswith(('SelfTest','V1_','RunSelfTest','Diagnostics','RunDiagnostics','RunAutoReportMock','RunV1Mock','RunLawSearchRegression')):
         result='Адаптирована диагностика/проверка модульных и встроенных ресурсов'
+    elif item['name'] in ('SafeSend','QueueMenu_Run','RunGpsDialogAction','SendRadialNumberTwice','SendListSelection','CanRunAction','CanRunCuffFollowup','PasteOnly','ChatTransport_Send','SendChatKeyboard','ContextAssistant_IDHotkeyContext','ContextAssistant_Request','ServiceUI_Confirm','ServiceUI_Request','ServiceUI_CreateInputGui'):
+        result='Добавлены владение вводом/паузы клавиш, приватный ввод или пассивное открытие; регрессии и native стенд. GTA/OBS требуют отдельной проверки'
     elif now['file'] in ('ui_style.ahk', 'app/ui_settings.ahk', 'app/ui_overlays.ahk', 'service_ui.ahk', 'id_capture.ahk') or item['name'] in ('LawGui_GetLayout','LawGui_Show','LawSearch_GetShellAccentColor','LawSearch_GetResultLayout','LawSearch_ShowNotice','Search_ShowCurrentResult','TerritoryMap_ShowCatalog','TerritoryMap_ShowLocal','OpenCustomFunctionBuilder','ActionTimer_RenderCore'):
         result='Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте'
     elif item['name'].startswith(('LawCorpus_','LawSearch_CorpusFingerprint','TerritoryMap_')):

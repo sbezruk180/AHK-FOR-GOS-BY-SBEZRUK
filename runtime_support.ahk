@@ -12,6 +12,7 @@ global AutoReportAcceptedCount := 0
 global ChatLogReaderIdentity := ""
 global ChatLogCursorSignature := ""
 global ChatLogReaderDroppingLine := 0
+global CapturePrivateWindows := {}
 global CaptureStatus := "Защита захвата выключена"
 global CaptureLastError := 0
 global CaptureDiagnostics := {}
@@ -299,7 +300,9 @@ QueueRpAction(template, command, source, menu) {
     return ChatQueue_EnqueueBatch(lines, source, SequenceLineDelay) ? true : false
 }
 
-SafeSend(keys, mode := "Input", epoch := "") {
+SafeSend(keys, mode := "Input", epoch := "", menuLease := "") {
+    if (IsObject(GameMenuLease) && GameMenuLease != menuLease)
+        return false
     if ServiceUI_IsInputActive()
         return false
     if IsObject(IDCaptureState)
@@ -313,9 +316,15 @@ SafeSend(keys, mode := "Input", epoch := "") {
     }
     if !GameLocator_IsActive()
         return false
-    if (mode = "Event")
-        SendEvent, %keys%
-    else
+    if (mode = "Event") {
+        oldDelay := A_KeyDelay, oldDuration := A_KeyDuration
+        try {
+            SetKeyDelay, 30, 50
+            SendEvent, %keys%
+        } finally {
+            SetKeyDelay, %oldDelay%, %oldDuration%
+        }
+    } else
         SendInput, %keys%
     return true
 }
@@ -587,11 +596,15 @@ Capture_ShouldRetry(state, enabled, now) {
     return !IsObject(state) || state.Enabled != enabled || now >= state.NextRetry
 }
 
-Capture_BeforeShow(guiName) {
+Capture_BeforeShow(guiName, forceHide := false) {
     ; Resolve the named GUI while hidden, before its first visible frame.
     if (guiName = "")
         return false
     Gui, %guiName%:+HwndcaptureHwnd
+    if (forceHide)
+        CapturePrivateWindows[captureHwnd] := true
+    else
+        CapturePrivateWindows.Delete(captureHwnd)
     UI_PrepareWindow(captureHwnd)
     UIStyle_Apply(guiName, captureHwnd)
     return Capture_ApplyWindow(captureHwnd)
@@ -600,7 +613,7 @@ Capture_BeforeShow(guiName) {
 Capture_ApplyWindow(hwnd, environment := "") {
     if (!Capture_IsOwnGui(hwnd))
         return false
-    enabled := OBSHideWindows = "On"
+    enabled := OBSHideWindows = "On" || CapturePrivateWindows.HasKey(hwnd)
     now := TickNow()
     state := {Enabled: enabled, Verified: false, Affinity: 0, Error: 0, Reason: "", LastChecked: now, NextRetry: now + 2000}
     if (enabled) {
@@ -650,7 +663,7 @@ Capture_RefreshWindows() {
     CaptureRefreshBusy := 1
     previous := A_DetectHiddenWindows
     enabled := OBSHideWindows = "On"
-    environment := enabled ? Capture_GetEnvironment() : {Supported: true, Composition: true, Version: "", Error: 0, Reason: ""}
+    environment := (enabled || CapturePrivateWindows.Count()) ? Capture_GetEnvironment() : {Supported: true, Composition: true, Version: "", Error: 0, Reason: ""}
     total := 0, confirmed := 0, failed := 0, lastError := 0, lastReason := ""
     now := TickNow()
     try {
@@ -663,12 +676,15 @@ Capture_RefreshWindows() {
                 expired.Push(hwnd)
         }
         ; Deleting during object enumeration can skip the following HWND.
-        for _, hwnd in expired
+        for _, hwnd in expired {
             CaptureWindowStates.Delete(hwnd)
+            CapturePrivateWindows.Delete(hwnd)
+        }
         Loop % windows {
             hwnd := windows%A_Index%
             if (!Capture_IsOwnGui(hwnd))
                 continue
+            enabled := OBSHideWindows = "On" || CapturePrivateWindows.HasKey(hwnd)
             total++
             state := CaptureWindowStates.HasKey(hwnd) ? CaptureWindowStates[hwnd] : ""
             if (enabled && (!environment.Supported || !environment.Composition)) {
@@ -705,6 +721,7 @@ Capture_RefreshWindows() {
             }
         }
         CaptureLastError := lastError
+        enabled := OBSHideWindows = "On"
         CaptureDiagnostics := {Enabled: enabled, Windows: total, Confirmed: confirmed, Failed: failed, Version: environment.Version, Supported: environment.Supported, Composition: environment.Composition, Error: lastError, Reason: lastReason}
         if (enabled && (!environment.Supported || !environment.Composition))
             CaptureStatus := environment.Reason
@@ -936,7 +953,7 @@ QueueMenu_Run(item) {
     Critical, %previous%
     try {
         for _, digit in item.Steps {
-            if (WinExist("A") != ownerHwnd || !SafeSend("{" . digit . "}{" . digit . "}", "Input", item.Epoch))
+            if (WinExist("A") != ownerHwnd || (!SafeSend("{" . digit . "}", "Event", item.Epoch) || !SafeSend("{" . digit . "}", "Event", item.Epoch)))
                 return false
             Sleep, 300
         }
@@ -1150,7 +1167,7 @@ PasteChatForEpoch(epoch, text, contextGuard := "") {
         if (chatState < 0)
             return false
         if (chatState = 0) {
-            if !SafeSend("{F6}", "Input", epoch)
+            if !SafeSend("{F6}", "Event", epoch)
                 return false
         }
         if !ChatTyping_WaitForChatOpen(epoch, ownerHwnd, contextGuard)

@@ -1,7 +1,7 @@
 ; actions subsystem. Definitions only; initialization is in bootstrap.
 
 CanRunAction(actionName, needsID := false, checkChatClosed := true, requireVehicle := false, requireChatOpen := false, requireCloseRange := false) {
-    if (IsObject(IDCaptureState) || PhysicalInputBusy)
+    if (IsObject(IDCaptureState) || PhysicalInputBusy || IsObject(GameMenuStarting) || IsObject(GameMenuLease))
         return false
     global ActionCooldownMs, LastActionTick
     global SafeModeEnabled, SafeBlockWhenChat, SafeVehicleChecks, SafeRequireChatForEditable
@@ -68,6 +68,8 @@ CheckID() {
 
 CanRunCuffFollowup() {
     global SafeModeEnabled, SafeBlockWhenChat
+    if (PhysicalInputBusy || IsObject(GameMenuStarting) || IsObject(GameMenuLease))
+        return false
     if !EnsureGameActive()
         return false
     if !CheckID()
@@ -241,6 +243,8 @@ ContextAssistant_ConfirmHotkeysActive() {
 }
 
 ContextAssistant_IDHotkeyContext() {
+    if (PhysicalInputBusy || ServiceUI_IsInputActive())
+        return false
     if !ContextAssistant_ConfirmHotkeysActive()
         return false
     if !IsGameActive()
@@ -339,7 +343,7 @@ ContextAssistant_CloseGameChat(inputEpoch := 0) {
 }
 
 ContextAssistant_Request(actionName, presetValue := "", presetVariant := "", targetName := "", inputEpoch := 0) {
-    if (IsObject(IDCaptureState) || PhysicalInputBusy)
+    if (IsObject(IDCaptureState) || PhysicalInputBusy || IsObject(GameMenuStarting) || IsObject(GameMenuLease))
         return false
     global ContextAssistantAction, ContextAssistantInput, ContextAssistantVariant, ContextAssistantTargetName
     global ContextAssistantStatus, ContextAssistantMode, hContextAssistantWnd, UserID, MockMode, UIRoundness, TargetIsMask
@@ -402,6 +406,24 @@ ContextAssistant_Request(actionName, presetValue := "", presetVariant := "", tar
         return true
     }
 
+    if GameUi_ShouldShowPassive() {
+        value := ""
+        try {
+            if !ServiceUI_Request(title, prompt, value, 6, 30)
+                return false
+            if (actionName = "Stun" && presetVariant = "") {
+                weapon := ""
+                if !ServiceUI_Request("Выбор средства", "1 — тазер, 2 — дубинка. Введите цифру и нажмите Enter.", weapon, 1, 30)
+                    return false
+                if (weapon != "1" && weapon != "2")
+                    return SafeWarn("Выберите 1 (тазер) или 2 (дубинка).")
+                presetVariant := weapon = "2" ? "baton" : "taser"
+            }
+            return ContextAssistant_Execute(actionName, value, presetVariant, targetName)
+        } finally {
+            ContextAssistant_Close()
+        }
+    }
     ContextAssistant_CloseGameChat()
     bg := "", panel := "", textColor := "", accent := "", muted := ""
     GetThemeColors(bg, panel, textColor, accent, muted)
@@ -434,10 +456,12 @@ ContextAssistant_Request(actionName, presetValue := "", presetVariant := "", tar
         Gui, 42:Add, Button, x378 y178 w164 h34 gContextAssistantCancelLabel, Отмена
     }
     Capture_BeforeShow("42")
-    Gui, 42:Show, w560 h230, AHK FOR GOS BY SBEZRUK - %title%
+    Gui, 42:Show, % "w560 h230" . (GameUi_ShouldShowPassive() ? " NoActivate" : ""), AHK FOR GOS BY SBEZRUK - %title%
     ApplyRoundedCorners(hContextAssistantWnd, UIRoundness)
-    GuiControl, 42:Focus, ContextAssistantInput
-    SafeSend("^a", "Input", inputEpoch)
+    if !GameUi_ShouldShowPassive() {
+        GuiControl, 42:Focus, ContextAssistantInput
+        SafeSend("^a", "Input", inputEpoch)
+    }
     SetTimer, ContextAssistantTimeoutLabel, -30000
     return true
 }
@@ -1123,9 +1147,12 @@ SendGpsDialogDown(count, delayMs := 35, inputEpoch := 0) {
 }
 
 RunGpsDialogAction(actionName, downCount, gpsNumber, inputEpoch := 0) {
-    inputEpoch := AutomationEpoch
-    gpsNumber := ExtractFirstNumber(gpsNumber)
-    if (gpsNumber = "")
+    if (!inputEpoch)
+        inputEpoch := AutomationEpoch
+    if (inputEpoch != AutomationEpoch)
+        return false
+    gpsNumber := Trim(gpsNumber)
+    if (!RegExMatch(gpsNumber, "^\d{1,5}$") || downCount < 0 || downCount > 80)
     {
         Notify("warn")
         return false
@@ -1141,18 +1168,50 @@ RunGpsDialogAction(actionName, downCount, gpsNumber, inputEpoch := 0) {
     if !CanRunAction(actionName, false, false)
         return false
 
-    if (SendChatForEpoch(inputEpoch, "/gps") != 1)
-
-        return
-    Sleep, 260
-    SendGpsDialogDown(downCount, 35)
-    Sleep, 90
-    SafeSend("{Enter}", "Event", inputEpoch)
-    Sleep, 220
-    PasteOnlyForEpoch(inputEpoch, gpsNumber)
-    Sleep, 70
-    SafeSend("{Enter}", "Event", inputEpoch)
-    return true
+    previous := A_IsCritical
+    Critical, On
+    if (PhysicalInputBusy || IsObject(GameMenuStarting) || IsObject(GameMenuLease)) {
+        Critical, %previous%
+        return false
+    }
+    reservation := {Epoch: inputEpoch}
+    GameMenuStarting := reservation
+    Critical, %previous%
+    lease := "", ok := false, stage := "открытие /gps"
+    try {
+        if (SendChatForEpoch(inputEpoch, "/gps", "GPS") != 1)
+            return false
+        stage := "ожидание меню"
+        lease := GameMenu_Acquire(inputEpoch)
+        if !IsObject(lease)
+            return false
+        ; Wait for the chat to really close, then allow the server dialog to settle.
+        ; No retry of /gps or unverified writes to dialog internals.
+        if (!GameMenu_WaitChatClosed(lease) || !GameMenu_Wait(lease, 650) || !GameMenu_Tap(lease, "Home"))
+            return false
+        stage := "выбор пункта"
+        Loop %downCount%
+            if (!GameMenu_Tap(lease, "Down") || !GameMenu_Wait(lease, 35))
+                return false
+        stage := "открытие поля номера"
+        if (!GameMenu_Tap(lease, "Enter") || !GameMenu_Wait(lease, 500))
+            return false
+        stage := "ввод номера"
+        if (!GameMenu_IsCurrent(lease) || !PasteOnly(gpsNumber, 1, Func("GameMenu_IsCurrent").Bind(lease), lease.Hwnd, lease) || !GameMenu_Wait(lease, 100))
+            return false
+        stage := "подтверждение"
+        ok := GameMenu_Tap(lease, "Enter")
+        return ok
+    } finally {
+        if IsObject(lease)
+            GameMenu_Release(lease)
+        if (GameMenuStarting == reservation)
+            GameMenuStarting := ""
+        if (!ok) {
+            LogError("GPS", "Остановлено: " . stage . "; поколение " . inputEpoch . ". Повтор /gps не выполнялся.", "WARN")
+            ServiceUI_Notify("GPS остановлен: " . stage . ". Активируйте игру и попробуйте снова.", 3500, "WARN")
+        }
+    }
 }
 
 InputAction_DoEnterID(inputEpoch := 0) {

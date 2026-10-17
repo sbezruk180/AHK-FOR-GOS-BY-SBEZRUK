@@ -196,6 +196,7 @@ RunAuditSelfTest() {
     AuditAssert("OBS errors throttled before deadline", !Capture_ShouldRetry(retryState, 1, 1999))
     AuditAssert("OBS error retry reaches deadline", Capture_ShouldRetry(retryState, 1, 2000))
     AuditAssert("OBS changed option retries immediately", Capture_ShouldRetry(retryState, 0, 0))
+    RunInputMenuRegression()
     RunChatTypingRegression()
     RunChatStateRegression()
     RunMemoryCompatRegression()
@@ -434,5 +435,77 @@ Audit_CustomRunIdentity() {
         AuditAssert("Custom TYPE failure does not stop a new run", CustomFunctionRunState == replacement)
     } finally {
         CustomFunctionRunState := saved
+    }
+}
+
+RunInputMenuRegression() {
+    global
+    savedMode := TextTriggerInputMode, savedCustom := CustomFunctions, savedEpoch := AutomationEpoch
+    savedBusy := PhysicalInputBusy, savedLease := GameMenuLease, savedStarting := GameMenuStarting
+    savedIntro := Trig_Intro, savedGpsD := Trig_GpsD, savedGpsOS := Trig_GpsOS
+    savedPreview := ChatQueuePreviewText, savedCooldown := ActionCooldownMs
+    try {
+        Trig_Intro := "!auditintro", Trig_GpsD := "!auditd", Trig_GpsOS := "!auditos"
+        a := PrivateText_Resolve("auditintro")
+        AuditAssert("Private TXT: catalog command resolves without chat", a.Kind = "token" && a.Token = "Intro")
+        a := PrivateText_Resolve("!auditd155")
+        AuditAssert("Private TXT: GPS argument remains complete", a.Kind = "gps" && a.Number = "155" && a.Down = 15)
+        a := PrivateText_Resolve("!auditos 88")
+        AuditAssert("Private TXT: organization GPS argument", a.Kind = "gps" && a.Number = "88" && a.Down = 16)
+        a := PrivateText_Resolve("!auditd")
+        AuditAssert("Private TXT: GPS without ID requests it separately", a.Kind = "gps" && a.Number = "")
+        AuditAssert("Private TXT: unknown command never dispatches", !IsObject(PrivateText_Resolve("!unknown-audit")))
+        CustomFunctions := [{Name: "Audit", Trigger: "!auditcustom", Script: "NOTICE audit"}]
+        a := PrivateText_Resolve("!auditcustom")
+        AuditAssert("Private TXT: custom functions remain available", a.Kind = "custom" && a.Index = 1)
+        a := PrivateText_Resolve("!пкоап")
+        AuditAssert("Private TXT: law search mode resolves", a.Kind = "search" && a.Mode = "KOAP")
+        TextTriggerInputMode := "Окно AHK"
+        AuditAssert("Private TXT: game hotstrings are disabled in private mode", !GameTextTriggerAllowed())
+        TextTriggerInputMode := "invalid"
+        PrivateText_NormalizeMode(TextTriggerInputMode)
+        AuditAssert("Private TXT: invalid setting preserves legacy mode", TextTriggerInputMode = "Игровой чат")
+        savedFull := FullscreenSafeGui, savedInputs := ServiceUIAuditInputs, savedUserID := UserID, savedActiveID := ActiveID
+        savedStun := AssistStunEnabled, savedTargetName := TargetNickname, savedMask := TargetIsMask
+        savedBatonCommand := AssistBatonCommand, savedTaserCommand := AssistTaserCommand
+        AssistBatonCommand := "/baton {ID}", AssistTaserCommand := "/tazer {ID}"
+        savedQueue := ChatQueueItems
+        ChatQueueItems := []
+        FullscreenSafeGui := "On", AssistStunEnabled := "On"
+        ServiceUIAuditInputs := [{Confirm: 1, Value: "42"}, {Confirm: 1, Value: "2"}]
+        UserID := ""
+        AuditAssert("Fullscreen input: baton option remains available", ContextAssistant_Request("Stun") && InStr(ChatQueueItems[ChatQueueItems.Length()].Text, "/baton 42"))
+        AuditAssert("Fullscreen input: assistant state always closes", ContextAssistantMode = "" && !ServiceUI_IsInputActive())
+        FullscreenSafeGui := savedFull, ServiceUIAuditInputs := savedInputs, UserID := savedUserID, ActiveID := savedActiveID
+        AssistBatonCommand := savedBatonCommand, AssistTaserCommand := savedTaserCommand
+        AssistStunEnabled := savedStun, TargetNickname := savedTargetName, TargetIsMask := savedMask, ChatQueueItems := savedQueue
+        PhysicalInputBusy := 0, GameMenuLease := "", GameMenuStarting := ""
+        lease := GameMenu_Acquire(AutomationEpoch)
+        AuditAssert("Menu: ownership acquired atomically", IsObject(lease) && PhysicalInputBusy && GameMenu_IsCurrent(lease))
+        AuditAssert("Menu: second transaction cannot acquire input", !GameMenu_Acquire(AutomationEpoch))
+        AuditAssert("Menu: unrelated key sends are blocked", !SafeSend("{Enter}", "Event", AutomationEpoch))
+        AuditAssert("Menu: owner can send paced key", GameMenu_Tap(lease, "Down"))
+        AutomationEpoch++
+        AuditAssert("Menu: cancelled generation stops before next key", !GameMenu_Tap(lease, "Enter") && !GameMenu_Wait(lease, 10))
+        GameMenu_Release(lease)
+        AuditAssert("Menu: ownership released after cancellation", !PhysicalInputBusy && !IsObject(GameMenuLease))
+        old := {Epoch: AutomationEpoch, Hwnd: 1, Profile: CurrentProfile}
+        current := {Epoch: AutomationEpoch, Hwnd: 2, Profile: CurrentProfile}
+        GameMenuLease := current, PhysicalInputBusy := 1
+        GameMenu_Release(old)
+        AuditAssert("Menu: stale completion cannot release another owner", GameMenuLease == current && PhysicalInputBusy)
+        GameMenu_Release(current)
+        AutomationEpoch := savedEpoch
+        AuditAssert("GPS: stale callback cannot open GPS", !RunGpsDialogAction("audit GPS", 15, "155", AutomationEpoch + 1))
+        ActionCooldownMs := 0, ChatQueuePreviewText := ""
+        AuditAssert("GPS: complete production sequence runs in mock", RunGpsDialogAction("audit GPS", 15, "155"))
+        StrReplace(ChatQueuePreviewText, "{Down}", "", downs)
+        AuditAssert("GPS: home plus all 15 down steps precede value", downs = 15 && InStr(ChatQueuePreviewText, "{Home}") < InStr(ChatQueuePreviewText, "{Down}") && InStr(ChatQueuePreviewText, "[TYPE] 155"))
+        AuditAssert("GPS: all paths release reservation and input", !IsObject(GameMenuLease) && !IsObject(GameMenuStarting) && !PhysicalInputBusy)
+    } finally {
+        TextTriggerInputMode := savedMode, CustomFunctions := savedCustom, AutomationEpoch := savedEpoch
+        PhysicalInputBusy := savedBusy, GameMenuLease := savedLease, GameMenuStarting := savedStarting
+        Trig_Intro := savedIntro, Trig_GpsD := savedGpsD, Trig_GpsOS := savedGpsOS
+        ChatQueuePreviewText := savedPreview, ActionCooldownMs := savedCooldown
     }
 }

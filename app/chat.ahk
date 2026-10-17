@@ -54,7 +54,7 @@ ChatTransport_GetConnectionSummary(runMemoryCheck := 0) {
 }
 
 ChatTransport_Send(text, source := "ChatTransport", role := "") {
-    if (IsObject(IDCaptureState) || ServiceUI_IsInputActive())
+    if (IsObject(IDCaptureState) || ServiceUI_IsInputActive() || (IsObject(GameMenuStarting) && source != "GPS") || IsObject(GameMenuLease))
         return -1
     global MockMode, TextSendMode, g_RemoteOperation
     global ChatTransportLastMemoryFailureTick, ChatTransportMemoryRetryMs
@@ -180,7 +180,7 @@ SendChatKeyboard(text) {
             return false
         }
         if (chatState = 0) {
-            if !SafeSend("{F6}", "Input", epoch)
+            if !SafeSend("{F6}", "Event", epoch)
                 return false
         }
         if !ChatTyping_WaitForChatOpen(epoch, ownerHwnd) {
@@ -200,7 +200,7 @@ SendChatKeyboard(text) {
             ChatKeyboardLastError := "¬вод отменЄн или чат закрыт до отправки."
             return false
         }
-        return SafeSend("{Enter}", "Input", epoch)
+        return SafeSend("{Enter}", "Event", epoch)
     } finally {
         Critical, On
         PhysicalInputBusy := 0
@@ -240,11 +240,13 @@ SendRadialNumberTwice(number, delayMs := 300, pressGapMs := 0, inputEpoch := 0) 
     if !RegExMatch(number . "", "^\d$")
         return false
     key := "{" . number . "}"
-    SafeSend(key, "Input", inputEpoch)
+    if !SafeSend(key, "Event", inputEpoch)
+        return false
     pressGapMs := Round(pressGapMs)
     if (pressGapMs > 0)
         Sleep, %pressGapMs%
-    SafeSend(key, "Input", inputEpoch)
+    if !SafeSend(key, "Event", inputEpoch)
+        return false
     Sleep, %delayMs%
     return true
 }
@@ -259,11 +261,13 @@ SendListSelection(position, stepDelayMs := 35, afterDelayMs := 220, inputEpoch :
     {
         Loop, %downCount%
         {
-            SafeSend("{Down}", "Event", inputEpoch)
+            if !SafeSend("{Down}", "Event", inputEpoch)
+                return false
             Sleep, %stepDelayMs%
         }
     }
-    SafeSend("{Enter}", "Event", inputEpoch)
+    if !SafeSend("{Enter}", "Event", inputEpoch)
+        return false
     Sleep, %afterDelayMs%
     return true
 }
@@ -437,7 +441,7 @@ EnsureRussianLayout() {
     return SafeLayout(0x4190419)
 }
 
-PasteOnly(text, alreadyOwned := 0, contextGuard := "", expectedHwnd := 0) {
+PasteOnly(text, alreadyOwned := 0, contextGuard := "", expectedHwnd := 0, menuLease := "") {
     if IsObject(IDCaptureState)
         return false
     global MockMode
@@ -465,7 +469,7 @@ PasteOnly(text, alreadyOwned := 0, contextGuard := "", expectedHwnd := 0) {
         if (ErrorLevel || !ChatTyping_IsReady(epoch, ownerHwnd, contextGuard)
             || sequence != DllCall("GetClipboardSequenceNumber", "UInt"))
             return false
-        if !SafeSend("^v", "Input", epoch)
+        if !SafeSend("^v", "Input", epoch, menuLease)
             return false
         Sleep, 50
         return ChatTyping_IsReady(epoch, ownerHwnd, contextGuard)

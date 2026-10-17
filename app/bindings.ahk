@@ -365,7 +365,9 @@ ResumeGameTextTriggersAfterBindMenu() {
 }
 
 GameTextTriggerAllowed(hotkeyName := "") {
-    global GAME_PROCESS_NAME, PhysicalInputBusy, IDCaptureState
+    global GAME_PROCESS_NAME, PhysicalInputBusy, IDCaptureState, TextTriggerInputMode
+    if (TextTriggerInputMode = "Окно AHK")
+        return false
     ; Explicit TXT commands are recognized on Space in the foreground game.
     ; Never discover modules/read memory in this synchronous keyboard-hook predicate:
     ; an unavailable or slow chat read otherwise prevents Hotstring recognition.
@@ -1057,7 +1059,8 @@ ApplyTextTriggers(ByRef ok, ByRef errText) {
     Hotkey, If, % GameTextHotkeyContext
     ResetRegisteredGameTextHotstrings()
     Hotkey, If, % GameTextHotkeyContext
-    usedTriggers := {}
+    usedTriggers := {"!бинд": "Открыть окно TXT"}
+    PrivateText_RegisterOpener()
 
     if !RegisterTextTrigger("BindMenu", Prev_Trig_BindMenu, "!меню", "DoBindMenuToggle", errText, usedTriggers)
         ok := 0
@@ -1220,6 +1223,7 @@ GetBoundLabelByToken(token) {
         labelMap["ToggleLastLawDoc"] := "DoToggleLastLawDoc"
         labelMap["HideLawGui"] := "DoHideLawGui"
         labelMap["EnterID"] := "DoEnterID"
+        labelMap["TextCommandInput"] := "DoPrivateTextInput"
         labelMap["ResetID"] := "DoResetID"
         labelMap["OpenBindsTab"] := "DoOpenBindsTab"
         labelMap["IDOverlay"] := "DoToggleIDOverlay"
@@ -1341,6 +1345,8 @@ ExecuteBindToken(token) {
 }
 
 HandleBoundHotkey(hotkeyName) {
+    if ServiceUI_IsInputActive()
+        return
     global HotkeyDispatchMap, BindMenuEditMode
     keyId := NormalizeHotkeyId(hotkeyName)
     if (keyId = "" || !IsObject(HotkeyDispatchMap) || !HotkeyDispatchMap.HasKey(keyId))
@@ -1397,6 +1403,7 @@ GetBindCatalog() {
         return catalog
 
     catalog := []
+    catalog.Push({Token: "TextCommandInput", Label: "Окно текстовых команд", Category: "Системные", HotkeyVar: "Bind_TextCommandInput", TriggerVar: "", Hint: "Личный ввод TXT без игрового чата"})
     catalog.Push({Token: "OpenSettings", Label: "Открыть меню", Category: "Системные", HotkeyVar: "Bind_OpenSettings", TriggerVar: ""})
     catalog.Push({Token: "ToggleBindList", Label: "Показать bind-list", Category: "Системные", HotkeyVar: "Bind_ToggleBindList", TriggerVar: ""})
     catalog.Push({Token: "ToggleLastLawDoc", Label: "Последний закон", Category: "Системные", HotkeyVar: "Bind_ToggleLastLawDoc", TriggerVar: ""})

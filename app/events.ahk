@@ -2846,3 +2846,7 @@ return
 DesktopSmokeLabel:
 DesktopSmoke_Run()
 return
+
+DoPrivateTextInput:
+PrivateText_Open()
+return
