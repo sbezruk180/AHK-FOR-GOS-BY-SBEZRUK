@@ -1,5 +1,6 @@
 ﻿Private input native fixture
 Game predicate, action sink and decoration are seams; no game/OBS test.
+PASS | state lifetime observer detects a released plain state
 PASS | TXT confirms on Space
 PASS | TXT does not reach foreground chat on Space
 PASS | TXT capture owns no focus on Space
@@ -8,6 +9,12 @@ PASS | TXT confirms on Enter
 PASS | TXT does not reach foreground chat on Enter
 PASS | TXT capture owns no focus on Enter
 PASS | TXT releases hook/state on Enter
+PASS | input states are released after timer and hook cleanup
+PASS | fast GPS number survives prefix cleanup 155
+PASS | fast GPS input releases ownership 155
+PASS | fast GPS number survives prefix cleanup 10000
+PASS | fast GPS input releases ownership 10000
+PASS | prefetched GPS states are released too
 PASS | Escape cancels without action
 PASS | Escape/text are not leaked
 PASS | focus loss cancels without action
@@ -25,5 +32,6 @@ PASS | real character typing delivers exact text
 PASS | 20 characters do not inherit menu key delays
 PASS | typing releases input ownership and restores caller delay
 SKIP | Mixed RU/US typing: Wine cannot load both layouts; digit timing uses current layout.
-Typing20CharsMs=482
-Checks=22 Failed=0 KeyHoldMs=52
+InputStatesCreated=9 InputStatesDeleted=9
+Typing20CharsMs=477
+Checks=29 Failed=0 KeyHoldMs=61

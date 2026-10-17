@@ -495,7 +495,7 @@ ChatQueue_Tick() {
     item := ChatQueueItems.RemoveAt(1)
     try {
         epoch := item.HasKey("Epoch") ? item.Epoch : AutomationEpoch
-        if (epoch != AutomationEpoch) {
+        if (!QueueItem_IsCurrent(item)) {
             ChatQueue_CompleteItem(item, "cancelled")
             return
         }
@@ -505,8 +505,8 @@ ChatQueue_Tick() {
             MockPreview_Append(item.Text)
             result := 1
         } else
-            result := AuditTestMode ? AuditTransportResult : ChatTransport_Send(item.Text, item.Source, item.HasKey("Role") ? item.Role : "")
-        if (epoch != AutomationEpoch) {
+            result := AuditTestMode ? AuditTransportResult : ChatTransport_Send(item.Text, item.Source, item.HasKey("Role") ? item.Role : "", Func("QueueItem_IsCurrent").Bind(item))
+        if (!QueueItem_IsCurrent(item)) {
             ChatQueue_CompleteItem(item, "cancelled")
             return
         }
@@ -541,15 +541,14 @@ ChatQueue_Tick() {
     }
 }
 
-ChatQueue_EnqueueSequence(sequenceText, source := "Sequence", delayAfter := 700) {
+ChatQueue_EnqueueSequence(sequenceText, source := "Sequence", delayAfter := 700, ByRef batchId := "", onFirstSent := "") {
     lines := []
     sequenceText := StrReplace(StrReplace(sequenceText, "`r`n", "`n"), "`r", "`n")
     Loop, Parse, sequenceText, `n
-    {
         if (Trim(A_LoopField) != "")
             lines.Push(ApplyActionTemplate(Trim(A_LoopField)))
-    }
-    return ChatQueue_EnqueueBatch(lines, source, delayAfter) ? lines.Length() : 0
+    batchId := ChatQueue_EnqueueBatch(lines, source, delayAfter, "", onFirstSent)
+    return batchId ? lines.Length() : 0
 }
 
 ChatQueue_TrySend(text, source := "ChatQueue") {
@@ -570,6 +569,9 @@ ChatQueue_EnqueueMockDemo() {
 }
 
 CancelAllAutomation(showStatus := 1) {
+    LastCuffActionTick := 0, LastDejectActionTick := 0
+    LastCuffActionTarget := "", LastDejectActionTarget := ""
+    LastCuffActionEpoch := 0, LastDejectActionEpoch := 0
     ServiceUI_CancelInput("cancel-all")
     IDCapture_Complete("cancel")
     global ChatWizardMode, EvidenceScreenshotQueue, EvidencePendingEvents, EvidenceDocumentContext, EvidenceDocumentWindowExpires
@@ -590,6 +592,8 @@ CancelAllAutomation(showStatus := 1) {
             throw inputError
     }
     ChatWizardMode := ""
+    ChatWizardEpoch := 0
+    ChatWizardProfile := ""
     StopMDSFormationCountdown(0)
     AutoReport_Stop(0, "cancel-all")
     TaskScheduler_CancelAll()

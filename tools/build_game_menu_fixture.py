@@ -14,10 +14,10 @@ sys.path.insert(0, str(ROOT / 'tools/build'))
 from ahk_symbols import functions
 
 NAMES = {
-    'app/actions.ahk': ['RunGpsDialogAction', 'CanRunAction'],
+    'app/actions.ahk': ['RunGpsDialogAction', 'CanRunAction', 'InputAction_DoSOS', 'VehicleLookup_Execute', 'VehicleLookup_GetRegionListPosition'],
     'app/game_input.ahk': None,
-    'app/chat.ahk': ['SendChat', 'ChatTransport_Send', 'PasteOnly'],
-    'runtime_support.ahk': ['SafeSend', 'SendChatForEpoch'],
+    'app/chat.ahk': ['SendChat', 'ChatTransport_Send', 'PasteOnly', 'SendRadialNumberTwice', 'SendListSelection', 'EnsureEnglishLayout', 'EnsureRussianLayout'],
+    'runtime_support.ahk': ['SafeSend', 'SafeLayout', 'SendChatForEpoch', 'AutomationEpoch_IsCurrent', 'PasteOnlyForEpoch'],
     'chat_typing.ahk': ['ChatTyping_IsReady', 'ChatTyping_ModeFromLabel'],
 }
 
@@ -36,6 +36,7 @@ global ActionCooldownMs := 0, LastActionTick := 0, FixtureChatOpen := 0, ChatTra
 global MainWindow := 0, ListWindow := 0, EditWindow := 0, ChatWindow := 0
 global ListProc := 0, EditProc := 0, ListCallback := 0, EditCallback := 0
 global Selected := -1, Applied := "", OpenCalls := 0, Escapes := 0, DownCalls := 0, CancelAtDown := 0
+global ForeignMemoryCalls := 0, ForeignResult := "", CancelAfterOpen := 0, CancelledAt := 0, KeysAfterCancel := 0
 global Checks := 0, Failures := 0, Report := "Native GPS/menu fixture`r`nGame window, chat flag and memory command are explicit seams.`r`n"
 
 MainWindow := DllCall("CreateWindowExW", "UInt", 0, "WStr", "STATIC", "WStr", "Game-menu fixture"
@@ -75,6 +76,18 @@ Check("open-chat GPS closes chat before command and completes", RunGpsDialogActi
 Check("organization GPS retains all five digits", Selected = 16 && Applied == "10000" && OpenCalls = 1 && Escapes = 1)
 Check("open-chat path releases ownership", !PhysicalInputBusy && !IsObject(GameMenuStarting) && !IsObject(GameMenuLease))
 FixtureReset(0)
+SetTimer, TryForeignSend, -250
+InputAction_DoSOS()
+SetTimer, TryForeignSend, Off
+Check("SOS navigates with real keys under the shared menu owner", Selected = 1 && DownCalls = 1 && OpenCalls = 1)
+Check("SOS blocks unrelated transport until menu input is released", ForeignResult = -1 && ForeignMemoryCalls = 0 && !PhysicalInputBusy && !IsObject(GameMenuStarting))
+FixtureReset(0)
+CancelAfterOpen := 1
+VehicleLookup_Execute(1, 5, "A123AA")
+SetTimer, CancelGeneration, Off
+Check("cancelled vehicle lookup sends no later radial or list keys", OpenCalls = 1 && CancelledAt > 0 && KeysAfterCancel = 0)
+Check("cancelled vehicle lookup releases the menu owner", !PhysicalInputBusy && !IsObject(GameMenuStarting) && !IsObject(GameMenuLease))
+FixtureReset(0)
 CancelAtDown := 2
 Check("cancellation during real scrolling stops GPS", !RunGpsDialogAction("GPS", 15, "42"))
 Check("cancelled GPS does not enter number or finish scroll", Applied = "" && DownCalls = 2 && Selected = -1)
@@ -84,9 +97,17 @@ FileDelete, %A_ScriptDir%\game_menu_report.txt
 FileAppend, %Report%, %A_ScriptDir%\game_menu_report.txt, UTF-8
 ExitApp, %Failures%
 
+TryForeignSend:
+ForeignResult := ChatTransport_Send("/r unrelated", "fixture-foreign")
+return
+CancelGeneration:
+AutomationEpoch++
+CancelledAt := TickNow()
+return
 FixtureReset(chat) {
     global
     Selected := -1, Applied := "", OpenCalls := 0, Escapes := 0, DownCalls := 0, CancelAtDown := 0
+    ForeignMemoryCalls := 0, ForeignResult := "", CancelAfterOpen := 0, CancelledAt := 0, KeysAfterCancel := 0
     FixtureChatOpen := chat
     DllCall("ShowWindow", "Ptr", EditWindow, "Int", 0)
     DllCall("ShowWindow", "Ptr", ListWindow, "Int", 0)
@@ -98,6 +119,8 @@ FixtureReset(chat) {
 }
 FixtureListProc(hwnd, msg, w, l) {
     global
+    if (msg = 0x100 && CancelledAt)
+        KeysAfterCancel++
     if (msg = 0x100 && w = 0x28) {
         DownCalls++
         if (CancelAtDown && DownCalls = CancelAtDown)
@@ -114,6 +137,8 @@ FixtureListProc(hwnd, msg, w, l) {
 }
 FixtureEditProc(hwnd, msg, w, l) {
     global
+    if (msg = 0x100 && CancelledAt)
+        KeysAfterCancel++
     if (msg = 0x100 && w = 0x0D) {
         VarSetCapacity(value, 128, 0)
         DllCall("GetWindowTextW", "Ptr", hwnd, "Ptr", &value, "Int", 64)
@@ -143,9 +168,15 @@ SendChatMemory(text) {
     global
     if (PhysicalInputBusy)
         return -1
-    if (text != "/gps")
-        return -1
+    if (text != "/gps" && text != "/sos" && text != "/frac") {
+        ForeignMemoryCalls++
+        return 1
+    }
     OpenCalls++
+    if (text = "/sos")
+        DllCall("SendMessageW", "Ptr", ListWindow, "UInt", 0x186, "Ptr", 0, "Ptr", 0)
+    if (CancelAfterOpen)
+        SetTimer, CancelGeneration, -80
     DllCall("ShowWindow", "Ptr", ListWindow, "Int", 5)
     DllCall("SetFocus", "Ptr", ListWindow)
     return 1

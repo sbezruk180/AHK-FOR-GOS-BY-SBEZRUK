@@ -4,7 +4,7 @@
 
 **Запуск:** `release\AHK_FOR_GOS.exe`. AutoHotkey, Python, .NET и исходные скрипты для запуска не нужны. Для новой установки настройки сохраняются в `%APPDATA%\AHK FOR GOS`; прежние INI рядом с EXE продолжают использоваться. Закройте старую AHK-копию перед запуском EXE.
 
-[Сборка и запуск](docs/desktop/BUILD_AND_RUN_RU.md) · [Выбор технологий](docs/desktop/ANALYSIS_RU.md) · [Архитектура](docs/desktop/ARCHITECTURE_RU.md) · [Проверки и соответствие функций](docs/desktop/TEST_RESULTS_RU.md) · [Ограничения](docs/desktop/LIMITATIONS_RU.md)
+[Сборка и запуск](docs/desktop/BUILD_AND_RUN_RU.md) · [Выбор технологий](docs/desktop/ANALYSIS_RU.md) · [Архитектура](docs/desktop/ARCHITECTURE_RU.md) · [Проверки и соответствие функций](docs/desktop/TEST_RESULTS_RU.md) · [Аудит логики и GPS](docs/desktop/LOGIC_AUDIT_RU.md) · [Ограничения](docs/desktop/LIMITATIONS_RU.md)
 
 ## Интерфейс
 

@@ -1,8 +1,8 @@
 ; chat subsystem. Definitions only; initialization is in bootstrap.
 
-SendChat(text, source := "Direct") {
-    result := ChatTransport_Send(text, source)
-    if (result = 1)
+SendChat(text, source := "Direct", contextGuard := "") {
+    result := ChatTransport_Send(text, source, "", contextGuard)
+    if (result = 1 && (!IsObject(contextGuard) || contextGuard.Call()))
         Evidence_MaybeCaptureReportText(text)
     return result
 }
@@ -53,8 +53,10 @@ ChatTransport_GetConnectionSummary(runMemoryCheck := 0) {
     return "PID " . gamePID . " через " . sourceText . ", " . activeText . " | " . reason
 }
 
-ChatTransport_Send(text, source := "ChatTransport", role := "") {
-    if (IsObject(IDCaptureState) || ServiceUI_IsInputActive() || (IsObject(GameMenuStarting) && source != "GPS") || IsObject(GameMenuLease))
+ChatTransport_Send(text, source := "ChatTransport", role := "", contextGuard := "") {
+    if (IsObject(contextGuard) && !contextGuard.Call())
+        return -1
+    if (IsObject(IDCaptureState) || ServiceUI_IsInputActive() || (IsObject(GameMenuStarting) && (source != GameMenuStarting.Source || !GameMenu_ReservationIsCurrent(GameMenuStarting))) || IsObject(GameMenuLease))
         return -1
     global MockMode, TextSendMode, g_RemoteOperation
     global ChatTransportLastMemoryFailureTick, ChatTransportMemoryRetryMs
@@ -72,18 +74,18 @@ ChatTransport_Send(text, source := "ChatTransport", role := "") {
     NormalizeTextSendMode(TextSendMode)
     if (TextSendMode = "FastTyping" || TextSendMode = "FactionTyping") {
         if ChatTyping_ShouldType(TextSendMode, text, ChatFactionCommands) {
-            result := SendChatTyped(text, true, true, "", ChatTransport_TypingDelayOverride(source, role, text))
+            result := SendChatTyped(text, true, true, contextGuard, ChatTransport_TypingDelayOverride(source, role, text))
             status := result = 1 ? ChatTyping_ModeLabel(TextSendMode) : (result = -2 ? "Печать прервана; повтор отключён" : "Печать: " . (ChatTypingLastError != "" ? ChatTypingLastError : "отправка недоступна"))
             ChatTransport_SetStatus(status, source, result = 1 ? "INFO" : "WARN")
             return result
         }
-        ok := SendChatKeyboard(text)
+        ok := SendChatKeyboard(text, contextGuard)
         ChatTransport_SetStatus(ok ? "Вставка (остальной текст)" : "Вставка: " . ChatKeyboardLastError, source, ok ? "INFO" : "WARN")
         return ok ? 1 : -1
     }
     if (TextSendMode = "Keyboard")
     {
-        ok := SendChatKeyboard(text)
+        ok := SendChatKeyboard(text, contextGuard)
         ChatTransport_SetStatus(ok ? "Вставка" : "Вставка: " . ChatKeyboardLastError, source, ok ? "INFO" : "WARN")
         return ok ? 1 : -1
     }
@@ -97,10 +99,12 @@ ChatTransport_Send(text, source := "ChatTransport", role := "") {
             memoryError := MemoryGetShortError()
             if IsObject(g_RemoteOperation)
                 return -2
-            ok := SendChatKeyboard(text)
+            ok := SendChatKeyboard(text, contextGuard)
             ChatTransport_SetStatus(ok ? "Вставка: память недоступна (" . memoryError . ")" : "Отправка: " . ChatKeyboardLastError, source, ok ? "INFO" : "WARN")
             return ok ? 1 : -1
         }
+        if (IsObject(contextGuard) && !contextGuard.Call())
+            return -1
         result := SendChatMemory(text)
         if (result = 1)
             ChatTransport_SetStatus("Memory", source)
@@ -120,6 +124,8 @@ ChatTransport_Send(text, source := "ChatTransport", role := "") {
     canRetryMemory := (ChatTransportLastMemoryFailureTick <= 0 || nowTick - ChatTransportLastMemoryFailureTick >= ChatTransportMemoryRetryMs)
     if (canRetryMemory)
     {
+        if (IsObject(contextGuard) && !contextGuard.Call())
+            return -1
         result := SendChatMemory(text)
         if (result = 1)
         {
@@ -139,7 +145,7 @@ ChatTransport_Send(text, source := "ChatTransport", role := "") {
 
     if GameLocator_IsActive()
     {
-        ok := SendChatKeyboard(text)
+        ok := SendChatKeyboard(text, contextGuard)
         ChatTransport_SetStatus(ok ? "Вставка (Авто)" : "Авто: " . ChatKeyboardLastError, source, ok ? "INFO" : "WARN")
         return ok ? 1 : -1
     }
@@ -150,7 +156,7 @@ ChatTransport_Send(text, source := "ChatTransport", role := "") {
     return -1
 }
 
-SendChatKeyboard(text) {
+SendChatKeyboard(text, contextGuard := "") {
     global MockMode, ChatKeyboardLastError
     ChatKeyboardLastError := ""
     if IsObject(IDCaptureState) {
@@ -175,7 +181,7 @@ SendChatKeyboard(text) {
     Critical, Off
     try {
         chatState := isInChat()
-        if (chatState < 0 || !ChatTyping_IsReady(epoch, ownerHwnd)) {
+        if (chatState < 0 || !ChatTyping_IsReady(epoch, ownerHwnd, contextGuard)) {
             ChatKeyboardLastError := "Состояние чата недоступно: " . MemoryGetShortError()
             return false
         }
@@ -183,7 +189,7 @@ SendChatKeyboard(text) {
             if !SafeSend("{F6}", "Event", epoch)
                 return false
         }
-        if !ChatTyping_WaitForChatOpen(epoch, ownerHwnd) {
+        if !ChatTyping_WaitForChatOpen(epoch, ownerHwnd, contextGuard) {
             ChatKeyboardLastError := ChatTypingLastError
             return false
         }
@@ -191,12 +197,12 @@ SendChatKeyboard(text) {
             return false
         Sleep, 50
         ; Clipboard insertion works independently of the keyboard layout.
-        if !PasteOnly(text, 1, "", ownerHwnd) {
+        if !PasteOnly(text, 1, contextGuard, ownerHwnd) {
             ChatKeyboardLastError := "Вставка отменена: окно, контекст или буфер изменились."
             return false
         }
         Sleep, 70
-        if (!ChatTyping_IsReady(epoch, ownerHwnd) || isInChat() != 1) {
+        if (!ChatTyping_IsReady(epoch, ownerHwnd, contextGuard) || isInChat() != 1) {
             ChatKeyboardLastError := "Ввод отменён или чат закрыт до отправки."
             return false
         }
@@ -235,41 +241,48 @@ WaitForChatQueueIdle(timeoutMs := 20000) {
     }
 }
 
-SendRadialNumberTwice(number, delayMs := 300, pressGapMs := 0, inputEpoch := 0) {
-    inputEpoch := AutomationEpoch
-    if !RegExMatch(number . "", "^\d$")
+SendRadialNumberTwice(number, delayMs := 300, pressGapMs := 0, inputEpoch := 0, menuLease := "") {
+    if (!inputEpoch)
+        inputEpoch := AutomationEpoch
+    if (inputEpoch != AutomationEpoch || !RegExMatch(number . "", "^[0-9]$"))
         return false
     key := "{" . number . "}"
-    if !SafeSend(key, "Event", inputEpoch)
+    if !SafeSend(key, "Event", inputEpoch, menuLease)
         return false
-    pressGapMs := Round(pressGapMs)
-    if (pressGapMs > 0)
+    if IsObject(menuLease) {
+        if !GameMenu_Wait(menuLease, Max(0, Round(pressGapMs)))
+            return false
+    } else if (pressGapMs > 0)
         Sleep, %pressGapMs%
-    if !SafeSend(key, "Event", inputEpoch)
+    if !SafeSend(key, "Event", inputEpoch, menuLease)
         return false
+    if IsObject(menuLease)
+        return GameMenu_Wait(menuLease, Max(0, Round(delayMs)))
     Sleep, %delayMs%
-    return true
+    return inputEpoch = AutomationEpoch
 }
 
-SendListSelection(position, stepDelayMs := 35, afterDelayMs := 220, inputEpoch := 0) {
-    inputEpoch := AutomationEpoch
+SendListSelection(position, stepDelayMs := 35, afterDelayMs := 220, inputEpoch := 0, menuLease := "") {
+    if (!inputEpoch)
+        inputEpoch := AutomationEpoch
     position := Round(position)
-    if (position < 1)
+    if (inputEpoch != AutomationEpoch || position < 1 || position > 10000)
         return false
-    downCount := position - 1
-    if (downCount > 0)
-    {
-        Loop, %downCount%
-        {
-            if !SafeSend("{Down}", "Event", inputEpoch)
+    Loop % position - 1 {
+        if !SafeSend("{Down}", "Event", inputEpoch, menuLease)
+            return false
+        if IsObject(menuLease) {
+            if !GameMenu_Wait(menuLease, Max(0, Round(stepDelayMs)))
                 return false
+        } else
             Sleep, %stepDelayMs%
-        }
     }
-    if !SafeSend("{Enter}", "Event", inputEpoch)
+    if !SafeSend("{Enter}", "Event", inputEpoch, menuLease)
         return false
+    if IsObject(menuLease)
+        return GameMenu_Wait(menuLease, Max(0, Round(afterDelayMs)))
     Sleep, %afterDelayMs%
-    return true
+    return inputEpoch = AutomationEpoch
 }
 
 EnsureEnglishLayout() {
@@ -345,12 +358,12 @@ ApplyActionTemplate(str) {
     return str
 }
 
-SendConfigSequence(sequenceText, delayMs := "") {
+SendConfigSequence(sequenceText, delayMs := "", ByRef batchId := "", onFirstSent := "") {
     global SequenceLineDelay
     NormalizeNumberRange(SequenceLineDelay, 700, 250, 3000)
     if (delayMs = "" || delayMs < SequenceLineDelay)
         delayMs := SequenceLineDelay
-    return ChatQueue_EnqueueSequence(sequenceText, "RPSequence", delayMs)
+    return ChatQueue_EnqueueSequence(sequenceText, "RPSequence", delayMs, batchId, onFirstSent)
 }
 
 SplitConfigSequenceMiddle(sequenceText, ByRef firstPart, ByRef secondPart) {

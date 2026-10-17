@@ -12,10 +12,12 @@ ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'tools/build'))
 from ahk_symbols import functions
 NAMES={
- 'service_ui.ahk':['ServiceUI_IsInputActive','ServiceUI_IsTest','ServiceUI_NewInputState','ServiceUI_ContextIsCurrent','ServiceUI_CreateInputGui','ServiceUI_InputKeyDown','ServiceUI_InputChar','ServiceUI_InputTick','ServiceUI_ModifierHeld','ServiceUI_Request'],
- 'app/private_text.ahk':['PrivateText_Open','PrivateText_Resolve','PrivateText_Dispatch'],
+ 'service_ui.ahk':['ServiceUI_IsInputActive','ServiceUI_IsTest','ServiceUI_NewInputState','ServiceUI_ContextIsCurrent','ServiceUI_CreateInputGui','ServiceUI_InputKeyDown','ServiceUI_InputChar','ServiceUI_InputTick','ServiceUI_ModifierHeld','ServiceUI_CreateInputHook','ServiceUI_ReleaseInputCapture','ServiceUI_Request'],
+ 'app/private_text.ahk':['PrivateText_Open','PrivateText_Resolve','PrivateText_Dispatch','PrivateText_SearchModes'],
  'app/bindings.ahk':['NormalizeTextTrigger'],
- 'app/actions.ahk':['MatchGpsEnterCommand'],
+ 'app/actions.ahk':['MatchGpsEnterCommand','RunGpsInputTrigger','ReadGpsInputNumber'],
+ 'app/core.ahk':['EraseGpsTypedCommand'],
+ 'app/game_input.ahk':['GameMenu_Reserve','GameMenu_ReservationIsCurrent','GameMenu_Close','GameMenu_Release'],
  'runtime_support.ahk':['SafeSend','SafeLayout'],
  'chat_typing.ahk':[name for name,_,_,_ in functions((ROOT/'chat_typing.ahk').read_text(encoding='cp1251'))],
 }
@@ -28,7 +30,8 @@ global MockMode := "Off", AuditTestMode := 0, AutomationEpoch := 4, CurrentProfi
 global PhysicalInputBusy := 0, IDCaptureState := "", GameMenuLease := "", ServiceUIInputState := "", ServiceUIConfirmState := ""
 global ServiceUIAuditInputs := [], PrivateTextInputBusy := 0, BindMenuEditMode := 0, CustomFunctions := []
 global Trig_GpsD := "", Trig_GpsOS := "", FixtureTrigger := "!тест", UIRoundness := 12
-global FixtureLayoutFallback := 0
+global FixtureLayoutFallback := 0, GameMenuStarting := "", ChatQueueBusy := 0
+global FixtureStatesCreated := 0, FixtureStatesDeleted := 0, CapturedGps := "", GpsBurst := "55"
 global PrivacyAllowed := 1, ServiceUILastInputError := "", FixtureChatOpen := 0, ChatTypingDelayMs := 0
 global Count := 0, Leaked := "", KeyDownTick := 0, KeyDuration := 0, Checks := 0, Failures := 0, Report := "Private input native fixture`r`nGame predicate, action sink and decoration are seams; no game/OBS test.`r`n"
 global MainWindow := 0, MainText := 0, OtherWindow := 0, DriverCase := "", PrivateRequested := 0
@@ -42,6 +45,9 @@ OnMessage(0x102, "SinkChar")
 SetTimer, RunFixture, -150
 return
 RunFixture:
+observerState := ServiceUI_NewInputState("probe", "probe", 5, 10, "", true, AutomationEpoch, MainWindow, CurrentProfile, TickNow())
+observerState := ""
+Check("state lifetime observer detects a released plain state", FixtureStatesCreated = 1 && FixtureStatesDeleted = 1)
 for expected, ending in ["Space", "Enter"] {
     DriverCase := ending
     SetTimer, Emit, -120
@@ -51,6 +57,23 @@ for expected, ending in ["Space", "Enter"] {
     Check("TXT capture owns no focus on " . ending, WinActive("ahk_id " . MainWindow))
     Check("TXT releases hook/state on " . ending, !PhysicalInputBusy && !ServiceUI_IsInputActive() && !PrivateTextInputBusy)
 }
+Sleep, 60
+Check("input states are released after timer and hook cleanup", FixtureStatesCreated = FixtureStatesDeleted)
+for _, gpsCase in [{Burst: "55", Expected: "155"}, {Burst: "0000", Expected: "10000"}] {
+    FixtureChatOpen := 1, CapturedGps := "", GpsBurst := gpsCase.Burst
+    GuiControl, Main:, %MainText%, !gps1
+    ControlFocus,, ahk_id %MainText%
+    DriverCase := "GpsBurst"
+    SetTimer, Emit, -20
+    SetTimer, GpsFallback, -1000
+    RunGpsInputTrigger("!gps", "GPS", 15, "1")
+    SetTimer, GpsFallback, Off
+    Check("fast GPS number survives prefix cleanup " . gpsCase.Expected, ("ID:" . CapturedGps) == ("ID:" . gpsCase.Expected))
+    Check("fast GPS input releases ownership " . gpsCase.Expected, !PhysicalInputBusy && !ServiceUI_IsInputActive() && !IsObject(GameMenuStarting))
+}
+Sleep, 60
+Check("prefetched GPS states are released too", FixtureStatesCreated = FixtureStatesDeleted)
+FixtureChatOpen := 0
 DriverCase := "Escape"
 SetTimer, Emit, -120
 Check("Escape cancels without action", !PrivateText_Open() && Count = 2)
@@ -112,12 +135,25 @@ if (!FixtureLayoutFallback) {
     Check("Russian exact text actual=[" . typedRussian . "]", typedRussian == "/m Стоп! ID:42")
 } else
     Report .= "SKIP | Mixed RU/US typing: Wine cannot load both layouts; digit timing uses current layout.`r`n"
+Report .= "InputStatesCreated=" . FixtureStatesCreated . " InputStatesDeleted=" . FixtureStatesDeleted . "`r`n"
 Report .= "Typing20CharsMs=" . textElapsed . "`r`n"
 Report .= "Checks=" . Checks . " Failed=" . Failures . " KeyHoldMs=" . KeyDuration . "`r`n"
 FileDelete, %A_ScriptDir%\private_input_report.txt
 FileAppend, %Report%, %A_ScriptDir%\private_input_report.txt, UTF-8
 ExitApp, %Failures%
+GpsFallback:
+SendLevel, 2
+SendEvent, {Escape}
+SendLevel, 0
+return
 Emit:
+if (DriverCase = "GpsBurst") {
+    SendLevel, 2
+    SendEvent, % "{Raw}" . GpsBurst
+    SendEvent, {Space}
+    SendLevel, 0
+    return
+}
 if (DriverCase = "Focus") {
     Gui, Other:New, +HwndOtherWindow
     Gui, Other:Show, x750 y300 w200 h100, Other application
@@ -219,8 +255,27 @@ ServiceUI_Notify(args*) {
 TryHandleBindMenuLine(args*) {
     return false
 }
-RunGpsDialogAction(args*) {
+RunGpsDialogAction(name, down, number, epoch := 0) {
+    global CapturedGps
+    CapturedGps := number
+    return true
+}
+IsGameActive() {
+    return GameLocator_IsActive()
+}
+BindMenuWarn(args*) {
     return false
+}
+ServiceUI_NewInputState(args*) {
+    global FixtureStatesCreated
+    state := Fixture_ProductionNewState(args*)
+    state.base := {__Delete: Func("FixtureStateDeleted")}
+    FixtureStatesCreated++
+    return state
+}
+FixtureStateDeleted(state) {
+    global FixtureStatesDeleted
+    FixtureStatesDeleted++
 }
 LawSearch_SelectMode(args*) {
 }
@@ -241,7 +296,11 @@ def main():
  pieces=[START]
  for name,wanted in NAMES.items():
   source=(ROOT/name).read_text(encoding='cp1251'); found={n.lower():body for n,a,b,body in functions(source)}
-  pieces.extend(found[n.lower()].replace('ChatTyping_GetLayouts() {','Fixture_LoadLayouts() {',1) if n == 'ChatTyping_GetLayouts' else found[n.lower()] for n in wanted)
+  for n in wanted:
+   body=found[n.lower()]
+   if n == 'ChatTyping_GetLayouts':body=body.replace('ChatTyping_GetLayouts() {','Fixture_LoadLayouts() {',1)
+   if n == 'ServiceUI_NewInputState':body=body.replace('ServiceUI_NewInputState(','Fixture_ProductionNewState(',1)
+   pieces.append(body)
  out.parent.mkdir(parents=True,exist_ok=True)
  out.write_bytes(('\n\n'.join(pieces)).replace('\n','\r\n').encode('utf-8-sig'))
  print(out)

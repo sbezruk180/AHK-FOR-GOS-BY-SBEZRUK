@@ -950,3 +950,11 @@ global last_doc := 0
 global LawDocCurrentPages := {}
 global ErrorLogFile := AppHost_DataDir() . "\error_log.txt"
 
+
+global LastCuffActionTarget := ""
+global LastCuffActionEpoch := 0
+global LastDejectActionTarget := ""
+global LastDejectActionEpoch := 0
+
+global ChatWizardEpoch := 0
+global ChatWizardProfile := ""

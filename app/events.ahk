@@ -2123,16 +2123,15 @@ return
 DoMaskCall:
 if !CanRunAction("маска и звонок", false, true)
     return
-ChatQueue_Enqueue("/mask", "MaskCall", 0, 600, 1)
-ChatQueue_Enqueue("/call 97710514", "MaskCall", 0, 600, 1)
-ChatQueue_Enqueue("/h", "MaskCall", 0, 700, 1)
+QueueNamedAction([{Text: "/mask", DelayAfter: 600}, {Text: "/call 97710514", DelayAfter: 600}
+    , {Text: "/h", DelayAfter: 700}], "MaskCall")
 return
 
 DoRecordCheck:
 if !CanRunAction("проверка записывающих устройств", false, true)
     return
-ChatQueue_Enqueue("/do У человека имеются при себе видео/аудио записывающие устройства?", "RecordCheck", 0, 2000, 1)
-ChatQueue_Enqueue("/b Ответ в /do: Да./Нет.", "RecordCheck", 0, 700, 1)
+QueueNamedAction([{Text: "/do У человека имеются при себе видео/аудио записывающие устройства?", Role: "RP", DelayAfter: 2000}
+    , {Text: "/b Ответ в /do: Да./Нет.", DelayAfter: 700}], "RecordCheck")
 return
 
 DoTrainCrash:
@@ -2142,20 +2141,19 @@ return
 DoPersonalFile:
 if !CanRunAction("личное дело", false, true)
     return
-ChatQueue_Enqueue("/me снял все предметы с лица гражданина, достал КПК", "PersonalFile", 0, 2000, 1)
-ChatQueue_Enqueue("/me навел камеру КПК на лицо гражданина, сделал фоторобот", "PersonalFile", 0, 2000, 1)
-ChatQueue_Enqueue("/me сделал запрос в базу данных МВД", "PersonalFile", 0, 2000, 1)
-ChatQueue_Enqueue("/do Личное дело найдено.", "PersonalFile", 0, 700, 1)
+QueueNamedAction([{Text: "/me снял все предметы с лица гражданина, достал КПК", Role: "RP", DelayAfter: 2000}
+    , {Text: "/me навел камеру КПК на лицо гражданина, сделал фоторобот", Role: "RP", DelayAfter: 2000}
+    , {Text: "/me сделал запрос в базу данных МВД", Role: "RP", DelayAfter: 2000}
+    , {Text: "/do Личное дело найдено.", Role: "RP", DelayAfter: 700}], "PersonalFile")
 return
 
 DoSu:
 if !CanRunAction("корректировка розыска", true, true)
     return
-ChatQueue_Enqueue("/su " . UserID, "Su", 0, 500, 1)
-ChatQueue_Enqueue("/me достал КПК, авторизовался, ввел данные гражданина", "Su", 0, 3000, 1)
-ChatQueue_Enqueue("/do Личное дело найдено.", "Su", 0, 3000, 1)
-ChatQueue_Enqueue("/me начал вводить корректировки", "Su", 0, 700, 1)
-TaskScheduler_Set("SuReminder", 20000, "SuElapsedNotify", "Напоминание /su", UserID)
+QueueNamedAction([{Text: "/su " . UserID, DelayAfter: 500}
+    , {Text: "/me достал КПК, авторизовался, ввел данные гражданина", Role: "RP", DelayAfter: 3000}
+    , {Text: "/do Личное дело найдено.", Role: "RP", DelayAfter: 3000}
+    , {Text: "/me начал вводить корректировки", Role: "RP", DelayAfter: 700}], "Su", Func("Action_SuReminderAfterSent").Bind(UserID))
 return
 
 DoIntro:
@@ -2183,45 +2181,11 @@ ChatQueue_Enqueue("/chase", "ChaseNoID")
 return
 
 DoDeject:
-global LastDejectActionTick, DejectFollowupWindowMs
-nowTick := TickNow()
-if (LastDejectActionTick > 0 && nowTick - LastDejectActionTick <= DejectFollowupWindowMs)
-{
-    LastDejectActionTick := 0
-    if !CanRunDejectFollowup()
-        return
-    SendDejectRPAfterCommand()
-    return
-}
-if (LastDejectActionTick > 0 && nowTick - LastDejectActionTick > DejectFollowupWindowMs)
-    LastDejectActionTick := 0
-if !CanRunAction("deject", true, true, true)
-    return
-if (SendChat((UserID < 1000 ? "/deject " : "/dejectid ") . UserID) != 1)
-    return
-LastDejectActionTick := TickNow()
-Sleep, 500
+Action_DoDeject()
 return
 
 DoCuff:
-global LastCuffActionTick, CuffFollowupWindowMs
-nowTick := TickNow()
-if (LastCuffActionTick > 0 && nowTick - LastCuffActionTick <= CuffFollowupWindowMs)
-{
-    LastCuffActionTick := 0
-    if !CanRunCuffFollowup()
-        return
-    DoCuffFollowup()
-    return
-}
-if (LastCuffActionTick > 0 && nowTick - LastCuffActionTick > CuffFollowupWindowMs)
-    LastCuffActionTick := 0
-if !CanRunAction("cuff", true, true)
-    return
-if (SendChat("/cuff " . UserID) != 1)
-    return
-LastCuffActionTick := TickNow()
-Sleep, 1200
+Action_DoCuff()
 return
 
 DoInCar:
@@ -2233,12 +2197,8 @@ return
 DoStopChase:
 if !CanRunAction("требование остановки", true, true, true)
     return
-global StopTimerActive, StopTimerCounter
-StopTimerActive := 1
-StopTimerCounter := 15
-ShowStopTimerGUI()
-Sleep 30
-SendConfigSequence(RP_StopChase, 500)
+if !SendConfigSequence(RP_StopChase, 500, stopBatch, Func("Action_StartStopTimer"))
+    SafeWarn("Требование остановки не поставлено в очередь. Таймер не запущен.")
 return
 
 DoDoc:
@@ -2410,73 +2370,15 @@ SendTemplateOpen(T_ConvoyEnd, 6)
 return
 
 DoTowStart:
-if !CanRunAction("эвакуация старт", false, true, true)
-    return
-Evidence_Arm("EVAC_START", 60000)
-towTemplate := TowStart_EnsureTowLast(RP_TowStart)
-hasReport := SplitConfigReportLine(towTemplate, reportLine, towSequence)
-if (hasReport) {
-    reportResult := SendChat(ApplyActionTemplate(reportLine), "TowStartReport")
-    if (reportResult != 1) {
-        GameNotify("Доклад о начале эвакуации не отправлен. Действие отменено.", "ERROR")
-        return
-    }
-    Sleep, 500
-} else {
-    towSequence := towTemplate
-}
-towSequence := TowStart_EnsureTowLast(towSequence)
-if !SendConfigSequence(towSequence, 700) {
-    GameNotify("Последовательность эвакуации не поставлена в очередь.", "ERROR")
-    return
-}
-if !WaitForChatQueueIdle(25000) {
-    GameNotify("Отправка эвакуации не подтверждена; таймер не запущен.", "WARN")
-    return
-}
-ActionTimer_StartEvacuation()
+Action_DoTowStart()
 return
 
 DoTowEnd:
-if !CanRunAction("эвакуация конец", false, true, true)
-    return
-Evidence_Arm("EVAC_END", 90000)
-if !SendConfigSequence(RP_TowEnd, 700)
-{
-    GameNotify("Завершение эвакуации не поставлено в очередь.", "ERROR")
-    return
-}
-if !WaitForChatQueueIdle(20000)
-{
-    GameNotify("Не удалось дождаться доклада об эвакуации. Сдача ТС отменена.", "ERROR")
-    return
-}
-ActionTimer_Stop("Evac")
-Sleep 650
-if (SendChat("/frac") != 1)
-    return
-Sleep 320
-SendRadialNumberTwice(1, 280)
-SendRadialNumberTwice(4, 280)
-SendRadialNumberTwice(5, 320)
+Action_DoTowEnd()
 return
 
 DoCarSearch:
-if !CanRunAction("осмотр ТС", false, true)
-    return
-SendConfigSequence(RP_CarSearch, 700)
-if !WaitForChatQueueIdle(20000)
-{
-    GameNotify("Не удалось дождаться RP-досмотра ТС.", "ERROR")
-    return
-}
-Evidence_Arm("SEARCH_TRUNK", 45000)
-if (SendChat("/frac") != 1)
-    return
-Sleep 320
-SendRadialNumberTwice(1, 280)
-SendRadialNumberTwice(4, 280)
-SendRadialNumberTwice(1, 320)
+Action_DoCarSearch()
 return
 
 DoArrest:

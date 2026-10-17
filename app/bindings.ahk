@@ -468,77 +468,64 @@ RegisterSearchModeTrigger(triggerName, ByRef prevTrig, triggerText, docCode, doc
 
 RegisterGpsInputTextTrigger(triggerName, ByRef prevTrig, currentTrig, actionName, downCount, ByRef errText, ByRef usedTriggers) {
     currentTrig := Trim(currentTrig)
-
     if (currentTrig = "ERROR")
         currentTrig := ""
-
     if (currentTrig != "" && SubStr(currentTrig, 1, 1) != "!")
         currentTrig := "!" . currentTrig
-
-    if (prevTrig != "")
-    {
-        Loop, 10
-        {
-            digit := A_Index - 1
-            try
-                Hotstring(":?*B0:" . prevTrig . digit, "", "Off")
+    patterns := [], needed := 0
+    if (currentTrig != "") {
+        Loop, 10 {
+            fullTrig := currentTrig . (A_Index - 1)
+            keyId := fullTrig
+            StringLower, keyId, keyId
+            if (usedTriggers.HasKey(keyId)) {
+                errText .= triggerName . " = " . fullTrig . " -> duplicate trigger`n"
+                return false
+            }
+            pattern := ":?*B0:" . fullTrig
+            patterns.Push(pattern)
+            if !HistoricalHotstrings.HasKey(pattern)
+                needed++
         }
-    }
-
-    if (currentTrig = "")
-    {
-        prevTrig := ""
-        return true
-    }
-
-    Loop, 10
-    {
-        digit := A_Index - 1
-        fullTrig := currentTrig . digit
-        keyId := fullTrig
-        StringLower, keyId, keyId
-        if (usedTriggers.HasKey(keyId))
-        {
-            errText .= triggerName . " = " . fullTrig . "  -> duplicate trigger`n"
-            prevTrig := ""
+        if (HistoricalHotstringCount + needed > 512) {
+            errText .= "Достигнут предел GPS-триггеров за сеанс (512). Перезапустите приложение для новых префиксов.`n"
             return false
         }
     }
-
-    try
-    {
-        Loop, 10
-        {
-            digit := A_Index - 1
+    registered := [], previous := A_IsCritical
+    Critical, On
+    try {
+        for index, pattern in patterns {
+            digit := index - 1
             cb := Func("RunGpsInputTrigger").Bind(currentTrig, actionName, downCount, "" . digit)
-            pattern := ":?*B0:" . currentTrig . digit
-            if !Hotstring_AdmitPattern(pattern) {
-                ok := false
-                errText .= "Достигнут предел новых TXT-триггеров за сеанс (512).`n"
-                continue
-            }
             Hotstring(pattern, cb, "On")
+            Hotstring_AdmitPattern(pattern)
+            registered.Push(pattern)
+        }
+        if (prevTrig != "" && prevTrig != currentTrig) {
+            Loop, 10 {
+                try
+                    Hotstring(":?*B0:" . prevTrig . (A_Index - 1), "", "Off")
+            }
+        }
+        for index, pattern in registered {
+            fullTrig := currentTrig . (index - 1)
+            StringLower, fullTrig, fullTrig
+            usedTriggers[fullTrig] := triggerName
             TrackRegisteredGameTextHotstring(pattern)
         }
-    }
-    catch e
-    {
-        errText .= triggerName . " = " . currentTrig . "  -> cannot register gps trigger`n"
-        prevTrig := ""
+        prevTrig := currentTrig
+        return true
+    } catch registerError {
+        for _, pattern in registered {
+            try
+                Hotstring(pattern, "", "Off")
+        }
+        errText .= triggerName . " = " . currentTrig . " -> cannot register GPS trigger: " . registerError.Message . "`n"
         return false
+    } finally {
+        Critical, %previous%
     }
-
-    Loop, 10
-    {
-        digit := A_Index - 1
-        fullTrig := currentTrig . digit
-        keyId := fullTrig
-        StringLower, keyId, keyId
-        usedTriggers[keyId] := triggerName
-    }
-
-    prevTrig := currentTrig
-    return true
 }
 
 NormalizeBindMenuHotkeyText(rawText) {
@@ -708,21 +695,8 @@ GetActiveTextTriggerSet() {
         if (triggerValue != "")
             used[triggerValue] := meta.TriggerVar
     }
-    used["!меню"] := "BindMenu"
-    used["!пвсе"] := "Search_ALL"
-    used["!пкоап"] := "Search_KOAP"
-    used["!пук"] := "Search_UK"
-    used["!пупк"] := "Search_UPK"
-    used["!ппдд"] := "Search_PDD"
-    used["!пфзоп"] := "Search_FZOP"
-    used["!птк"] := "Search_TK"
-    used["!птер"] := "Search_TER"
-    used["!парг"] := "Search_ARG"
-    used["!пву"] := "Search_VU"
-    used["!пвв"] := "Search_VV"
-    used["!поружие"] := "Search_ORUZH"
-    used["!пкон"] := "Search_KON"
-    used["!пнайти"] := "Search_RUN"
+    for fixedTrigger, owner in GetReservedTextTriggerSet()
+        used[fixedTrigger] := owner
     global CustomFunctions
     if IsObject(CustomFunctions)
     {
