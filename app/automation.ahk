@@ -977,7 +977,8 @@ ActionTimer_RenderCore() {
 
     bg := "", panel := "", textColor := "", accent := "", muted := ""
     GetThemeColors(bg, panel, textColor, accent, muted)
-    borderColor := (StopTimerBorderColor != "") ? StopTimerBorderColor : accent
+    GetControlSurfaceColors(controlBg, controlText, cardBg, cardEdge, panel, textColor, accent)
+    borderColor := (StopTimerBorderColor != "") ? StopTimerBorderColor : cardEdge
     timerTextColor := (StopTimerTextColor != "") ? StopTimerTextColor : textColor
     timerBgColor := (StopTimerBgColor != "") ? StopTimerBgColor : panel
     alpha := StopTimerTransparency
@@ -988,20 +989,20 @@ ActionTimer_RenderCore() {
     {
         if (hActionTimerWnd)
             ActionTimer_Hide(1)
-        bottomY := overlayH - 2
-        rightX := overlayW - 2
+        bottomY := overlayH - 1
+        rightX := overlayW - 1
         bodyH := overlayH - 34
         headerW := overlayW - 20
         bodyW := overlayW - 24
         Gui, ActionTimers:New, +HwndhActionTimerWnd +AlwaysOnTop -Caption +ToolWindow +E0x08000000 +Border +LastFound
         Gui, ActionTimers:Color, %timerBgColor%
         Gui, ActionTimers:Margin, 0, 0
-        Gui, ActionTimers:Add, Progress, -Theme x0 y0 w%overlayW% h2 Disabled Background%timerBgColor% c%borderColor%, 100
-        Gui, ActionTimers:Add, Progress, -Theme x0 y%bottomY% w%overlayW% h2 Disabled Background%timerBgColor% c%borderColor%, 100
-        Gui, ActionTimers:Add, Progress, -Theme x0 y0 w2 h%overlayH% Disabled Vertical Background%timerBgColor% c%borderColor%, 100
-        Gui, ActionTimers:Add, Progress, -Theme x%rightX% y0 w2 h%overlayH% Disabled Vertical Background%timerBgColor% c%borderColor%, 100
-        Gui, ActionTimers:Font, s8 Bold c%borderColor%, Segoe UI
-        Gui, ActionTimers:Add, Text, x10 y5 w%headerW% h22 Center 0x200 gStartActionTimerDrag BackgroundTrans, “¿…Ã≈–€ ƒ≈…—“¬»…
+        Gui, ActionTimers:Add, Progress, -Theme x0 y0 w%overlayW% h1 Disabled Background%timerBgColor% c%borderColor%, 100
+        Gui, ActionTimers:Add, Progress, -Theme x0 y%bottomY% w%overlayW% h1 Disabled Background%timerBgColor% c%borderColor%, 100
+        Gui, ActionTimers:Add, Progress, -Theme x0 y0 w1 h%overlayH% Disabled Vertical Background%timerBgColor% c%borderColor%, 100
+        Gui, ActionTimers:Add, Progress, -Theme x%rightX% y0 w1 h%overlayH% Disabled Vertical Background%timerBgColor% c%borderColor%, 100
+        Gui, ActionTimers:Font, s8 Bold c%muted%, Segoe UI
+        Gui, ActionTimers:Add, Text, x12 y5 w%headerW% h22 0x200 gStartActionTimerDrag BackgroundTrans, “¿…Ã≈–€ ƒ≈…—“¬»…
         Gui, ActionTimers:Font, s11 Bold c%timerTextColor%, Segoe UI
         Gui, ActionTimers:Add, Text, x12 y30 w%bodyW% h%bodyH% Center 0x200 gStartActionTimerDrag vActionTimerBody BackgroundTrans, %body%
         ActionTimerLastHeight := overlayH

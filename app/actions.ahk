@@ -405,8 +405,7 @@ ContextAssistant_Request(actionName, presetValue := "", presetVariant := "", tar
     ContextAssistant_CloseGameChat()
     bg := "", panel := "", textColor := "", accent := "", muted := ""
     GetThemeColors(bg, panel, textColor, accent, muted)
-    controlBg := "F7F8FA"
-    inputText := "111418"
+    GetControlSurfaceColors(controlBg, inputText, cardBg, cardEdge, panel, textColor, accent)
 
     Gui, 42:+HwndhContextAssistantWnd +AlwaysOnTop +ToolWindow -MinimizeBox -MaximizeBox -Resize
     Gui, 42:Color, %bg%, %controlBg%
@@ -419,7 +418,7 @@ ContextAssistant_Request(actionName, presetValue := "", presetVariant := "", tar
     Gui, 42:Font, Norm s9 c%muted%, Segoe UI
     Gui, 42:Add, Text, x18 y50 w524 h42 BackgroundTrans, %prompt%
     Gui, 42:Font, Norm s10 c%inputText%, Segoe UI
-    Gui, 42:Add, Edit, x18 y104 w524 h32 Number Limit6 vContextAssistantInput, %presetValue%
+    Gui, 42:Add, Edit, x18 y104 w524 h32 -Multi -WantReturn -VScroll -HScroll Number Limit6 vContextAssistantInput, %presetValue%
     Gui, 42:Font, Norm s9 c%muted%, Segoe UI
     Gui, 42:Add, Text, x18 y142 w524 h22 vContextAssistantStatus BackgroundTrans, %ContextAssistantStatus%
     Gui, 42:Font, Norm s10 c%textColor%, Segoe UI

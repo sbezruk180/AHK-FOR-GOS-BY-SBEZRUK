@@ -23,19 +23,50 @@ DesktopSmoke_Run() {
         catalog := GetBindCatalog()
         labelsOK := V1_CheckCatalog(catalogDetails)
         DesktopSmoke_Assert("all catalog handlers including direct UI/GPS dispatch", labelsOK)
+        DesktopSmoke_Assert("violet navigation blend uses real hex channels", UIStyle_BlendColors("845EFF", "161A29", 0.19) = "2B2752")
         OpenSettings("profile")
         pages := GetSettingsPageCatalog()
         for index, page in pages {
             switched := Settings_SwitchPage(index)
             DesktopSmoke_Assert("settings page " . page.Id, switched && SettingsPage = page.Id && DllCall("IsWindow", "Ptr", hSettingsWnd))
+            clicked := Settings_NavClick(SettingsNavigationButtons[index])
+            DesktopSmoke_Assert("sidebar button dispatch " . page.Id, clicked && SettingsPage = page.Id)
+            DesktopSmoke_Assert("interactive controls do not overlap " . page.Id, DesktopSmoke_NoInputOverlap(hSettingsWnd))
         }
         DesktopSmoke_Assert("settings catalog keeps all 13 pages", pages.Length() = 13)
+        DesktopSmoke_Assert("sidebar has one native button for each page", SettingsNavigationButtons.Length() = pages.Length())
+        DesktopSmoke_Assert("legacy navigation is hidden", !DllCall("IsWindowVisible", "Ptr", hSettingsNavLV))
         CreateHUD()
         UpdateHUD()
         DesktopSmoke_Assert("native HUD exists", DllCall("IsWindow", "Ptr", hHUDWnd))
         CreateBindList()
         UpdateBindList()
         DesktopSmoke_Assert("native bind list exists", DllCall("IsWindow", "Ptr", hBindListWnd))
+        priorBindColor := CustomBindListColor
+        CustomBindListColor := "162231"
+        CreateBindList()
+        DesktopSmoke_Assert("custom bind list color survives shared styling", UIStyleWindows[hBindListWnd].Panel = "162231")
+        CustomBindListColor := priorBindColor
+        CreateBindList()
+        UpdateBindList()
+        priorTimerBg := StopTimerBgColor, priorTimerText := StopTimerTextColor
+        StopTimerBgColor := "171C2C", StopTimerTextColor := "E4EAF8"
+        Gui, ActionTimers:New, +HwndpaletteProbeWindow
+        UIStyle_Apply("ActionTimers", paletteProbeWindow)
+        DesktopSmoke_Assert("custom timer colors survive shared styling", UIStyleWindows[paletteProbeWindow].Background = "171C2C" && UIStyleWindows[paletteProbeWindow].Text = "E4EAF8")
+        Gui, ActionTimers:Destroy
+        StopTimerBgColor := priorTimerBg, StopTimerTextColor := priorTimerText
+        for _, size in [[420, 320], [520, 390], [760, 740]] {
+            Gui, 13:Show, % "w" . size[1] . " h" . size[2] . " NoActivate"
+            ResizeBindListGui(size[1], size[2])
+            DesktopSmoke_Assert("bind list controls do not overlap " . size[1] . "x" . size[2], DesktopSmoke_NoInputOverlap(hBindListWnd))
+            VarSetCapacity(clientRect, 16, 0)
+            DllCall("GetClientRect", "Ptr", hBindListWnd, "Ptr", &clientRect)
+            DllCall("MapWindowPoints", "Ptr", hBindListWnd, "Ptr", 0, "Ptr", &clientRect, "UInt", 2)
+            VarSetCapacity(listRect, 16, 0)
+            DllCall("GetWindowRect", "Ptr", hBindListLV, "Ptr", &listRect)
+            DesktopSmoke_Assert("bind list fits window " . size[1] . "x" . size[2], NumGet(listRect, 8, "Int") <= NumGet(clientRect, 8, "Int") && NumGet(listRect, 12, "Int") < NumGet(clientRect, 12, "Int"))
+        }
         unknownSection := "DesktopCompatibility"
         CheckedIniWrite("keep-me", ConfigFile, unknownSection, "UnknownKey")
         expectedRole := "Должность проверки"
@@ -118,4 +149,30 @@ DesktopSmoke_Memory(stage) {
         peak := NumGet(info, 8, "UPtr")
         DesktopSmokeReport .= "INFO | " . stage . " WorkingSetMiB=" . Round(working / 1048576, 2) . " PeakMiB=" . Round(peak / 1048576, 2) . "`r`n"
     }
+}
+
+; Use actual native rectangles, including DPI scaling, and ignore hidden pages
+; and the child edit inside a ComboBox. This checks geometry, not screenshots.
+DesktopSmoke_NoInputOverlap(window) {
+    controls := []
+    WinGet, children, ControlListHwnd, ahk_id %window%
+    Loop, Parse, children, `n, `r
+    {
+        child := A_LoopField + 0
+        if (!DllCall("IsWindowVisible", "Ptr", child) || DllCall("GetParent", "Ptr", child, "Ptr") != window)
+            continue
+        VarSetCapacity(classBuffer, 128, 0)
+        DllCall("GetClassNameW", "Ptr", child, "Ptr", &classBuffer, "Int", 64)
+        class := StrGet(&classBuffer, "UTF-16")
+        if (class != "Edit" && class != "ComboBox" && class != "Button" && class != "msctls_hotkey32")
+            continue
+        VarSetCapacity(rect, 16, 0)
+        DllCall("GetWindowRect", "Ptr", child, "Ptr", &rect)
+        item := {L: NumGet(rect, 0, "Int"), T: NumGet(rect, 4, "Int"), R: NumGet(rect, 8, "Int"), B: NumGet(rect, 12, "Int")}
+        for _, prior in controls
+            if (Min(item.R, prior.R) - Max(item.L, prior.L) > 1 && Min(item.B, prior.B) - Max(item.T, prior.T) > 1)
+                return false
+        controls.Push(item)
+    }
+    return true
 }

@@ -7,64 +7,70 @@
       "mode": "--runtime-info",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 2.89,
+      "seconds": 5.6,
       "report": "runtime_info_report.txt"
     },
     {
       "mode": "--desktop-smoke",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 8.86,
-      "report": "desktop_smoke_report.txt"
+      "report": "desktop_smoke_report.txt",
+      "checks": 77,
+      "failures": 0,
+      "final_recheck": true
     },
     {
       "mode": "--audit-selftest",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 42.98,
+      "seconds": 40.58,
       "report": "audit_selftest_report.txt"
     },
     {
       "mode": "--diagnostics",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 14.88,
+      "seconds": 17.5,
       "report": "diagnostics_report.txt"
     },
     {
       "mode": "--selftest",
       "status": "EXPECTED_ABI_FAILURE",
       "exit_code": 1,
-      "seconds": 28.82,
+      "seconds": 29.21,
       "report": "selftest_report.txt"
     },
     {
       "mode": "--context-mocktest",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 2.8,
+      "seconds": 5.6,
       "report": "context_assistant_test.txt"
     },
     {
       "mode": "--autoreport-mocktest",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 2.79,
+      "seconds": 5.62,
       "report": "autoreport_mocktest_report.txt"
     },
     {
       "mode": "--law-search-test",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 26.52,
+      "seconds": 26.92,
       "report": "law_search_test_report.txt"
     },
     {
       "mode": "--v1-mocktest",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 2.74,
+      "seconds": 5.6,
       "report": "v1_mocktest_report.txt"
     }
-  ]
+  ],
+  "full_suite_test_exe_sha256": "b8b83265f0ed0ffca115498599a3f1c460727c7315fdb7f20d6a27b8fb23c032",
+  "final_gui_test_exe_sha256": "d1358a7d1bf39b8683b6d12a2cd3d48dd48c933501b6d7afad053b823b9debb8",
+  "final_source_sha256": "bc64779ea2a87a8a9758b4137774eb13b6912ee36b621e95beac70e4a6fdec8e",
+  "note": "After the full regression pass, custom window colors were retained and native GUI smoke repeated: 77 checks / 0 failures. No additional game/input changes."
 }

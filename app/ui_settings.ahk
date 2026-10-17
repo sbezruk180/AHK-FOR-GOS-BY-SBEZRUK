@@ -11,11 +11,11 @@ GetThemeColors(ByRef bg, ByRef panel, ByRef text, ByRef accent, ByRef muted) {
 
     if (ThemeMode = "Graphite")
     {
-        bg := "121821"
-        panel := "1B2430"
-        text := "EBF0F7"
-        accent := "79A8F5"
-        muted := "A8B5C7"
+        bg := "0E101A"
+        panel := "161A29"
+        text := "ECECFA"
+        accent := "8060F8"
+        muted := "9DA5BD"
     }
     else if (ThemeMode = "Light")
     {
@@ -147,7 +147,7 @@ ApplyListViewColors(hwnd, bgHex, textHex) {
     SendMessage, 0x1024, 0, %textBgr%,, ahk_id %hwnd%
 }
 
-AddOutlinedPanel(guiNum, x, y, w, h, fillColor, borderColor, borderSize := 3) {
+AddOutlinedPanel(guiNum, x, y, w, h, fillColor, borderColor, borderSize := 1) {
     if (w <= 0 || h <= 0)
         return
     if (borderSize < 1)
@@ -232,7 +232,7 @@ ShowSettingsWindow() {
     settingsAlpha := 255
     PromoteOverlayWindow(hSettingsWnd)
     WinSet, Transparent, %settingsAlpha%, ahk_id %hSettingsWnd%
-    ApplyRoundedCorners(hSettingsWnd, 0)
+    ApplyRoundedCorners(hSettingsWnd, UIRoundness)
     ApplyRoundedPanelsForGui(hSettingsWnd, InnerRoundness)
 }
 
@@ -350,7 +350,7 @@ OpenSettings(tabIndex := 1) {
     settingsAlpha := 255
     PromoteOverlayWindow(hSettingsWnd)
     WinSet, Transparent, %settingsAlpha%, ahk_id %hSettingsWnd%
-    ApplyRoundedCorners(hSettingsWnd, 0)
+    ApplyRoundedCorners(hSettingsWnd, UIRoundness)
     ApplyRoundedPanelsForGui(hSettingsWnd, InnerRoundness)
     RefreshSettingsTabs()
     SettingsVisible := 1
@@ -461,7 +461,7 @@ RefreshSettingsTabs() {
 }
 
 Settings_SwitchPage(pageIndex, syncNavigation := 1) {
-    global SettingsTargetTab, SettingsPage, SettingsNavigationBusy
+    global SettingsTargetTab, SettingsPage, SettingsNavigationBusy, SettingsNavigationButtons
     pages := GetSettingsPageCatalog()
     if (pageIndex < 1 || pageIndex > pages.Length() || SettingsNavigationBusy)
         return false
@@ -478,10 +478,22 @@ Settings_SwitchPage(pageIndex, syncNavigation := 1) {
         LV_Modify(0, "-Select -Focus")
         LV_Modify(SettingsTargetTab, "Select Focus Vis")
     }
+    for navIndex, navHwnd in SettingsNavigationButtons {
+        if DllCall("IsWindow", "Ptr", navHwnd)
+            UIStyle_SetButtonRole(navHwnd, navIndex = pageIndex ? "nav-active" : "nav")
+    }
     Settings_ActivateLayout(pageIndex)
     UpdateAutomationSettingsStatus()
     SettingsNavigationBusy := 0
     return true
+}
+
+Settings_NavClick(controlHwnd, guiEvent := "", eventInfo := "", eventError := "") {
+    global SettingsNavigationButtons
+    for index, hwnd in SettingsNavigationButtons
+        if (hwnd = controlHwnd)
+            return Settings_SwitchPage(index)
+    return false
 }
 
 GetSettingsPageCatalog() {
@@ -523,9 +535,9 @@ SettingsPageIdFromLegacyTab(tabIndex) {
 
 Settings_AddControl(label, varName, value, x, y, w, controlType, options, textColor, inputColor) {
     Gui, 2:Font, s9 Norm c%textColor%, Segoe UI
-    Gui, 2:Add, Text, % "x" x " y" y " w" w " h28 +Wrap BackgroundTrans", %label%
+    Gui, 2:Add, Text, % "x" x " y" y " w" w " h26 +Wrap BackgroundTrans", %label%
     Gui, 2:Font, s10 Norm c%inputColor%, Segoe UI
-    opts := "x" x " y" (y + 32) " w" w " v" . varName
+    opts := "x" x " y" (y + 28) " w" w " v" . varName
     if (controlType = "DropDown" || controlType = "Combo") {
         opts .= " r8"
         if (controlType = "DropDown")
@@ -534,7 +546,7 @@ Settings_AddControl(label, varName, value, x, y, w, controlType, options, textCo
             Gui, 2:Add, ComboBox, %opts%, %options%
         GuiControl, 2:ChooseString, %varName%, %value%
     } else {
-        opts .= " h30"
+        opts .= " h32 -Multi -WantReturn -VScroll -HScroll"
         Gui, 2:Add, Edit, %opts%, %value%
     }
     Settings_RecordExtent(y + 66)
@@ -552,17 +564,19 @@ Settings_AddGrid(items, startX, startY, cols, colWidth, rowHeight, controlType, 
         Gui, 2:Font, s9 Norm c%textColor%, Segoe UI
         Gui, 2:Add, Text, % "x" x " y" y " w" w " h28 +Wrap BackgroundTrans", % item[1]
         Gui, 2:Font, s10 Norm c%inputColor%, Segoe UI
-        h := controlType = "Multi" ? rowHeight - 46 : 30
-        opts := "x" x " y" (y + 32) " w" w " h" h " v" . item[2]
+        h := controlType = "Multi" ? rowHeight - 42 : 32
+        opts := "x" x " y" (y + 28) " w" w " h" h " v" . item[2]
         if (controlType = "Hotkey") {
             opts .= " gCfgHotkeyChanged"
             Gui, 2:Add, Hotkey, %opts%, %controlValue%
         } else {
             if (controlType = "Multi")
                 opts .= " Multi WantTab +VScroll"
+            if (controlType != "Multi")
+                opts .= " -Multi -WantReturn -VScroll -HScroll"
             Gui, 2:Add, Edit, %opts%, %controlValue%
         }
-        Settings_RecordExtent(y + 32 + h + 12)
+        Settings_RecordExtent(y + 28 + h + 12)
     }
 }
 
@@ -628,12 +642,10 @@ Settings_AddAssistantCard(label, enabledCfgVar, enabledValue, hotkeyCfgVar, hotk
 Settings_AddPageFrame(title, subtitle, cardBg, cardEdge, textColor, mutedColor) {
     SettingsPageFrames[SettingsBuildingPage] := AddOutlinedPanel(2, 230, 82, 934, 674, cardBg, cardEdge, 1)
     Settings_RecordExtent(740)
-    Gui, 2:Add, Progress, -Theme x242 y100 w4 h44 Disabled Vertical Background%cardBg% c%cardEdge%, 100
-    Gui, 2:Font, s15 Bold c%textColor%, Segoe UI
-    Gui, 2:Add, Text, x258 y96 w870 h30 BackgroundTrans, %title%
+    Gui, 2:Font, s18 Bold c%textColor%, Segoe UI
+    Gui, 2:Add, Text, x254 y96 w870 h32 BackgroundTrans, %title%
     Gui, 2:Font, Norm s9 c%mutedColor%, Segoe UI
-    Gui, 2:Add, Text, x258 y128 w870 h22 BackgroundTrans, %subtitle%
-    Gui, 2:Add, Progress, -Theme x242 y156 w886 h1 Disabled Background%cardBg% c%cardEdge%, 100
+    Gui, 2:Add, Text, x256 y134 w870 h22 BackgroundTrans, %subtitle%
 }
 
 BuildSettingsGui() {
@@ -670,39 +682,61 @@ BuildSettingsGui() {
     Gui, 2:Color, %bg%, %controlBg%
     Gui, 2:Font, Norm s10 c%text%, Segoe UI
     buildW := 1180, buildH := 800
-    Gui, 2:Add, Progress, -Theme x0 y0 w1180 h4 Disabled Background%bg% c%accent% vSettingsBorderTop, 100
-    Gui, 2:Add, Progress, -Theme x0 y796 w1180 h4 Disabled Background%bg% c%accent% vSettingsBorderBottom, 100
-    Gui, 2:Add, Text, x0 y0 w216 h64 vSettingsDragZone gStartSettingsDrag BackgroundTrans,
+    ; The sidebar and header are independent of the form pages.
+    ; Native buttons keep keyboard navigation and the existing page dispatch.
+    Gui, 2:Add, Progress, -Theme x0 y0 w220 h800 Disabled Background%panel% c%panel%, 100
+    Gui, 2:Add, Progress, -Theme x220 y0 w1 h800 Disabled Background%bg% c%cardEdge%, 100
+    Gui, 2:Add, Progress, -Theme x0 y0 w1180 h1 Disabled Background%bg% c%cardEdge% vSettingsBorderTop, 100
+    Gui, 2:Add, Progress, -Theme x0 y799 w1180 h1 Disabled Background%bg% c%cardEdge% vSettingsBorderBottom, 100
+    Gui, 2:Add, Text, x0 y0 w220 h100 vSettingsDragZone gStartSettingsDrag BackgroundTrans,
+    Gui, 2:Font, s18 Bold c%accent%, Segoe UI
+    Gui, 2:Add, Text, x22 y22 w38 h34 BackgroundTrans hwndhSettingsBrand, G
+    UIStyle_SetTextRole(hSettingsBrand, "accent")
+    Gui, 2:Font, s11 Bold c%text%, Segoe UI
+    Gui, 2:Add, Text, x62 y25 w150 h24 BackgroundTrans, AHK FOR GOS
+    Gui, 2:Font, Norm s8 c%muted%, Segoe UI
+    Gui, 2:Add, Text, x63 y51 w146 h18 BackgroundTrans, AMAZING ONLINE
+    Gui, 2:Add, Text, x24 y106 w170 h20 BackgroundTrans, РАБОЧЕЕ ПРОСТРАНСТВО
 
-    Gui, 2:Font, s12 Bold c%text%, Segoe UI
-    Gui, 2:Add, Text, x20 y12 w210 h28 BackgroundTrans, ГОС / ПОМОЩНИК
-    Gui, 2:Font, Norm s9 c%muted%, Segoe UI
-    Gui, 2:Add, Text, x20 y40 w190 h18 BackgroundTrans, SBEZRUK · Amazing Online
-    Gui, 2:Font, Norm s9 c%text%, Segoe UI
-    Gui, 2:Add, Text, x238 y9 w210 h18 BackgroundTrans, АКТИВНЫЙ ПРОФИЛЬ
+    Gui, 2:Font, Norm s8 c%muted%, Segoe UI
+    Gui, 2:Add, Text, x244 y14 w210 h18 BackgroundTrans, АКТИВНЫЙ ПРОФИЛЬ
     Gui, 2:Font, Norm s10 c%inputText%, Segoe UI
-    Gui, 2:Add, ComboBox, x238 y29 w214 r10 vCFG_ProfileName, %profiles%
+    Gui, 2:Add, ComboBox, x244 y36 w208 r10 vCFG_ProfileName, %profiles%
     GuiControl, 2:ChooseString, CFG_ProfileName, %CurrentProfile%
     Gui, 2:Font, Norm s9 c%text%, Segoe UI
-    Gui, 2:Add, Button, x466 y27 w82 h30 vSettingsBtnLoad gCfgLoadProfile, Загрузить
-    Gui, 2:Add, Button, x554 y27 w82 h30 vSettingsBtnSave gCfgSaveProfile, Сохранить
-    Gui, 2:Add, Button, x642 y27 w82 h30 vSettingsBtnCreate gCfgCreateProfile, Создать
-    Gui, 2:Add, Button, x730 y27 w82 h30 vSettingsBtnDelete gCfgDeleteProfile, Удалить
-    Gui, 2:Add, Button, x826 y27 w76 h30 vSettingsBtnImport gImportProfilesLabel, Импорт
-    Gui, 2:Add, Button, x908 y27 w76 h30 vSettingsBtnExport gExportProfilesLabel, Экспорт
-    Gui, 2:Add, Button, x1062 y27 w42 h30 vSettingsBtnHide gMinimizeSettingsLabel, -
-    Gui, 2:Add, Button, x1110 y27 w48 h30 vSettingsBtnExit gExitScriptButtonLabel, X
-    Gui, 2:Add, Progress, -Theme x18 y68 w1140 h2 Disabled Background%bg% c%accent%, 100
+    Gui, 2:Add, Button, x466 y34 w88 h34 vSettingsBtnLoad gCfgLoadProfile, Загрузить
+    Gui, 2:Add, Button, x562 y34 w96 h34 vSettingsBtnSave hwndhSettingsSave gCfgSaveProfile, Сохранить
+    UIStyle_SetButtonRole(hSettingsSave, "primary")
+    Gui, 2:Add, Button, x674 y34 w82 h34 vSettingsBtnCreate gCfgCreateProfile, Создать
+    Gui, 2:Add, Button, x764 y34 w82 h34 vSettingsBtnDelete hwndhSettingsDelete gCfgDeleteProfile, Удалить
+    UIStyle_SetButtonRole(hSettingsDelete, "danger")
+    Gui, 2:Add, Button, x862 y34 w76 h34 vSettingsBtnImport gImportProfilesLabel, Импорт
+    Gui, 2:Add, Button, x946 y34 w76 h34 vSettingsBtnExport gExportProfilesLabel, Экспорт
+    Gui, 2:Add, Button, x1066 y34 w38 h34 vSettingsBtnHide gMinimizeSettingsLabel, -
+    Gui, 2:Add, Button, x1112 y34 w42 h34 vSettingsBtnExit gExitScriptButtonLabel, X
 
-    AddOutlinedPanel(2, 16, 82, 210, 674, panel, cardEdge, 2)
+    ; Keep the existing selection model for all profile/page callers.
     Gui, 2:Font, Norm s10 c%text%, Segoe UI
-    Gui, 2:Add, ListView, x26 y94 w190 h648 -Hdr -Multi AltSubmit vSettingsNavLV hwndhSettingsNavLV gSettingsNavChanged Background%panel% NoSortHdr, Раздел
+    Gui, 2:Add, ListView, x24 y138 w180 h520 Hidden -Hdr -Multi AltSubmit vSettingsNavLV hwndhSettingsNavLV gSettingsNavChanged Background%panel% NoSortHdr, Раздел
     Gui, 2:Default
     Gui, 2:ListView, SettingsNavLV
     Loop % pages.Length()
         LV_Add("", pages[A_Index].Label)
     LV_ModifyCol(1, 176)
     ApplyListViewColors(hSettingsNavLV, panel, text)
+    SettingsNavigationButtons := []
+    Gui, 2:Font, Norm s9 c%text%, Segoe UI
+    for navIndex, navPage in pages {
+        navY := 140 + (navIndex - 1) * 40
+        navOptions := "x12 y" . navY . " w196 h36 vSettingsNavItem" . navIndex . " hwndhNavButton gSettings_NavClick"
+        Gui, 2:Add, Button, %navOptions%, % navPage.Label
+        UIStyle_SetButtonRole(hNavButton, "nav")
+        SettingsNavigationButtons.Push(hNavButton)
+    }
+    Gui, 2:Font, s9 Bold c%text%, Segoe UI
+    Gui, 2:Add, Text, x24 y706 w176 h22 BackgroundTrans, SBEZRUK180
+    Gui, 2:Font, s8 Norm c%muted%, Segoe UI
+    Gui, 2:Add, Text, x24 y732 w176 h18 BackgroundTrans, Помощник гос. структур
 
     Gui, 2:Add, Tab2, x-1000 y-1000 w10 h10 AltSubmit vSettingsTabs, %pageLabels%
 
@@ -740,6 +774,7 @@ BuildSettingsGui() {
     Settings_AddGrid(postItems, 716, 514, 2, 210, 68, "Edit", text, inputText)
     Settings_AddControl("Маршрут", "CFG_PatrolRoute", PatrolRoute, 256, 584, 408, "Edit", "", text, inputText)
     Settings_AddControl("Название поста", "CFG_PostRoute", PostRoute, 716, 584, 408, "Edit", "", text, inputText)
+    AddOutlinedPanel(2, 240, 666, 904, 78, panel, cardEdge, 1)
     Settings_AddControl("Маршрут колонны", "CFG_ConvoyRoute", ConvoyRoute, 256, 672, 868, "Edit", "", text, inputText)
 
     SettingsBuildingPage := 2
@@ -900,12 +935,15 @@ BuildSettingsGui() {
     SettingsBuildingPage := 9
     Gui, 2:Tab, 9
     Settings_AddPageFrame("Документы", "Кодексы открываются по TXT-командам и листаются PgUp / PgDn.", cardBg, cardEdge, text, muted)
-    Settings_AddGrid(Settings_GetCatalogItems("Trigger", "documents"), 240, 174, 3, 300, 64, "Edit", text, inputText)
-    AddOutlinedPanel(2, 242, 618, 884, 120, panel, cardEdge, 1)
-    Settings_AddControl("Режим карт территорий", "CFG_TerritoryMapMode", CFG_TerritoryMapMode, 258, 630, 270, "DropDown", "Локальные копии|Официальные ссылки", text, inputText)
+    documentItems := Settings_GetCatalogItems("Trigger", "documents")
+    Settings_AddGrid(documentItems, 240, 174, 3, 300, 76, "Edit", text, inputText)
+    documentOptionsY := Max(618, 174 + Ceil(documentItems.Length() / 3) * 76 + 16)
+    AddOutlinedPanel(2, 242, documentOptionsY, 884, 120, panel, cardEdge, 1)
+    Settings_AddControl("Режим карт территорий", "CFG_TerritoryMapMode", CFG_TerritoryMapMode, 258, documentOptionsY + 12, 270, "DropDown", "Локальные копии|Официальные ссылки", text, inputText)
     Gui, 2:Font, Norm s9 c%muted%, Segoe UI
-    Gui, 2:Add, Text, x548 y628 w560 h38 BackgroundTrans +Wrap, Локальные копии — открываются внутри AHK FOR GOS BY SBEZRUK без интернета; режим по умолчанию.
-    Gui, 2:Add, Text, x548 y680 w560 h42 BackgroundTrans +Wrap, Официальные ссылки — соответствующий пост открывается через системный браузер; нужный спойлер необходимо развернуть вручную.
+    Gui, 2:Add, Text, % "x548 y" . (documentOptionsY + 10) . " w560 h38 BackgroundTrans +Wrap", Локальные копии — открываются внутри AHK FOR GOS BY SBEZRUK без интернета; режим по умолчанию.
+    Gui, 2:Add, Text, % "x548 y" . (documentOptionsY + 62) . " w560 h42 BackgroundTrans +Wrap", Официальные ссылки — соответствующий пост открывается через системный браузер; нужный спойлер необходимо развернуть вручную.
+    Settings_RecordExtent(documentOptionsY + 132)
 
     SettingsBuildingPage := 10
     Gui, 2:Tab, 10
@@ -987,8 +1025,8 @@ BuildSettingsGui() {
     SettingsBuildingPage := 0
     Gui, 2:Tab
     Gui, 2:Font, Norm s9 c%muted%, Segoe UI
-    Gui, 2:Add, Text, x18 y772 w900 h18 vSettingsStatusText BackgroundTrans, Изменения сохраняются кнопкой «Сохранить» или при закрытии окна.
-    Gui, 2:Add, Text, x920 y772 w240 h18 Right vSettingsOwnerText BackgroundTrans, AHK FOR GOS BY SBEZRUK · SBezruk180
+    Gui, 2:Add, Text, x242 y772 w660 h18 vSettingsStatusText BackgroundTrans, Изменения сохраняются кнопкой «Сохранить» или при закрытии окна.
+    Gui, 2:Add, Text, x920 y772 w240 h18 Right +0x4000 vSettingsOwnerText BackgroundTrans, AHK FOR GOS BY SBEZRUK · SBezruk180
     SettingsCanvasHeight := Max(800, SettingsPageExtents[1] + 60)
     SettingsGuiReady := 1
     Settings_UpdateScrollbars()

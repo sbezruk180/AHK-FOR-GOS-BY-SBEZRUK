@@ -297,19 +297,26 @@ TerritoryMap_ShowCatalog(CtrlHwnd := "", GuiEvent := "", EventInfo := "", ErrLev
     Gui, TerritoryMaps:New, +AlwaysOnTop +ToolWindow -MaximizeBox -MinimizeBox +HwndhTerritoryMapWnd, Карты территорий
     GetThemeColors(bg, panel, text, accent, muted)
     GetControlSurfaceColors(surface, inputFg, card, edge, panel, text, accent)
-    Gui, TerritoryMaps:Color, %panel%, %surface%
-    Gui, TerritoryMaps:Margin, 14, 12
-    Gui, TerritoryMaps:Font, s10 Bold c%text%, Segoe UI
-    Gui, TerritoryMaps:Add, Text, w610, Карты территорий с ограниченным доступом
-    Gui, TerritoryMaps:Font, s9 Norm c%text%, Segoe UI
+    Gui, TerritoryMaps:Color, %bg%, %surface%
+    Gui, TerritoryMaps:Margin, 0, 0
+    Gui, TerritoryMaps:Font, s8 Bold c%muted%, Segoe UI
+    Gui, TerritoryMaps:Add, Text, x24 y18 w600 h18 BackgroundTrans, СПРАВОЧНИК / ТЕРРИТОРИИ
+    Gui, TerritoryMaps:Font, s16 Bold c%text%, Segoe UI
+    Gui, TerritoryMaps:Add, Text, x24 y42 w600 h30 BackgroundTrans, Карты территорий
+    Gui, TerritoryMaps:Font, s9 Norm c%muted%, Segoe UI
     modeText := "Текущий режим: " . TerritoryMap_GetModeDisplay()
-    Gui, TerritoryMaps:Add, Text, y+8 w610, %modeText%
-    Gui, TerritoryMaps:Add, Text, y+6 w610 h58 +Wrap, Локальные копии показываются без увеличения выше исходного размера, поэтому миниатюры больше не размываются.`nОфициальные ссылки открывают соответствующий пост форума через системный браузер.
-    Gui, TerritoryMaps:Add, ListBox, y+8 w610 r11 vTerritoryMapSelectedIndex AltSubmit Choose1, %items%
-    Gui, TerritoryMaps:Add, Button, y+10 w190 h30 Default gTerritoryMap_OpenSelected, Открыть
-    Gui, TerritoryMaps:Add, Button, x+12 yp w190 h30 gTerritoryMap_CloseCatalog, Закрыть
+    Gui, TerritoryMaps:Add, Text, x24 y82 w600 h20 BackgroundTrans, %modeText%
+    AddOutlinedPanel("TerritoryMaps", 18, 118, 612, 340, card, edge, 1)
+    Gui, TerritoryMaps:Font, s9 Norm c%text%, Segoe UI
+    Gui, TerritoryMaps:Add, Text, x34 y134 w580 h44 +Wrap BackgroundTrans, Выбери территорию для просмотра карты. Локальная копия сохраняет исходную чёткость; официальный источник открывается в браузере.
+    Gui, TerritoryMaps:Font, s10 Norm c%inputFg%, Segoe UI
+    Gui, TerritoryMaps:Add, ListBox, x34 y192 w580 h246 vTerritoryMapSelectedIndex AltSubmit Choose1, %items%
+    Gui, TerritoryMaps:Font, s9 Norm c%text%, Segoe UI
+    Gui, TerritoryMaps:Add, Button, x326 y478 w142 h36 Default gTerritoryMap_OpenSelected, Открыть
+    Gui, TerritoryMaps:Add, Button, x480 y478 w142 h36 gTerritoryMap_CloseCatalog, Закрыть
     Capture_BeforeShow("TerritoryMaps")
-    Gui, TerritoryMaps:Show, AutoSize Center
+    Gui, TerritoryMaps:Show, w648 h536 Center
+    ApplyRoundedCorners(hTerritoryMapWnd, 16)
     TerritoryMapSelectedIndex := 1
     TerritoryMapGuiVisible := 1
 }
@@ -416,8 +423,8 @@ TerritoryMap_ShowLocal(groupIndex, assetIndex := 1)
     Gui, TerritoryMapView:New, +AlwaysOnTop +ToolWindow -MaximizeBox -MinimizeBox +HwndhTerritoryMapViewWnd, %title%
     GetThemeColors(bg, panel, text, accent, muted)
     Gui, TerritoryMapView:Color, %panel%
-    Gui, TerritoryMapView:Margin, 12, 10
-    Gui, TerritoryMapView:Font, s10 Bold c%text%, Segoe UI
+    Gui, TerritoryMapView:Margin, 12, 16
+    Gui, TerritoryMapView:Font, s12 Bold c%text%, Segoe UI
     Gui, TerritoryMapView:Add, Text, w%canvasW% Center, %title%
 
     Gui, TerritoryMapView:Font, s8 Norm c%muted%, Segoe UI
@@ -442,11 +449,11 @@ TerritoryMap_ShowLocal(groupIndex, assetIndex := 1)
     Gui, TerritoryMapView:Add, Picture, %picOptions%, %path%
 
     Gui, TerritoryMapView:Font, s9 Norm c%text%, Segoe UI
-    Gui, TerritoryMapView:Add, Button, xm y+10 w130 h30 gTerritoryMap_PreviousAsset, Предыдущая
-    Gui, TerritoryMapView:Add, Button, x+8 yp w130 h30 gTerritoryMap_NextAsset, Следующая
-    Gui, TerritoryMapView:Add, Button, x+8 yp w145 h30 gTerritoryMap_OpenCurrentLocal, Открыть файл
-    Gui, TerritoryMapView:Add, Button, x+8 yp w165 h30 gTerritoryMap_OpenCurrentForum, Оригинал форума
-    Gui, TerritoryMapView:Add, Button, x+8 yp w130 h30 gTerritoryMap_CloseView, Закрыть
+    Gui, TerritoryMapView:Add, Button, xm y+16 w130 h36 gTerritoryMap_PreviousAsset, Предыдущая
+    Gui, TerritoryMapView:Add, Button, x+8 yp w130 h36 gTerritoryMap_NextAsset, Следующая
+    Gui, TerritoryMapView:Add, Button, x+8 yp w145 h36 gTerritoryMap_OpenCurrentLocal, Открыть файл
+    Gui, TerritoryMapView:Add, Button, x+8 yp w165 h36 gTerritoryMap_OpenCurrentForum, Оригинал форума
+    Gui, TerritoryMapView:Add, Button, x+8 yp w130 h36 gTerritoryMap_CloseView, Закрыть
     Capture_BeforeShow("TerritoryMapView")
     Gui, TerritoryMapView:Show, AutoSize Center
     TerritoryMapViewVisible := 1
@@ -954,11 +961,9 @@ LawGui_GetLayout(screenWidth := "", screenHeight := "", dpi := "")
     screenH := Floor(screenHeight / scale)
     width := Max(160, Min(900, Max(620, Floor(screenW / 3)), screenW - 16))
     height := Max(100, screenH - 26)
-    contentW := Min(650, width - 50)
-    if (contentW < 550)
-        contentW := width - 24
+    contentW := width - 36
     fontSize := screenH >= 1300 ? 10 : (screenH < 520 ? 8 : 9)
-    return {W: width, H: height, ContentW: contentW, BodyY: 40, BodyH: Max(32, height - 50)
+    return {W: width, H: height, ContentW: contentW, BodyY: 60, BodyH: Max(32, height - 78)
         , FontSize: fontSize, TitleFontSize: fontSize + 1, Scale: scale}
 }
 
@@ -1092,7 +1097,8 @@ LawGui_Show(state, title, body, officialExact := 0, docPrefix := "")
     LawBgColor := LawGuiBgColor = "" ? "000000" : LawGuiBgColor
     LawAlpha := LawGuiTransparency = "" ? 222 : LawGuiTransparency
     LawAlpha := Min(235, Max(200, LawAlpha))
-    LawAccentColor := LawSearch_GetShellAccentColor()
+    GetThemeColors(shellBg, shellPanel, shellText, LawAccentColor, LawMutedColor)
+    GetControlSurfaceColors(shellSurface, shellInputText, LawHeaderBg, LawEdgeColor, shellPanel, shellText, LawAccentColor)
     LawHeaderTitle := title
     LawHeaderPage := ""
     if (RegExMatch(title, "^(.*) \(([^()]*)\)$", LawTitleMatch))
@@ -1103,33 +1109,29 @@ LawGui_Show(state, title, body, officialExact := 0, docPrefix := "")
     HeaderPageW := LawHeaderPage = "" ? 0 : 78
     HeaderMapW := (docPrefix = "ter") ? 72 : 0
     HeaderTitleW := Max(40, ContentW - HeaderPageW - HeaderMapW - (HeaderPageW ? 8 : 0) - (HeaderMapW ? 8 : 0))
-    HeaderPageX := 10 + HeaderTitleW + 8
-    HeaderMapX := 10 + ContentW - HeaderMapW
-    LawBorderRight := LawGuiW - 2
-    LawBorderBottom := LawGuiH - 2
+    HeaderPageX := 18 + HeaderTitleW + 8
+    HeaderMapX := 18 + ContentW - HeaderMapW
+    LawHeaderW := LawGuiW - 2
     Gui, 1:Destroy
     Gui, 1:+LastFound +AlwaysOnTop -Caption +ToolWindow +Border +HwndLawGuiHwnd
     Gui, 1:Color, %LawBgColor%, %LawBgColor%
-    Gui, 1:Margin, 10, 6
-    Gui, 1:Add, Progress, -Theme x0 y0 w%LawGuiW% h2 Disabled Background%LawBgColor% c%LawAccentColor%, 100
-    Gui, 1:Add, Progress, -Theme x0 y%LawBorderBottom% w%LawGuiW% h2 Disabled Background%LawBgColor% c%LawAccentColor%, 100
-    Gui, 1:Add, Progress, -Theme x0 y0 w2 h%LawGuiH% Disabled Vertical Background%LawBgColor% c%LawAccentColor%, 100
-    Gui, 1:Add, Progress, -Theme x%LawBorderRight% y0 w2 h%LawGuiH% Disabled Vertical Background%LawBgColor% c%LawAccentColor%, 100
+    Gui, 1:Margin, 18, 16
+    AddOutlinedPanel(1, 0, 0, LawGuiW, LawGuiH, LawBgColor, LawEdgeColor, 1)
+    Gui, 1:Add, Progress, -Theme x1 y1 w%LawHeaderW% h44 Disabled Background%LawHeaderBg% c%LawHeaderBg%, 100
     Gui, 1:Font, s%LawTitleFontSize% Bold c%LawTextColor%, Segoe UI
-    Gui, 1:Add, Text, x10 y6 w%HeaderTitleW% h24 +0x200 +0x4000 +0x80 BackgroundTrans, %LawHeaderTitle%
+    Gui, 1:Add, Text, x18 y11 w%HeaderTitleW% h24 +0x200 +0x4000 +0x80 BackgroundTrans, %LawHeaderTitle%
     if (LawHeaderPage != "")
     {
         Gui, 1:Font, s%LawBodyFontSize% Bold c%LawAccentColor%, Segoe UI
-        Gui, 1:Add, Text, x%HeaderPageX% y6 w%HeaderPageW% h24 +0x200 Right +0x80 BackgroundTrans, %LawHeaderPage%
+        Gui, 1:Add, Text, x%HeaderPageX% y11 w%HeaderPageW% h24 +0x200 Right +0x80 BackgroundTrans, %LawHeaderPage%
     }
     if (docPrefix = "ter")
     {
         Gui, 1:Font, s%LawBodyFontSize% Bold c%LawTextColor%, Segoe UI
-        Gui, 1:Add, Button, x%HeaderMapX% y7 w%HeaderMapW% h22 gTerritoryMap_ShowCatalog, Карты
+        Gui, 1:Add, Button, x%HeaderMapX% y9 w%HeaderMapW% h28 gTerritoryMap_ShowCatalog, Карты
     }
-    Gui, 1:Add, Progress, -Theme x10 y33 w%ContentW% h1 Disabled Background%LawBgColor% c%LawAccentColor%, 100
     Gui, 1:Font, Norm s%LawBodyFontSize% c%LawTextColor%, Segoe UI
-    Gui, 1:Add, Text, x10 y%BodyY% w%ContentW% h%BodyH% +0x80 BackgroundTrans, %body%
+    Gui, 1:Add, Text, x18 y%BodyY% w%ContentW% h%BodyH% +0x80 BackgroundTrans, %body%
     Capture_BeforeShow("1")
     Gui, 1:Show, x5 y8 w%LawGuiW% h%LawGuiH% NoActivate, window.
     WinSet, Transparent, %LawAlpha%, ahk_id %LawGuiHwnd%
@@ -4143,12 +4145,8 @@ Search_ShowPrevResult()
 
 LawSearch_GetShellAccentColor()
 {
-    global CustomBorderColor
-
-    accentColor := CustomBorderColor
-    if (accentColor = "")
-        accentColor := "BFD7FF"
-    return accentColor
+    GetThemeColors(bg, panel, text, accent, muted)
+    return accent
 }
 
 LawSearch_GetShellAlpha()
@@ -4209,7 +4207,7 @@ LawSearch_GetResultLayout(item)
     screenH := Floor(A_ScreenHeight / scale)
     width := Max(160, Min(680, screenW - 20))
     height := Max(160, Min(392, screenH - 40, Max(200, screenH - 110)))
-    contentW := width - 28
+    contentW := width - 36
     hierarchy := LawSearch_GetResultHierarchy(item, SearchDoc = "ALL")
     if (hierarchy = "")
         hierarchy := item.Title
@@ -4226,10 +4224,10 @@ LawSearch_GetResultLayout(item)
     }
     else
         hierarchyH := Max(22, measuredH)
-    bodyY := 72 + hierarchyH
+    bodyY := 94 + hierarchyH
     return {W: width, H: height, ContentW: contentW, Hierarchy: hierarchy, HierarchyH: hierarchyH
         , CompactHierarchy: compactHierarchy, DisplayPrefix: displayPrefix, BodyY: bodyY
-        , BodyH: Max(32, height - bodyY - 12), Scale: scale}
+        , BodyH: Max(32, height - bodyY - 18), Scale: scale}
 }
 
 Search_ShowCurrentResult()
@@ -4256,7 +4254,8 @@ Search_ShowCurrentResult()
     UpdateLawGuiColors()
     textColor := LawGuiTextColor = "" ? "FFFFFF" : LawGuiTextColor
     bgColor := LawGuiBgColor = "" ? "000000" : LawGuiBgColor
-    accentColor := LawSearch_GetShellAccentColor()
+    GetThemeColors(shellBg, shellPanel, shellText, accentColor, mutedColor)
+    GetControlSurfaceColors(shellSurface, shellInputText, headerBg, edgeColor, shellPanel, shellText, accentColor)
     alpha := LawSearch_GetShellAlpha()
     SearchGuiW := layout.W
     SearchGuiH := layout.H
@@ -4267,27 +4266,21 @@ Search_ShowCurrentResult()
     hierarchyStyle := layout.CompactHierarchy ? "+0x4000 +0x200" : ""
     BodyY := layout.BodyY
     BodyH := layout.BodyH
-    rightX := SearchGuiW - 2
-    bottomY := SearchGuiH - 2
-    dividerY := BodyY - 5
+    headerW := SearchGuiW - 2
     Gui, 16:Destroy
     Gui, 16:+LastFound +AlwaysOnTop -Caption +ToolWindow +Border +HwndSearchGuiHwnd
     Gui, 16:Color, %bgColor%, %bgColor%
-    Gui, 16:Margin, 14, 10
-    Gui, 16:Add, Progress, -Theme x0 y0 w%SearchGuiW% h2 Disabled Background%bgColor% c%accentColor%, 100
-    Gui, 16:Add, Progress, -Theme x0 y%bottomY% w%SearchGuiW% h2 Disabled Background%bgColor% c%accentColor%, 100
-    Gui, 16:Add, Progress, -Theme x0 y0 w2 h%SearchGuiH% Disabled Vertical Background%bgColor% c%accentColor%, 100
-    Gui, 16:Add, Progress, -Theme x%rightX% y0 w2 h%SearchGuiH% Disabled Vertical Background%bgColor% c%accentColor%, 100
+    Gui, 16:Margin, 18, 14
+    AddOutlinedPanel(16, 0, 0, SearchGuiW, SearchGuiH, bgColor, edgeColor, 1)
+    Gui, 16:Add, Progress, -Theme x1 y1 w%headerW% h62 Disabled Background%headerBg% c%headerBg%, 100
     Gui, 16:Font, s10 Bold c%textColor%, Segoe UI
-    Gui, 16:Add, Text, x14 y10 w%ContentW% h22 +0x200 +0x4000 +0x80 BackgroundTrans, %header%
-    Gui, 16:Font, Norm s8 c%accentColor%, Segoe UI
-    Gui, 16:Add, Text, x14 y32 w%ContentW% h18 +0x200 +0x4000 +0x80 BackgroundTrans, %meta%
-    Gui, 16:Add, Progress, -Theme x14 y54 w%ContentW% h1 Disabled Background%bgColor% c%accentColor%, 100
+    Gui, 16:Add, Text, x18 y12 w%ContentW% h22 +0x200 +0x4000 +0x80 BackgroundTrans, %header%
+    Gui, 16:Font, Norm s8 c%mutedColor%, Segoe UI
+    Gui, 16:Add, Text, x18 y36 w%ContentW% h18 +0x200 +0x4000 +0x80 BackgroundTrans, %meta%
     Gui, 16:Font, s9 Bold c%accentColor%, Segoe UI
-    Gui, 16:Add, Text, x14 y62 w%ContentW% h%HierarchyH% %hierarchyStyle% +0x80 BackgroundTrans, %hierarchy%
-    Gui, 16:Add, Progress, -Theme x14 y%dividerY% w%ContentW% h1 Disabled Background%bgColor% c%accentColor%, 100
+    Gui, 16:Add, Text, x18 y78 w%ContentW% h%HierarchyH% %hierarchyStyle% +0x80 BackgroundTrans, %hierarchy%
     Gui, 16:Font, s9 Norm c%textColor%, Segoe UI
-    Gui, 16:Add, Text, x14 y%BodyY% w%ContentW% h%BodyH% +0x80 BackgroundTrans, %body%
+    Gui, 16:Add, Text, x18 y%BodyY% w%ContentW% h%BodyH% +0x80 BackgroundTrans, %body%
     Capture_BeforeShow("16")
     Gui, 16:Show, x5 y%SearchGuiY% w%SearchGuiW% h%SearchGuiH% NoActivate, law search
     WinSet, Transparent, %alpha%, ahk_id %SearchGuiHwnd%
@@ -4433,32 +4426,24 @@ LawSearch_ShowNotice(text)
     bgColor := LawGuiBgColor
     if (bgColor = "")
         bgColor := "000000"
-    accentColor := LawSearch_GetShellAccentColor()
+    GetThemeColors(shellBg, shellPanel, shellText, accentColor, mutedColor)
+    GetControlSurfaceColors(shellSurface, shellInputText, headerBg, edgeColor, shellPanel, shellText, accentColor)
     alpha := LawSearch_GetShellAlpha()
 
-    NoticeW := 590
-    if (NoticeW > A_ScreenWidth - 20)
-        NoticeW := A_ScreenWidth - 20
-    NoticeH := 58
+    scale := A_ScreenDPI / 96.0
+    NoticeW := Max(160, Min(590, Floor(A_ScreenWidth / scale) - 20))
+    NoticeH := 64
     NoticeX := 5
     NoticeY := 46
-    MarginX := 12
-    MarginY := 8
-    TextW := NoticeW - (MarginX * 2)
-    borderSize := 2
-    rightX := NoticeW - borderSize
-    bottomY := NoticeH - borderSize
+    TextW := NoticeW - 36
 
     Gui, 17:Destroy
     Gui, 17:+LastFound +AlwaysOnTop -Caption +ToolWindow +Border +HwndSearchNoticeHwnd
     Gui, 17:Color, %bgColor%, %bgColor%
-    Gui, 17:Margin, %MarginX%, %MarginY%
-    Gui, 17:Add, Progress, -Theme x0 y0 w%NoticeW% h%borderSize% Disabled Background%bgColor% c%accentColor%, 100
-    Gui, 17:Add, Progress, -Theme x0 y%bottomY% w%NoticeW% h%borderSize% Disabled Background%bgColor% c%accentColor%, 100
-    Gui, 17:Add, Progress, -Theme x0 y0 w%borderSize% h%NoticeH% Disabled Vertical Background%bgColor% c%accentColor%, 100
-    Gui, 17:Add, Progress, -Theme x%rightX% y0 w%borderSize% h%NoticeH% Disabled Vertical Background%bgColor% c%accentColor%, 100
+    Gui, 17:Margin, 18, 14
+    AddOutlinedPanel(17, 0, 0, NoticeW, NoticeH, bgColor, edgeColor, 1)
     Gui, 17:Font, s9 Bold c%textColor%, Segoe UI
-    Gui, 17:Add, Text, xm ym w%TextW% h38 +0x200 BackgroundTrans, %text%
+    Gui, 17:Add, Text, x18 y13 w%TextW% h38 +0x200 BackgroundTrans, %text%
     Capture_BeforeShow("17")
     Gui, 17:Show, x%NoticeX% y%NoticeY% w%NoticeW% h%NoticeH% NoActivate, law search notice
     WinSet, Transparent, %alpha%, ahk_id %SearchNoticeHwnd%

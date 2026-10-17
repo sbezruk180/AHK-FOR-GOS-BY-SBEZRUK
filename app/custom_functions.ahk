@@ -487,71 +487,65 @@ CustomFunctionBuilder_AppendStep(text) {
 
 OpenCustomFunctionBuilder(selectIndex := 1) {
     global hCustomFunctionWnd, CustomFunctionGuiVisible, CustomFunctionSelected
-    global UIRoundness, InnerRoundness, GuiTransparency, CustomMenuColor, CustomTextColor
-    bg := "", panel := "", text := "", accent := "", muted := ""
+    global UIRoundness, InnerRoundness, GuiTransparency
     GetThemeColors(bg, panel, text, accent, muted)
-    if (CustomMenuColor != "")
-        panel := CustomMenuColor
-    if (CustomTextColor != "")
-        text := CustomTextColor
-    controlBg := "", controlText := "", cardBg := "", cardEdge := ""
     GetControlSurfaceColors(controlBg, controlText, cardBg, cardEdge, panel, text, accent)
 
     Gui, 40:Destroy
     Gui, 40:+HwndhCustomFunctionWnd +AlwaysOnTop -Resize
     Gui, 40:Color, %bg%, %controlBg%
     Gui, 40:Margin, 0, 0
-    Gui, 40:Add, Progress, -Theme x0 y0 w940 h4 Disabled Background%bg% c%accent%, 100
-    Gui, 40:Font, s15 Bold c%text%, Segoe UI
-    Gui, 40:Add, Text, x20 y14 w560 h30 BackgroundTrans, Конструктор функций
-    Gui, 40:Font, Norm s8 c%muted%, Segoe UI
-    Gui, 40:Add, Text, x20 y44 w880 h18 BackgroundTrans, Собирай последовательности из сообщений, пауз, таймеров и уведомлений. Hotkey действует только в игре при закрытом чате.
-    Gui, 40:Add, Progress, -Theme x18 y70 w904 h1 Disabled Background%bg% c%cardEdge%, 100
+    Gui, 40:Font, s8 Bold c%muted%, Segoe UI
+    Gui, 40:Add, Text, x24 y18 w880 h18 BackgroundTrans, АВТОМАТИЗАЦИИ / КОНСТРУКТОР
+    Gui, 40:Font, s18 Bold c%text%, Segoe UI
+    Gui, 40:Add, Text, x24 y39 w880 h32 BackgroundTrans, Конструктор функций
+    Gui, 40:Font, Norm s9 c%muted%, Segoe UI
+    Gui, 40:Add, Text, x24 y77 w880 h20 BackgroundTrans, Сообщения, паузы, таймеры и уведомления в одном сценарии.
 
-    AddOutlinedPanel(40, 18, 84, 238, 500, cardBg, cardEdge, 1)
-    AddOutlinedPanel(40, 270, 84, 652, 500, cardBg, cardEdge, 1)
+    AddOutlinedPanel(40, 18, 112, 232, 488, cardBg, cardEdge, 1)
+    AddOutlinedPanel(40, 266, 112, 656, 488, cardBg, cardEdge, 1)
+
+    Gui, 40:Font, s10 Bold c%text%, Segoe UI
+    Gui, 40:Add, Text, x34 y128 w200 h22 BackgroundTrans, Мои функции
+    Gui, 40:Font, Norm s9 c%controlText%, Segoe UI
+    Gui, 40:Add, ListBox, x34 y164 w200 h352 vCFB_List gCustomFunctionListChanged AltSubmit
+    Gui, 40:Font, Norm s9 c%text%, Segoe UI
+    Gui, 40:Add, Button, x34 y544 w94 h36 gCustomFunctionNewLabel, Новая
+    Gui, 40:Add, Button, x140 y544 w94 h36 gCustomFunctionDeleteLabel, Удалить
+
+    Gui, 40:Font, Norm s9 c%muted%, Segoe UI
+    Gui, 40:Add, Text, x284 y130 w252 h20 BackgroundTrans, Название
+    Gui, 40:Add, Text, x552 y130 w140 h20 BackgroundTrans, Горячая клавиша
+    Gui, 40:Add, Text, x708 y130 w196 h20 BackgroundTrans, Текстовый триггер
+    Gui, 40:Font, Norm s10 c%controlText%, Segoe UI
+    Gui, 40:Add, Edit, x284 y156 w252 h34 -Multi -WantReturn -VScroll -HScroll vCFB_Name
+    Gui, 40:Add, Hotkey, x552 y156 w140 h34 vCFB_Hotkey
+    Gui, 40:Add, Edit, x708 y156 w196 h34 -Multi -WantReturn -VScroll -HScroll vCFB_Trigger
 
     Gui, 40:Font, s9 Bold c%text%, Segoe UI
-    Gui, 40:Add, Text, x32 y98 w210 h20 BackgroundTrans, МОИ ФУНКЦИИ
-    Gui, 40:Font, Norm s9 c%controlText%, Segoe UI
-    Gui, 40:Add, ListBox, x32 y126 w210 h402 vCFB_List gCustomFunctionListChanged AltSubmit
-    Gui, 40:Font, Norm s9 c%text%, Segoe UI
-    Gui, 40:Add, Button, x32 y540 w98 h30 gCustomFunctionNewLabel, Новая
-    Gui, 40:Add, Button, x144 y540 w98 h30 gCustomFunctionDeleteLabel, Удалить
-
-    Gui, 40:Font, Norm s8 c%muted%, Segoe UI
-    Gui, 40:Add, Text, x286 y100 w250 h18 BackgroundTrans, Название
-    Gui, 40:Add, Text, x552 y100 w150 h18 BackgroundTrans, Hotkey
-    Gui, 40:Add, Text, x718 y100 w184 h18 BackgroundTrans, TXT-триггер
-    Gui, 40:Font, Norm s9 c%controlText%, Segoe UI
-    Gui, 40:Add, Edit, x286 y120 w250 h28 vCFB_Name
-    Gui, 40:Add, Hotkey, x552 y120 w150 h28 vCFB_Hotkey
-    Gui, 40:Add, Edit, x718 y120 w184 h28 vCFB_Trigger
-
-    Gui, 40:Font, Norm s8 c%muted%, Segoe UI
-    Gui, 40:Add, Text, x286 y164 w616 h18 BackgroundTrans, Сценарий
-    Gui, 40:Font, Norm s9 c%controlText%, Consolas
-    Gui, 40:Add, Edit, x286 y184 w616 h302 vCFB_Script hwndhCFBScript WantTab -Wrap Background%controlBg%
+    Gui, 40:Add, Text, x284 y208 w620 h20 BackgroundTrans, Сценарий
+    Gui, 40:Font, Norm s10 c%controlText%, Consolas
+    Gui, 40:Add, Edit, x284 y236 w620 h240 vCFB_Script hwndhCFBScript WantTab -Wrap Background%controlBg%
 
     Gui, 40:Font, Norm s8 c%text%, Segoe UI
-    Gui, 40:Add, Button, x286 y500 w88 h28 gCustomFunctionAddSendLabel, + SEND
-    Gui, 40:Add, Button, x380 y500 w88 h28 gCustomFunctionAddWaitLabel, + Пауза
-    Gui, 40:Add, Button, x474 y500 w88 h28 gCustomFunctionAddTimerLabel, + Таймер
-    Gui, 40:Add, Button, x568 y500 w104 h28 gCustomFunctionAddNoticeLabel, + Уведомл.
-    Gui, 40:Add, Button, x678 y500 w88 h28 gCustomFunctionAddTypeLabel, + TYPE
-    Gui, 40:Add, Button, x772 y500 w130 h28 gCustomFunctionAddIDLabel, + Переменная ID
+    Gui, 40:Add, Button, x284 y490 w90 h32 gCustomFunctionAddSendLabel, + SEND
+    Gui, 40:Add, Button, x380 y490 w90 h32 gCustomFunctionAddWaitLabel, + Пауза
+    Gui, 40:Add, Button, x476 y490 w90 h32 gCustomFunctionAddTimerLabel, + Таймер
+    Gui, 40:Add, Button, x572 y490 w106 h32 gCustomFunctionAddNoticeLabel, + Уведомл.
+    Gui, 40:Add, Button, x684 y490 w90 h32 gCustomFunctionAddTypeLabel, + TYPE
+    Gui, 40:Add, Button, x780 y490 w124 h32 gCustomFunctionAddIDLabel, + ID
 
     Gui, 40:Font, Norm s8 c%muted%, Segoe UI
-    Gui, 40:Add, Text, x286 y542 w616 h20 vCFB_Status BackgroundTrans,
+    Gui, 40:Add, Text, x284 y540 w620 h42 +Wrap vCFB_Status BackgroundTrans,
     Gui, 40:Font, Norm s9 c%text%, Segoe UI
-    Gui, 40:Add, Button, x286 y594 w132 h32 gCustomFunctionSaveLabel Default, Сохранить
-    Gui, 40:Add, Button, x430 y594 w132 h32 gCustomFunctionRunLabel, Запустить
-    Gui, 40:Add, Button, x574 y594 w132 h32 gCustomFunctionStopLabel, Остановить
-    Gui, 40:Add, Button, x770 y594 w132 h32 gCustomFunctionCloseLabel, Закрыть
+    Gui, 40:Add, Button, x284 y620 w142 h36 gCustomFunctionSaveLabel Default, Сохранить
+    Gui, 40:Add, Button, x438 y620 w142 h36 gCustomFunctionRunLabel, Запустить
+    Gui, 40:Add, Button, x592 y620 w142 h36 gCustomFunctionStopLabel, Остановить
+    Gui, 40:Add, Button, x762 y620 w142 h36 gCustomFunctionCloseLabel, Закрыть
 
     Capture_BeforeShow("40")
 
-    Gui, 40:Show, w940 h644, AHK FOR GOS BY SBEZRUK - Конструктор функций
+    Gui, 40:Show, w940 h680, AHK FOR GOS BY SBEZRUK - Конструктор функций
     CustomFunctionGuiVisible := 1
     if (selectIndex < 1)
         selectIndex := CustomFunctionSelected > 0 ? CustomFunctionSelected : 1
