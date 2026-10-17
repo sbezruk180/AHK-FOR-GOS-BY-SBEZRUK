@@ -1,11 +1,10 @@
 {
   "workflow": "Standalone Windows EXE",
-  "run_id": "38904779329",
-  "url": "https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK/actions/runs/38904779329",
-  "commit": "7ac2bbf1a83b535f5080d736f1aefb857a765435",
+  "run_id": "39023109933",
+  "url": "https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK/actions/runs/39023109933",
+  "commit": "c49f5001606ea9b40de5410263f6519a9ab0f245",
   "conclusion": "SUCCESS",
-  "duration_seconds": 22,
-  "release_exe_sha256": "39fa414bbd565bdc7bb5cf087b808c87facee83f14b1857e62c6c209d07e1067",
+  "release_exe_sha256": "75298551a5a24ba170fd319ed90ebd31e1361c33413748d091d21d9942968819",
   "verified": [
     "native Windows build",
     "fresh-build and shipped-release PE/source verification",
@@ -14,12 +13,14 @@
     "PointerSize=4",
     "Unicode=0",
     "LawDocuments=20",
-    "SourceIntrospection=1"
+    "SourceIntrospection=1",
+    "native Windows GUI smoke: 77 checks, no failures, Unicode x64 test host with UTF-16 INI fixtures"
   ],
+  "fixture_note": "The English runner uses a non-1251 ACP. The Unicode GUI host seeds UTF-16 INI fixtures to preserve Cyrillic profile metadata. This does not validate production ANSI/CP1251 configuration on that runner.",
   "not_claimed": [
     "real game ABI/commands",
-    "native Windows GUI/input integration",
+    "physical keyboard/input in game",
     "actual OBS capture frames",
-    "full Cyrillic native regressions when hosted ACP is not 1251"
+    "full Cyrillic native ANSI regressions when hosted ACP is not 1251"
   ]
 }
