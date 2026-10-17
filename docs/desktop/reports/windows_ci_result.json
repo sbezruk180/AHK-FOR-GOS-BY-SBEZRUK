@@ -1,10 +1,10 @@
 {
   "workflow": "Standalone Windows EXE",
-  "run_id": "39039729276",
-  "url": "https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK/actions/runs/39039729276",
-  "commit": "abd9da956f191e6ea3422a41fccea41ed6aa1b5e",
+  "run_id": "39042808693",
+  "url": "https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK/actions/runs/39042808693",
+  "commit": "489478bfabf67f6acb8a454ed3239bff04cfe521",
   "conclusion": "SUCCESS",
-  "release_exe_sha256": "33d6fac38d1ab9696f30a6422644753be5ef5e3d4df22bf47ad8aba824ff8f20",
+  "release_exe_sha256": "8416d9ffe1303403c1240de38105904636cc531b026624aeb7e6874ab72014de",
   "verified": [
     "native Windows build",
     "fresh-build and shipped-release PE/source verification",
@@ -14,10 +14,10 @@
     "Unicode=0",
     "LawDocuments=20",
     "SourceIntrospection=1",
-    "native Windows GUI smoke: 85 checks, no failures, Unicode x64 host / UTF-16 INI",
-    "native private TXT input fixture: 18 checks, no failures; actual InputHook, no leaked characters, foreground preserved, paced key hold; game/action/privacy seams explicit"
+    "native Windows GUI smoke: 88 checks, no failures, Unicode x64 host / UTF-16 INI",
+    "native private TXT input fixture: 24 checks, no failures; actual InputHook, no leaked characters, foreground preserved, paced key hold, exact mixed RU/US command typing and character timing; game/action/privacy seams explicit"
   ],
-  "fixture_note": "The English runner uses a non-1251 ACP. The Unicode GUI host seeds UTF-16 INI fixtures to preserve Cyrillic profile metadata. This does not validate production ANSI/CP1251 configuration on that runner.",
+  "fixture_note": "The English runner uses a non-1251 ACP. The Unicode GUI host seeds UTF-16 INI fixtures to preserve Cyrillic profile metadata. This does not validate production ANSI/CP1251 configuration on that runner. The character transport target is a plain Win32 STATIC/EDIT window using DefWindowProc. An AutoHotkey GUI rejected language-change requests in the first fixture; both real layouts and exact mixed text passed after correcting that test target.",
   "not_claimed": [
     "real game ABI/commands",
     "physical keyboard/input in game",
