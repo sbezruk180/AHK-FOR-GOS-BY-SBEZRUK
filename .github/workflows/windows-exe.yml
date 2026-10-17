@@ -50,8 +50,13 @@ jobs:
           $exe = (Resolve-Path 'dist/AHK_FOR_GOS_TEST_U64.exe').Path
           $process = Start-Process -FilePath $exe -ArgumentList @('--desktop-smoke', '--data-dir', "`"$data`"") -PassThru
           if (-not $process.WaitForExit(120000)) { $process.Kill(); throw 'Native GUI check timed out' }
-          Get-Content (Join-Path $data 'desktop_smoke_report.txt') -Encoding utf8
-          if ($process.ExitCode -ne 0) { throw "Native GUI failed: $($process.ExitCode)" }
+          $reportPath = Join-Path $data 'desktop_smoke_report.txt'
+          $report = Get-Content $reportPath -Encoding utf8
+          $report
+          $failed = @($report | Where-Object { $_ -match '^FAIL' })
+          foreach ($line in $failed) { Write-Output "::error title=Native GUI regression::$line" }
+          $process.Refresh()
+          if ($failed.Count -gt 0 -or $process.ExitCode -ne 0) { throw "Native GUI failed: $($process.ExitCode)" }
           Write-Output 'GUI tested in Unicode x64 host; game ABI, real input and OBS are not verified by this test.'
       - uses: actions/upload-artifact@v4
         with:
