@@ -46,6 +46,8 @@ RunAuditSelfTest() {
     AuditAssert("Typing delay: RP before/after are independent of command printing", ChatQueueItems[1].Role = "RP" && ChatQueueItems[4].Role = "RP" && !ChatQueueItems[2].HasKey("Role") && ChatTransport_TypingDelayOverride("test", ChatQueueItems[1].Role, "before") = 0 && ChatTransport_TypingDelayOverride("test", "", "/doc 42") == "")
     AuditAssert("Typing delay: sequence pause remains a separate setting", ChatQueueItems[1].DelayAfter = 700 && ChatQueueItems[2].DelayAfter = 700 && ChatQueueItems[4].DelayAfter = 700)
     AuditAssert("Typing delay: standalone RP sequence skips per-character interval", ChatTransport_TypingDelayOverride("RPSequence", "", "/me action") = 0 && ChatTransport_TypingDelayOverride("RPSequence", "", "/tow") == "")
+    AuditAssert("Stop request: megaphone RP skips configurable character interval", ChatTransport_TypingDelayOverride("RPSequence", "", "/m [Полиция] Остановитесь.") = 0)
+    AuditAssert("Stop request: unrelated faction commands retain configured typing speed", ChatTransport_TypingDelayOverride("Direct", "", "/cuff 42") == "" && ChatTransport_TypingDelayOverride("RPSequence", "", "/tow") == "")
     batch := ChatQueueItems[1].Batch
     AuditTransportResult := -1, ChatQueueMaxRetries := 0
     ChatQueue_Tick()

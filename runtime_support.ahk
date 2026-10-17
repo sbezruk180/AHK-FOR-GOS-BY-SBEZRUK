@@ -324,6 +324,10 @@ SafeSend(keys, mode := "Input", epoch := "", menuLease := "") {
         } finally {
             SetKeyDelay, %oldDelay%, %oldDuration%
         }
+    } else if (mode = "Text") {
+        ; SendChatTyped owns character timing (-1 / 10ms). Menu pacing must
+        ; never be applied to every character of a queued chat message.
+        SendEvent, %keys%
     } else
         SendInput, %keys%
     return true
@@ -1185,7 +1189,7 @@ PasteChatForEpoch(epoch, text, contextGuard := "") {
 
 
 ChatTransport_TypingDelayOverride(source, role, text) {
-    if (role = "RP" || (source = "RPSequence" && RegExMatch(Trim(text), "i)^/(?:me|do|todo)(?:\s|$)")))
+    if (role = "RP" || (source = "RPSequence" && RegExMatch(Trim(text), "i)^/(?:me|do|todo|m)(?:\s|$)")))
         return 0
     return ""
 }

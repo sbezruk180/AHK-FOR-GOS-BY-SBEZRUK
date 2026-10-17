@@ -306,7 +306,7 @@ SendChatTyped(text, submit := true, clearExisting := true, contextGuard := "", d
                 return -2
             }
             token := ChatTyping_KeyToken(key, GetKeyState("CapsLock", "T"))
-            if (token = "" || !SafeSend(token, "Event", epoch))
+            if (token = "" || !SafeSend(token, "Text", epoch))
                 return -2
             if (index < plan.Length()) {
                 DllCall("Sleep", "UInt", delay)

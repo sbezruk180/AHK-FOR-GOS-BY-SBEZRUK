@@ -114,9 +114,25 @@ DesktopSmoke_Run() {
         DesktopSmoke_Assert("profile save preserves unknown keys", unknown = "keep-me")
         MockMode := "On"
         ChatQueueItems := [], ChatQueueNextSendTick := 0, ChatQueueLastSendTick := 0
+        savedStopRP := RP_StopChase
+        savedStopSafety := [SafeModeEnabled, SafeBlockWhenChat, SafeVehicleChecks, SafeDistanceChecks, ActionCooldownMs]
+        SafeModeEnabled := "Off", SafeBlockWhenChat := "Off", SafeVehicleChecks := "Off", SafeDistanceChecks := "Off", ActionCooldownMs := 0
+        UserID := 42, ActiveID := 1
+        RP_StopChase := "/m Desktop stop first`n/m Desktop stop repeat"
+        Gosub, DoStopChase
+        StopTimerStartedAt := TickNow()
         ChatQueue_Enqueue("/r Desktop smoke", "desktop-smoke")
-        ChatQueue_Tick()
+        while (ChatQueue_Count() && TickNow() - StopTimerStartedAt < 5000) {
+            ChatQueue_Tick()
+            Sleep, 30
+        }
         DesktopSmoke_Assert("real queue reaches mock transport", InStr(ChatQueuePreviewText, "/r Desktop smoke"))
+        DesktopSmoke_Assert("stop request sends both messages before following action", InStr(ChatQueuePreviewText, "/m Desktop stop first") < InStr(ChatQueuePreviewText, "/m Desktop stop repeat") && InStr(ChatQueuePreviewText, "/m Desktop stop repeat") < InStr(ChatQueuePreviewText, "/r Desktop smoke"))
+        RP_StopChase := savedStopRP
+        SafeModeEnabled := savedStopSafety[1], SafeBlockWhenChat := savedStopSafety[2], SafeVehicleChecks := savedStopSafety[3], SafeDistanceChecks := savedStopSafety[4], ActionCooldownMs := savedStopSafety[5]
+        DesktopSmoke_Assert("stop countdown does not retain chat queue ownership", !ChatQueueBusy && !PhysicalInputBusy && ChatQueue_Count() = 0)
+        DesktopSmoke_Assert("queued action completes while stop countdown is visible", StopTimerActive && StopTimerCounter > 0 && DllCall("IsWindowVisible", "Ptr", hStopTimerWnd) && TickNow() - StopTimerStartedAt < 5000)
+        HideStopTimerGUI()
         CustomFunctions := [CreateDefaultCustomFunction()]
         CustomFunctions[1].Name := "Проверка сохранения"
         CustomFunctions[1].Script := "SEND /r Проверка`nWAIT 100`nNOTICE Готово"

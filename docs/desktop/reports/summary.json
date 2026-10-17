@@ -7,80 +7,92 @@
       "mode": "--runtime-info",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 5.59,
+      "seconds": 5.74,
       "report": "runtime_info_report.txt"
     },
     {
       "mode": "--desktop-smoke",
       "status": "PASS",
       "exit_code": 0,
-      "report": "desktop_smoke_report.txt",
-      "final_recheck": true,
-      "checks": 85,
-      "failures": 0
+      "seconds": 14.24,
+      "report": "desktop_smoke_report.txt"
     },
     {
       "mode": "--audit-selftest",
       "status": "PASS",
       "exit_code": 0,
-      "report": "audit_selftest_report.txt",
-      "final_recheck": true,
-      "checks": 418,
-      "failures": 0
+      "seconds": 46.43,
+      "report": "audit_selftest_report.txt"
     },
     {
       "mode": "--diagnostics",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 17.6,
+      "seconds": 18.75,
       "report": "diagnostics_report.txt"
     },
     {
       "mode": "--selftest",
       "status": "EXPECTED_ABI_FAILURE",
       "exit_code": 1,
-      "seconds": 29.97,
+      "seconds": 31.08,
       "report": "selftest_report.txt"
     },
     {
       "mode": "--context-mocktest",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 5.63,
+      "seconds": 5.76,
       "report": "context_assistant_test.txt"
     },
     {
       "mode": "--autoreport-mocktest",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 5.63,
+      "seconds": 5.79,
       "report": "autoreport_mocktest_report.txt"
     },
     {
       "mode": "--law-search-test",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 28.72,
+      "seconds": 29.28,
       "report": "law_search_test_report.txt"
     },
     {
       "mode": "--v1-mocktest",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 5.73,
+      "seconds": 5.76,
       "report": "v1_mocktest_report.txt"
     }
   ],
-  "full_suite_test_exe_sha256": "4301172a8600ac0381d377a35f81d7db99b78b27c277cca26da3eef2282b2457",
-  "final_test_exe_sha256": "56498e4dd162a14aae586abf263f7ae857db448d59e2ab4aa52a6ab10555c597",
-  "final_source_sha256": "aa279765322f7113ee5e896c62c16bb2db65fc2944ab70ecc433105d6eea1b11",
-  "note": "Full suite passed. After final passive assistant/confirmation compatibility changes, audit (418) and desktop smoke (85) were repeated on the final source. Separate native input fixture: 18 checks, no game/OBS claim.",
+  "full_suite_test_exe_sha256": "ed238a64749f27f932ceba452e7a1f9dd735e1d6e5bfe40983ba3165e26b0121",
+  "final_test_exe_sha256": "ed238a64749f27f932ceba452e7a1f9dd735e1d6e5bfe40983ba3165e26b0121",
+  "final_source_sha256": "b86b906b1e1e98aa00de8b2e8ae71966b27fea23fd24c6d294df5e8e084f6db7",
+  "note": "Final source graph: 8 PASS modes and one expected ANSI-x86 ABI guard failure in the Unicode x64 test host. Audit 420/0, desktop 88/0. Real game/OBS not tested.",
+  "typing_regression": {
+    "old_source_commit": "64b26a167a49b34917a936fcbfed37ffbd30287e",
+    "before_ms": 1896,
+    "after_ms": 491,
+    "characters": 20,
+    "before_failed_checks": 1,
+    "after_failed_checks": 0,
+    "game_chat_state": "fixture seam",
+    "wine_layout": "current-layout digit mapping; mixed RU/US skipped"
+  },
   "native_input_fixture": {
-    "checks": 18,
+    "checks": 22,
     "failures": 0,
+    "skipped_groups": [
+      "Mixed RU/US layout typing unavailable under Wine"
+    ],
+    "final_20_characters_ms": 474,
     "measured_key_hold_ms": 51,
     "game_predicate": "fixture seam",
+    "chat_open_state": "fixture seam",
     "action_execution": "fixture sink",
-    "privacy_api": "explicit success/refusal seam; actual flags checked in desktop smoke"
+    "privacy_api": "explicit success/refusal seam; actual flags checked in desktop smoke",
+    "wine_layout": "only for digit test: current HKL substituted if real RU/US load fails; Windows uses both real layouts"
   }
 }
