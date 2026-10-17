@@ -95,5 +95,15 @@
     "privacy_api": "explicit success/refusal seam; actual flags checked in desktop smoke",
     "wine_layout": "only for digit test: current HKL substituted if real RU/US load fails; Windows uses both real layouts",
     "typing_target": "plain Win32 STATIC/EDIT window with DefWindowProc; no AutoHotkey GUI layout interception"
+  },
+  "native_windows_ci": {
+    "url": "https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK/actions/runs/39042808693",
+    "commit": "489478bfabf67f6acb8a454ed3239bff04cfe521",
+    "status": "PASS",
+    "gui_checks": 88,
+    "input_checks": 24,
+    "mixed_ru_us_layouts": "PASS; exact /m Стоп! ID:42 on plain Win32 target",
+    "release_sha256": "8416d9ffe1303403c1240de38105904636cc531b026624aeb7e6874ab72014de",
+    "game_OBS": "NOT_TESTED"
   }
 }
