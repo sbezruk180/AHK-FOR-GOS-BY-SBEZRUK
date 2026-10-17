@@ -1,10 +1,10 @@
 {
   "workflow": "Standalone Windows EXE",
-  "run_id": "39023109933",
-  "url": "https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK/actions/runs/39023109933",
-  "commit": "c49f5001606ea9b40de5410263f6519a9ab0f245",
+  "run_id": "39039729276",
+  "url": "https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK/actions/runs/39039729276",
+  "commit": "abd9da956f191e6ea3422a41fccea41ed6aa1b5e",
   "conclusion": "SUCCESS",
-  "release_exe_sha256": "75298551a5a24ba170fd319ed90ebd31e1361c33413748d091d21d9942968819",
+  "release_exe_sha256": "33d6fac38d1ab9696f30a6422644753be5ef5e3d4df22bf47ad8aba824ff8f20",
   "verified": [
     "native Windows build",
     "fresh-build and shipped-release PE/source verification",
@@ -14,7 +14,8 @@
     "Unicode=0",
     "LawDocuments=20",
     "SourceIntrospection=1",
-    "native Windows GUI smoke: 77 checks, no failures, Unicode x64 test host with UTF-16 INI fixtures"
+    "native Windows GUI smoke: 85 checks, no failures, Unicode x64 host / UTF-16 INI",
+    "native private TXT input fixture: 18 checks, no failures; actual InputHook, no leaked characters, foreground preserved, paced key hold; game/action/privacy seams explicit"
   ],
   "fixture_note": "The English runner uses a non-1251 ACP. The Unicode GUI host seeds UTF-16 INI fixtures to preserve Cyrillic profile metadata. This does not validate production ANSI/CP1251 configuration on that runner.",
   "not_claimed": [
