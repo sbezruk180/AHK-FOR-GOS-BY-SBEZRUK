@@ -79,6 +79,22 @@ jobs:
           $process.Refresh()
           if ($failed.Count -gt 0 -or $process.ExitCode -ne 0) { throw "Native input failed: $($process.ExitCode)" }
           Write-Output 'Actual InputHook and key events; game predicate/action sink/decoration are explicit fixture seams.'
+      - name: Native GPS navigation, clipboard and cancellation
+        shell: pwsh
+        run: |
+          $fixture = Join-Path $env:RUNNER_TEMP 'ahk-game-menu-fixture/native.ahk'
+          python tools/build_game_menu_fixture.py $fixture
+          $ahk = (Resolve-Path '.build/toolchain/1.1.37.02/AutoHotkeyU64.exe').Path
+          $process = Start-Process -FilePath $ahk -ArgumentList @('/ErrorStdOut', "`"$fixture`"") -PassThru
+          if (-not $process.WaitForExit(60000)) { $process.Kill(); throw 'Game-menu fixture timed out' }
+          $report = Get-Content (Join-Path (Split-Path $fixture) 'game_menu_report.txt') -Encoding utf8
+          $report
+          foreach ($line in $report) {
+            if ($line -match '^(FAIL|TRACE)') { Write-Output "::error title=Native game-menu probe::$line" }
+          }
+          $process.Refresh()
+          if ($process.ExitCode -ne 0) { throw "Native game-menu failed: $($process.ExitCode)" }
+          Write-Output 'Real Win32 list/edit, key events and clipboard; game process/chat state/memory sender are explicit seams.'
       - uses: actions/upload-artifact@v4
         with:
           name: AHK-FOR-GOS-Windows-ANSI-x86
