@@ -64,7 +64,7 @@ jobs:
           $process.Refresh()
           if ($failed.Count -gt 0 -or $process.ExitCode -ne 0) { throw "Native GUI failed: $($process.ExitCode)" }
           Write-Output 'GUI tested in Unicode x64 host; game ABI, real input and OBS are not verified by this test.'
-      - name: Native private TXT hook and paced menu input
+      - name: Native private TXT, character typing and paced menu input
         shell: pwsh
         run: |
           $fixture = Join-Path $env:RUNNER_TEMP 'ahk-input-fixture/native.ahk'

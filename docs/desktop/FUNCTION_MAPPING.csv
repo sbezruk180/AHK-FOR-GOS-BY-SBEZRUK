@@ -1163,49 +1163,49 @@ ChatQueue_CancelBatches,runtime_support.ahk:268,runtime_support.ahk:269,Без �
 QueueBatch_Prune,runtime_support.ahk:275,runtime_support.ahk:276,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 QueueRpAction,runtime_support.ahk:286,runtime_support.ahk:287,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 SafeSend,runtime_support.ahk:302,runtime_support.ahk:303,Адаптирована,"Добавлены владение вводом/паузы клавиш, приватный ввод или пассивное открытие; регрессии и native стенд. GTA/OBS требуют отдельной проверки"
-SafeLayout,runtime_support.ahk:323,runtime_support.ahk:332,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ColorLuminance,runtime_support.ahk:377,runtime_support.ahk:386,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ColorContrast,runtime_support.ahk:387,runtime_support.ahk:396,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-EnsureTextContrast,runtime_support.ahk:392,runtime_support.ahk:401,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-Capture_GetEnvironment,runtime_support.ahk:406,runtime_support.ahk:415,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-Capture_Supported,runtime_support.ahk:440,runtime_support.ahk:449,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-Capture_IsOwnGui,runtime_support.ahk:445,runtime_support.ahk:454,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-Capture_InstallDialogHook,runtime_support.ahk:461,runtime_support.ahk:470,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-Capture_DialogHookProc,runtime_support.ahk:500,runtime_support.ahk:509,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-Capture_ShutdownDialogHook,runtime_support.ahk:539,runtime_support.ahk:548,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-Capture_ReadAffinity,runtime_support.ahk:567,runtime_support.ahk:576,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-Capture_AffinityMatches,runtime_support.ahk:581,runtime_support.ahk:590,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-Capture_ShouldRetry,runtime_support.ahk:586,runtime_support.ahk:595,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-Capture_BeforeShow,runtime_support.ahk:590,runtime_support.ahk:599,Адаптирована,Адаптирован путь пользовательских данных/отчётов
-Capture_ApplyWindow,runtime_support.ahk:600,runtime_support.ahk:613,Адаптирована,Адаптирован путь пользовательских данных/отчётов
-Capture_RefreshWindows,runtime_support.ahk:647,runtime_support.ahk:660,Адаптирована,Адаптирован путь пользовательских данных/отчётов
-Capture_GetDiagnosticsText,runtime_support.ahk:727,runtime_support.ahk:744,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-Settings_NormalizeViewport,runtime_support.ahk:740,runtime_support.ahk:757,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-Settings_UpdateScrollbars,runtime_support.ahk:759,runtime_support.ahk:776,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-Settings_ScrollMessage,runtime_support.ahk:781,runtime_support.ahk:798,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-Settings_MouseWheel,runtime_support.ahk:813,runtime_support.ahk:830,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-IsBindCatalogEntryEditable,runtime_support.ahk:829,runtime_support.ahk:846,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-LawSearch_CorpusFingerprint,runtime_support.ahk:835,runtime_support.ahk:852,Адаптирована,Адаптированы пути/ресурсы; тексты и алгоритмы поиска сохранены
-LawSearch_QueryFilters,runtime_support.ahk:848,runtime_support.ahk:869,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-Hotstring_AdmitPattern,runtime_support.ahk:865,runtime_support.ahk:886,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-JoinStrings,runtime_support.ahk:876,runtime_support.ahk:897,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ChatQueue_CancelBatch,runtime_support.ahk:883,runtime_support.ahk:904,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ImageDimensionsBounded,runtime_support.ahk:895,runtime_support.ahk:916,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-QueueMenu_Run,runtime_support.ahk:916,runtime_support.ahk:937,Адаптирована,"Добавлены владение вводом/паузы клавиш, приватный ввод или пассивное открытие; регрессии и native стенд. GTA/OBS требуют отдельной проверки"
-LawSearchVocabulary_Build,runtime_support.ahk:945,runtime_support.ahk:966,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-LawSearchVocabulary_Add,runtime_support.ahk:958,runtime_support.ahk:979,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-LawSearch_CorrectToken,runtime_support.ahk:964,runtime_support.ahk:985,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-SendChatForEpoch,runtime_support.ahk:982,runtime_support.ahk:1003,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-PasteOnlyForEpoch,runtime_support.ahk:988,runtime_support.ahk:1009,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-TypeChatForEpoch,runtime_support.ahk:994,runtime_support.ahk:1015,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ChatLogReader_CursorSignature,runtime_support.ahk:1009,runtime_support.ahk:1030,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-Settings_RecordExtent,runtime_support.ahk:1028,runtime_support.ahk:1049,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-Settings_ResetScroll,runtime_support.ahk:1035,runtime_support.ahk:1056,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-Settings_ActivateLayout,runtime_support.ahk:1042,runtime_support.ahk:1063,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-UI_MeasureTextHeight,runtime_support.ahk:1062,runtime_support.ahk:1083,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-UI_PrepareWindow,runtime_support.ahk:1086,runtime_support.ahk:1107,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-PasteChatForEpoch,runtime_support.ahk:1125,runtime_support.ahk:1146,Адаптирована,Адаптирован путь пользовательских данных/отчётов
-ChatTransport_TypingDelayOverride,runtime_support.ahk:1166,runtime_support.ahk:1187,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+SafeLayout,runtime_support.ahk:323,runtime_support.ahk:336,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ColorLuminance,runtime_support.ahk:377,runtime_support.ahk:390,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ColorContrast,runtime_support.ahk:387,runtime_support.ahk:400,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+EnsureTextContrast,runtime_support.ahk:392,runtime_support.ahk:405,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+Capture_GetEnvironment,runtime_support.ahk:406,runtime_support.ahk:419,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+Capture_Supported,runtime_support.ahk:440,runtime_support.ahk:453,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+Capture_IsOwnGui,runtime_support.ahk:445,runtime_support.ahk:458,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+Capture_InstallDialogHook,runtime_support.ahk:461,runtime_support.ahk:474,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+Capture_DialogHookProc,runtime_support.ahk:500,runtime_support.ahk:513,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+Capture_ShutdownDialogHook,runtime_support.ahk:539,runtime_support.ahk:552,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+Capture_ReadAffinity,runtime_support.ahk:567,runtime_support.ahk:580,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+Capture_AffinityMatches,runtime_support.ahk:581,runtime_support.ahk:594,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+Capture_ShouldRetry,runtime_support.ahk:586,runtime_support.ahk:599,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+Capture_BeforeShow,runtime_support.ahk:590,runtime_support.ahk:603,Адаптирована,Адаптирован путь пользовательских данных/отчётов
+Capture_ApplyWindow,runtime_support.ahk:600,runtime_support.ahk:617,Адаптирована,Адаптирован путь пользовательских данных/отчётов
+Capture_RefreshWindows,runtime_support.ahk:647,runtime_support.ahk:664,Адаптирована,Адаптирован путь пользовательских данных/отчётов
+Capture_GetDiagnosticsText,runtime_support.ahk:727,runtime_support.ahk:748,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+Settings_NormalizeViewport,runtime_support.ahk:740,runtime_support.ahk:761,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+Settings_UpdateScrollbars,runtime_support.ahk:759,runtime_support.ahk:780,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+Settings_ScrollMessage,runtime_support.ahk:781,runtime_support.ahk:802,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+Settings_MouseWheel,runtime_support.ahk:813,runtime_support.ahk:834,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+IsBindCatalogEntryEditable,runtime_support.ahk:829,runtime_support.ahk:850,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+LawSearch_CorpusFingerprint,runtime_support.ahk:835,runtime_support.ahk:856,Адаптирована,Адаптированы пути/ресурсы; тексты и алгоритмы поиска сохранены
+LawSearch_QueryFilters,runtime_support.ahk:848,runtime_support.ahk:873,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+Hotstring_AdmitPattern,runtime_support.ahk:865,runtime_support.ahk:890,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+JoinStrings,runtime_support.ahk:876,runtime_support.ahk:901,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ChatQueue_CancelBatch,runtime_support.ahk:883,runtime_support.ahk:908,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ImageDimensionsBounded,runtime_support.ahk:895,runtime_support.ahk:920,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+QueueMenu_Run,runtime_support.ahk:916,runtime_support.ahk:941,Адаптирована,"Добавлены владение вводом/паузы клавиш, приватный ввод или пассивное открытие; регрессии и native стенд. GTA/OBS требуют отдельной проверки"
+LawSearchVocabulary_Build,runtime_support.ahk:945,runtime_support.ahk:970,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+LawSearchVocabulary_Add,runtime_support.ahk:958,runtime_support.ahk:983,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+LawSearch_CorrectToken,runtime_support.ahk:964,runtime_support.ahk:989,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+SendChatForEpoch,runtime_support.ahk:982,runtime_support.ahk:1007,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+PasteOnlyForEpoch,runtime_support.ahk:988,runtime_support.ahk:1013,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+TypeChatForEpoch,runtime_support.ahk:994,runtime_support.ahk:1019,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ChatLogReader_CursorSignature,runtime_support.ahk:1009,runtime_support.ahk:1034,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+Settings_RecordExtent,runtime_support.ahk:1028,runtime_support.ahk:1053,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+Settings_ResetScroll,runtime_support.ahk:1035,runtime_support.ahk:1060,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+Settings_ActivateLayout,runtime_support.ahk:1042,runtime_support.ahk:1067,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+UI_MeasureTextHeight,runtime_support.ahk:1062,runtime_support.ahk:1087,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+UI_PrepareWindow,runtime_support.ahk:1086,runtime_support.ahk:1111,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+PasteChatForEpoch,runtime_support.ahk:1125,runtime_support.ahk:1150,Адаптирована,Адаптирован путь пользовательских данных/отчётов
+ChatTransport_TypingDelayOverride,runtime_support.ahk:1166,runtime_support.ahk:1191,Адаптирована,Адаптирован путь пользовательских данных/отчётов
 ChatTyping_DefaultCommands,chat_typing.ahk:6,chat_typing.ahk:6,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 ChatTyping_NormalizeDelay,chat_typing.ahk:10,chat_typing.ahk:10,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 ChatTyping_EffectiveDelay,chat_typing.ahk:18,chat_typing.ahk:18,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
@@ -1225,7 +1225,7 @@ ChatTyping_KeyToken,chat_typing.ahk:180,chat_typing.ahk:180,Без измене�
 ChatTyping_KeyMatchesLayout,chat_typing.ahk:191,chat_typing.ahk:191,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 ChatTyping_ActivateLayout,chat_typing.ahk:203,chat_typing.ahk:203,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 ChatTyping_WaitForChatOpen,chat_typing.ahk:217,chat_typing.ahk:217,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-SendChatTyped,chat_typing.ahk:245,chat_typing.ahk:245,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+SendChatTyped,chat_typing.ahk:245,chat_typing.ahk:245,Адаптирована,Адаптирован путь пользовательских данных/отчётов
 IDCapture_Start,id_capture.ahk:10,id_capture.ahk:10,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 IDCapture_NewState,id_capture.ahk:55,id_capture.ahk:55,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 IDCapture_NormalizeTimeout,id_capture.ahk:62,id_capture.ahk:62,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария

@@ -1,8 +1,8 @@
 ﻿Desktop integration probe
 Runtime=1.1.37.02 | Unicode=1 | PtrSize=8
-Compiled=1 | Data=Z:\workspace\.ahk-cloud\desktop\input-last-check
+Compiled=1 | Data=Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-0awyhtza\data
 No real game or OBS verification.
-INFO | startup WorkingSetMiB=53.98 PeakMiB=53.98
+INFO | startup WorkingSetMiB=53.93 PeakMiB=53.93
 PASS | compiled standalone host
 PASS | application mutex acquired
 PASS | duplicate application mutex detected
@@ -75,6 +75,9 @@ PASS | private opener key survives profile reload
 PASS | identity and binds survive profile reload
 PASS | profile save preserves unknown keys
 PASS | real queue reaches mock transport
+PASS | stop request sends both messages before following action
+PASS | stop countdown does not retain chat queue ownership
+PASS | queued action completes while stop countdown is visible
 PASS | custom function persistence
 PASS | custom function reload and parser
 PASS | 20 documents available without external laws folder
@@ -88,5 +91,5 @@ PASS | same-EXE diagnostic finishes in custom data directory
 PASS | diagnostic does not replace parent instance
 PASS | diagnostic report opens in own application GUI
 PASS | closing settings destroys its native window
-INFO | after native smoke WorkingSetMiB=68.89 PeakMiB=68.89
-Checks=85 | Failed=0
+INFO | after native smoke WorkingSetMiB=64.47 PeakMiB=68.50
+Checks=88 | Failed=0

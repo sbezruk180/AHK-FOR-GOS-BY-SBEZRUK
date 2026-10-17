@@ -16,6 +16,8 @@ PASS | F14 order includes command, menu, and RP after
 PASS | Typing delay: RP before/after are independent of command printing
 PASS | Typing delay: sequence pause remains a separate setting
 PASS | Typing delay: standalone RP sequence skips per-character interval
+PASS | Stop request: megaphone RP skips configurable character interval
+PASS | Stop request: unrelated faction commands retain configured typing speed
 PASS | F14 failed batch cancels menu and RP after
 PASS | F13 cancellation preserves active sender ownership
 PASS | F13 StopAll cancels custom runner and evidence
@@ -423,4 +425,4 @@ PASS | F24 settings fits work area
 SKIP | ANSI x86 game ABI, module enumeration and HANDLE lifecycle need Windows A32 integration
 SKIP | Real Windows GUI/DPI, OBS capture, game offsets, remote-thread stress and screenshot files require target integration
 
-Checks: 418 | Failed: 0 | Skipped integration groups: 3
+Checks: 420 | Failed: 0 | Skipped integration groups: 3

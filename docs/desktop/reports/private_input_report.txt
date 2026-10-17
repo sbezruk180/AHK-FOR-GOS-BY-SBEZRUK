@@ -18,4 +18,12 @@ PASS | privacy refusal explains why input was blocked
 PASS | paced key accepted
 PASS | paced key has at least 40ms hold
 PASS | paced key restores caller delay
-Checks=18 Failed=0 KeyHoldMs=51
+PASS | real character typing succeeds
+TypingError=
+TypedDigits=12345678901234567890
+PASS | real character typing delivers exact text
+PASS | 20 characters do not inherit menu key delays
+PASS | typing releases input ownership and restores caller delay
+SKIP | Mixed RU/US typing: Wine cannot load both layouts; digit timing uses current layout.
+Typing20CharsMs=474
+Checks=22 Failed=0 KeyHoldMs=51
