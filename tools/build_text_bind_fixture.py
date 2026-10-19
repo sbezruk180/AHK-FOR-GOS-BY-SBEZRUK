@@ -43,7 +43,7 @@ PROBE=r'''
 TextFixture_Run:
 Bind_TextCommandInput := "!t"
 TextTriggerInputMode := "Игровой чат"
-Trig_GuideSignals := "!probe"
+Trig_GuideSignals := "!сигналы"
 ApplyAllBinds()
 TextCheck("Alt+T is in actual dispatch map", HotkeyDispatchMap[NormalizeHotkeyId("!t")] = "TextCommandInput")
 SetTimer, TextFixture_ObserveInput, 25
@@ -75,7 +75,7 @@ if ((TextRussianLayout & 0xFFFF) = 0x419 && (TextEnglishLayout & 0xFFFF) = 0x409
 DllCall("ActivateKeyboardLayout", "Ptr", TextPreviousLayout, "UInt", 0)
 
 ; A real held activation chord with an open chat. Escape must not become Alt+Esc.
-TextChatOpen := 1, TextWindowSeen := 0, TextWhileAltHeld := 0, TextAltEscape := 0, TextPrivateCommand := "!пдп", TextPrivateSent := 0, TextCleanupEscSeen := 0, TextGuardChecked := 0
+TextChatOpen := 1, TextWindowSeen := 0, TextWhileAltHeld := 0, TextAltEscape := 0, TextPrivateCommand := "!сигналы", TextPrivateSent := 0, TextCleanupEscSeen := 0, TextGuardChecked := 0
 CloseAllDocs()
 current_doc := 0
 TextEscAddress := RegisterCallback("TextFixture_EscapeObserver", "Fast", 3)
@@ -93,16 +93,16 @@ DllCall("GlobalFree", "Ptr", TextEscAddress)
 TextCheck("private window is visible while activation Alt is held", TextWhileAltHeld)
 TextCheck("open-chat cleanup never sends Alt+Escape", !TextAltEscape)
 TextCheck("held activation keeps foreground and releases input", WinActive("ahk_id " . TextTargetHwnd) && !PrivateTextInputBusy && !PhysicalInputBusy)
-TextCheck("open-chat activation accepts a command after releasing Alt", TextFixture_WaitDoc(22) && TextPrivateSent)
+TextCheck("open-chat activation accepts a command after releasing Alt", TextFixture_WaitDoc(21) && TextPrivateSent)
 TextCheck("chat cleanup runs before capture under input ownership", TextCleanupEscSeen)
 TextChatOpen := 0, TextPrivateCommand := ""
 CloseAllDocs()
 current_doc := 0
-TextFixture_Type("!probe")
+TextFixture_Type("!сигналы")
 TextCheck("chat command waits for Space", current_doc = 0)
 TextFixture_Type(" ")
 TextCheck("registered chat command dispatches on Space", TextFixture_WaitDoc(21))
-for _, item in [{Text: "!пдп", Doc: 22}, {Text: "!pdp", Doc: 22}, {Text: "!glg", Doc: 22}, {Text: "!svu", Doc: 23}, {Text: "!cde", Doc: 23}, {Text: "!signals", Doc: 21}] {
+for _, item in [{Text: "!сигналы", Doc: 21}, {Text: "!signals", Doc: 21}, {Text: "!cbuyfks", Doc: 21}, {Text: "!ышптфды", Doc: 21}] {
     CloseAllDocs()
     current_doc := 0
     TextFixture_Type(item.Text . " ")
@@ -111,7 +111,7 @@ for _, item in [{Text: "!пдп", Doc: 22}, {Text: "!pdp", Doc: 22}, {Text: "!gl
 CloseAllDocs()
 current_doc := 0
 TextTriggerInputMode := "Окно AHK"
-TextFixture_Type("!pdp ")
+TextFixture_Type("!signals ")
 TextCheck("private-only mode preserves chat suppression", current_doc = 0)
 TextWindowSeen := 0
 SetTimer, TextFixture_ObserveInput, 25
@@ -147,7 +147,7 @@ ForceCloseBindMenuEditMode("")
 TextTriggerInputMode := "Окно AHK"
 ; Type through the actual passive InputHook, not only the pure resolver.
 if (!HasCommandLineArg("--baseline")) {
-for _, command in ["!pdp", "!glg"] {
+for _, command in ["!signals", "!cbuyfks"] {
     CloseAllDocs()
     current_doc := 0
     ControlGetText, beforePrivate, , ahk_id %TextTargetEdit%
@@ -159,28 +159,28 @@ for _, command in ["!pdp", "!glg"] {
     Sleep, 500
     SetTimer, TextFixture_ObserveInput, Off
     ControlGetText, afterPrivate, , ahk_id %TextTargetEdit%
-    TextCheck("private hook dispatches alias " . command, TextFixture_WaitDoc(22) && TextPrivateSent)
+    TextCheck("private hook dispatches alias " . command, TextFixture_WaitDoc(21) && TextPrivateSent)
     TextCheck("private alias never reaches foreground edit " . command, beforePrivate == afterPrivate)
     TextCheck("private alias releases ownership " . command, !ServiceUI_IsInputActive() && !PrivateTextInputBusy && !PhysicalInputBusy)
 }
 }
 TextPrivateCommand := ""
 TextTriggerInputMode := "Игровой чат"
-Trig_GuidePDP := "!medic"
-Trig_GuideSVU := "!pdp"
+Trig_GuideSignals := "!medic"
+Trig_UK := "!signals"
 ApplyAllBinds()
 CloseAllDocs()
 current_doc := 0
-TextFixture_Type("!glg ")
+TextFixture_Type("!cbuyfks ")
 TextCheck("profile rebind removes the old layout alias", current_doc = 0)
-TextFixture_Type("!pdp ")
-TextCheck("explicit command wins over an optional English alias", TextFixture_WaitDoc(23))
-action := PrivateText_Resolve("!pdp")
-TextCheck("private resolver uses the same explicit-command precedence", IsObject(action) && action.Token = "GuideSVU")
+TextFixture_Type("!signals ")
+TextCheck("explicit command wins over an optional English alias", TextFixture_WaitDoc(8))
+action := PrivateText_Resolve("!signals")
+TextCheck("private resolver uses the same explicit-command precedence", IsObject(action) && action.Token = "UK")
 CloseAllDocs()
 current_doc := 0
 TextFixture_Type("!medic ")
-TextCheck("new configured command works after re-registration", TextFixture_WaitDoc(22))
+TextCheck("new configured command works after re-registration", TextFixture_WaitDoc(21))
 FileDelete, %A_ScriptDir%\text_bind_report.txt
 TextReport .= "Checks=" . TextChecks . " | Failed=" . TextFailures . "`r`n"
 FileAppend, %TextReport%, %A_ScriptDir%\text_bind_report.txt, UTF-8
@@ -259,5 +259,8 @@ def main():
  bootstrap=(root/'app/bootstrap.ahk').read_text('cp1251');assert src.count(bootstrap)==1;src=src.replace(bootstrap,BOOT)
  for name,replacement in [('isInChat','isInChat() {\n    global TextChatOpen\n    return TextChatOpen ; no game-memory read\n}'),('Capture_ApplyWindow','Capture_ApplyWindow(hwnd, environment := "") {\n    return true ; capture API seam, not OBS verification\n}')]:
   matches=[(x,y) for n,x,y,_ in functions(src) if n==name];assert len(matches)==1;x,y=matches[0];src=src[:x]+replacement+src[y:]
- out.parent.mkdir(parents=True,exist_ok=True);out.write_text(src+'\n'+PROBE,encoding='utf-8-sig');print(out)
+ out.parent.mkdir(parents=True,exist_ok=True)
+ import shutil
+ shutil.copytree(root/'laws',out.parent/'laws',dirs_exist_ok=True)
+ out.write_text(src+'\n'+PROBE,encoding='utf-8-sig');print(out)
 if __name__=='__main__':main()

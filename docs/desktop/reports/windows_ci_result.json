@@ -1,25 +1,10 @@
 {
-  "workflow": "Standalone Windows EXE",
-  "run_id": "39222461987",
-  "url": "https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK/actions/runs/39222461987",
-  "job_url": "https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK/actions/runs/39222461987/job/117960749008",
-  "commit": "2046bf4f0cc847540519d0789f9645f8b3c2b968",
-  "conclusion": "SUCCESS",
-  "release_exe_sha256": "62f7fbf611ce600563852fb9d53114b76603b61e77c428076fd04cf35ffb325f",
-  "verified": [
-    "native Windows build and PE/source validation",
-    "shipped ANSI x86 EXE boot and embedded-resource probe",
-    "native Windows GUI / profile / reference-guide compatibility in U64 test host",
-    "previous law edition recognition and custom override precedence",
-    "native private TXT, character typing and paced menu input fixture",
-    "new full-application chat commands, Alt+T and English aliases fixture",
-    "native GPS / Win32 menu / ownership / cancellation fixture"
-  ],
-  "fixture_note": "The full GUI uses an explicitly marked Unicode x64 test host. Game/chat status, memory transport and capture API are explicit seams in native fixtures. The hosted non-1251 ACP does not establish native Cyrillic ANSI game compatibility; ACP1251 cloud regressions and fixture skips are recorded separately. RU/US keyboard checks run only when both layouts load.",
+  "conclusion": "PENDING",
+  "scope": "signals, builder, GPS dialog readiness",
+  "previous_result": "windows_ci_text_repair_2026-10-19.json",
   "not_claimed": [
-    "real GTA / Amazing ABI or commands",
-    "actual OBS frames",
-    "exclusive Direct3D fullscreen",
-    "native Cyrillic ANSI regressions on non-1251 hosted Windows ACP"
+    "real Amazing client and dialog offsets",
+    "OBS frames",
+    "TXT refusal resolved"
   ]
 }

@@ -1271,8 +1271,6 @@ GetBoundLabelByToken(token) {
         labelMap["AssistDrugs"] := "DoAssistDrugs"
         labelMap["AssistPDPCuff"] := "DoAssistPDPCuff"
         labelMap["GuideSignals"] := "DoGuideSignals"
-        labelMap["GuidePDP"] := "DoGuidePDP"
-        labelMap["GuideSVU"] := "DoGuideSVU"
         labelMap["VU"] := "DoToggleVU"
         labelMap["FP"] := "DoToggleFP"
         labelMap["KON"] := "DoToggleKON"
@@ -1464,8 +1462,6 @@ GetBindCatalog() {
     catalog.Push({Token: "GpsD", Label: "GPS Д", Category: "Транспорт / прочее", HotkeyVar: "", TriggerVar: "Trig_GpsD"})
     catalog.Push({Token: "GpsOS", Label: "GPS ОС", Category: "Транспорт / прочее", HotkeyVar: "", TriggerVar: "Trig_GpsOS"})
     catalog.Push({Token: "GuideSignals", Label: "Сигналы СО", Category: "Документы", HotkeyVar: "Bind_GuideSignals", TriggerVar: "Trig_GuideSignals", Hint: "Справочное окно; PgUp / PgDn — листать"})
-    catalog.Push({Token: "GuidePDP", Label: "ПДП · RP-памятка", Category: "Документы", HotkeyVar: "Bind_GuidePDP", TriggerVar: "Trig_GuidePDP", Hint: "Справочное окно; PgUp / PgDn — листать"})
-    catalog.Push({Token: "GuideSVU", Label: "СВУ · RP-памятка", Category: "Документы", HotkeyVar: "Bind_GuideSVU", TriggerVar: "Trig_GuideSVU", Hint: "Справочное окно; PgUp / PgDn — листать"})
     catalog.Push({Token: "VU", Label: "ВУ", Category: "Документы", HotkeyVar: "", TriggerVar: "Trig_VU"})
     catalog.Push({Token: "FP", Label: "ФП", Category: "Документы", HotkeyVar: "", TriggerVar: "Trig_FP"})
     catalog.Push({Token: "KON", Label: "Конст.", Category: "Документы", HotkeyVar: "", TriggerVar: "Trig_KON"})

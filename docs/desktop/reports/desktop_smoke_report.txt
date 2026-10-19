@@ -1,8 +1,8 @@
 ﻿Desktop integration probe
 Runtime=1.1.37.02 | Unicode=1 | PtrSize=8
-Compiled=1 | Data=Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-lnwjjxhc\data
+Compiled=1 | Data=Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-cfx53dvs\data
 No real game or OBS verification.
-INFO | startup WorkingSetMiB=54.66 PeakMiB=54.66
+INFO | startup WorkingSetMiB=54.61 PeakMiB=54.61
 PASS | compiled standalone host
 PASS | application mutex acquired
 PASS | duplicate application mutex detected
@@ -88,16 +88,6 @@ PASS | guide keeps foreground and capture registration GuideSignals
 PASS | every guide page renders and next wraps GuideSignals
 PASS | guide previous wraps GuideSignals
 PASS | same guide command closes viewer GuideSignals
-PASS | reference guide opens GuidePDP
-PASS | guide keeps foreground and capture registration GuidePDP
-PASS | every guide page renders and next wraps GuidePDP
-PASS | guide previous wraps GuidePDP
-PASS | same guide command closes viewer GuidePDP
-PASS | reference guide opens GuideSVU
-PASS | guide keeps foreground and capture registration GuideSVU
-PASS | every guide page renders and next wraps GuideSVU
-PASS | guide previous wraps GuideSVU
-PASS | same guide command closes viewer GuideSVU
 PASS | law search result fixture opens
 PASS | guide takes page navigation from an open law search
 PASS | guide can switch to law
@@ -108,6 +98,16 @@ PASS | last-document key reopens reference guide
 PASS | guides never enqueue chat messages
 PASS | guide configuration saves atomically
 PASS | guide TXT and hotkeys survive profile reload
+PASS | builder opens native editor
+PASS | builder inserts step at selection without losing following lines
+PASS | builder native undo restores source
+PASS | builder check rejects an invalid step
+PASS | builder check accepts valid editor contents
+PASS | builder preview opens own details window
+PASS | builder preview cannot run the script
+PASS | builder duplicate includes unsaved script
+PASS | builder duplicate avoids bind conflicts
+PASS | builder copy survives INI reload
 PASS | auto ID updates existing native confirmation
 PASS | confirmation applies the displayed ID
 PASS | confirmation decline preserves selection
@@ -117,5 +117,5 @@ PASS | same-EXE diagnostic finishes in custom data directory
 PASS | diagnostic does not replace parent instance
 PASS | diagnostic report opens in own application GUI
 PASS | closing settings destroys its native window
-INFO | after native smoke WorkingSetMiB=252.52 PeakMiB=252.52
+INFO | after native smoke WorkingSetMiB=241.07 PeakMiB=245.00
 Checks=114 | Failed=0

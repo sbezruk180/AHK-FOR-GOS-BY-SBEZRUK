@@ -14,26 +14,24 @@ PASS | open-chat activation accepts a command after releasing Alt
 PASS | chat cleanup runs before capture under input ownership
 PASS | chat command waits for Space
 PASS | registered chat command dispatches on Space
-PASS | chat alias opens its guide !пдп
-PASS | chat alias opens its guide !pdp
-PASS | chat alias opens its guide !glg
-PASS | chat alias opens its guide !svu
-PASS | chat alias opens its guide !cde
+PASS | chat alias opens its guide !сигналы
 PASS | chat alias opens its guide !signals
+PASS | chat alias opens its guide !cbuyfks
+PASS | chat alias opens its guide !ышптфды
 PASS | private-only mode preserves chat suppression
 PASS | Alt+T also opens in private-only mode
 PASS | private opener alias works independently of chat mode !bind
 PASS | private opener alias works independently of chat mode !,byl
 PASS | Alt+T remains available while editing binds
 PASS | chat close-menu command remains registered while editing
-PASS | private hook dispatches alias !pdp
-PASS | private alias never reaches foreground edit !pdp
-PASS | private alias releases ownership !pdp
-PASS | private hook dispatches alias !glg
-PASS | private alias never reaches foreground edit !glg
-PASS | private alias releases ownership !glg
+PASS | private hook dispatches alias !signals
+PASS | private alias never reaches foreground edit !signals
+PASS | private alias releases ownership !signals
+PASS | private hook dispatches alias !cbuyfks
+PASS | private alias never reaches foreground edit !cbuyfks
+PASS | private alias releases ownership !cbuyfks
 PASS | profile rebind removes the old layout alias
 PASS | explicit command wins over an optional English alias
 PASS | private resolver uses the same explicit-command precedence
 PASS | new configured command works after re-registration
-Checks=35 | Failed=0
+Checks=33 | Failed=0

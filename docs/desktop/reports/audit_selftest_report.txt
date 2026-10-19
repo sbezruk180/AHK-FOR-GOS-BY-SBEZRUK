@@ -431,29 +431,25 @@ PASS | Logic: a full queue never accepts just the mask-call prefix
 PASS | Logic: a rejected stop request cannot start a countdown
 PASS | Logic: queued stop request waits for delivery before countdown
 PASS | Logic: first delivered stop request starts the 15-second countdown
-PASS | Guides: three separate reference documents
+PASS | Guides: only requested signals remain
 PASS | Guides: server timetable and 20-30 minute gathering windows
+PASS | Guides: exactly two supplied department reports
 PASS | Guides: private TXT dispatch GuideSignals
 PASS | Guides: pagination preserves all scenario text 21
-PASS | Guides: private TXT dispatch GuidePDP
-PASS | Guides: pagination preserves all scenario text 22
-PASS | Guides: private TXT dispatch GuideSVU
-PASS | Guides: pagination preserves all scenario text 23
 PASS | Guides: invalid ID has no pages
+PASS | Builder: preview lists actions, pauses and timers
+PASS | Builder: preview shows unreachable steps after STOP
+PASS | Builder: preview reports invalid source line
+PASS | Builder: preview has no runtime or queue effects
 PASS | TXT keyboard mapping !Ô‰Ô
 PASS | TXT keyboard mapping !Ò‚Û
 PASS | TXT keyboard mapping !ÒË„Ì‡Î˚
 PASS | TXT keyboard mapping !ÔÂ‰ÒÚ
 PASS | TXT keyboard mapping !bind
-PASS | TXT aliases share PDP action !pdp
-PASS | TXT aliases share PDP action !glg
-PASS | TXT aliases share PDP action !œƒœ
-PASS | TXT English/layout route !svu
-PASS | TXT English/layout route !cde
-PASS | TXT English/layout route !signals
-PASS | TXT English/layout route !cbuyfks
-PASS | TXT English/layout route !intro
-PASS | TXT English/layout route !ghtlcn
+PASS | TXT aliases share signals action !signals
+PASS | TXT aliases share signals action !cbuyfks
+PASS | TXT aliases share signals action !—»√Õ¿À€
+PASS | TXT removed guides have no automatic routes
 PASS | TXT English GPS preserves the number
 PASS | TXT keyboard-layout GPS preserves the number
 PASS | TXT English law search preserves mode
@@ -483,4 +479,4 @@ PASS | F24 settings fits work area
 SKIP | ANSI x86 game ABI, module enumeration and HANDLE lifecycle need Windows A32 integration
 SKIP | Real Windows GUI/DPI, OBS capture, game offsets, remote-thread stress and screenshot files require target integration
 
-Checks: 478 | Failed: 0 | Skipped integration groups: 3
+Checks: 474 | Failed: 0 | Skipped integration groups: 3

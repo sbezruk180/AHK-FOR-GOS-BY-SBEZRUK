@@ -16,4 +16,8 @@ TRACE | GPS | Остановлено: выбор пункта; поколени�
 PASS | cancellation during real scrolling stops GPS
 PASS | cancelled GPS does not enter number or finish scroll
 PASS | cancelled GPS releases all ownership
-Checks=14 Failed=0
+PASS | GPS waits for a delayed server dialog
+TRACE | GPS | Остановлено: ожидание списка GPS (до 5 сек.); поколение 12. Повтор /gps не выполнялся.
+PASS | unexpected dialog stops without navigation or number
+PASS | dialog timeout releases ownership
+Checks=17 Failed=0

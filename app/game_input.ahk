@@ -53,7 +53,7 @@ GameMenu_Prepare(reservation) {
     }
 }
 
-GameMenu_SendCommand(reservation, command, settleMs := 650) {
+GameMenu_SendCommand(reservation, command, settleMs := 650, verifyChatClosed := true) {
     global GameMenuLease
     if !GameMenu_ReservationIsCurrent(reservation)
         return false
@@ -64,7 +64,7 @@ GameMenu_SendCommand(reservation, command, settleMs := 650) {
     lease := GameMenu_Acquire(reservation.Epoch)
     if !IsObject(lease)
         return false
-    return GameMenu_WaitChatClosed(lease) && GameMenu_Wait(lease, settleMs) ? lease : false
+    return (!verifyChatClosed || GameMenu_WaitChatClosed(lease)) && GameMenu_Wait(lease, settleMs) ? lease : false
 }
 
 GameMenu_Close(reservation) {
@@ -232,6 +232,40 @@ GameUi_ShouldShowPassive() {
         SysGet, bounds, Monitor, %A_Index%
         if (x <= boundsLeft + 8 && y <= boundsTop + 8 && x + w >= boundsRight - 8 && y + h >= boundsBottom - 8)
             return true
+    }
+    return false
+}
+
+; The dialog pointer is already used by this project's R3/Amazing showDialog.
+; Read-only observation: reject unreadable or incoherent layout values.
+GameDialog_ReadState() {
+    if !checkReadHandles()
+        return ""
+    pointer := readDWORD(hGTA, dwSAMP + 0x26E898)
+    if (ErrorLevel || !IsLikelyPointer(pointer))
+        return ""
+    active := readDWORD(hGTA, pointer + 0x28)
+    if (ErrorLevel || (active != 0 && active != 1))
+        return ""
+    style := readDWORD(hGTA, pointer + 0x2C)
+    if (ErrorLevel || style > 5)
+        return ""
+    return {Active: active, Style: style}
+}
+
+GameDialog_Wait(lease, kind, timeoutMs := 5000) {
+    if (MockMode = "On" || AuditTestMode)
+        return GameMenu_IsCurrent(lease)
+    started := TickNow(), stable := 0
+    while (TickNow() - started < timeoutMs) {
+        if !GameMenu_IsCurrent(lease)
+            return false
+        state := GameDialog_ReadState()
+        matches := IsObject(state) && state.Active && (kind = "list" ? (state.Style = 2 || state.Style = 4 || state.Style = 5) : state.Style = 1)
+        stable := matches ? stable + 1 : 0
+        if (stable >= 3)
+            return true
+        Sleep, 40
     }
     return false
 }

@@ -154,6 +154,7 @@ DesktopSmoke_Run() {
         DesktopSmoke_Assert("native legislation viewer opens", current_doc = 5)
         CloseAllDocs()
         Guide_RunDesktopChecks()
+        CustomBuilder_RunDesktopChecks()
         AutoTargetOfferedKey := ""
         AutoTargetID_RequestConfirmation(42, 0x200000, -1, "desktop-smoke", "First_Player")
         promptWindow := hContextAssistantWnd

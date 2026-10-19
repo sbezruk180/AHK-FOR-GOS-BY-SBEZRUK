@@ -45,6 +45,7 @@ AppHost_Init()
 #Include %A_ScriptDir%\tests\logic_audit_regression.ahk
 #Include %A_ScriptDir%\tests\reference_guides_regression.ahk
 #Include %A_ScriptDir%\tests\text_commands_regression.ahk
+#Include %A_ScriptDir%\tests\custom_builder_regression.ahk
 #Include %A_ScriptDir%\tests\audit_regression.ahk
 ; Canonical helper is included once; no embedded duplicate.
 #Include %A_ScriptDir%\helper.ahk
