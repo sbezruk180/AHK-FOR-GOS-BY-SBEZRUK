@@ -480,7 +480,7 @@ RunSelfTestV1() {
     SelfTest_Add(report, "High", "!коды reuses legislation GUI"
         , InStr(serviceCodesSection, "LawGui_" . "Show(1, ""Служебные коды""")
             && InStr(serviceCodesLabelSection, "Helper_CloseChatAfterGui()")
-            && InStr(mainText, "#If (Service" . "CodesGuiVisible)"))
+            && InStr(mainText, "#If (Service" . "CodesGuiVisible || current_doc >= 21)"))
 
     allCode := mainText
     SelfTest_Add(report, "Critical", "balanced code braces", V1_BraceBalance(allCode) = 0
@@ -615,29 +615,29 @@ RunSelfTestV1() {
         && (TerritoryMapMode_FromUiLabel("Официальные ссылки") = "Forum")
         && InStr(mainText, "CFG_TerritoryMapMode")
         && InStr(mainText, "MigrateV12Configuration("))
-    SelfTest_Add(report, "Critical", "current KOAP article 17.5 is present"
-        , InStr(LawCorpus_GetText("koap"), "Статья 17.5. Нарушение масочного режима"))
+    SelfTest_Add(report, "Critical", "current KOAP article 17.4 is present"
+        , InStr(LawCorpus_GetText("koap"), "Статья 17.4. Распитие спиртных напитков в общественных местах"))
     SelfTest_Add(report, "Critical", "current VU point 3.20 is present"
         , InStr(LawCorpus_GetText("vu"), "3.20 Сотрудники специализированных подразделений"))
-    SelfTest_Add(report, "Critical", "current TER access additions are present"
-        , InStr(LawCorpus_GetText("ter"), "6. начальник Главного управления Министерства внутренних дел")
-        && InStr(LawCorpus_GetText("ter"), "11) начальник Главного управления Министерства внутренних дел"))
-    SelfTest_Add(report, "Critical", "current TER one/two-demand rule is present"
-        , InStr(LawCorpus_GetText("ter"), "одно законное требование покинуть территорию")
-        && InStr(LawCorpus_GetText("ter"), "двух законных требований покинуть территорию с интервалом 10 секунд"))
+    SelfTest_Add(report, "Critical", "current TER service-territory definitions are present"
+        , InStr(LawCorpus_GetText("ter"), "Статья 15. Понятие служебной территории")
+        && InStr(LawCorpus_GetText("ter"), "Статья 18. Перечень служебных территорий"))
+    SelfTest_Add(report, "Critical", "current TER colony access rule is present"
+        , InStr(LawCorpus_GetText("ter"), "На территории желтой зоны вправе находиться лица, недавно освободившиеся")
+        && InStr(LawCorpus_GetText("ter"), "Статья 13. Права сотрудников органов внутренних дел"))
     SelfTest_Add(report, "Critical", "deleted FZOP article 8 point 10 is absent"
         , LawSearch_CheckNoResults("ФЗОП статья 8 пункт 10", "ALL"))
     SelfTest_Add(report, "High", "dynamic corpus pagination replaces fixed summaries"
         , SelfTest_CorpusPagesComplete() && IsFunc("LawDoc_ShowPage") && IsFunc("LawDoc_GetCurrentPage"))
     SelfTest_Add(report, "High", "law exact and compact references"
-        , LawSearch_CheckExpected("ФЗОТОД гл. 3 ст. 9.2 ч. 2", "ALL", "TER", "9.2", "2", 3)
-        && LawSearch_CheckExpected("ФЗОТОД гл3 ст9.2 ч2", "ALL", "TER", "9.2", "2", 3))
+        , LawSearch_CheckExpected("ФЗОТОД гл. 3 ст. 12 ч. 2", "ALL", "TER", "12", "2", 3)
+        && LawSearch_CheckExpected("ФЗОТОД гл3 ст12 ч2", "ALL", "TER", "12", "2", 3))
     SelfTest_Add(report, "High", "law natural query, word forms and permutation"
-        , LawSearch_CheckExpected("кто считается сотрудником полиции", "ALL", "FZOP", "17", "1", 5)
-        && LawSearch_CheckExpected("сотрудника полиции", "ALL", "FZOP", "17", "1", 5)
-        && LawSearch_CheckExpected("полиции сотрудник", "ALL", "FZOP", "17", "1", 5))
+        , LawSearch_CheckExpected("кто считается сотрудником полиции", "ALL", "FZOP", "22", "1", 5)
+        && LawSearch_CheckExpected("сотрудника полиции", "ALL", "FZOP", "22", "1", 5)
+        && LawSearch_CheckExpected("полиции сотрудник", "ALL", "FZOP", "22", "1", 5))
     SelfTest_Add(report, "High", "law bounded typo and negative example"
-        , LawSearch_CheckExpected("сотрудник полицеи", "ALL", "FZOP", "17", "1", 5)
+        , LawSearch_CheckExpected("сотрудник полицеи", "ALL", "FZOP", "22", "1", 5)
         && LawSearch_CheckNoResults("квазиплазменный телепортатор", "ALL"))
     searchPackage := LawSearch_Find("ALL", "сотрудник", 99)
     SelfTest_Add(report, "High", "law results cap at 30 and retain total count"
@@ -1389,15 +1389,15 @@ RunLawSearchRegression() {
     checks.Push(["all documents/pages/headings indexed", audit.Ok])
     checks.Push(["official corpus 20/20", corpusAudit.Ok && corpusAudit.Documents = 20])
     checks.Push(["territory map catalog and official URLs", SelfTest_MapCatalogValid()])
-    checks.Push(["exact reference", LawSearch_CheckExpected("ФЗОТОД гл. 3 ст. 9.2 ч. 2", "ALL", "TER", "9.2", "2", 3)])
-    checks.Push(["compact reference", LawSearch_CheckExpected("ФЗОТОД гл3 ст9.2 ч2", "ALL", "TER", "9.2", "2", 3)])
-    checks.Push(["natural query", LawSearch_CheckExpected("кто считается сотрудником полиции", "ALL", "FZOP", "17", "1", 5)])
-    checks.Push(["word permutation", LawSearch_CheckExpected("полиции сотрудник", "ALL", "FZOP", "17", "1", 5)])
-    checks.Push(["word form", LawSearch_CheckExpected("сотрудника полиции", "ALL", "FZOP", "17", "1", 5)])
-    checks.Push(["bounded typo", LawSearch_CheckExpected("сотрудник полицеи", "ALL", "FZOP", "17", "1", 5)])
+    checks.Push(["exact reference", LawSearch_CheckExpected("ФЗОТОД гл. 3 ст. 12 ч. 2", "ALL", "TER", "12", "2", 3)])
+    checks.Push(["compact reference", LawSearch_CheckExpected("ФЗОТОД гл3 ст12 ч2", "ALL", "TER", "12", "2", 3)])
+    checks.Push(["natural query", LawSearch_CheckExpected("кто считается сотрудником полиции", "ALL", "FZOP", "22", "1", 5)])
+    checks.Push(["word permutation", LawSearch_CheckExpected("полиции сотрудник", "ALL", "FZOP", "22", "1", 5)])
+    checks.Push(["word form", LawSearch_CheckExpected("сотрудника полиции", "ALL", "FZOP", "22", "1", 5)])
+    checks.Push(["bounded typo", LawSearch_CheckExpected("сотрудник полицеи", "ALL", "FZOP", "22", "1", 5)])
     checks.Push(["negative query", LawSearch_CheckNoResults("квазиплазменный телепортатор", "ALL")])
     checks.Push(["KAS article reference", LawSearch_CheckExpected("КАС статья 1", "ALL", "KAS", "1", "", 5)])
-    checks.Push(["current KOAP 17.5", LawSearch_CheckExpected("КоАП статья 17.5", "ALL", "KOAP", "17.5", "", 3)])
+    checks.Push(["current KOAP 17.4", LawSearch_CheckExpected("КоАП статья 17.4", "ALL", "KOAP", "17.4", "", 3)])
     checks.Push(["current KAS 135", LawSearch_CheckExpected("КАС статья 135", "ALL", "KAS", "135", "", 3)])
     checks.Push(["deleted FZOP 8.10 absent", LawSearch_CheckNoResults("ФЗОП статья 8 пункт 10", "ALL")])
     checks.Push(["dynamic full-document pages preserve every character", SelfTest_CorpusPagesComplete()])

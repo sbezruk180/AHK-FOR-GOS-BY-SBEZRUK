@@ -57,7 +57,7 @@ GuiReviewFixture_Tick() {
         return
     GuiReviewFixtureLastPhase := phase
     try {
-        if !InStr("|profile|safety|appearance|documents|builder|law|service|idcapture|autoid|bindlist|hud|exit|", "|" . phase . "|") {
+        if !InStr("|profile|safety|appearance|documents|builder|law|service|idcapture|autoid|bindlist|hud|guide-signals|guide-pdp|guide-svu|exit|", "|" . phase . "|") {
             GuiReviewFixture_Log("ERROR unknown phase: " . phase)
             return
         }
@@ -90,6 +90,14 @@ GuiReviewFixture_Tick() {
             CloseAllDocs()
             current_doc := 0
             ToggleLawDoc(5, "flter1", "ter1")
+        } else if (phase = "guide-signals" || phase = "guide-pdp" || phase = "guide-svu") {
+            id := phase = "guide-signals" ? 21 : (phase = "guide-pdp" ? 22 : 23)
+            current_doc := 0
+            Guide_Toggle(id)
+            if (id = 22)
+                Guide_ShowPage(id, 4)
+            else if (id = 23)
+                Guide_ShowPage(id, 2)
         } else if (phase = "service") {
             ServiceUI_ShowDetails("Диагностика и сведения", "AHK FOR GOS`r`n`r`nСведения отображаются в отдельном окне.`r`nНастройки и пользовательские профили сохраняются между запусками.`r`n`r`nЭто пример текста для визуальной проверки интерфейса.", true)
         } else if (phase = "idcapture") {
@@ -173,7 +181,7 @@ def main() -> None:
     except (OSError, ValueError) as error:
         parser.exit(2, f"error: {error}\n")
     print(target)
-    print("Phases: profile safety appearance documents builder law service idcapture autoid bindlist hud exit")
+    print("Phases: profile safety appearance documents builder law service idcapture autoid bindlist hud guide-signals guide-pdp guide-svu exit")
     print("Run with --ui-preview --data-dir WINDOWS_ABSOLUTE_DISPOSABLE_PATH; write phase.txt to switch.")
 
 

@@ -29,6 +29,7 @@ AppHost_Init()
 #Include %A_ScriptDir%\service_ui.ahk
 #Include %A_ScriptDir%\app\game_input.ahk
 #Include %A_ScriptDir%\app\private_text.ahk
+#Include %A_ScriptDir%\app\reference_guides.ahk
 #Include %A_ScriptDir%\ui_style.ahk
 #Include %A_ScriptDir%\tests\chat_typing_regression.ahk
 #Include %A_ScriptDir%\tests\chat_state_regression.ahk
@@ -41,6 +42,7 @@ AppHost_Init()
 #Include %A_ScriptDir%\tests\desktop_host_regression.ahk
 #Include %A_ScriptDir%\tests\desktop_smoke.ahk
 #Include %A_ScriptDir%\tests\logic_audit_regression.ahk
+#Include %A_ScriptDir%\tests\reference_guides_regression.ahk
 #Include %A_ScriptDir%\tests\audit_regression.ahk
 ; Canonical helper is included once; no embedded duplicate.
 #Include %A_ScriptDir%\helper.ahk

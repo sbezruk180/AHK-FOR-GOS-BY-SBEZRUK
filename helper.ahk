@@ -35,19 +35,19 @@ LawCorpus_SourceUrl(code)
         urls := {}
         urls["VU"] := "https://forum.amazing-online.com/threads/vnutrennij-ustav-organov-vnutrennix-del.1027775/"
         urls["FP"] := "https://forum.amazing-online.com/threads/federalnoe-postanovlenie.1027639/"
-        urls["KON"] := "https://forum.amazing-online.com/threads/konstitucija-nizhegorodskoj-oblasti.1031535/"
-        urls["FZOP"] := "https://forum.amazing-online.com/threads/federalnyj-zakon-o-policii.1027651/"
-        urls["TER"] := "https://forum.amazing-online.com/threads/federalnyj-zakon-o-territorijax-s-ogranichennym-dostupom.1027655/"
+        urls["KON"] := "https://forum.amazing-online.com/threads/konstitucija.1173861/"
+        urls["FZOP"] := "https://forum.amazing-online.com/threads/federalnyj-zakon-o-policii-ot-25-09-2026-n-1-fz.1173911/"
+        urls["TER"] := "https://forum.amazing-online.com/threads/federalnyj-zakon-o-sluzhebnyx-i-oxranjaemyx-territorijax-ot-28-09-2026-n-3-fz.1174756/"
         urls["TK"] := "https://forum.amazing-online.com/threads/trudovoj-kodeks.1027657/"
         urls["ARG"] := "https://forum.amazing-online.com/threads/administrativnyj-reglament-gai.1027781/"
         urls["UK"] := "https://forum.amazing-online.com/threads/ugolovnyj-kodeks.1027637/"
         urls["VV"] := "https://forum.amazing-online.com/threads/federalnyj-konstitucionnyj-zakon-o-vertikali-vlasti.1027656/"
         urls["KOAP"] := "https://forum.amazing-online.com/threads/kodeks-ob-administrativnyx-pravonarushenijax.1027635/"
         urls["PDD"] := "https://forum.amazing-online.com/threads/pravila-dorozhnogo-dvizhenija.1027642/"
-        urls["ORUZH"] := "https://forum.amazing-online.com/threads/federalnyj-zakon-ob-oruzhii.1027647/"
+        urls["ORUZH"] := "https://forum.amazing-online.com/threads/federalnyj-zakon-ob-oruzhii-ot-27-09-2026-n-2-fz.1174460/"
         urls["UPK"] := "https://forum.amazing-online.com/threads/ugolovno-processualnyj-kodeks.1033497/"
         urls["KAS"] := "https://forum.amazing-online.com/threads/kodeks-administrativnogo-sudoproizvodstva.1033501/"
-        urls["FSB"] := "https://forum.amazing-online.com/threads/federalnyj-zakon-o-federalnoj-sluzhbe-bezopasnosti.1027654/"
+        urls["FSB"] := "https://forum.amazing-online.com/threads/federalnyj-zakon-o-federalnoj-sluzhbe-bezopasnosti-ot-08-10-2026-n-6-fz.1175706/"
         urls["FSIN"] := "https://forum.amazing-online.com/threads/federalnyj-zakon-o-federalnoj-sluzhbe-ispolnenija-nakazanij.1027649/"
         urls["VS"] := "https://forum.amazing-online.com/threads/federalnyj-zakon-o-voennoj-sluzhbe.1052585/"
         urls["SUD"] := "https://forum.amazing-online.com/threads/federalnyj-konstitucionnyj-zakon-o-sudebnoj-sisteme-i-statuse-sudej.1035855/"
@@ -259,11 +259,11 @@ TerritoryMap_GetCatalog()
     if IsObject(catalog)
         return catalog
 
-    threadUrl := "https://forum.amazing-online.com/threads/federalnyj-zakon-o-territorijax-s-ogranichennym-dostupom.1027655"
-    ; Direct /post-N links are more reliable for ShellExecute than fragment-only URLs.
-    p1 := threadUrl . "/post-7449695"
-    p2 := threadUrl . "/post-7449696"
-    p3 := threadUrl . "/post-8194412"
+    threadUrl := LawCorpus_SourceUrl("TER")
+    ; New edition: attachment references were supplied, but no new local images.
+    p1 := threadUrl
+    p2 := threadUrl
+    p3 := threadUrl
     catalog := []
     catalog.Push({Id: "military_base", Name: "Красная зона воинской части", Files: "ter_01_military_base.jpg", ForumUrl: p1})
     catalog.Push({Id: "aircraft_carrier", Name: "Военный авианосец", Files: "ter_02_aircraft_carrier.jpg", ForumUrl: p1})
@@ -282,7 +282,7 @@ TerritoryMap_GetCatalog()
 TerritoryMap_GetModeDisplay()
 {
     global TerritoryMapMode
-    return (TerritoryMapMode = "Forum") ? "Официальные ссылки форума" : "Локальные копии"
+    return (TerritoryMapMode = "Forum") ? "Официальные ссылки форума" : "Архивные локальные копии"
 }
 
 TerritoryMap_ShowCatalog(CtrlHwnd := "", GuiEvent := "", EventInfo := "", ErrLevel := "")
@@ -304,11 +304,11 @@ TerritoryMap_ShowCatalog(CtrlHwnd := "", GuiEvent := "", EventInfo := "", ErrLev
     Gui, TerritoryMaps:Font, s16 Bold c%text%, Segoe UI
     Gui, TerritoryMaps:Add, Text, x24 y42 w600 h30 BackgroundTrans, Карты территорий
     Gui, TerritoryMaps:Font, s9 Norm c%muted%, Segoe UI
-    modeText := "Текущий режим: " . TerritoryMap_GetModeDisplay()
+    modeText := "Текущий режим: " . TerritoryMap_GetModeDisplay() . " | Новые иллюстрации не приложены"
     Gui, TerritoryMaps:Add, Text, x24 y82 w600 h20 BackgroundTrans, %modeText%
     AddOutlinedPanel("TerritoryMaps", 18, 118, 612, 340, card, edge, 1)
     Gui, TerritoryMaps:Font, s9 Norm c%text%, Segoe UI
-    Gui, TerritoryMaps:Add, Text, x34 y134 w580 h44 +Wrap BackgroundTrans, Выбери территорию для просмотра карты. Локальная копия сохраняет исходную чёткость; официальный источник открывается в браузере.
+    Gui, TerritoryMaps:Add, Text, x34 y134 w580 h44 +Wrap BackgroundTrans, Выбери территорию для просмотра карты. Локальные изображения — архив предыдущей редакции. Актуальные границы смотрите по ссылке на форум.
     Gui, TerritoryMaps:Font, s10 Norm c%inputFg%, Segoe UI
     Gui, TerritoryMaps:Add, ListBox, x34 y192 w580 h246 vTerritoryMapSelectedIndex AltSubmit Choose1, %items%
     Gui, TerritoryMaps:Font, s9 Norm c%text%, Segoe UI
@@ -419,7 +419,7 @@ TerritoryMap_ShowLocal(groupIndex, assetIndex := 1)
         picX += Floor((canvasW - displayW) / 2)
 
     Gui, TerritoryMapView:Destroy
-    title := meta.Name . " (" . assetIndex . "/" . files.Length() . ")"
+    title := "Архив: " . meta.Name . " (" . assetIndex . "/" . files.Length() . ")"
     Gui, TerritoryMapView:New, +AlwaysOnTop +ToolWindow -MaximizeBox -MinimizeBox +HwndhTerritoryMapViewWnd, %title%
     GetThemeColors(bg, panel, text, accent, muted)
     Gui, TerritoryMapView:Color, %panel%
@@ -4719,9 +4719,9 @@ LawSearch_InitCatalog()
     LawSearchDocByCode := {}
     LawSearch_RegisterDoc("VU", "ВУ", "Внутренний устав органов внутренних дел", "vu", "ву|внутренний устав|устав органов внутренних дел|устав овд")
     LawSearch_RegisterDoc("FP", "ФП", "Федеральное постановление", "fp", "фп|федеральное постановление|постановление")
-    LawSearch_RegisterDoc("KON", "Конституция", "Конституция Нижегородской области", "kon", "конституция|конституция нижегородской области|конституция но")
+    LawSearch_RegisterDoc("KON", "Конституция", "Конституция AMAZING ONLINE", "kon", "конституция|конституция нижегородской области|конституция но")
     LawSearch_RegisterDoc("FZOP", "ФЗОП", "Федеральный закон «О полиции»", "fzop", "фзоп|фз о полиции|федеральный закон о полиции|закон о полиции|полиция")
-    LawSearch_RegisterDoc("TER", "ФЗОТОД", "Федеральный закон «О территориях с ограниченным доступом»", "ter", "фзотод|отод|фз о территориях с ограниченным доступом|территории с ограниченным доступом|ограниченный доступ|территории")
+    LawSearch_RegisterDoc("TER", "ФЗОТОД", "Федеральный закон «О служебных и охраняемых территориях»", "ter", "фзотод|отод|фз о территориях с ограниченным доступом|территории с ограниченным доступом|ограниченный доступ|территории|служебные и охраняемые территории|фзост")
     LawSearch_RegisterDoc("TK", "ТК", "Трудовой кодекс", "tk", "тк|трудовой кодекс|трудовое законодательство")
     LawSearch_RegisterDoc("ARG", "АРГ", "Административный регламент ГАИ", "arg", "арг|административный регламент|административный регламент гаи|регламент гаи")
     LawSearch_RegisterDoc("UK", "УК", "Уголовный кодекс", "uk", "ук|ук но|уголовный кодекс|уголовный кодекс нижегородской области")
@@ -4744,7 +4744,7 @@ LawSearch_RegisterDoc(code, shortName, fullName, prefix, aliases)
     global LawSearchDocCatalog, LawSearchDocByCode
 
     meta := {Code: code, Short: shortName, Name: fullName, Prefix: prefix, Aliases: aliases
-        , FileName: code . ".txt", SourceURL: LawCorpus_SourceUrl(code), SourceRevision: "2026-07-27"
+        , FileName: code . ".txt", SourceURL: LawCorpus_SourceUrl(code), SourceRevision: "2026-10-19"
         , Order: LawSearchDocCatalog.Length() + 1}
     LawSearchDocCatalog.Push(meta)
     LawSearchDocByCode[code] := meta

@@ -1,8 +1,8 @@
 ﻿Desktop integration probe
 Runtime=1.1.37.02 | Unicode=1 | PtrSize=8
-Compiled=1 | Data=Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-s3lvolyo\data
+Compiled=1 | Data=Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-fc204i1_\data
 No real game or OBS verification.
-INFO | startup WorkingSetMiB=54.05 PeakMiB=54.05
+INFO | startup WorkingSetMiB=54.45 PeakMiB=54.45
 PASS | compiled standalone host
 PASS | application mutex acquired
 PASS | duplicate application mutex detected
@@ -82,6 +82,29 @@ PASS | custom function persistence
 PASS | custom function reload and parser
 PASS | 20 documents available without external laws folder
 PASS | native legislation viewer opens
+PASS | reference guide opens GuideSignals
+PASS | guide keeps foreground and capture registration GuideSignals
+PASS | every guide page renders and next wraps GuideSignals
+PASS | guide previous wraps GuideSignals
+PASS | same guide command closes viewer GuideSignals
+PASS | reference guide opens GuidePDP
+PASS | guide keeps foreground and capture registration GuidePDP
+PASS | every guide page renders and next wraps GuidePDP
+PASS | guide previous wraps GuidePDP
+PASS | same guide command closes viewer GuidePDP
+PASS | reference guide opens GuideSVU
+PASS | guide keeps foreground and capture registration GuideSVU
+PASS | every guide page renders and next wraps GuideSVU
+PASS | guide previous wraps GuideSVU
+PASS | same guide command closes viewer GuideSVU
+PASS | guide can switch to law
+PASS | law can switch to guide
+PASS | guide can switch to service codes
+PASS | hide-law key closes reference guide
+PASS | last-document key reopens reference guide
+PASS | guides never enqueue chat messages
+PASS | guide configuration saves atomically
+PASS | guide TXT and hotkeys survive profile reload
 PASS | auto ID updates existing native confirmation
 PASS | confirmation applies the displayed ID
 PASS | confirmation decline preserves selection
@@ -91,5 +114,5 @@ PASS | same-EXE diagnostic finishes in custom data directory
 PASS | diagnostic does not replace parent instance
 PASS | diagnostic report opens in own application GUI
 PASS | closing settings destroys its native window
-INFO | after native smoke WorkingSetMiB=68.93 PeakMiB=68.93
-Checks=88 | Failed=0
+INFO | after native smoke WorkingSetMiB=71.75 PeakMiB=71.75
+Checks=111 | Failed=0

@@ -145,6 +145,7 @@ DesktopSmoke_Run() {
         ToggleLawDoc(5, "flter1", "ter1")
         DesktopSmoke_Assert("native legislation viewer opens", current_doc = 5)
         CloseAllDocs()
+        Guide_RunDesktopChecks()
         AutoTargetOfferedKey := ""
         AutoTargetID_RequestConfirmation(42, 0x200000, -1, "desktop-smoke", "First_Player")
         promptWindow := hContextAssistantWnd

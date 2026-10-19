@@ -431,6 +431,15 @@ PASS | Logic: a full queue never accepts just the mask-call prefix
 PASS | Logic: a rejected stop request cannot start a countdown
 PASS | Logic: queued stop request waits for delivery before countdown
 PASS | Logic: first delivered stop request starts the 15-second countdown
+PASS | Guides: three separate reference documents
+PASS | Guides: server timetable and 20-30 minute gathering windows
+PASS | Guides: private TXT dispatch GuideSignals
+PASS | Guides: pagination preserves all scenario text 21
+PASS | Guides: private TXT dispatch GuidePDP
+PASS | Guides: pagination preserves all scenario text 22
+PASS | Guides: private TXT dispatch GuideSVU
+PASS | Guides: pagination preserves all scenario text 23
+PASS | Guides: invalid ID has no pages
 PASS | F10 reader never truncates chatlog
 PASS | F21 official LAW corpus loaded
 PASS | search exact reference TER
@@ -448,4 +457,4 @@ PASS | F24 settings fits work area
 SKIP | ANSI x86 game ABI, module enumeration and HANDLE lifecycle need Windows A32 integration
 SKIP | Real Windows GUI/DPI, OBS capture, game offsets, remote-thread stress and screenshot files require target integration
 
-Checks: 443 | Failed: 0 | Skipped integration groups: 3
+Checks: 452 | Failed: 0 | Skipped integration groups: 3

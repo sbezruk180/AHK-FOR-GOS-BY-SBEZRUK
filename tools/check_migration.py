@@ -36,8 +36,8 @@ for item in manifest['functions']:
         result='Добавлены владение вводом/паузы клавиш, приватный ввод или пассивное открытие; регрессии и native стенд. GTA/OBS требуют отдельной проверки'
     elif now['file'] in ('ui_style.ahk', 'app/ui_settings.ahk', 'app/ui_overlays.ahk', 'service_ui.ahk', 'id_capture.ahk') or item['name'] in ('LawGui_GetLayout','LawGui_Show','LawSearch_GetShellAccentColor','LawSearch_GetResultLayout','LawSearch_ShowNotice','Search_ShowCurrentResult','TerritoryMap_ShowCatalog','TerritoryMap_ShowLocal','OpenCustomFunctionBuilder','ActionTimer_RenderCore'):
         result='Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте'
-    elif item['name'].startswith(('LawCorpus_','LawSearch_CorpusFingerprint','TerritoryMap_')):
-        result='Адаптированы пути/ресурсы; тексты и алгоритмы поиска сохранены'
+    elif item['name'].startswith(('LawCorpus_','LawSearch_CorpusFingerprint','TerritoryMap_')) or item['name'] == 'LawSearch_RegisterDoc':
+        result='Обновлены пути/ресурсы и метаданные редакции; поиск проверяется по присланной базе'
     elif item['name']=='ServiceUI_ShowDetails':
         result='Добавлен явный показ собственного GUI для отчёта, включая MockMode'
     elif item['name'] in ('UpdateBindList','CancelAllAutomation','RunBackgroundTool'):

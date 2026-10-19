@@ -1,0 +1,4 @@
+PASS | all seven byte-identical old laws resolve to the new embedded edition
+PASS | the old files are not rewritten or deleted
+PASS | edited user law remains authoritative and unchanged
+PASS | removing the override restores the embedded edition

@@ -2027,6 +2027,7 @@ IniRead, Trig_Intro, %ConfigFile%, %section%, Trig_Intro,
     IniRead, Trig_SUD, %ConfigFile%, %section%, Trig_SUD, !суд
     IniRead, Trig_ORD, %ConfigFile%, %section%, Trig_ORD, !орд
     IniRead, Trig_GT, %ConfigFile%, %section%, Trig_GT, !гостайна
+    Guide_LoadProfile(ConfigFile, section)
 
     NormalizeBindListItemsValue(BindListItems)
 

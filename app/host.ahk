@@ -116,12 +116,40 @@ AppHost_ReadLaw(name) {
     path := AppHost_LawPath(name)
     if (path = "")
         return ""
-    if FileExist(path) {
+    if (FileExist(path) && !AppHost_UseUpdatedBundledLaw(name, path)) {
         FileRead, text, %path%
         return ErrorLevel ? "" : text
     }
     StringUpper, key, name
     return A_IsCompiled ? AppHost_ResourceText("LAW_" . StrReplace(key, ".TXT")) : ""
+}
+
+; Upgrade only byte-identical previous distribution files. Edited overrides stay
+; authoritative and no user file is deleted, renamed or overwritten.
+AppHost_UseUpdatedBundledLaw(name, path) {
+    if (!A_IsCompiled || !FileExist(path))
+        return false
+    return AppHost_PreviousLawDigest(name) != "" && AppHost_IsPreviousLawDigest(name, FileSHA256(path))
+}
+
+AppHost_IsPreviousLawDigest(name, hash) {
+    expected := AppHost_PreviousLawDigest(name)
+    return expected != "" && hash = expected
+}
+
+AppHost_PreviousLawDigest(name) {
+    static previous := ""
+    if !IsObject(previous) {
+        previous := {}
+        previous["FSB.txt"] := "6EAA0F28AB6E270A3FB7D73CADFCD05A8E110E6BE6B528594CBA2BBBAD19E555"
+        previous["FZOP.txt"] := "34A760908D8C2E2022066C66E606B35B831FA91A33F699678698F176F416BE14"
+        previous["KOAP.txt"] := "4FA7D1A437C193E0F7DA395776DC6EACAE134062E8367629F2E83DEA73F1EE38"
+        previous["KON.txt"] := "4C73783AAEDC924D03D658FD36CD154055BEB65C446EFAF2D405B0A1D668ED1C"
+        previous["ORUZH.txt"] := "8E9765A2DA6362F658D7075BF6D80CCD73046D835A0D43CE24FC2CEA24B3E5ED"
+        previous["TER.txt"] := "DA888AE9498414B988825F54E8549D0EA35E4F4AC98AA0DB70D5BFC7C3F822D2"
+        previous["UK.txt"] := "CBF60893BD24045A20392E7CE1505F6F2B58039F5C4839CDFE789401897AA27E"
+    }
+    return previous.HasKey(name) ? previous[name] : ""
 }
 
 AppHost_AssetPath(name) {
@@ -199,11 +227,16 @@ AppHost_RuntimeInfo() {
     report .= "Runtime=" . A_AhkVersion . "`r`nPointerSize=" . A_PtrSize . "`r`nUnicode=" . (A_IsUnicode ? 1 : 0) . "`r`n"
     report .= "SystemCodepage=" . DllCall("GetACP") . "`r`nDataDir=" . AppHost_DataDir() . "`r`n"
     hasSource := InStr(AppHost_SourceText(), "AutoTargetID_Poll() {") > 0
-    laws := 0
-    for _, name in ["VU", "FP", "KON", "FZOP", "TER", "TK", "ARG", "UK", "VV", "KOAP", "PDD", "ORUZH", "UPK", "KAS", "FSB", "FSIN", "VS", "SUD", "ORD", "GT"]
-        if (StrLen(AppHost_ReadLaw(name . ".txt")) > 100)
+    laws := 0, bundledMatches := 0
+    for _, name in ["VU", "FP", "KON", "FZOP", "TER", "TK", "ARG", "UK", "VV", "KOAP", "PDD", "ORUZH", "UPK", "KAS", "FSB", "FSIN", "VS", "SUD", "ORD", "GT"] {
+        activeText := AppHost_ReadLaw(name . ".txt")
+        if (StrLen(activeText) > 100)
             laws++
+        if (A_IsCompiled && activeText == AppHost_ResourceText("LAW_" . name))
+            bundledMatches++
+    }
     report .= "SourceIntrospection=" . hasSource . "`r`nLawDocuments=" . laws . "`r`n"
+    report .= "LawBundleReceived=2026-10-19`r`nLawBundledMatches=" . bundledMatches . "`r`n"
     report .= "GameCompatibility=NOT_TESTED`r`nOBSFrames=NOT_TESTED`r`n"
     report .= "CyrillicLegacyRequirement=Windows system ANSI codepage 1251`r`n"
     path := AppHost_DataDir() . "\runtime_info_report.txt"

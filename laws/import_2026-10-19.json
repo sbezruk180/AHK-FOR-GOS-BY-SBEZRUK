@@ -1,0 +1,170 @@
+{
+  "received": "2026-10-19",
+  "note": "User-provided game law texts; no independent forum verification. FSB upload explicitly omits articles 24-31. Only encoding, line endings and the listed decorative character substitutions were changed.",
+  "documents": [
+    {
+      "file": "ARG.txt",
+      "upload_sha256": "1cb186776851afc9d03b0e5882cd4691b5dd920ab5e65557b45aabd8cf3b1b28",
+      "upload_encoding": "Windows-1251",
+      "previous_sha256": "1cb186776851afc9d03b0e5882cd4691b5dd920ab5e65557b45aabd8cf3b1b28",
+      "bundled_sha256": "1cb186776851afc9d03b0e5882cd4691b5dd920ab5e65557b45aabd8cf3b1b28",
+      "character_substitutions": {}
+    },
+    {
+      "file": "FP.txt",
+      "upload_sha256": "3e9a536915a83cc3110b703aa054a47c96efc170af3cb9d7478c4f27952568a0",
+      "upload_encoding": "Windows-1251",
+      "previous_sha256": "3e9a536915a83cc3110b703aa054a47c96efc170af3cb9d7478c4f27952568a0",
+      "bundled_sha256": "3e9a536915a83cc3110b703aa054a47c96efc170af3cb9d7478c4f27952568a0",
+      "character_substitutions": {}
+    },
+    {
+      "file": "FSB.txt",
+      "upload_sha256": "b13ac54ab8ce84cb7968983afc242c3722e2c6a67811e46026ce8ccfdbd2ed51",
+      "upload_encoding": "UTF-8",
+      "previous_sha256": "6eaa0f28ab6e270a3fb7d73cadfcd05a8e110e6be6b528594cba2bbbad19e555",
+      "bundled_sha256": "f0c369108eedb53e2b8d73927d55c09e27f1c9fc26e628d143bdc0b9e3965537",
+      "character_substitutions": {}
+    },
+    {
+      "file": "FSIN.txt",
+      "upload_sha256": "f800ad928c3b8c394d1d3293304a1d5b8c984a586a9d0ab7a5d01787437b4681",
+      "upload_encoding": "Windows-1251",
+      "previous_sha256": "f800ad928c3b8c394d1d3293304a1d5b8c984a586a9d0ab7a5d01787437b4681",
+      "bundled_sha256": "f800ad928c3b8c394d1d3293304a1d5b8c984a586a9d0ab7a5d01787437b4681",
+      "character_substitutions": {}
+    },
+    {
+      "file": "FZOP.txt",
+      "upload_sha256": "b08b0f8dec497a209ab839333dc3845b654fb2d175fc74ea2ddceb03c4940d2a",
+      "upload_encoding": "UTF-8",
+      "previous_sha256": "34a760908d8c2e2022066c66e606b35b831fa91a33f699678698f176f416be14",
+      "bundled_sha256": "2b46c37fc03c6c40acd7f3db674f017abf45835e041a844197f4bbf464ab73bd",
+      "character_substitutions": {}
+    },
+    {
+      "file": "GT.txt",
+      "upload_sha256": "6024e92bcd2786e5049a6a2e276c355622e980aa8fdcc31321748b77daf7b711",
+      "upload_encoding": "Windows-1251",
+      "previous_sha256": "6024e92bcd2786e5049a6a2e276c355622e980aa8fdcc31321748b77daf7b711",
+      "bundled_sha256": "6024e92bcd2786e5049a6a2e276c355622e980aa8fdcc31321748b77daf7b711",
+      "character_substitutions": {}
+    },
+    {
+      "file": "KAS.txt",
+      "upload_sha256": "cb1186b4c090400674563185b671983ae0fca5a32226609ca8189dde09427123",
+      "upload_encoding": "Windows-1251",
+      "previous_sha256": "cb1186b4c090400674563185b671983ae0fca5a32226609ca8189dde09427123",
+      "bundled_sha256": "cb1186b4c090400674563185b671983ae0fca5a32226609ca8189dde09427123",
+      "character_substitutions": {}
+    },
+    {
+      "file": "KOAP.txt",
+      "upload_sha256": "aff7189475fe04a4ee6e484edc9e08dbed9aed9c9d7d5e2ee76aa4c094252485",
+      "upload_encoding": "UTF-8",
+      "previous_sha256": "4fa7d1a437c193e0f7da395776dc6eacae134062e8367629f2e83dea73f1ee38",
+      "bundled_sha256": "b11467ca44786d51145653b30c127e21f86e491544f6560ce245cd9241f2cee7",
+      "character_substitutions": {}
+    },
+    {
+      "file": "KON.txt",
+      "upload_sha256": "d4386f5c7f61aa453762e48bd798e96fef3e223f5e892a3edae6949d8e8b20ab",
+      "upload_encoding": "UTF-8",
+      "previous_sha256": "4c73783aaedc924d03d658fd36cd154055beb65c446efaf2d405b0a1d668ed1c",
+      "bundled_sha256": "664683cc199b856cadad42d8672f6f9075a9a3c8d317d046f1bb46ff9939bb68",
+      "character_substitutions": {
+        "⌜": "«",
+        "⌝": "»",
+        "→": "->"
+      }
+    },
+    {
+      "file": "ORD.txt",
+      "upload_sha256": "6d0740d3145631d822e2ed93098d9e6cb3947291bab20240921737e2884d7b21",
+      "upload_encoding": "Windows-1251",
+      "previous_sha256": "6d0740d3145631d822e2ed93098d9e6cb3947291bab20240921737e2884d7b21",
+      "bundled_sha256": "6d0740d3145631d822e2ed93098d9e6cb3947291bab20240921737e2884d7b21",
+      "character_substitutions": {}
+    },
+    {
+      "file": "ORUZH.txt",
+      "upload_sha256": "1c3e462e59539549c92e94982ad54fa322f2f6263889db566da291a9536143ca",
+      "upload_encoding": "UTF-8",
+      "previous_sha256": "8e9765a2da6362f658d7075bf6d80ccd73046d835a0d43ce24fc2cea24b3e5ed",
+      "bundled_sha256": "808e78d3af04755602b4c301f4139153377623bffdea2462260f9b9b5527cc9d",
+      "character_substitutions": {}
+    },
+    {
+      "file": "PDD.txt",
+      "upload_sha256": "284771314cb88389e9224917e57ef6f669490d1d035150f3c09ebe9861d92ac5",
+      "upload_encoding": "Windows-1251",
+      "previous_sha256": "284771314cb88389e9224917e57ef6f669490d1d035150f3c09ebe9861d92ac5",
+      "bundled_sha256": "284771314cb88389e9224917e57ef6f669490d1d035150f3c09ebe9861d92ac5",
+      "character_substitutions": {}
+    },
+    {
+      "file": "SUD.txt",
+      "upload_sha256": "117e312042ae3399dc6fbf83a864409c2fbc57c7ed7fec560937fc18a3c60d1c",
+      "upload_encoding": "Windows-1251",
+      "previous_sha256": "117e312042ae3399dc6fbf83a864409c2fbc57c7ed7fec560937fc18a3c60d1c",
+      "bundled_sha256": "117e312042ae3399dc6fbf83a864409c2fbc57c7ed7fec560937fc18a3c60d1c",
+      "character_substitutions": {}
+    },
+    {
+      "file": "TER.txt",
+      "upload_sha256": "c1258e0a8e9060d74d1fe589208a582840dffd0c6c9ade1749228e0f4caa0e29",
+      "upload_encoding": "UTF-8",
+      "previous_sha256": "da888ae9498414b988825f54e8549d0ea35e4f4ac98aa0db70d5bfc7c3f822d2",
+      "bundled_sha256": "9aa952ce00d5f6a63333b9b1edd5b1fca3a10c8e0be0d4e11528cd3d30067632",
+      "character_substitutions": {}
+    },
+    {
+      "file": "TK.txt",
+      "upload_sha256": "3caa09c5e42a5acd2a410f295c704a0c6482ad8e0766acbd1eb087b28afd9ed6",
+      "upload_encoding": "Windows-1251",
+      "previous_sha256": "3caa09c5e42a5acd2a410f295c704a0c6482ad8e0766acbd1eb087b28afd9ed6",
+      "bundled_sha256": "3caa09c5e42a5acd2a410f295c704a0c6482ad8e0766acbd1eb087b28afd9ed6",
+      "character_substitutions": {}
+    },
+    {
+      "file": "UK.txt",
+      "upload_sha256": "60b298252e5dffd9bc15540bb43850eb4aefa5131ba94aafecbb397be770babb",
+      "upload_encoding": "UTF-8",
+      "previous_sha256": "cbf60893bd24045a20392e7ce1505f6f2b58039f5c4839cdfe789401897aa27e",
+      "bundled_sha256": "60b8cdc6d2e6c3f962d6f1407928cda5c8320c265c25f685040e09d5bf6852b3",
+      "character_substitutions": {}
+    },
+    {
+      "file": "UPK.txt",
+      "upload_sha256": "4160a14b9ec19687e9b3520370620ce7d674eebcd23095362766c3bcffda9f8a",
+      "upload_encoding": "Windows-1251",
+      "previous_sha256": "4160a14b9ec19687e9b3520370620ce7d674eebcd23095362766c3bcffda9f8a",
+      "bundled_sha256": "4160a14b9ec19687e9b3520370620ce7d674eebcd23095362766c3bcffda9f8a",
+      "character_substitutions": {}
+    },
+    {
+      "file": "VS.txt",
+      "upload_sha256": "c5bac7875c4c5828c808bc42df081a0f69e014c64307252fe1c06bb53c1a224f",
+      "upload_encoding": "Windows-1251",
+      "previous_sha256": "c5bac7875c4c5828c808bc42df081a0f69e014c64307252fe1c06bb53c1a224f",
+      "bundled_sha256": "c5bac7875c4c5828c808bc42df081a0f69e014c64307252fe1c06bb53c1a224f",
+      "character_substitutions": {}
+    },
+    {
+      "file": "VU.txt",
+      "upload_sha256": "6dc18b1d8fcc3d5201a165b9ca8cd9ec23d2c5b26b6ea9ce02901642b9184dd8",
+      "upload_encoding": "Windows-1251",
+      "previous_sha256": "6dc18b1d8fcc3d5201a165b9ca8cd9ec23d2c5b26b6ea9ce02901642b9184dd8",
+      "bundled_sha256": "6dc18b1d8fcc3d5201a165b9ca8cd9ec23d2c5b26b6ea9ce02901642b9184dd8",
+      "character_substitutions": {}
+    },
+    {
+      "file": "VV.txt",
+      "upload_sha256": "47c21bb64d5de1c47f955f62cf5f680190000c14440469ec9c7dd3f967220707",
+      "upload_encoding": "Windows-1251",
+      "previous_sha256": "47c21bb64d5de1c47f955f62cf5f680190000c14440469ec9c7dd3f967220707",
+      "bundled_sha256": "47c21bb64d5de1c47f955f62cf5f680190000c14440469ec9c7dd3f967220707",
+      "character_substitutions": {}
+    }
+  ]
+}
