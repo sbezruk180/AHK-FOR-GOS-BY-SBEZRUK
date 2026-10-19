@@ -53,7 +53,13 @@ Guide_RunDesktopChecks() {
         Guide_Toggle(meta.Id)
         DesktopSmoke_Assert("same guide command closes viewer " . meta.Token, !current_doc && !DllCall("IsWindow", "Ptr", guideWindow))
     }
+    SearchResults := LawSearch_Find("ALL", "ÔÇÎÏ ñòàòüÿ 22", 3).Results
+    SearchDoc := "ALL", SearchCurrentIndex := 1, SearchCurrentPart := 1
+    Search_ShowCurrentResult()
+    Gui, 16:+HwndguideSearchWindow
+    DesktopSmoke_Assert("law search result fixture opens", SearchGuiVisible && DllCall("IsWindow", "Ptr", guideSearchWindow))
     Guide_Toggle(22)
+    DesktopSmoke_Assert("guide takes page navigation from an open law search", current_doc = 22 && !SearchGuiVisible && !SearchModeActive && !DllCall("IsWindow", "Ptr", guideSearchWindow))
     ToggleLawDoc(5, "flter1", "ter1")
     DesktopSmoke_Assert("guide can switch to law", current_doc = 5)
     Guide_Toggle(23)

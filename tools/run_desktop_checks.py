@@ -16,6 +16,7 @@ parser.add_argument('--wine')
 parser.add_argument('--wineserver')
 parser.add_argument('--wine-prefix')
 parser.add_argument('--allow-test-u64',action='store_true')
+parser.add_argument('--mode', action='append', help='Run only this mode without leading --; repeatable')
 parser.add_argument('--output',type=Path,default=ROOT/'.build/desktop-results')
 args=parser.parse_args()
 meta=json.loads(PE(args.exe.read_bytes()).resource('BUILD_MANIFEST'))
@@ -31,6 +32,10 @@ cases=[('--runtime-info','runtime_info_report.txt'),('--desktop-smoke','desktop_
        ('--selftest','selftest_report.txt'),('--context-mocktest','context_assistant_test.txt'),
        ('--autoreport-mocktest','autoreport_mocktest_report.txt'),('--law-search-test','law_search_test_report.txt'),
        ('--v1-mocktest','v1_mocktest_report.txt')]
+if args.mode:
+    unknown = set(args.mode) - {flag[2:] for flag, _ in cases}
+    if unknown: parser.error('Unknown mode: ' + ', '.join(sorted(unknown)))
+    cases = [(flag, report) for flag, report in cases if flag[2:] in args.mode]
 with tempfile.TemporaryDirectory(prefix='desktop-check-',dir=ROOT/'.build') as folder:
     work=Path(folder);standalone=work/'standalone';standalone.mkdir()
     exe=standalone/args.exe.name;shutil.copy2(args.exe,exe)

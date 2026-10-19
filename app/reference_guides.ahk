@@ -76,7 +76,7 @@ Guide_ShowPage(id, page := 1) {
 }
 
 Guide_Toggle(id, fromChat := false) {
-    global current_doc, last_doc
+    global current_doc, last_doc, SearchGuiVisible, SearchModeActive
     if !IsObject(Guide_GetMeta(id))
         return false
     if (current_doc = id) {
@@ -84,6 +84,10 @@ Guide_Toggle(id, fromChat := false) {
         current_doc := 0
         return true
     }
+    ; Search owns PgUp/PgDn while open. End it before handing navigation
+    ; to the guide; otherwise the visible guide cannot be paged.
+    if (SearchGuiVisible || SearchModeActive)
+        Search_Close(0)
     CloseAllDocs()
     if !Guide_ShowPage(id)
         return false

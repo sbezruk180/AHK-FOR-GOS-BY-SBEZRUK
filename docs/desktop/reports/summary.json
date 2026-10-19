@@ -7,35 +7,35 @@
       "mode": "--runtime-info",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 5.83,
+      "seconds": 5.73,
       "report": "runtime_info_report.txt"
     },
     {
       "mode": "--desktop-smoke",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 19.85,
+      "seconds": 36.59,
       "report": "desktop_smoke_report.txt"
     },
     {
       "mode": "--audit-selftest",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 59.41,
+      "seconds": 53.94,
       "report": "audit_selftest_report.txt"
     },
     {
       "mode": "--diagnostics",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 22.48,
+      "seconds": 20.35,
       "report": "diagnostics_report.txt"
     },
     {
       "mode": "--selftest",
       "status": "EXPECTED_ABI_FAILURE",
       "exit_code": 1,
-      "seconds": 35.18,
+      "seconds": 38.87,
       "report": "selftest_report.txt"
     },
     {
@@ -49,22 +49,30 @@
       "mode": "--autoreport-mocktest",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 5.87,
+      "seconds": 5.72,
       "report": "autoreport_mocktest_report.txt"
     },
     {
       "mode": "--law-search-test",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 33.12,
+      "seconds": 34.09,
       "report": "law_search_test_report.txt"
     },
     {
       "mode": "--v1-mocktest",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 6.06,
+      "seconds": 6.42,
       "report": "v1_mocktest_report.txt"
     }
-  ]
+  ],
+  "provenance": {
+    "full_run": "laws-guides-release",
+    "desktop_recheck": "laws-guides-navigation-final",
+    "reason": "The added navigation fixture initially referred to the renderer local HWND as a global. The corrected fixture explicitly retrieves GUI 16 HWND. Only tests/reference_guides_regression.ahk changed after the full run; all non-test application source SHA-256 values match exactly.",
+    "full_run_test_host_source_sha256": "43f0b92535ad99ded679df9c8bc9a4f2d6995cd1fdaa5f2fb606fbb565bf67f3",
+    "desktop_recheck_test_host_source_sha256": "bf54ac12a394eb2bce7294ec417f33e57a9a73eb7b1ded7725ab8df4020d970c",
+    "application_sources_identical": true
+  }
 }
