@@ -6,7 +6,7 @@ import json
 import re
 
 root = Path(__file__).resolve().parents[1]
-record = json.loads((root / 'laws/import_2026-10-19.json').read_text())
+record = json.loads((root / 'laws/import_2026-10-19.json').read_text(encoding='utf-8'))
 rows = record['documents']
 assert len(rows) == 20
 assert {r['file'] for r in rows} == {p.name for p in (root / 'laws').glob('*.txt')}

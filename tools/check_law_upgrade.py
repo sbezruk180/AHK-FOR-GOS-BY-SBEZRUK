@@ -30,7 +30,7 @@ with tempfile.TemporaryDirectory(prefix='law-upgrade-', dir=root / '.build') as 
     laws = data / 'laws'
     laws.mkdir(parents=True)
     originals = {}
-    for row in json.loads((root / 'laws/import_2026-10-19.json').read_text())['documents']:
+    for row in json.loads((root / 'laws/import_2026-10-19.json').read_text(encoding='utf-8'))['documents']:
         if row['previous_sha256'] == row['bundled_sha256']:
             continue
         source = root / 'tests/fixtures/previous_laws' / row['file']
