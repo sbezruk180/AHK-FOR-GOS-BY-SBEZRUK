@@ -1,10 +1,18 @@
 ; Private TXT command entry reuses the passive, capture-protected service input.
 global PrivateTextInputBusy := 0
+global PrivateTextLastStatus := "Окно ещё не открывалось"
 global PrivateTextOpenerContext := Func("PrivateText_OpenerAllowed")
 
 PrivateText_NormalizeMode(ByRef mode) {
+    if (mode = "Только окно AHK")
+        mode := "Окно AHK"
     if (mode != "Окно AHK")
         mode := "Игровой чат"
+}
+
+PrivateText_ModeToUiLabel(mode) {
+    PrivateText_NormalizeMode(mode)
+    return mode = "Окно AHK" ? "Только окно AHK" : "Чат + окно AHK"
 }
 
 PrivateText_OpenerAllowed(hotkeyName := "") {
@@ -14,21 +22,36 @@ PrivateText_OpenerAllowed(hotkeyName := "") {
 }
 
 PrivateText_Resolve(text) {
+    text := Trim(text)
+    StringLower, text, text
+    if (text = "")
+        return ""
+    if (SubStr(text, 1, 1) != "!")
+        text := "!" . text
+    if TextCommands_IsOpener(text)
+        return {Kind: "opener"}
+    action := PrivateText_ResolveExact(text)
+    return IsObject(action) ? action : TextCommands_ResolveAlias(text)
+}
+
+PrivateText_ResolveExact(text) {
     global Trig_GpsD, Trig_GpsOS, CustomFunctions
     text := Trim(text)
+    StringLower, text, text
     if (text = "")
         return ""
     if (SubStr(text, 1, 1) != "!")
         text := "!" . text
     if (text = "!бинд")
         return {Kind: "opener"}
-    if (text = "!меню")
+    if (text = "!меню" || text = "!menu")
         return {Kind: "label", Label: "DoBindMenuToggle"}
     if (text = "!коды")
         return {Kind: "label", Label: "DoServiceCodesGui"}
     for _, gps in [{Trigger: Trig_GpsD, Down: 15, Name: "GPS Д"}, {Trigger: Trig_GpsOS, Down: 16, Name: "GPS ОС"}] {
         trigger := gps.Trigger
         NormalizeTextTrigger(trigger)
+        StringLower, trigger, trigger
         if (trigger = "")
             continue
         if (text = trigger)
@@ -41,12 +64,14 @@ PrivateText_Resolve(text) {
             continue
         trigger := GetDynamicGlobalValue(meta.TriggerVar)
         NormalizeTextTrigger(trigger)
+        StringLower, trigger, trigger
         if (trigger != "" && trigger = text)
             return {Kind: "token", Token: meta.Token}
     }
     for index, item in CustomFunctions {
         trigger := item.Trigger
         NormalizeTextTrigger(trigger)
+        StringLower, trigger, trigger
         if (trigger != "" && trigger = text)
             return {Kind: "custom", Index: index}
     }
@@ -59,23 +84,19 @@ PrivateText_Resolve(text) {
 PrivateText_Open() {
     global PrivateTextInputBusy, BindMenuEditMode, Trig_GpsD, Trig_GpsOS
     if (PrivateTextInputBusy || PhysicalInputBusy || IsObject(IDCaptureState) || ServiceUI_IsInputActive())
-        return false
+        return PrivateText_ReportBlocked("Ввод занят другой операцией. Завершите её или отмените и повторите Alt+T.")
     if (!ServiceUI_IsTest() && !GameLocator_IsActive())
-        return false
+        return PrivateText_ReportBlocked("Игра не найдена или не активна. Проверьте процесс игры в настройках «Чат и безопасность».")
+    PrivateTextLastStatus := "Открывается окно TXT"
     PrivateTextInputBusy := 1
     epoch := AutomationEpoch, profile := CurrentProfile, seed := ""
     prompt := "Введите свой TXT-бинд, например !предст или !д155. Текст не отправляется в чат."
     try {
-        if (!ServiceUI_IsTest() && isInChat() = 1) {
-            if !SafeSend("{Esc}", "Event", epoch)
-                return false
-            Sleep, 80
-        }
         Loop {
             command := ""
-            if !ServiceUI_Request("Текстовая команда", prompt, command, 180, 60, seed, !BindMenuEditMode, true) {
+            if !ServiceUI_Request("Текстовая команда", prompt, command, 180, 60, seed, !BindMenuEditMode, true, "", Func("PrivateText_PrepareChat").Bind(epoch)) {
                 if (ServiceUILastInputError != "")
-                    ServiceUI_Notify(ServiceUILastInputError, 4500, "WARN")
+                    PrivateText_ReportBlocked(ServiceUILastInputError)
                 return false
             }
             if (epoch != AutomationEpoch || profile != CurrentProfile)
@@ -98,6 +119,8 @@ PrivateText_Open() {
         }
     } finally {
         PrivateTextInputBusy := 0
+        if (PrivateTextLastStatus = "Открывается окно TXT")
+            PrivateTextLastStatus := "Ввод завершён"
     }
 }
 
@@ -140,7 +163,8 @@ PrivateText_Dispatch(action, epoch) {
 PrivateText_RegisterOpener() {
     global PrivateTextOpenerContext, GameTextHotkeyContext
     Hotkey, If, % PrivateTextOpenerContext
-    Hotstring(":?:!бинд", Func("PrivateText_Opener"), "On")
+    for _, trigger in TextCommands_OpenerTriggers()
+        Hotstring(":?:" . trigger, Func("PrivateText_Opener"), "On")
     Hotkey, If, % GameTextHotkeyContext
 }
 
@@ -155,7 +179,28 @@ PrivateText_SearchModes() {
 
 GetReservedTextTriggerSet() {
     fixed := {"!меню": "BindMenu", "!menu": "BindMenu", "!бинд": "PrivateText", "!коды": "Codes", "!пнайти": "Search_RUN"}
+    for _, trigger in TextCommands_OpenerTriggers()
+        fixed[trigger] := "PrivateText"
     for trigger, mode in PrivateText_SearchModes()
         fixed[trigger] := "Search_" . mode
     return fixed
+}
+
+PrivateText_PrepareChat(epoch) {
+    if (!GameLocator_IsActive() || epoch != AutomationEpoch)
+        return false
+    if (isInChat() = 1) {
+        if !SafeSend("{Esc}", "Event", epoch, ServiceUIInputState)
+            return false
+        Sleep, 80
+    }
+    return GameLocator_IsActive() && epoch = AutomationEpoch
+}
+
+PrivateText_ReportBlocked(reason) {
+    global PrivateTextLastStatus
+    PrivateTextLastStatus := reason
+    LogError("PrivateText", reason, "WARN")
+    ServiceUI_Notify(reason, 5000, "WARN")
+    return false
 }

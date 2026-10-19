@@ -932,9 +932,11 @@ BuildSettingsGui() {
     Gui, 2:Tab, 8
     Settings_AddPageFrame("TXT-команды", "Триггеры вводятся в чат с префиксом ! и сохраняются в профиль.", cardBg, cardEdge, text, muted)
     AddOutlinedPanel(2, 240, 166, 904, 96, panel, cardEdge, 1)
-    Settings_AddControl("Ввод текстовых команд", "CFG_TextTriggerInputMode", TextTriggerInputMode, 256, 176, 340, "DropDown", "Игровой чат|Окно AHK", text, inputText)
+    Settings_AddControl("Ввод текстовых команд", "CFG_TextTriggerInputMode", PrivateText_ModeToUiLabel(TextTriggerInputMode), 256, 176, 340, "DropDown", "Чат + окно AHK|Только окно AHK", text, inputText)
     Gui, 2:Font, s9 Norm c%muted%, Segoe UI
-    Gui, 2:Add, Text, x622 y180 w494 h60 +Wrap BackgroundTrans, !бинд или горячая клавиша «Окно текстовых команд» (по умолчанию Alt+T). Клавишу можно изменить в разделе основных биндов.
+    Gui, 2:Add, Text, x622 y176 w494 h48 +Wrap BackgroundTrans, Alt+T по умолчанию / !бинд / !bind открывают личное окно в обоих режимах. «Только окно AHK» отключает команды в чате.
+    Gui, 2:Add, Button, x622 y232 w160 h24 gPrivateText_RestoreDefaultKey, Восстановить Alt+T
+    Gui, 2:Add, Text, x798 y234 w316 h22 BackgroundTrans, Затем нажмите «Сохранить».
     Settings_AddGrid(Settings_GetCatalogItems("Trigger", "commands"), 240, 280, 5, 180, 52, "Edit", text, inputText)
 
     SettingsBuildingPage := 9
@@ -1338,4 +1340,13 @@ ApplyCfgTemplateAndRpTextsToGlobals() {
     T_ConvoyStart := CFG_T_ConvoyStart
     T_ConvoyCont := CFG_T_ConvoyCont
     T_ConvoyEnd := CFG_T_ConvoyEnd
+}
+
+PrivateText_RestoreDefaultKey(params*) {
+    global CFG_Bind_TextCommandInput
+    Gui, 2:Submit, NoHide
+    CFG_Bind_TextCommandInput := "!t"
+    GuiControl, 2:, CFG_Bind_TextCommandInput, !t
+    ResolveCfgHotkeyConflicts("CFG_Bind_TextCommandInput", 1)
+    SetSettingsStatus("Клавиша окна TXT восстановлена: Alt+T. Нажмите «Сохранить».")
 }

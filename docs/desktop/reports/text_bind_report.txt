@@ -1,0 +1,39 @@
+﻿Native application text bindings
+Game chat status and capture API are fixture seams; no game or OBS test.
+PASS | Alt+T is in actual dispatch map
+PASS | physical Alt+T reaches the private native input window
+PASS | private opener releases state after Esc
+SKIP | real RU/US physical Alt+T layouts unavailable on this host
+PASS | Escape observer installed
+PASS | private ownership blocks text even with the preparation lease
+PASS | private ownership blocks Escape without its lease
+PASS | private window is visible while activation Alt is held
+PASS | open-chat cleanup never sends Alt+Escape
+PASS | held activation keeps foreground and releases input
+PASS | open-chat activation accepts a command after releasing Alt
+PASS | chat cleanup runs before capture under input ownership
+PASS | chat command waits for Space
+PASS | registered chat command dispatches on Space
+PASS | chat alias opens its guide !пдп
+PASS | chat alias opens its guide !pdp
+PASS | chat alias opens its guide !glg
+PASS | chat alias opens its guide !svu
+PASS | chat alias opens its guide !cde
+PASS | chat alias opens its guide !signals
+PASS | private-only mode preserves chat suppression
+PASS | Alt+T also opens in private-only mode
+PASS | private opener alias works independently of chat mode !bind
+PASS | private opener alias works independently of chat mode !,byl
+PASS | Alt+T remains available while editing binds
+PASS | chat close-menu command remains registered while editing
+PASS | private hook dispatches alias !pdp
+PASS | private alias never reaches foreground edit !pdp
+PASS | private alias releases ownership !pdp
+PASS | private hook dispatches alias !glg
+PASS | private alias never reaches foreground edit !glg
+PASS | private alias releases ownership !glg
+PASS | profile rebind removes the old layout alias
+PASS | explicit command wins over an optional English alias
+PASS | private resolver uses the same explicit-command precedence
+PASS | new configured command works after re-registration
+Checks=35 | Failed=0

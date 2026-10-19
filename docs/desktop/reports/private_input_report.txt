@@ -33,5 +33,5 @@ PASS | 20 characters do not inherit menu key delays
 PASS | typing releases input ownership and restores caller delay
 SKIP | Mixed RU/US typing: Wine cannot load both layouts; digit timing uses current layout.
 InputStatesCreated=9 InputStatesDeleted=9
-Typing20CharsMs=477
-Checks=29 Failed=0 KeyHoldMs=61
+Typing20CharsMs=481
+Checks=29 Failed=0 KeyHoldMs=51

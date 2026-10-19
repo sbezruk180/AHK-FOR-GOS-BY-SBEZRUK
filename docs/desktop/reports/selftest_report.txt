@@ -1,6 +1,6 @@
 AHK FOR GOS BY SBEZRUK v1.0 regression self-test
 Runtime: AutoHotkey 1.1.37.02 | ANSI=0 | PtrSize=8
-Project: Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-9wdr0ios\data
+Project: Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-lnwjjxhc\data
 LIVE GAME: NOT RUN
 
 [PASS] Critical | file exists: AHK_FOR_GOS_TEST_U64.exe

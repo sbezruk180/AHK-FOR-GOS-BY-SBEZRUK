@@ -7,72 +7,80 @@
       "mode": "--runtime-info",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 5.73,
+      "seconds": 6.47,
       "report": "runtime_info_report.txt"
     },
     {
       "mode": "--desktop-smoke",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 36.59,
+      "seconds": 32.85,
       "report": "desktop_smoke_report.txt"
     },
     {
       "mode": "--audit-selftest",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 53.94,
+      "seconds": 62.83,
       "report": "audit_selftest_report.txt"
     },
     {
       "mode": "--diagnostics",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 20.35,
+      "seconds": 22.06,
       "report": "diagnostics_report.txt"
     },
     {
       "mode": "--selftest",
       "status": "EXPECTED_ABI_FAILURE",
       "exit_code": 1,
-      "seconds": 38.87,
+      "seconds": 38.95,
       "report": "selftest_report.txt"
     },
     {
       "mode": "--context-mocktest",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 5.82,
+      "seconds": 5.73,
       "report": "context_assistant_test.txt"
     },
     {
       "mode": "--autoreport-mocktest",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 5.72,
+      "seconds": 5.75,
       "report": "autoreport_mocktest_report.txt"
     },
     {
       "mode": "--law-search-test",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 34.09,
+      "seconds": 37.94,
       "report": "law_search_test_report.txt"
     },
     {
       "mode": "--v1-mocktest",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 6.42,
+      "seconds": 6.34,
       "report": "v1_mocktest_report.txt"
     }
   ],
-  "provenance": {
-    "full_run": "laws-guides-release",
-    "desktop_recheck": "laws-guides-navigation-final",
-    "reason": "The added navigation fixture initially referred to the renderer local HWND as a global. The corrected fixture explicitly retrieves GUI 16 HWND. Only tests/reference_guides_regression.ahk changed after the full run; all non-test application source SHA-256 values match exactly.",
-    "full_run_test_host_source_sha256": "43f0b92535ad99ded679df9c8bc9a4f2d6995cd1fdaa5f2fb606fbb565bf67f3",
-    "desktop_recheck_test_host_source_sha256": "bf54ac12a394eb2bce7294ec417f33e57a9a73eb7b1ded7725ab8df4020d970c",
-    "application_sources_identical": true
+  "test_exe": "6549299521b8cff65cfd694e19975cb82b1d236065bbf0df606d99797e167333",
+  "native_text_fixture": {
+    "checks": 35,
+    "failed": 0,
+    "report": "text_bind_report.txt",
+    "baseline_commit": "0dfaa5bd862dc1bd1462fbb79354f4e565dbe9a7",
+    "baseline_checks": 27,
+    "baseline_failed": 12,
+    "note": "Baseline skips unknown private English commands to avoid retry timeout; two preparation-lease checks require the new early window."
+  },
+  "native_private_fixture": {
+    "checks": 29,
+    "failed": 0,
+    "report": "private_input_report.txt",
+    "skipped": "Mixed RU/US native layouts unavailable in Wine."
   }
 }

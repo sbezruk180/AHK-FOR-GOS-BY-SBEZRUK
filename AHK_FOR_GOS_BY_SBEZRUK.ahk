@@ -28,6 +28,7 @@ AppHost_Init()
 #Include %A_ScriptDir%\id_capture.ahk
 #Include %A_ScriptDir%\service_ui.ahk
 #Include %A_ScriptDir%\app\game_input.ahk
+#Include %A_ScriptDir%\app\text_commands.ahk
 #Include %A_ScriptDir%\app\private_text.ahk
 #Include %A_ScriptDir%\app\reference_guides.ahk
 #Include %A_ScriptDir%\ui_style.ahk
@@ -43,6 +44,7 @@ AppHost_Init()
 #Include %A_ScriptDir%\tests\desktop_smoke.ahk
 #Include %A_ScriptDir%\tests\logic_audit_regression.ahk
 #Include %A_ScriptDir%\tests\reference_guides_regression.ahk
+#Include %A_ScriptDir%\tests\text_commands_regression.ahk
 #Include %A_ScriptDir%\tests\audit_regression.ahk
 ; Canonical helper is included once; no embedded duplicate.
 #Include %A_ScriptDir%\helper.ahk

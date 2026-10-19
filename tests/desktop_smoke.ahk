@@ -39,6 +39,14 @@ DesktopSmoke_Run() {
             DesktopSmoke_Assert("sidebar button dispatch " . page.Id, clicked && SettingsPage = page.Id)
             DesktopSmoke_Assert("interactive controls do not overlap " . page.Id, DesktopSmoke_NoInputOverlap(hSettingsWnd))
         }
+        savedOpenerCfg := CFG_Bind_TextCommandInput
+        CFG_Bind_TextCommandInput := ""
+        GuiControl, 2:, CFG_Bind_TextCommandInput,
+        PrivateText_RestoreDefaultKey()
+        GuiControlGet, restoredOpener, 2:, CFG_Bind_TextCommandInput
+        DesktopSmoke_Assert("TXT recovery restores the actual Alt+T hotkey control", restoredOpener = "!t" && CFG_Bind_TextCommandInput = "!t")
+        CFG_Bind_TextCommandInput := savedOpenerCfg
+        GuiControl, 2:, CFG_Bind_TextCommandInput, %savedOpenerCfg%
         DesktopSmoke_Assert("settings catalog keeps all 13 pages", pages.Length() = 13)
         DesktopSmoke_Assert("sidebar has one native button for each page", SettingsNavigationButtons.Length() = pages.Length())
         DesktopSmoke_Assert("legacy navigation is hidden", !DllCall("IsWindowVisible", "Ptr", hSettingsNavLV))

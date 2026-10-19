@@ -440,6 +440,32 @@ PASS | Guides: pagination preserves all scenario text 22
 PASS | Guides: private TXT dispatch GuideSVU
 PASS | Guides: pagination preserves all scenario text 23
 PASS | Guides: invalid ID has no pages
+PASS | TXT keyboard mapping !пдп
+PASS | TXT keyboard mapping !сву
+PASS | TXT keyboard mapping !сигналы
+PASS | TXT keyboard mapping !предст
+PASS | TXT keyboard mapping !bind
+PASS | TXT aliases share PDP action !pdp
+PASS | TXT aliases share PDP action !glg
+PASS | TXT aliases share PDP action !ПДП
+PASS | TXT English/layout route !svu
+PASS | TXT English/layout route !cde
+PASS | TXT English/layout route !signals
+PASS | TXT English/layout route !cbuyfks
+PASS | TXT English/layout route !intro
+PASS | TXT English/layout route !ghtlcn
+PASS | TXT English GPS preserves the number
+PASS | TXT keyboard-layout GPS preserves the number
+PASS | TXT English law search preserves mode
+PASS | TXT user command supports the other layout
+PASS | TXT opener remains reserved !бинд
+PASS | TXT opener remains reserved !bind
+PASS | TXT opener remains reserved !,byl
+PASS | TXT opener remains reserved !иштв
+PASS | TXT configured trigger wins over English alias
+PASS | TXT disabled trigger has no layout alias
+PASS | TXT UI mode labels preserve private-only config
+PASS | TXT UI mode labels preserve combined config
 PASS | F10 reader never truncates chatlog
 PASS | F21 official LAW corpus loaded
 PASS | search exact reference TER
@@ -457,4 +483,4 @@ PASS | F24 settings fits work area
 SKIP | ANSI x86 game ABI, module enumeration and HANDLE lifecycle need Windows A32 integration
 SKIP | Real Windows GUI/DPI, OBS capture, game offsets, remote-thread stress and screenshot files require target integration
 
-Checks: 452 | Failed: 0 | Skipped integration groups: 3
+Checks: 478 | Failed: 0 | Skipped integration groups: 3

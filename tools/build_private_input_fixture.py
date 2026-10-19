@@ -13,8 +13,9 @@ sys.path.insert(0,str(ROOT/'tools/build'))
 from ahk_symbols import functions
 NAMES={
  'service_ui.ahk':['ServiceUI_IsInputActive','ServiceUI_IsTest','ServiceUI_NewInputState','ServiceUI_ContextIsCurrent','ServiceUI_CreateInputGui','ServiceUI_InputKeyDown','ServiceUI_InputChar','ServiceUI_InputTick','ServiceUI_ModifierHeld','ServiceUI_CreateInputHook','ServiceUI_ReleaseInputCapture','ServiceUI_Request'],
- 'app/private_text.ahk':['PrivateText_Open','PrivateText_Resolve','PrivateText_Dispatch','PrivateText_SearchModes'],
+ 'app/private_text.ahk':['PrivateText_Open','PrivateText_ReportBlocked','PrivateText_PrepareChat','PrivateText_Resolve','PrivateText_ResolveExact','PrivateText_Dispatch','PrivateText_SearchModes'],
  'app/bindings.ahk':['NormalizeTextTrigger'],
+ 'app/text_commands.ahk':['TextCommands_IsOpener','TextCommands_OpenerTriggers','TextCommands_LayoutVariant','TextCommands_ResolveAlias','TextCommands_GetAliasRoutes','TextCommands_EnglishTrigger'],
  'app/actions.ahk':['MatchGpsEnterCommand','RunGpsInputTrigger','ReadGpsInputNumber'],
  'app/core.ahk':['EraseGpsTypedCommand'],
  'app/game_input.ahk':['GameMenu_Reserve','GameMenu_ReservationIsCurrent','GameMenu_Close','GameMenu_Release'],
@@ -287,6 +288,8 @@ LawSearch_RunActive(args*) {
 RunCustomFunction(args*) {
 }
 MockPreview_Append(args*) {
+}
+LogError(args*) {
 }
 '''
 def main():

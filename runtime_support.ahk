@@ -323,11 +323,19 @@ QueueRpAction(template, command, source, menu) {
     return ChatQueue_EnqueueBatch(lines, source, SequenceLineDelay) ? true : false
 }
 
-SafeSend(keys, mode := "Input", epoch := "", menuLease := "") {
-    if (IsObject(GameMenuLease) && GameMenuLease != menuLease)
+SafeSend(keys, mode := "Input", epoch := "", inputLease := "") {
+    if (IsObject(GameMenuLease) && GameMenuLease != inputLease)
         return false
-    if ServiceUI_IsInputActive()
-        return false
+    if ServiceUI_IsInputActive() {
+        ; Only the current private input owner may close an already open game
+        ; chat, during preparation and before its InputHook starts. Every other
+        ; key/send remains blocked while service input owns the keyboard.
+        if (!IsObject(inputLease) || inputLease != ServiceUIInputState || !inputLease.Preparing
+            || !PhysicalInputBusy || !inputLease.OwnsBusy || !inputLease.OwnerHwnd
+            || keys != "{Esc}" || inputLease.Pending != "" || IsObject(inputLease.Hook)
+            || epoch != inputLease.Epoch || inputLease.OwnerHwnd != WinExist("A"))
+            return false
+    }
     if IsObject(IDCaptureState)
         return false
     global MockMode
