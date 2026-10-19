@@ -1,8 +1,8 @@
 ﻿Desktop integration probe
 Runtime=1.1.37.02 | Unicode=1 | PtrSize=8
-Compiled=1 | Data=Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-fc204i1_\data
+Compiled=1 | Data=Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-_dcq70x2\data
 No real game or OBS verification.
-INFO | startup WorkingSetMiB=54.45 PeakMiB=54.45
+INFO | startup WorkingSetMiB=54.24 PeakMiB=54.24
 PASS | compiled standalone host
 PASS | application mutex acquired
 PASS | duplicate application mutex detected
@@ -97,6 +97,8 @@ PASS | guide keeps foreground and capture registration GuideSVU
 PASS | every guide page renders and next wraps GuideSVU
 PASS | guide previous wraps GuideSVU
 PASS | same guide command closes viewer GuideSVU
+PASS | law search result fixture opens
+PASS | guide takes page navigation from an open law search
 PASS | guide can switch to law
 PASS | law can switch to guide
 PASS | guide can switch to service codes
@@ -114,5 +116,5 @@ PASS | same-EXE diagnostic finishes in custom data directory
 PASS | diagnostic does not replace parent instance
 PASS | diagnostic report opens in own application GUI
 PASS | closing settings destroys its native window
-INFO | after native smoke WorkingSetMiB=71.75 PeakMiB=71.75
-Checks=111 | Failed=0
+INFO | after native smoke WorkingSetMiB=246.68 PeakMiB=250.71
+Checks=113 | Failed=0
