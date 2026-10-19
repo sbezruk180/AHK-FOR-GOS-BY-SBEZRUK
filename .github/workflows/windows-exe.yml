@@ -64,6 +64,12 @@ jobs:
           $process.Refresh()
           if ($failed.Count -gt 0 -or $process.ExitCode -ne 0) { throw "Native GUI failed: $($process.ExitCode)" }
           Write-Output 'GUI tested in Unicode x64 host; game ABI, real input and OBS are not verified by this test.'
+      - name: Previous law edition and custom overrides
+        shell: pwsh
+        run: |
+          python tools/verify_laws.py
+          python tools/check_law_upgrade.py dist/AHK_FOR_GOS_TEST_U64.exe --output .build/law_upgrade_report.txt
+          if ($LASTEXITCODE -ne 0) { throw 'Law upgrade check failed' }
       - name: Native private TXT, character typing and paced menu input
         shell: pwsh
         run: |

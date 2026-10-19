@@ -22,6 +22,7 @@ for path in (root/'laws').glob('*.txt'):
     data=path.read_bytes();data.decode('cp1251')
     if data.startswith((b'\xef\xbb\xbf',b'\xff\xfe',b'\xfe\xff')) or b'\n' in data.replace(b'\r\n',b''):
         raise SystemExit('Unexpected LAW encoding/newlines: '+path.name)
+subprocess.run([sys.executable,str(root/'tools/verify_laws.py')],check=True)
 subprocess.run([sys.executable,str(root/'tools/sync_helper.py'),'--check'],check=True)
 subprocess.run([sys.executable,str(root/'tools/check_migration.py')],check=True)
 

@@ -2002,6 +2002,18 @@ DoBindMenuToggle:
 ToggleBindMenuEditMode()
 return
 
+DoGuideSignals:
+Guide_Toggle(21, true)
+return
+
+DoGuidePDP:
+Guide_Toggle(22, true)
+return
+
+DoGuideSVU:
+Guide_Toggle(23, true)
+return
+
 DoServiceCodesGui:
 if ServiceCodes_Show()
     Helper_CloseChatAfterGui()
@@ -2465,7 +2477,7 @@ if (postMins > 0)
     AutoReport_Start("Пост", postMins, 1)
 return
 
-#If (ServiceCodesGuiVisible)
+#If (ServiceCodesGuiVisible || current_doc >= 21)
 $Esc::
 LawGui_Close()
 return
@@ -2523,6 +2535,10 @@ if (current_doc)
 }
 if (!last_doc)
     return
+if IsObject(Guide_GetMeta(last_doc)) {
+    Guide_Toggle(last_doc)
+    return
+}
 if GetLawDocMeta(last_doc, firstFlagVar, showFuncName)
     ToggleLawDoc(last_doc, firstFlagVar, showFuncName)
 return
@@ -2623,6 +2639,10 @@ PgUp::
         Search_ShowPrevResult()
         return
     }
+    if IsObject(Guide_GetMeta(current_doc)) {
+        Guide_Navigate("prev")
+        return
+    }
     if (current_doc = 1)
         NavigateVU("prev")
     else if (current_doc = 2)
@@ -2679,6 +2699,10 @@ PgDn::
     if (SearchGuiVisible)
     {
         Search_ShowNextResult()
+        return
+    }
+    if IsObject(Guide_GetMeta(current_doc)) {
+        Guide_Navigate("next")
         return
     }
     if (current_doc = 1)

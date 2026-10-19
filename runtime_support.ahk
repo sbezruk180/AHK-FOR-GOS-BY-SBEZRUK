@@ -882,10 +882,11 @@ LawSearch_CorpusFingerprint() {
     signature := ""
     for _, doc in LawSearchDocCatalog {
         path := AppHost_LawPath(doc.FileName)
-        if FileExist(path) {
+        hash := FileExist(path) ? FileSHA256(path) : ""
+        if (FileExist(path) && !(A_IsCompiled && AppHost_IsPreviousLawDigest(doc.FileName, hash))) {
             FileGetSize, size, %path%
             FileGetTime, modified, %path%, M
-            identity := size . ":" . modified . ":" . FileSHA256(path)
+            identity := size . ":" . modified . ":" . hash
         } else
             identity := A_IsCompiled ? "embedded:" . AppHost_ResourceText("LAW_DIGEST_" . doc.Code, "UTF-8") : "missing"
         signature .= doc.Code . ":" . identity . "|"

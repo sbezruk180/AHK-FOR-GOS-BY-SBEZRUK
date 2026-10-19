@@ -1,7 +1,7 @@
 ﻿Функция исходного AHK,Исходное расположение,Реализация в приложении,Состояние кода,Результат проверки
-LawCorpus_SourceUrl,AHK_FOR_GOS_BY_SBEZRUK.ahk:69,helper.ahk:30,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+LawCorpus_SourceUrl,AHK_FOR_GOS_BY_SBEZRUK.ahk:69,helper.ahk:30,Адаптирована,Обновлены пути/ресурсы и метаданные редакции; поиск проверяется по присланной базе
 LawCorpus_GetMetaByPrefix,AHK_FOR_GOS_BY_SBEZRUK.ahk:101,helper.ahk:62,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-LawCorpus_GetText,AHK_FOR_GOS_BY_SBEZRUK.ahk:116,helper.ahk:77,Адаптирована,Адаптированы пути/ресурсы; тексты и алгоритмы поиска сохранены
+LawCorpus_GetText,AHK_FOR_GOS_BY_SBEZRUK.ahk:116,helper.ahk:77,Адаптирована,Обновлены пути/ресурсы и метаданные редакции; поиск проверяется по присланной базе
 LawCorpus_LogError,AHK_FOR_GOS_BY_SBEZRUK.ahk:159,helper.ahk:111,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 LawCorpus_BuildPages,AHK_FOR_GOS_BY_SBEZRUK.ahk:168,helper.ahk:120,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 LawCorpus_FindSplitPosition,AHK_FOR_GOS_BY_SBEZRUK.ahk:192,helper.ahk:144,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
@@ -11,8 +11,8 @@ LawCorpus_Reset,AHK_FOR_GOS_BY_SBEZRUK.ahk:226,helper.ahk:178,Без измен�
 LawCorpus_Audit,AHK_FOR_GOS_BY_SBEZRUK.ahk:234,helper.ahk:186,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 LawDoc_ShowPage,AHK_FOR_GOS_BY_SBEZRUK.ahk:271,helper.ahk:223,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 LawDoc_GetCurrentPage,AHK_FOR_GOS_BY_SBEZRUK.ahk:296,helper.ahk:248,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-TerritoryMap_GetCatalog,AHK_FOR_GOS_BY_SBEZRUK.ahk:304,helper.ahk:256,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-TerritoryMap_GetModeDisplay,AHK_FOR_GOS_BY_SBEZRUK.ahk:330,helper.ahk:282,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+TerritoryMap_GetCatalog,AHK_FOR_GOS_BY_SBEZRUK.ahk:304,helper.ahk:256,Адаптирована,Обновлены пути/ресурсы и метаданные редакции; поиск проверяется по присланной базе
+TerritoryMap_GetModeDisplay,AHK_FOR_GOS_BY_SBEZRUK.ahk:330,helper.ahk:282,Адаптирована,Обновлены пути/ресурсы и метаданные редакции; поиск проверяется по присланной базе
 TerritoryMap_ShowCatalog,AHK_FOR_GOS_BY_SBEZRUK.ahk:336,helper.ahk:288,Адаптирована,Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте
 TerritoryMap_OpenSelected,AHK_FOR_GOS_BY_SBEZRUK.ahk:365,helper.ahk:324,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 TerritoryMap_OpenOfficial,AHK_FOR_GOS_BY_SBEZRUK.ahk:382,helper.ahk:341,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
@@ -23,13 +23,13 @@ TerritoryMap_PreviousAsset,AHK_FOR_GOS_BY_SBEZRUK.ahk:534,helper.ahk:493,Без 
 TerritoryMap_NextAsset,AHK_FOR_GOS_BY_SBEZRUK.ahk:539,helper.ahk:498,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 TerritoryMap_Navigate,AHK_FOR_GOS_BY_SBEZRUK.ahk:544,helper.ahk:503,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 TerritoryMap_OpenCurrentForum,AHK_FOR_GOS_BY_SBEZRUK.ahk:560,helper.ahk:519,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-TerritoryMap_OpenCurrentLocal,AHK_FOR_GOS_BY_SBEZRUK.ahk:569,helper.ahk:528,Адаптирована,Адаптированы пути/ресурсы; тексты и алгоритмы поиска сохранены
+TerritoryMap_OpenCurrentLocal,AHK_FOR_GOS_BY_SBEZRUK.ahk:569,helper.ahk:528,Адаптирована,Обновлены пути/ресурсы и метаданные редакции; поиск проверяется по присланной базе
 TerritoryMap_ShellOpen,AHK_FOR_GOS_BY_SBEZRUK.ahk:589,helper.ahk:548,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 TerritoryMap_IsOfficialUrl,AHK_FOR_GOS_BY_SBEZRUK.ahk:610,helper.ahk:569,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 TerritoryMap_CloseCatalog,AHK_FOR_GOS_BY_SBEZRUK.ahk:615,helper.ahk:574,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 TerritoryMap_CloseView,AHK_FOR_GOS_BY_SBEZRUK.ahk:623,helper.ahk:582,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 TerritoryMap_CloseAll,AHK_FOR_GOS_BY_SBEZRUK.ahk:632,helper.ahk:591,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-TerritoryMap_AuditCatalog,AHK_FOR_GOS_BY_SBEZRUK.ahk:643,helper.ahk:602,Адаптирована,Адаптированы пути/ресурсы; тексты и алгоритмы поиска сохранены
+TerritoryMap_AuditCatalog,AHK_FOR_GOS_BY_SBEZRUK.ahk:643,helper.ahk:602,Адаптирована,Обновлены пути/ресурсы и метаданные редакции; поиск проверяется по присланной базе
 LawGui_Close,AHK_FOR_GOS_BY_SBEZRUK.ahk:670,helper.ahk:629,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 Helper_CloseChatAfterGui,AHK_FOR_GOS_BY_SBEZRUK.ahk:680,helper.ahk:639,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 LawGui_FormatBody,AHK_FOR_GOS_BY_SBEZRUK.ahk:741,helper.ahk:700,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
@@ -379,8 +379,8 @@ LawText_ord1,AHK_FOR_GOS_BY_SBEZRUK.ahk:4754,helper.ahk:4691,Без измене
 LawText_ord2,AHK_FOR_GOS_BY_SBEZRUK.ahk:4759,helper.ahk:4696,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 LawText_gt1,AHK_FOR_GOS_BY_SBEZRUK.ahk:4764,helper.ahk:4701,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 LawText_gt2,AHK_FOR_GOS_BY_SBEZRUK.ahk:4769,helper.ahk:4706,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-LawSearch_InitCatalog,AHK_FOR_GOS_BY_SBEZRUK.ahk:4774,helper.ahk:4711,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-LawSearch_RegisterDoc,AHK_FOR_GOS_BY_SBEZRUK.ahk:4805,helper.ahk:4742,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+LawSearch_InitCatalog,AHK_FOR_GOS_BY_SBEZRUK.ahk:4774,helper.ahk:4711,Адаптирована,Адаптирован путь пользовательских данных/отчётов
+LawSearch_RegisterDoc,AHK_FOR_GOS_BY_SBEZRUK.ahk:4805,helper.ahk:4742,Адаптирована,Обновлены пути/ресурсы и метаданные редакции; поиск проверяется по присланной базе
 LawSearch_GetDocMeta,AHK_FOR_GOS_BY_SBEZRUK.ahk:4816,helper.ahk:4753,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 LawSearch_GetDocName,AHK_FOR_GOS_BY_SBEZRUK.ahk:4828,helper.ahk:4765,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 LawSearch_BuildTokenSet,AHK_FOR_GOS_BY_SBEZRUK.ahk:4836,helper.ahk:4773,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
@@ -795,9 +795,9 @@ NormalizeBindValue,AHK_FOR_GOS_BY_SBEZRUK.ahk:15349,app/bindings.ahk:1118,Без
 ClearRegisteredBindHotkeys,AHK_FOR_GOS_BY_SBEZRUK.ahk:15354,app/bindings.ahk:1123,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 RegisterBoundHotkey,AHK_FOR_GOS_BY_SBEZRUK.ahk:15386,app/bindings.ahk:1155,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 GetBoundLabelByToken,AHK_FOR_GOS_BY_SBEZRUK.ahk:15423,app/bindings.ahk:1192,Адаптирована,Адаптирован путь пользовательских данных/отчётов
-ExecuteBindToken,AHK_FOR_GOS_BY_SBEZRUK.ahk:15521,app/bindings.ahk:1291,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-HandleBoundHotkey,AHK_FOR_GOS_BY_SBEZRUK.ahk:15551,app/bindings.ahk:1321,Адаптирована,Адаптирован путь пользовательских данных/отчётов
-ApplyAllBinds,AHK_FOR_GOS_BY_SBEZRUK.ahk:15566,app/bindings.ahk:1338,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ExecuteBindToken,AHK_FOR_GOS_BY_SBEZRUK.ahk:15521,app/bindings.ahk:1294,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+HandleBoundHotkey,AHK_FOR_GOS_BY_SBEZRUK.ahk:15551,app/bindings.ahk:1324,Адаптирована,Адаптирован путь пользовательских данных/отчётов
+ApplyAllBinds,AHK_FOR_GOS_BY_SBEZRUK.ahk:15566,app/bindings.ahk:1341,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 LoadUIAppearanceFromIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:15602,app/profiles.ahk:126,Адаптирована,Адаптирован путь пользовательских данных/отчётов
 LoadUISafetyAndAudioFromIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:15632,app/profiles.ahk:159,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 LoadUIWindowPrefsFromIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:15708,app/profiles.ahk:235,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
@@ -862,10 +862,10 @@ CustomFunctionBuilder_SaveCurrent,AHK_FOR_GOS_BY_SBEZRUK.ahk:16898,app/custom_fu
 CustomFunctionBuilder_AppendStep,AHK_FOR_GOS_BY_SBEZRUK.ahk:16928,app/custom_functions.ahk:487,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 OpenCustomFunctionBuilder,AHK_FOR_GOS_BY_SBEZRUK.ahk:16939,app/custom_functions.ahk:498,Адаптирована,Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте
 CloseCustomFunctionBuilder,AHK_FOR_GOS_BY_SBEZRUK.ahk:17017,app/custom_functions.ahk:570,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-GetBindCatalog,AHK_FOR_GOS_BY_SBEZRUK.ahk:17026,app/bindings.ahk:1374,Адаптирована,Адаптирован путь пользовательских данных/отчётов
-BindCatalog_IsRegistrable,AHK_FOR_GOS_BY_SBEZRUK.ahk:17150,app/bindings.ahk:1499,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-BindCatalog_IsUserVisible,AHK_FOR_GOS_BY_SBEZRUK.ahk:17154,app/bindings.ahk:1503,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-GetBindCatalogMap,AHK_FOR_GOS_BY_SBEZRUK.ahk:17158,app/bindings.ahk:1507,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+GetBindCatalog,AHK_FOR_GOS_BY_SBEZRUK.ahk:17026,app/bindings.ahk:1377,Адаптирована,Адаптирован путь пользовательских данных/отчётов
+BindCatalog_IsRegistrable,AHK_FOR_GOS_BY_SBEZRUK.ahk:17150,app/bindings.ahk:1505,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+BindCatalog_IsUserVisible,AHK_FOR_GOS_BY_SBEZRUK.ahk:17154,app/bindings.ahk:1509,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+GetBindCatalogMap,AHK_FOR_GOS_BY_SBEZRUK.ahk:17158,app/bindings.ahk:1513,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 BuildBindListRow,AHK_FOR_GOS_BY_SBEZRUK.ahk:17173,app/ui_overlays.ahk:710,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 BuildBindListRows,AHK_FOR_GOS_BY_SBEZRUK.ahk:17201,app/ui_overlays.ahk:738,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 BuildBindListSummary,AHK_FOR_GOS_BY_SBEZRUK.ahk:17248,app/ui_overlays.ahk:785,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
@@ -988,11 +988,11 @@ WriteCatalogTriggersToIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:20625,app/profiles.ahk:1810
 FinalizeLoadedProfileState,AHK_FOR_GOS_BY_SBEZRUK.ahk:20640,app/profiles.ahk:1825,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 GetReplacementProfileAfterDelete,AHK_FOR_GOS_BY_SBEZRUK.ahk:20650,app/profiles.ahk:1835,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 LoadProfile,AHK_FOR_GOS_BY_SBEZRUK.ahk:20658,app/profiles.ahk:1843,Адаптирована,Адаптирован путь пользовательских данных/отчётов
-WriteProfileIdentityToIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:20853,app/profiles.ahk:2039,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-WriteProfileTemplateTextsToIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:20873,app/profiles.ahk:2059,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-WriteProfileRpTextsToIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:20903,app/profiles.ahk:2089,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-SaveProfile,AHK_FOR_GOS_BY_SBEZRUK.ahk:20927,app/profiles.ahk:2113,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-DeleteProfile,AHK_FOR_GOS_BY_SBEZRUK.ahk:20987,app/profiles.ahk:2173,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+WriteProfileIdentityToIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:20853,app/profiles.ahk:2040,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+WriteProfileTemplateTextsToIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:20873,app/profiles.ahk:2060,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+WriteProfileRpTextsToIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:20903,app/profiles.ahk:2090,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+SaveProfile,AHK_FOR_GOS_BY_SBEZRUK.ahk:20927,app/profiles.ahk:2114,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+DeleteProfile,AHK_FOR_GOS_BY_SBEZRUK.ahk:20987,app/profiles.ahk:2174,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 WM_EXITSIZEMOVE,AHK_FOR_GOS_BY_SBEZRUK.ahk:21032,app/ui_overlays.ahk:1559,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 CloseAllDocs,AHK_FOR_GOS_BY_SBEZRUK.ahk:21077,app/ui_documents.ahk:22,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 LawDoc_PageCount,AHK_FOR_GOS_BY_SBEZRUK.ahk:21085,app/ui_documents.ahk:30,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
@@ -1041,7 +1041,7 @@ ToggleLawDoc,AHK_FOR_GOS_BY_SBEZRUK.ahk:22997,app/ui_documents.ahk:268,Без и
 LawDoc_PrefixById,AHK_FOR_GOS_BY_SBEZRUK.ahk:23027,app/ui_documents.ahk:298,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 ToggleLawDocFromChat,AHK_FOR_GOS_BY_SBEZRUK.ahk:23036,app/ui_documents.ahk:307,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 GetLawDocMeta,AHK_FOR_GOS_BY_SBEZRUK.ahk:23044,app/core.ahk:591,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-MigrateConfigIfNeeded,AHK_FOR_GOS_BY_SBEZRUK.ahk:23307,app/profiles.ahk:2218,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+MigrateConfigIfNeeded,AHK_FOR_GOS_BY_SBEZRUK.ahk:23307,app/profiles.ahk:2219,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 AZMP_TickElapsed,UDF.ahk:66,UDF.ahk:66,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 AZMP_ResetTargetCache,UDF.ahk:75,UDF.ahk:75,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 AZMP_CacheTarget,UDF.ahk:89,UDF.ahk:89,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
@@ -1185,27 +1185,27 @@ Settings_UpdateScrollbars,runtime_support.ahk:759,runtime_support.ahk:803,Без
 Settings_ScrollMessage,runtime_support.ahk:781,runtime_support.ahk:825,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 Settings_MouseWheel,runtime_support.ahk:813,runtime_support.ahk:857,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 IsBindCatalogEntryEditable,runtime_support.ahk:829,runtime_support.ahk:873,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-LawSearch_CorpusFingerprint,runtime_support.ahk:835,runtime_support.ahk:879,Адаптирована,Адаптированы пути/ресурсы; тексты и алгоритмы поиска сохранены
-LawSearch_QueryFilters,runtime_support.ahk:848,runtime_support.ahk:896,Адаптирована,Адаптирован путь пользовательских данных/отчётов
-Hotstring_AdmitPattern,runtime_support.ahk:865,runtime_support.ahk:921,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-JoinStrings,runtime_support.ahk:876,runtime_support.ahk:932,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ChatQueue_CancelBatch,runtime_support.ahk:883,runtime_support.ahk:939,Адаптирована,Адаптирован путь пользовательских данных/отчётов
-ImageDimensionsBounded,runtime_support.ahk:895,runtime_support.ahk:953,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-QueueMenu_Run,runtime_support.ahk:916,runtime_support.ahk:974,Адаптирована,"Добавлены владение вводом/паузы клавиш, приватный ввод или пассивное открытие; регрессии и native стенд. GTA/OBS требуют отдельной проверки"
-LawSearchVocabulary_Build,runtime_support.ahk:945,runtime_support.ahk:1003,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-LawSearchVocabulary_Add,runtime_support.ahk:958,runtime_support.ahk:1016,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-LawSearch_CorrectToken,runtime_support.ahk:964,runtime_support.ahk:1022,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-SendChatForEpoch,runtime_support.ahk:982,runtime_support.ahk:1040,Адаптирована,Адаптирован путь пользовательских данных/отчётов
-PasteOnlyForEpoch,runtime_support.ahk:988,runtime_support.ahk:1046,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-TypeChatForEpoch,runtime_support.ahk:994,runtime_support.ahk:1052,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ChatLogReader_CursorSignature,runtime_support.ahk:1009,runtime_support.ahk:1067,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-Settings_RecordExtent,runtime_support.ahk:1028,runtime_support.ahk:1086,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-Settings_ResetScroll,runtime_support.ahk:1035,runtime_support.ahk:1093,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-Settings_ActivateLayout,runtime_support.ahk:1042,runtime_support.ahk:1100,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-UI_MeasureTextHeight,runtime_support.ahk:1062,runtime_support.ahk:1120,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-UI_PrepareWindow,runtime_support.ahk:1086,runtime_support.ahk:1144,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-PasteChatForEpoch,runtime_support.ahk:1125,runtime_support.ahk:1183,Адаптирована,Адаптирован путь пользовательских данных/отчётов
-ChatTransport_TypingDelayOverride,runtime_support.ahk:1166,runtime_support.ahk:1224,Адаптирована,Адаптирован путь пользовательских данных/отчётов
+LawSearch_CorpusFingerprint,runtime_support.ahk:835,runtime_support.ahk:879,Адаптирована,Обновлены пути/ресурсы и метаданные редакции; поиск проверяется по присланной базе
+LawSearch_QueryFilters,runtime_support.ahk:848,runtime_support.ahk:897,Адаптирована,Адаптирован путь пользовательских данных/отчётов
+Hotstring_AdmitPattern,runtime_support.ahk:865,runtime_support.ahk:922,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+JoinStrings,runtime_support.ahk:876,runtime_support.ahk:933,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ChatQueue_CancelBatch,runtime_support.ahk:883,runtime_support.ahk:940,Адаптирована,Адаптирован путь пользовательских данных/отчётов
+ImageDimensionsBounded,runtime_support.ahk:895,runtime_support.ahk:954,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+QueueMenu_Run,runtime_support.ahk:916,runtime_support.ahk:975,Адаптирована,"Добавлены владение вводом/паузы клавиш, приватный ввод или пассивное открытие; регрессии и native стенд. GTA/OBS требуют отдельной проверки"
+LawSearchVocabulary_Build,runtime_support.ahk:945,runtime_support.ahk:1004,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+LawSearchVocabulary_Add,runtime_support.ahk:958,runtime_support.ahk:1017,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+LawSearch_CorrectToken,runtime_support.ahk:964,runtime_support.ahk:1023,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+SendChatForEpoch,runtime_support.ahk:982,runtime_support.ahk:1041,Адаптирована,Адаптирован путь пользовательских данных/отчётов
+PasteOnlyForEpoch,runtime_support.ahk:988,runtime_support.ahk:1047,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+TypeChatForEpoch,runtime_support.ahk:994,runtime_support.ahk:1053,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ChatLogReader_CursorSignature,runtime_support.ahk:1009,runtime_support.ahk:1068,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+Settings_RecordExtent,runtime_support.ahk:1028,runtime_support.ahk:1087,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+Settings_ResetScroll,runtime_support.ahk:1035,runtime_support.ahk:1094,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+Settings_ActivateLayout,runtime_support.ahk:1042,runtime_support.ahk:1101,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+UI_MeasureTextHeight,runtime_support.ahk:1062,runtime_support.ahk:1121,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+UI_PrepareWindow,runtime_support.ahk:1086,runtime_support.ahk:1145,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+PasteChatForEpoch,runtime_support.ahk:1125,runtime_support.ahk:1184,Адаптирована,Адаптирован путь пользовательских данных/отчётов
+ChatTransport_TypingDelayOverride,runtime_support.ahk:1166,runtime_support.ahk:1225,Адаптирована,Адаптирован путь пользовательских данных/отчётов
 ChatTyping_DefaultCommands,chat_typing.ahk:6,chat_typing.ahk:6,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 ChatTyping_NormalizeDelay,chat_typing.ahk:10,chat_typing.ahk:10,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 ChatTyping_EffectiveDelay,chat_typing.ahk:18,chat_typing.ahk:18,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария

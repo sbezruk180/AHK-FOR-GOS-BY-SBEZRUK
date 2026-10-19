@@ -7,135 +7,64 @@
       "mode": "--runtime-info",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 5.84,
+      "seconds": 5.83,
       "report": "runtime_info_report.txt"
     },
     {
       "mode": "--desktop-smoke",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 14.2,
+      "seconds": 19.85,
       "report": "desktop_smoke_report.txt"
     },
     {
       "mode": "--audit-selftest",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 53.0,
+      "seconds": 59.41,
       "report": "audit_selftest_report.txt"
     },
     {
       "mode": "--diagnostics",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 19.32,
+      "seconds": 22.48,
       "report": "diagnostics_report.txt"
     },
     {
       "mode": "--selftest",
       "status": "EXPECTED_ABI_FAILURE",
       "exit_code": 1,
-      "seconds": 34.73,
+      "seconds": 35.18,
       "report": "selftest_report.txt"
     },
     {
       "mode": "--context-mocktest",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 5.71,
+      "seconds": 5.82,
       "report": "context_assistant_test.txt"
     },
     {
       "mode": "--autoreport-mocktest",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 5.7,
+      "seconds": 5.87,
       "report": "autoreport_mocktest_report.txt"
     },
     {
       "mode": "--law-search-test",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 31.22,
+      "seconds": 33.12,
       "report": "law_search_test_report.txt"
     },
     {
       "mode": "--v1-mocktest",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 5.82,
+      "seconds": 6.06,
       "report": "v1_mocktest_report.txt"
     }
-  ],
-  "full_suite_test_exe_sha256": "f2fd4be8ae0a69a5773b1782218e2678e8bc6db118e9d9bd95e58b2d92c21fa9",
-  "final_test_exe_sha256": "f2fd4be8ae0a69a5773b1782218e2678e8bc6db118e9d9bd95e58b2d92c21fa9",
-  "final_source_sha256": "b16f6c8bb5334d394ab21fce69036bb630a2174d8b71543bc80ed64b50778f62",
-  "test_source_sha256": "8619ee2194b02d51a2f290f2e47a2237e2dc9855e39dfd1e6b26cd05f48a990e",
-  "release_exe_sha256": "e898a640c2dad2f532e060b6cf6ef28d3aebc7d6fa4f2f3c954604c42699031c",
-  "note": "Final graph: 8 PASS modes, one expected ANSI x86 ABI guard refusal in Unicode x64. Audit 443/0, desktop 88/0. Real game/OBS not tested.",
-  "logic_audit": {
-    "baseline_commit": "f22b845600e54c99c65fb27c0e01cbb226a6ca3f",
-    "confirmed_groups": 16,
-    "baseline_source_audit": {
-      "checks": 441,
-      "failed": 21,
-      "skipped_groups": 4
-    },
-    "final_compiled_audit": {
-      "checks": 443,
-      "failed": 0,
-      "skipped_groups": 3
-    },
-    "native_menu": {
-      "checks": 14,
-      "baseline_failed": 6,
-      "final_failed": 0,
-      "game_process_chat_state_and_memory_sender": "explicit fixture seams",
-      "clipboard_limit": "The old same-process Win32 probe can activate a hidden AHK window on Ctrl+V; its GPS clipboard failures are not a separately confirmed GTA bug."
-    }
-  },
-  "native_input_fixture": {
-    "checks": 29,
-    "failures": 0,
-    "baseline_failures": 4,
-    "states_created": 9,
-    "states_deleted_before": 2,
-    "states_deleted_after": 9,
-    "final_20_characters_ms": 477,
-    "measured_key_hold_ms": 61,
-    "skipped_groups": [
-      "Mixed RU/US layout typing unavailable under Wine"
-    ],
-    "game_predicate": "fixture seam",
-    "chat_open_state": "fixture seam",
-    "action_execution": "fixture sink",
-    "privacy_api": "explicit success/refusal seam; real flag return checked separately in desktop smoke",
-    "wine_layout": "Digit timing only uses current HKL when Wine cannot load real RU/US. Native Windows uses real layouts."
-  },
-  "autoid_fixture": {
-    "checks": 37,
-    "failures": 0,
-    "resolver_input_capture_and_execution": "fixture seams",
-    "real_ui_and_poll_timer": true
-  },
-  "proofs_sha256": {
-    "logic_before_report.txt": "7e1339a94285cad4ebe75297a68a913264b9c1ba594a5d17b82cf3aa4d8ca621",
-    "audit_selftest_report.txt": "e6e40679e8950683615012c4b90bf00d54102fa3cf20c8c7dce9a8bcbe764ef4",
-    "input_before_report.txt": "365c79dc7c882f9359c03fdf01e98ad807dc1a6fd691c9351cdbcab6107f1995",
-    "private_input_report.txt": "3db184be7fad968f81d98f7318dffd684d5a7def121f47867bd33533fdd0335f",
-    "game_menu_before_report.txt": "8a498ee1f1f421be4457da6849b714a2f7194ff72e4389125f39ef166ccb2582",
-    "game_menu_report.txt": "b10de00b47f946052f7b975a3916939316acd0fe8070c316a1dfc419936541a9",
-    "autoid_tracking_report.txt": "ea09dbf4a903c9d092448117be6eff500602686718c0df5e147b634f3b9f4773"
-  },
-  "native_windows_ci": {
-    "url": "https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK/actions/runs/39060054085",
-    "commit": "6bc4d3cf4c1cac796ad38ef946cac9fb7b260814",
-    "status": "PASS",
-    "gui_checks": 88,
-    "input_checks": 31,
-    "menu_checks": 14,
-    "mixed_ru_us_layouts": "PASS: both actual layouts, exact /m Стоп! ID:42",
-    "release_sha256": "e898a640c2dad2f532e060b6cf6ef28d3aebc7d6fa4f2f3c954604c42699031c",
-    "real_game_OBS": "NOT_TESTED"
-  }
+  ]
 }
