@@ -1,7 +1,7 @@
 AHK FOR GOS BY SBEZRUK diagnostics report
-Time: 2026-10-19 07:20:07
-Project: Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-9wdr0ios\data
-Script: Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-9wdr0ios\standalone\AHK_FOR_GOS_TEST_U64.exe
+Time: 2026-10-19 08:16:41
+Project: Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-lnwjjxhc\data
+Script: Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-lnwjjxhc\standalone\AHK_FOR_GOS_TEST_U64.exe
 Mode: CLI read-only diagnostics
 
 
@@ -13,34 +13,34 @@ No GUI, hotkeys, timers, clipboard, GTA memory, profiles/themes writes, or game 
 Защита захвата: состояние ещё не проверено.
 
 == Files ==
-[PASS] High | main exists | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-9wdr0ios\standalone\AHK_FOR_GOS_TEST_U64.exe
-[PASS] High | main non-empty | size=5753344
-[PASS] High | main has no BOM | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-9wdr0ios\standalone\AHK_FOR_GOS_TEST_U64.exe
-[PASS] High | helper embedded source present | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-9wdr0ios\data\helper.ahk
-[PASS] High | common embedded source present | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-9wdr0ios\data\common.ahk
-[PASS] High | UDF embedded source present | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-9wdr0ios\data\UDF.ahk
-[PASS] High | active profiles config exists | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-9wdr0ios\data\profiles.ini
+[PASS] High | main exists | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-lnwjjxhc\standalone\AHK_FOR_GOS_TEST_U64.exe
+[PASS] High | main non-empty | size=5795840
+[PASS] High | main has no BOM | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-lnwjjxhc\standalone\AHK_FOR_GOS_TEST_U64.exe
+[PASS] High | helper embedded source present | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-lnwjjxhc\data\helper.ahk
+[PASS] High | common embedded source present | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-lnwjjxhc\data\common.ahk
+[PASS] High | UDF embedded source present | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-lnwjjxhc\data\UDF.ahk
+[PASS] High | active profiles config exists | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-lnwjjxhc\data\profiles.ini
 [PASS] High | active profiles config non-empty | size=20727
-[PASS] High | active profiles config has no BOM | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-9wdr0ios\data\profiles.ini
+[PASS] High | active profiles config has no BOM | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-lnwjjxhc\data\profiles.ini
 themes.ini: optional file is not present; built-in themes remain available
 
 == Self-test summary ==
-[WARN] Medium | selftest_report.txt exists | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-9wdr0ios\data\selftest_report.txt
+[WARN] Medium | selftest_report.txt exists | Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-lnwjjxhc\data\selftest_report.txt
 
 == Error log tail ==
-Source: Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-9wdr0ios\data\logs\amz_gos.log
-[20261019071840] [INFO] [Config] Migrated config from v0 to v14
-[20261019071842] [INFO] [System] Script start
-[20261019071846] [INFO] [desktop-smoke] Queued chat line: /r Desktop smoke
-[20261019071846] [INFO] [RPSequence] Chat transport: Mock (без игры)
-[20261019071906] [INFO] [AutoTargetID] desktop-smoke: ID 42 | ник First_Player, ped 0x200000
-[20261019071906] [INFO] [AutoTargetID] desktop-smoke: ID 43 | ник Second_Player, ped 0x300000
-[20261019071906] [INFO] [AutoTargetID] desktop-smoke: ID 44 | ник Third_Player, ped 0x400000
-[20261019071907] [INFO] [System] Script exit: Exit
+Source: Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-lnwjjxhc\data\logs\amz_gos.log
+[20261019081506] [INFO] [Config] Migrated config from v0 to v14
+[20261019081508] [INFO] [System] Script start
+[20261019081512] [INFO] [desktop-smoke] Queued chat line: /r Desktop smoke
+[20261019081512] [INFO] [RPSequence] Chat transport: Mock (без игры)
+[20261019081532] [INFO] [AutoTargetID] desktop-smoke: ID 42 | ник First_Player, ped 0x200000
+[20261019081532] [INFO] [AutoTargetID] desktop-smoke: ID 43 | ник Second_Player, ped 0x300000
+[20261019081532] [INFO] [AutoTargetID] desktop-smoke: ID 44 | ник Third_Player, ped 0x400000
+[20261019081532] [INFO] [System] Script exit: Exit
 
 
 == Profile and theme summary ==
-Active config: Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-9wdr0ios\data\profiles.ini
+Active config: Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-lnwjjxhc\data\profiles.ini
 Active profile: Основной
 ThemeMode: Graphite
 themes.ini: missing

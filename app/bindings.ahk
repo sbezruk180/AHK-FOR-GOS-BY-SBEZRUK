@@ -343,6 +343,9 @@ SuspendGameTextTriggersForBindMenu() {
     Loop % RegisteredGameTextHotstrings.Length()
     {
         pattern := RegisteredGameTextHotstrings[A_Index]
+        ; Keep the two reserved close-menu commands available while editing.
+        if (pattern = ":?:!меню" || pattern = ":?:!menu")
+            continue
         if (pattern != "")
         {
             try
@@ -1033,10 +1036,15 @@ ApplyTextTriggers(ByRef ok, ByRef errText) {
     Hotkey, If, % GameTextHotkeyContext
     ResetRegisteredGameTextHotstrings()
     Hotkey, If, % GameTextHotkeyContext
-    usedTriggers := {"!бинд": "Открыть окно TXT"}
+    usedTriggers := {}
+    for _, trigger in TextCommands_OpenerTriggers()
+        usedTriggers[trigger] := "Открыть окно TXT"
     PrivateText_RegisterOpener()
 
     if !RegisterTextTrigger("BindMenu", Prev_Trig_BindMenu, "!меню", "DoBindMenuToggle", errText, usedTriggers)
+        ok := 0
+    previousMenuEnglish := ""
+    if !RegisterTextTrigger("BindMenuEN", previousMenuEnglish, "!menu", "DoBindMenuToggle", errText, usedTriggers)
         ok := 0
     if !RegisterTextTrigger("Codes", Prev_Trig_Codes, "!коды", "DoServiceCodesGui", errText, usedTriggers)
         ok := 0
@@ -1101,6 +1109,7 @@ ApplyTextTriggers(ByRef ok, ByRef errText) {
     if !RegisterTextTrigger("Search_RUN", Prev_SearchTrig_RUN, "!пнайти", "DoLawSearchClipboard", errText, usedTriggers)
         ok := 0
     ApplyCustomFunctionTextTriggers(ok, errText, usedTriggers)
+    TextCommands_RegisterAliases(ok, errText, usedTriggers)
     if (BindMenuEditMode)
         SuspendGameTextTriggersForBindMenu()
     Hotkey, If
@@ -1330,7 +1339,7 @@ HandleBoundHotkey(hotkeyName) {
         return
 
     token := HotkeyDispatchMap[keyId]
-    if (BindMenuEditMode && GetBoundLabelByToken(token) != "")
+    if (BindMenuEditMode && token != "TextCommandInput" && GetBoundLabelByToken(token) != "")
     {
         BindMenuHotkeyBlockedWarn()
         return

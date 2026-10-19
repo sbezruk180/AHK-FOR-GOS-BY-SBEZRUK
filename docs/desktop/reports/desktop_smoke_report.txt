@@ -1,8 +1,8 @@
 ﻿Desktop integration probe
 Runtime=1.1.37.02 | Unicode=1 | PtrSize=8
-Compiled=1 | Data=Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-_dcq70x2\data
+Compiled=1 | Data=Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-lnwjjxhc\data
 No real game or OBS verification.
-INFO | startup WorkingSetMiB=54.24 PeakMiB=54.24
+INFO | startup WorkingSetMiB=54.66 PeakMiB=54.66
 PASS | compiled standalone host
 PASS | application mutex acquired
 PASS | duplicate application mutex detected
@@ -51,6 +51,7 @@ PASS | interactive controls do not overlap automation
 PASS | settings page screenshots
 PASS | sidebar button dispatch screenshots
 PASS | interactive controls do not overlap screenshots
+PASS | TXT recovery restores the actual Alt+T hotkey control
 PASS | settings catalog keeps all 13 pages
 PASS | sidebar has one native button for each page
 PASS | legacy navigation is hidden
@@ -116,5 +117,5 @@ PASS | same-EXE diagnostic finishes in custom data directory
 PASS | diagnostic does not replace parent instance
 PASS | diagnostic report opens in own application GUI
 PASS | closing settings destroys its native window
-INFO | after native smoke WorkingSetMiB=246.68 PeakMiB=250.71
-Checks=113 | Failed=0
+INFO | after native smoke WorkingSetMiB=252.52 PeakMiB=252.52
+Checks=114 | Failed=0

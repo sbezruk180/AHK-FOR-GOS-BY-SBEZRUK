@@ -324,7 +324,7 @@ ServiceUI_ReleaseInputCapture(state) {
     }
 }
 
-ServiceUI_Request(title, prompt, ByRef value, maxLen := 180, timeoutSeconds := 45, seed := "", confirmOnSpace := false, forcePrivacy := false, preparedState := "") {
+ServiceUI_Request(title, prompt, ByRef value, maxLen := 180, timeoutSeconds := 45, seed := "", confirmOnSpace := false, forcePrivacy := false, preparedState := "", prepareContext := "") {
     global ServiceUIInputState, ServiceUIAuditInputs, PhysicalInputBusy, IDCaptureState, AutomationEpoch, CurrentProfile
     ServiceUILastInputError := ""
     if (ServiceUI_IsInputActive() || PhysicalInputBusy || IsObject(IDCaptureState))
@@ -363,11 +363,25 @@ ServiceUI_Request(title, prompt, ByRef value, maxLen := 180, timeoutSeconds := 4
         if (!ServiceUI_ContextIsCurrent(state) || state.Pending != "" || TickNow() >= state.Deadline)
             return false
         if !IsObject(state.Hook) {
-            started := TickNow()
+            if (state.ForcePrivacy && !ServiceUI_CreateInputGui(state))
+                return false
             while ServiceUI_ModifierHeld() {
-                if (!ServiceUI_ContextIsCurrent(state) || state.Pending != "" || TickNow() - started >= 1200)
+                if (!ServiceUI_ContextIsCurrent(state) || state.Pending != "" || TickNow() >= state.Deadline)
                     return false
                 Sleep, 10
+            }
+            if (!ServiceUI_ContextIsCurrent(state) || state.Pending != "")
+                return false
+            if IsObject(prepareContext) {
+                state.Preparing := true
+                try
+                    prepared := prepareContext.Call()
+                finally
+                    state.Preparing := false
+                if (!prepared) {
+                    ServiceUILastInputError := "Не удалось подготовить игровой чат к личному вводу. Повторите Alt+T в активной игре."
+                    return false
+                }
             }
             if (!ServiceUI_ContextIsCurrent(state) || state.Pending != "")
                 return false
@@ -375,9 +389,9 @@ ServiceUI_Request(title, prompt, ByRef value, maxLen := 180, timeoutSeconds := 4
             hook.Start()
         } else
             hook := state.Hook
-        ; Capture precedes painting. GPS can adopt a hook started before chat cleanup.
+        ; GPS can adopt a hook started before chat cleanup; private TXT already painted its protected window.
         if (hook.InProgress) {
-            if !ServiceUI_CreateInputGui(state)
+            if (!state.GuiHwnd && !ServiceUI_CreateInputGui(state))
                 return false
             state.Timer := Func("ServiceUI_InputTick").Bind(state)
             timerCallback := state.Timer

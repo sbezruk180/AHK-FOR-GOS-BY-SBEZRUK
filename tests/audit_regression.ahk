@@ -220,6 +220,7 @@ RunAuditSelfTest() {
     Audit_CustomRunIdentity()
     RunLogicAuditRegression()
     Guide_RunRegression()
+    TextCommands_RunRegression()
     AuditAssert("F10 reader never truncates chatlog", !ChatLogReader_MaybeCleanup(file) && FileExist(file))
 
     LawSearchCorpusSignature := "", SearchInitialized := 0

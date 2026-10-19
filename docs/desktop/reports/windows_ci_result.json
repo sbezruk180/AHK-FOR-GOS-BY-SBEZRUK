@@ -1,35 +1,10 @@
 {
   "workflow": "Standalone Windows EXE",
-  "run_id": "39215721222",
-  "url": "https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK/actions/runs/39215721222",
-  "job_url": "https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK/actions/runs/39215721222/job/117938984066",
-  "commit": "eff437ee63bbfeb3a0875471617f065643c4c905",
-  "conclusion": "SUCCESS",
-  "release_exe_sha256": "4f0bb86e6bb4530fddcb2431064690f6affea4b6a9487cbc80061b1d0158f1a7",
-  "verified": [
-    "native Windows build and PE/source validation",
-    "shipped ANSI x86 EXE boot: Compiled=1, PointerSize=4, Unicode=0, SourceIntrospection=1, LawDocuments=20",
-    "native Windows GUI test host including guide pages, profile persistence and search navigation handoff",
-    "all seven previous law files, unmodified file retention, custom override precedence and embedded fallback",
-    "native Windows private TXT / character typing fixture completed successfully",
-    "native Windows GPS / Win32 menu / ownership / cancellation fixture completed successfully"
-  ],
-  "fixture_note": "GUI uses an explicitly marked Unicode test host with UTF-16 INI. Game predicates, chat state, memory transport and input-fixture privacy/action/decoration are explicit seams. Full native Cyrillic ANSI regressions on the hosted non-1251 codepage are explicitly skipped; the cloud ACP1251 audit is recorded separately.",
-  "earlier_attempts": [
-    {
-      "run_id": "39214734099",
-      "conclusion": "FAILURE",
-      "reason": "New Python tools read UTF-8 law metadata using Windows default CP1252; fixed by explicit UTF-8."
-    },
-    {
-      "run_id": "39214994817",
-      "conclusion": "SUCCESS",
-      "note": "Pre-navigation-fix build; final build verified by run 39215721222."
-    }
-  ],
+  "conclusion": "PENDING",
+  "note": "TXT/Alt+T repair awaits this commit\u2019s Windows CI. Previous law-guide result is historical, not proof for the new binary.",
+  "previous_result": "windows_ci_law_guides_2026-10-19.json",
   "not_claimed": [
     "real GTA / Amazing ABI or commands",
-    "physical input inside game",
     "actual OBS frames",
     "exclusive Direct3D fullscreen",
     "native Cyrillic ANSI regressions on non-1251 hosted Windows ACP"
