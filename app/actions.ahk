@@ -1165,8 +1165,11 @@ RunGpsDialogAction(actionName, downCount, gpsNumber, inputEpoch := 0) {
         if !GameMenu_Prepare(reservation)
             return false
         stage := "открытие /gps"
-        lease := GameMenu_SendCommand(reservation, "/gps", 650)
+        lease := GameMenu_SendCommand(reservation, "/gps", 0, false)
         if !IsObject(lease)
+            return false
+        stage := "ожидание списка GPS (до 5 сек.)"
+        if !GameDialog_Wait(lease, "list")
             return false
         stage := "выбор пункта"
         if !GameMenu_Tap(lease, "Home")
@@ -1175,7 +1178,7 @@ RunGpsDialogAction(actionName, downCount, gpsNumber, inputEpoch := 0) {
             if (!GameMenu_Tap(lease, "Down") || !GameMenu_Wait(lease, 35))
                 return false
         stage := "открытие поля номера"
-        if (!GameMenu_Tap(lease, "Enter") || !GameMenu_Wait(lease, 500))
+        if (!GameMenu_Tap(lease, "Enter") || !GameDialog_Wait(lease, "input"))
             return false
         stage := "ввод номера"
         if (!GameMenu_TypeDigits(lease, gpsNumber) || !GameMenu_Wait(lease, 100))

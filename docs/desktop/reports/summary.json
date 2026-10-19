@@ -4,83 +4,44 @@
   "real_OBS": "NOT_TESTED",
   "results": [
     {
-      "mode": "--runtime-info",
-      "status": "PASS",
-      "exit_code": 0,
-      "seconds": 6.47,
-      "report": "runtime_info_report.txt"
-    },
-    {
       "mode": "--desktop-smoke",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 32.85,
+      "seconds": 28.67,
       "report": "desktop_smoke_report.txt"
     },
     {
       "mode": "--audit-selftest",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 62.83,
+      "seconds": 50.23,
       "report": "audit_selftest_report.txt"
-    },
-    {
-      "mode": "--diagnostics",
-      "status": "PASS",
-      "exit_code": 0,
-      "seconds": 22.06,
-      "report": "diagnostics_report.txt"
-    },
-    {
-      "mode": "--selftest",
-      "status": "EXPECTED_ABI_FAILURE",
-      "exit_code": 1,
-      "seconds": 38.95,
-      "report": "selftest_report.txt"
-    },
-    {
-      "mode": "--context-mocktest",
-      "status": "PASS",
-      "exit_code": 0,
-      "seconds": 5.73,
-      "report": "context_assistant_test.txt"
-    },
-    {
-      "mode": "--autoreport-mocktest",
-      "status": "PASS",
-      "exit_code": 0,
-      "seconds": 5.75,
-      "report": "autoreport_mocktest_report.txt"
-    },
-    {
-      "mode": "--law-search-test",
-      "status": "PASS",
-      "exit_code": 0,
-      "seconds": 37.94,
-      "report": "law_search_test_report.txt"
-    },
-    {
-      "mode": "--v1-mocktest",
-      "status": "PASS",
-      "exit_code": 0,
-      "seconds": 6.34,
-      "report": "v1_mocktest_report.txt"
     }
   ],
-  "test_exe": "6549299521b8cff65cfd694e19975cb82b1d236065bbf0df606d99797e167333",
-  "native_text_fixture": {
-    "checks": 35,
+  "scope": "signals, removed guides, builder UI, GPS readiness",
+  "test_exe_sha256": "63d4ab2bcf66195b6c8eaae49c1860bdcad2460a51c1904bd7c9cae07027189e",
+  "gps_native": {
+    "checks": 17,
+    "failed": 0,
+    "baseline_checks": 17,
+    "baseline_failed": 2,
+    "report": "game_menu_report.txt",
+    "baseline_report": "gps_dialog_before_report.txt",
+    "baseline_commit": "0dfaa5bd862dc1bd1462fbb79354f4e565dbe9a7",
+    "fixture_sha256": "79513563d7fa5388785ad91c09f7b0344a5d56c4dbbe24d2276c017104af95cd",
+    "seams": [
+      "game process/window",
+      "memory command",
+      "chat flag",
+      "read-only dialog-state observer"
+    ]
+  },
+  "txt_native": {
+    "checks": 33,
     "failed": 0,
     "report": "text_bind_report.txt",
-    "baseline_commit": "0dfaa5bd862dc1bd1462fbb79354f4e565dbe9a7",
-    "baseline_checks": 27,
-    "baseline_failed": 12,
-    "note": "Baseline skips unknown private English commands to avoid retry timeout; two preparation-lease checks require the new early window."
+    "fixture_sha256": "1f1be1827f37f8ad5b624e35ba1bd01c22dc40c82bf83b56ae8ec440fee3d2ca",
+    "note": "Existing route/removal regression only; user postponed the real-client TXT refusal investigation."
   },
-  "native_private_fixture": {
-    "checks": 29,
-    "failed": 0,
-    "report": "private_input_report.txt",
-    "skipped": "Mixed RU/US native layouts unavailable in Wine."
-  }
+  "other_reports": "Historical reports are retained; only the tests listed here ran for this source revision."
 }

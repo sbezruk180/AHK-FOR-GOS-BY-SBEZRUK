@@ -485,14 +485,98 @@ CustomFunctionBuilder_SaveCurrent(applyBinds := 1) {
 }
 
 CustomFunctionBuilder_AppendStep(text) {
-    global CFB_Script, hCFBScript
-    GuiControlGet, CFB_Script, 40:, CFB_Script
-    if (CFB_Script != "" && SubStr(CFB_Script, 0) != "`n")
-        CFB_Script .= "`r`n"
-    CFB_Script .= text
-    GuiControl, 40:, CFB_Script, %CFB_Script%
-    if (hCFBScript)
-        SendMessage, 0xB1, -1, -1,, ahk_id %hCFBScript%
+    global hCFBScript
+    if !DllCall("IsWindow", "Ptr", hCFBScript)
+        return false
+    ControlGetText, script,, ahk_id %hCFBScript%
+    first := 0, last := 0
+    DllCall("SendMessage", "Ptr", hCFBScript, "UInt", 0xB0, "UInt*", first, "UInt*", last)
+    before := SubStr(script, 1, first), after := SubStr(script, last + 1)
+    insert := (before != "" && SubStr(before, 0) != "`n" ? "`r`n" : "") . text
+    if (after != "" && SubStr(after, 1, 1) != "`r" && SubStr(after, 1, 1) != "`n")
+        insert .= "`r`n"
+    ; EM_REPLACESEL preserves the Edit control's native Ctrl+Z undo history.
+    DllCall("SendMessage", "Ptr", hCFBScript, "UInt", 0xC2, "Ptr", 1, "Str", insert)
+    GuiControl, 40:Focus, CFB_Script
+    return true
+}
+
+CustomFunctionBuilder_Check(params*) {
+    GuiControlGet, script, 40:, CFB_Script
+    errorText := "", steps := CustomFunction_Parse(script, errorText)
+    if (errorText != "") {
+        GuiControl, 40:, CFB_Status, % "Ошибка: " . errorText
+        return false
+    }
+    waitMs := 0
+    for _, step in steps
+        if (step.Type = "WAIT")
+            waitMs += step.Value
+    GuiControl, 40:, CFB_Status, % "Проверено: " . steps.Length() . " шагов. Сумма пауз: " . waitMs . " мс. Таймеры не задерживают сценарий."
+    return true
+}
+
+CustomFunctionBuilder_PreviewText(script, ByRef errorText) {
+    steps := CustomFunction_Parse(script, errorText)
+    if (errorText != "")
+        return ""
+    result := "Предпросмотр: сообщения не отправляются, таймеры не запускаются.`r`nПоля профиля и ID подставлены на момент просмотра.`r`n`r`n"
+    for index, step in steps {
+        value := step.Type = "WAIT" ? step.Value . " мс" : (step.Type = "TIMER" ? step.Value . " сек. | " . ApplyActionTemplate(step.Label) : ApplyActionTemplate(step.Value))
+        result .= index . ". " . step.Type . (value != "" ? "  " . value : "") . "`r`n"
+        if (step.Type = "STOP") {
+            if (index < steps.Length())
+                result .= "После STOP оставшиеся шаги не выполняются.`r`n"
+            break
+        }
+    }
+    return result
+}
+
+CustomFunctionBuilder_Preview(params*) {
+    GuiControlGet, script, 40:, CFB_Script
+    errorText := "", preview := CustomFunctionBuilder_PreviewText(script, errorText)
+    if (errorText != "") {
+        GuiControl, 40:, CFB_Status, % "Ошибка: " . errorText
+        return false
+    }
+    return ServiceUI_ShowDetails("Предпросмотр сценария", preview, true)
+}
+
+CustomFunctionBuilder_Duplicate(params*) {
+    global CustomFunctions, CustomFunctionMaxCount, CFB_Name, CFB_Script
+    if (CustomFunctions.Length() >= CustomFunctionMaxCount) {
+        GuiControl, 40:, CFB_Status, Достигнут предел пользовательских функций.
+        return false
+    }
+    Gui, 40:Submit, NoHide
+    errorText := ""
+    CustomFunction_Parse(CFB_Script, errorText)
+    if (errorText != "") {
+        GuiControl, 40:, CFB_Status, % "Ошибка: " . errorText
+        return false
+    }
+    name := NormalizeCustomFunctionName(CFB_Name), number := 1
+    Loop {
+        candidate := SubStr(name, 1, 44) . " (копия " . number . ")", exists := false
+        for _, item in CustomFunctions
+            if (item.Name = candidate)
+                exists := true
+        if (!exists)
+            break
+        number++
+    }
+    ; The copy includes unsaved editor text, but never copies conflicting binds.
+    CustomFunctions.Push({Name: candidate, Hotkey: "", Trigger: "", Script: CFB_Script})
+    if !SaveCustomFunctions() {
+        CustomFunctions.Pop()
+        GuiControl, 40:, CFB_Status, Не удалось сохранить копию.
+        return false
+    }
+    CustomFunctionBuilder_RefreshList(CustomFunctions.Length())
+    ApplyAllBinds()
+    GuiControl, 40:, CFB_Status, Копия сохранена без горячей клавиши и TXT. Назначьте их отдельно.
+    return true
 }
 
 OpenCustomFunctionBuilder(selectIndex := 1) {
@@ -518,8 +602,9 @@ OpenCustomFunctionBuilder(selectIndex := 1) {
     Gui, 40:Font, s10 Bold c%text%, Segoe UI
     Gui, 40:Add, Text, x34 y128 w200 h22 BackgroundTrans, Мои функции
     Gui, 40:Font, Norm s9 c%controlText%, Segoe UI
-    Gui, 40:Add, ListBox, x34 y164 w200 h352 vCFB_List gCustomFunctionListChanged AltSubmit
+    Gui, 40:Add, ListBox, x34 y164 w200 h324 vCFB_List gCustomFunctionListChanged AltSubmit
     Gui, 40:Font, Norm s9 c%text%, Segoe UI
+    Gui, 40:Add, Button, x34 y502 w200 h30 gCustomFunctionBuilder_Duplicate, Создать копию
     Gui, 40:Add, Button, x34 y544 w94 h36 gCustomFunctionNewLabel, Новая
     Gui, 40:Add, Button, x140 y544 w94 h36 gCustomFunctionDeleteLabel, Удалить
 
@@ -533,7 +618,9 @@ OpenCustomFunctionBuilder(selectIndex := 1) {
     Gui, 40:Add, Edit, x708 y156 w196 h34 -Multi -WantReturn -VScroll -HScroll vCFB_Trigger
 
     Gui, 40:Font, s9 Bold c%text%, Segoe UI
-    Gui, 40:Add, Text, x284 y208 w620 h20 BackgroundTrans, Сценарий
+    Gui, 40:Add, Text, x284 y208 w300 h20 BackgroundTrans, Сценарий
+    Gui, 40:Add, Button, x620 y202 w130 h28 gCustomFunctionBuilder_Check, Проверить
+    Gui, 40:Add, Button, x764 y202 w140 h28 gCustomFunctionBuilder_Preview, Предпросмотр
     Gui, 40:Font, Norm s10 c%controlText%, Consolas
     Gui, 40:Add, Edit, x284 y236 w620 h240 vCFB_Script hwndhCFBScript WantTab -Wrap Background%controlBg%
 

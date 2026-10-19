@@ -2,12 +2,13 @@
 Guide_RunRegression() {
     global
     catalog := Guide_GetCatalog()
-    AuditAssert("Guides: three separate reference documents", catalog.Length() = 3)
+    AuditAssert("Guides: only requested signals remain", catalog.Length() = 1 && !IsObject(Guide_GetMeta(22)) && !IsObject(Guide_GetMeta(23)))
     timetable := Guide_SignalsText()
     timesOK := true
     for _, time in ["03:30", "07:30", "15:30", "19:30", "10:00", "19:00", "03:00–03:10", "07:00–07:10", "15:00–15:10", "19:00–19:10", "09:30–09:40", "18:30–18:40"]
         timesOK := timesOK && InStr(timetable, time)
     AuditAssert("Guides: server timetable and 20-30 minute gathering windows", timesOK && InStr(timetable, "только спецподразделения") && !InStr(timetable, "ВУЛКАН"))
+    AuditAssert("Guides: exactly two supplied department reports", InStr(timetable, "/d [ГАИ/УФСБ] Говорит лейтенант полиции Лукашенко, занял предварительную точку крушения ВГП - Лыткарино.") && InStr(timetable, "/d [ГАИ/УФСБ] Говорит лейтенант полиции Лукашенко, точка крушения ВГП - Лыткарино.") && !InStr(timetable, "/r ") && !InStr(timetable, "2-1"))
     savedTriggers := {}, savedBinds := {}
     for _, meta in catalog {
         savedTriggers[meta.Token] := GetDynamicGlobalValue("Trig_" . meta.Token)
@@ -58,12 +59,12 @@ Guide_RunDesktopChecks() {
     Search_ShowCurrentResult()
     Gui, 16:+HwndguideSearchWindow
     DesktopSmoke_Assert("law search result fixture opens", SearchGuiVisible && DllCall("IsWindow", "Ptr", guideSearchWindow))
-    Guide_Toggle(22)
-    DesktopSmoke_Assert("guide takes page navigation from an open law search", current_doc = 22 && !SearchGuiVisible && !SearchModeActive && !DllCall("IsWindow", "Ptr", guideSearchWindow))
+    Guide_Toggle(21)
+    DesktopSmoke_Assert("guide takes page navigation from an open law search", current_doc = 21 && !SearchGuiVisible && !SearchModeActive && !DllCall("IsWindow", "Ptr", guideSearchWindow))
     ToggleLawDoc(5, "flter1", "ter1")
     DesktopSmoke_Assert("guide can switch to law", current_doc = 5)
-    Guide_Toggle(23)
-    DesktopSmoke_Assert("law can switch to guide", current_doc = 23)
+    Guide_Toggle(21)
+    DesktopSmoke_Assert("law can switch to guide", current_doc = 21)
     ServiceCodes_Show()
     DesktopSmoke_Assert("guide can switch to service codes", ServiceCodesGuiVisible && !current_doc)
     Guide_Toggle(21)

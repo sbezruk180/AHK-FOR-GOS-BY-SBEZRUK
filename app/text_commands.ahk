@@ -28,7 +28,7 @@ TextCommands_IsOpener(text) {
 }
 
 TextCommands_EnglishTrigger(token) {
-    static names := {GuideSignals: "!signals", GuidePDP: "!pdp", GuideSVU: "!svu", BindMenu: "!menu", Codes: "!codes", Search: "!frisk", Search_RUN: "!search", GpsD: "!house", GpsOS: "!org"}
+    static names := {GuideSignals: "!signals", BindMenu: "!menu", Codes: "!codes", Search: "!frisk", Search_RUN: "!search", GpsD: "!house", GpsOS: "!org"}
     if names.HasKey(token)
         return names[token]
     StringLower, token, token

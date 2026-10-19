@@ -2006,14 +2006,6 @@ DoGuideSignals:
 Guide_Toggle(21, true)
 return
 
-DoGuidePDP:
-Guide_Toggle(22, true)
-return
-
-DoGuideSVU:
-Guide_Toggle(23, true)
-return
-
 DoServiceCodesGui:
 if ServiceCodes_Show()
     Helper_CloseChatAfterGui()

@@ -795,9 +795,9 @@ NormalizeBindValue,AHK_FOR_GOS_BY_SBEZRUK.ahk:15349,app/bindings.ahk:1127,Без
 ClearRegisteredBindHotkeys,AHK_FOR_GOS_BY_SBEZRUK.ahk:15354,app/bindings.ahk:1132,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 RegisterBoundHotkey,AHK_FOR_GOS_BY_SBEZRUK.ahk:15386,app/bindings.ahk:1164,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 GetBoundLabelByToken,AHK_FOR_GOS_BY_SBEZRUK.ahk:15423,app/bindings.ahk:1201,Адаптирована,Адаптирован путь пользовательских данных/отчётов
-ExecuteBindToken,AHK_FOR_GOS_BY_SBEZRUK.ahk:15521,app/bindings.ahk:1303,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-HandleBoundHotkey,AHK_FOR_GOS_BY_SBEZRUK.ahk:15551,app/bindings.ahk:1333,Адаптирована,Адаптирован путь пользовательских данных/отчётов
-ApplyAllBinds,AHK_FOR_GOS_BY_SBEZRUK.ahk:15566,app/bindings.ahk:1350,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ExecuteBindToken,AHK_FOR_GOS_BY_SBEZRUK.ahk:15521,app/bindings.ahk:1301,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+HandleBoundHotkey,AHK_FOR_GOS_BY_SBEZRUK.ahk:15551,app/bindings.ahk:1331,Адаптирована,Адаптирован путь пользовательских данных/отчётов
+ApplyAllBinds,AHK_FOR_GOS_BY_SBEZRUK.ahk:15566,app/bindings.ahk:1348,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 LoadUIAppearanceFromIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:15602,app/profiles.ahk:126,Адаптирована,Адаптирован путь пользовательских данных/отчётов
 LoadUISafetyAndAudioFromIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:15632,app/profiles.ahk:159,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 LoadUIWindowPrefsFromIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:15708,app/profiles.ahk:235,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
@@ -859,13 +859,13 @@ CustomFunctionBuilder_RefreshList,AHK_FOR_GOS_BY_SBEZRUK.ahk:16858,app/custom_fu
 CustomFunctionBuilder_LoadSelection,AHK_FOR_GOS_BY_SBEZRUK.ahk:16875,app/custom_functions.ahk:434,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 CustomFunctionBuilder_StoreFields,AHK_FOR_GOS_BY_SBEZRUK.ahk:16889,app/custom_functions.ahk:448,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 CustomFunctionBuilder_SaveCurrent,AHK_FOR_GOS_BY_SBEZRUK.ahk:16898,app/custom_functions.ahk:457,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-CustomFunctionBuilder_AppendStep,AHK_FOR_GOS_BY_SBEZRUK.ahk:16928,app/custom_functions.ahk:487,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-OpenCustomFunctionBuilder,AHK_FOR_GOS_BY_SBEZRUK.ahk:16939,app/custom_functions.ahk:498,Адаптирована,Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте
-CloseCustomFunctionBuilder,AHK_FOR_GOS_BY_SBEZRUK.ahk:17017,app/custom_functions.ahk:570,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-GetBindCatalog,AHK_FOR_GOS_BY_SBEZRUK.ahk:17026,app/bindings.ahk:1386,Адаптирована,Адаптирован путь пользовательских данных/отчётов
-BindCatalog_IsRegistrable,AHK_FOR_GOS_BY_SBEZRUK.ahk:17150,app/bindings.ahk:1514,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-BindCatalog_IsUserVisible,AHK_FOR_GOS_BY_SBEZRUK.ahk:17154,app/bindings.ahk:1518,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-GetBindCatalogMap,AHK_FOR_GOS_BY_SBEZRUK.ahk:17158,app/bindings.ahk:1522,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+CustomFunctionBuilder_AppendStep,AHK_FOR_GOS_BY_SBEZRUK.ahk:16928,app/custom_functions.ahk:487,Адаптирована,Адаптирован путь пользовательских данных/отчётов
+OpenCustomFunctionBuilder,AHK_FOR_GOS_BY_SBEZRUK.ahk:16939,app/custom_functions.ahk:582,Адаптирована,Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте
+CloseCustomFunctionBuilder,AHK_FOR_GOS_BY_SBEZRUK.ahk:17017,app/custom_functions.ahk:657,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+GetBindCatalog,AHK_FOR_GOS_BY_SBEZRUK.ahk:17026,app/bindings.ahk:1384,Адаптирована,Адаптирован путь пользовательских данных/отчётов
+BindCatalog_IsRegistrable,AHK_FOR_GOS_BY_SBEZRUK.ahk:17150,app/bindings.ahk:1510,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+BindCatalog_IsUserVisible,AHK_FOR_GOS_BY_SBEZRUK.ahk:17154,app/bindings.ahk:1514,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+GetBindCatalogMap,AHK_FOR_GOS_BY_SBEZRUK.ahk:17158,app/bindings.ahk:1518,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 BuildBindListRow,AHK_FOR_GOS_BY_SBEZRUK.ahk:17173,app/ui_overlays.ahk:710,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 BuildBindListRows,AHK_FOR_GOS_BY_SBEZRUK.ahk:17201,app/ui_overlays.ahk:738,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 BuildBindListSummary,AHK_FOR_GOS_BY_SBEZRUK.ahk:17248,app/ui_overlays.ahk:785,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
@@ -1029,14 +1029,14 @@ SendGpsDialogDown,AHK_FOR_GOS_BY_SBEZRUK.ahk:22211,app/actions.ahk:1134,Адап
 RunGpsDialogAction,AHK_FOR_GOS_BY_SBEZRUK.ahk:22222,app/actions.ahk:1147,Адаптирована,"Добавлены владение вводом/паузы клавиш, приватный ввод или пассивное открытие; регрессии и native стенд. GTA/OBS требуют отдельной проверки"
 ServiceCodes_GetText,AHK_FOR_GOS_BY_SBEZRUK.ahk:22255,app/ui_documents.ahk:207,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 ServiceCodes_Show,AHK_FOR_GOS_BY_SBEZRUK.ahk:22298,app/ui_documents.ahk:250,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-InputAction_DoEnterID,AHK_FOR_GOS_BY_SBEZRUK.ahk:22429,app/actions.ahk:1196,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-Action_DoInCar,AHK_FOR_GOS_BY_SBEZRUK.ahk:22562,app/actions.ahk:1214,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-Action_DoDoc,AHK_FOR_GOS_BY_SBEZRUK.ahk:22584,app/actions.ahk:1221,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-Action_DoSearch,AHK_FOR_GOS_BY_SBEZRUK.ahk:22595,app/actions.ahk:1228,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-InputAction_DoSOS,AHK_FOR_GOS_BY_SBEZRUK.ahk:22607,app/actions.ahk:1236,Адаптирована,Адаптирован путь пользовательских данных/отчётов
-InputAction_DoWantedList,AHK_FOR_GOS_BY_SBEZRUK.ahk:22631,app/actions.ahk:1245,Адаптирована,Адаптирован путь пользовательских данных/отчётов
-Action_DoArrest,AHK_FOR_GOS_BY_SBEZRUK.ahk:22861,app/actions.ahk:1262,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ReadAutoReportMinutes,AHK_FOR_GOS_BY_SBEZRUK.ahk:22925,app/actions.ahk:1270,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+InputAction_DoEnterID,AHK_FOR_GOS_BY_SBEZRUK.ahk:22429,app/actions.ahk:1199,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+Action_DoInCar,AHK_FOR_GOS_BY_SBEZRUK.ahk:22562,app/actions.ahk:1217,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+Action_DoDoc,AHK_FOR_GOS_BY_SBEZRUK.ahk:22584,app/actions.ahk:1224,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+Action_DoSearch,AHK_FOR_GOS_BY_SBEZRUK.ahk:22595,app/actions.ahk:1231,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+InputAction_DoSOS,AHK_FOR_GOS_BY_SBEZRUK.ahk:22607,app/actions.ahk:1239,Адаптирована,Адаптирован путь пользовательских данных/отчётов
+InputAction_DoWantedList,AHK_FOR_GOS_BY_SBEZRUK.ahk:22631,app/actions.ahk:1248,Адаптирована,Адаптирован путь пользовательских данных/отчётов
+Action_DoArrest,AHK_FOR_GOS_BY_SBEZRUK.ahk:22861,app/actions.ahk:1265,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ReadAutoReportMinutes,AHK_FOR_GOS_BY_SBEZRUK.ahk:22925,app/actions.ahk:1273,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 ToggleLawDoc,AHK_FOR_GOS_BY_SBEZRUK.ahk:22997,app/ui_documents.ahk:268,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 LawDoc_PrefixById,AHK_FOR_GOS_BY_SBEZRUK.ahk:23027,app/ui_documents.ahk:298,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 ToggleLawDocFromChat,AHK_FOR_GOS_BY_SBEZRUK.ahk:23036,app/ui_documents.ahk:307,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
