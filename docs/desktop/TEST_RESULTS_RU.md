@@ -24,7 +24,7 @@
 | Остальные CLI-режимы | PASS | runtime-info, diagnostics, context-mocktest, autoreport-mocktest, v1-mocktest |
 | `--selftest` | Ожидаемый отказ только ANSI x86 ABI | Остальные проверки проходят; U64 не является игровой сборкой |
 | `verify_laws.py` / инвентарь / PE | PASS | 20 хешей laws, 7 прежних редакций, явный пропуск ФСБ; единственность включений/исходных функций; PE32 GUI и ресурсы |
-| Windows CI текущего EXE | Ожидается после публикации | Предыдущий успешный CI не считается проверкой новых байтов. [Статус](reports/windows_ci_result.json) |
+| Windows CI текущего EXE | **PASS** | [Run 39222461987](https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK/actions/runs/39222461987), commit `2046bf4f0cc847540519d0789f9645f8b3c2b968`: запуск ANSI x86, GUI, обновление laws, личный ввод, новый стенд TXT/Alt+T/английских команд, GPS. [Подробности](reports/windows_ci_result.json) |
 
 [Полный набор](reports/summary.json), [audit](reports/audit_selftest_report.txt), [GUI](reports/desktop_smoke_report.txt), [TXT](reports/text_bind_report.txt), [TXT до исправления](reports/text_bind_before_report.txt), [личный ввод](reports/private_input_report.txt).
 
