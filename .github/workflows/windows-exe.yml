@@ -96,6 +96,30 @@ jobs:
           Get-Content (Join-Path (Split-Path $fixture) 'chat_route_report.txt') -Encoding utf8
           $process.Refresh()
           if ($process.ExitCode -ne 0) { throw "Chat routes failed: $($process.ExitCode)" }
+      - name: Native x86 rights sequence and thread return regression
+        shell: pwsh
+        run: |
+          $root = Join-Path $env:RUNNER_TEMP 'ahk-memory-sequence'
+          $fixture = Join-Path $root 'after/native.ahk'
+          $before = Join-Path $root 'before/native.ahk'
+          $ahk = Join-Path $root 'AutoHotkeyA32.exe'
+          python tools/build_memory_sequence_fixture.py $fixture --extract-a32-runtime $ahk
+          python tools/build_memory_sequence_fixture.py $before --baseline-call-stub
+          $process = Start-Process -FilePath $ahk -ArgumentList @('/ErrorStdOut', "`"$before`"") -PassThru
+          if (-not $process.WaitForExit(30000)) { $process.Kill(); throw 'Baseline memory fixture timed out' }
+          $process.Refresh()
+          $report = Get-Content (Join-Path (Split-Path $before) 'memory_sequence_report.txt') -Raw -Encoding utf8
+          Write-Output 'EXPECTED FAILURE: previous call stub, same queue and owned target'
+          $report
+          if ($process.ExitCode -eq 0 -or -not $report.Contains('TRACE first sequence: sent=1; state=unknown; calls=1')) {
+            throw 'Did not reproduce the reported first-message-only failure'
+          }
+          $process = Start-Process -FilePath $ahk -ArgumentList @('/ErrorStdOut', "`"$fixture`"") -PassThru
+          if (-not $process.WaitForExit(30000)) { $process.Kill(); throw 'Fixed memory fixture timed out' }
+          Get-Content (Join-Path (Split-Path $fixture) 'memory_sequence_report.txt') -Encoding utf8
+          $process.Refresh()
+          if ($process.ExitCode -ne 0) { throw "Native x86 memory sequence failed: $($process.ExitCode)" }
+          Write-Output 'Actual production x86 call stub/queue/UDF sender, owned current-process target; game and server not tested.'
       - name: Native chat commands, Alt+T and English aliases
         shell: pwsh
         run: |

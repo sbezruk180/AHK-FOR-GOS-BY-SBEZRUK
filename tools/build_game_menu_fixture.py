@@ -68,7 +68,9 @@ return
 RunFixture:
 FixtureReset(0)
 Check("stale GPS never opens a command", !RunGpsDialogAction("GPS", 15, "155", AutomationEpoch - 1) && OpenCalls = 0)
+started := TickNow()
 Check("closed-chat GPS completes with real key events", RunGpsDialogAction("GPS", 15, "155"))
+Report .= "TRACE house GPS duration ms=" . (TickNow() - started) . "`r`n"
 Check("house GPS selects item 15 and types exact number", Selected = 15 && Applied == "155" && DownCalls = 15 && OpenCalls = 1)
 Report .= "TRACE closed: selected=" . Selected . " applied=" . Applied . " down=" . DownCalls . " calls=" . OpenCalls . "`r`n"
 Check("completed GPS releases all ownership", !PhysicalInputBusy && !IsObject(GameMenuStarting) && !IsObject(GameMenuLease))
@@ -94,7 +96,7 @@ Check("cancellation during real scrolling stops GPS", !RunGpsDialogAction("GPS",
 Check("cancelled GPS does not enter number or finish scroll", Applied = "" && DownCalls = 2 && Selected = -1)
 Check("cancelled GPS releases all ownership", !PhysicalInputBusy && !IsObject(GameMenuStarting) && !IsObject(GameMenuLease))
 FixtureReset(0)
-DialogDelay := 650
+DialogDelay := 300
 Check("opening pause lets GPS appear before real navigation", RunGpsDialogAction("GPS", 15, "155") && Selected = 15 && Applied == "155" && DownCalls = 15 && OpenCalls = 1)
 Check("GPS runs with unreadable dialog state and never polls it", DialogReads = 0 && DialogWaits = 0)
 Check("direct sequence releases ownership", !PhysicalInputBusy && !IsObject(GameMenuStarting) && !IsObject(GameMenuLease))

@@ -1167,20 +1167,22 @@ RunGpsDialogAction(actionName, downCount, gpsNumber, inputEpoch := 0) {
         stage := "открытие /gps"
         ; Amazing GPS is driven by keys; do not inspect SA-MP dialog memory.
         ; Keep a cancellable opening pause before navigation.
-        lease := GameMenu_SendCommand(reservation, "/gps", 1000, false)
+        lease := GameMenu_SendCommand(reservation, "/gps", 650, false)
         if !IsObject(lease)
             return false
+        ; GPS alone uses shorter key presses; other game menus keep 30/50 ms.
+        lease.KeyDelay := 10, lease.KeyDuration := 20
         stage := "выбор пункта"
         if !GameMenu_Tap(lease, "Home")
             return false
         Loop %downCount%
-            if (!GameMenu_Tap(lease, "Down") || !GameMenu_Wait(lease, 35))
+            if !GameMenu_Tap(lease, "Down")
                 return false
         stage := "открытие поля номера"
-        if (!GameMenu_Tap(lease, "Enter") || !GameMenu_Wait(lease, 500))
+        if (!GameMenu_Tap(lease, "Enter") || !GameMenu_Wait(lease, 200))
             return false
         stage := "ввод номера"
-        if (!GameMenu_TypeDigits(lease, gpsNumber) || !GameMenu_Wait(lease, 100))
+        if (!GameMenu_TypeDigits(lease, gpsNumber) || !GameMenu_Wait(lease, 50))
             return false
         stage := "подтверждение"
         ok := GameMenu_Tap(lease, "Enter")
@@ -1390,4 +1392,14 @@ Action_DoCarSearch() {
     Evidence_Arm("SEARCH_TRUNK", 45000)
     return GameMenu_Run("CarSearch", "/frac", [{Kind: "Radial", Value: 1, Gap: 0, Delay: 280}
         , {Kind: "Radial", Value: 4, Gap: 0, Delay: 280}, {Kind: "Radial", Value: 1, Gap: 0, Delay: 320}], 320, epoch)
+}
+
+Action_DoRights() {
+    global RP_Rights
+    if !CanRunAction("права", false, true, false, false, true)
+        return false
+    count := SendConfigSequence(RP_Rights, 1000, batch, "", "Rights")
+    if (!count)
+        return SafeWarn("Права: текст пуст или очередь заполнена.")
+    return count
 }

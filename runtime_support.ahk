@@ -350,7 +350,9 @@ SafeSend(keys, mode := "Input", epoch := "", inputLease := "") {
     if (mode = "Event") {
         oldDelay := A_KeyDelay, oldDuration := A_KeyDuration
         try {
-            SetKeyDelay, 30, 50
+            keyDelay := IsObject(inputLease) && inputLease.HasKey("KeyDelay") ? inputLease.KeyDelay : 30
+            keyDuration := IsObject(inputLease) && inputLease.HasKey("KeyDuration") ? inputLease.KeyDuration : 50
+            SetKeyDelay, %keyDelay%, %keyDuration%
             SendEvent, %keys%
         } finally {
             SetKeyDelay, %oldDelay%, %oldDuration%
@@ -1231,7 +1233,7 @@ PasteChatForEpoch(epoch, text, contextGuard := "") {
 
 
 ChatTransport_TypingDelayOverride(source, role, text) {
-    if (role = "RP" || (source = "RPSequence" && RegExMatch(Trim(text), "i)^/(?:me|do|todo|m)(?:\s|$)")))
+    if (role = "RP" || ((source = "RPSequence" || source = "Rights") && RegExMatch(Trim(text), "i)^/(?:me|do|todo|m)(?:\s|$)")))
         return 0
     return ""
 }

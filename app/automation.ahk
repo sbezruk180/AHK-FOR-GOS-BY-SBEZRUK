@@ -483,7 +483,7 @@ ChatQueue_Tick() {
     global ChatQueueItems, ChatQueueBusy, ChatQueueLastSendTick, ChatQueueNextSendTick
     global ChatQueueMinDelay, ChatQueueMaxRetries, AutoReportSentCount, AutoReportSkippedCount
     global QueueFailureGeneration, AuditTransportResult, AuditTestMode, QueueBatchStates
-    if (IsObject(GameMenuStarting) || IsObject(GameMenuLease) || ChatQueueBusy || PhysicalInputBusy || IsObject(IDCaptureState) || !IsObject(ChatQueueItems) || !ChatQueueItems.Length())
+    if (IsObject(g_RemoteOperation) || IsObject(GameMenuStarting) || IsObject(GameMenuLease) || ChatQueueBusy || PhysicalInputBusy || IsObject(IDCaptureState) || !IsObject(ChatQueueItems) || !ChatQueueItems.Length())
         return
     if (ChatQueueNextSendTick > TickNow())
         return
@@ -527,7 +527,9 @@ ChatQueue_Tick() {
             if (item.Source = "AutoReport")
                 AutoReportSkippedCount++
             ChatQueue_CompleteItem(item, result = -2 || IsObject(g_RemoteOperation) ? "unknown" : "failed")
-            LogError(item.Source, "Отправка не подтверждена; остаток операции отменён: " . item.Text, "ERROR")
+            LogError(item.Source, "Отправка не подтверждена; остаток операции отменён: " . item.Text . " | " . ChatTransportStatus, "ERROR")
+            if (item.Source = "Rights")
+                ServiceUI_Notify("Права: отправка остановлена. " . ChatTransportStatus, 4500, "WARN")
             ChatQueueNextSendTick := TickNow() + ChatQueueMinDelay
         }
     } catch e {
