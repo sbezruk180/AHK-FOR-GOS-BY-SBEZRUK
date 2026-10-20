@@ -17,7 +17,34 @@
     "previous_source_commit": "c8e01c925e05418b81fc49cb96b042a3e00aa74f",
     "previous_report": "gps_speed_before_report.txt"
   },
-  "native_windows_ci": "PENDING",
-  "full_audit": "PENDING",
+  "native_windows_ci": {
+    "status": "SUCCESS",
+    "run_id": "39453890873",
+    "url": "https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK/actions/runs/39453890873",
+    "proof": "windows_ci_rights_gps_2026-10-20.json"
+  },
+  "full_audit": {
+    "checks": 492,
+    "failed": 0,
+    "skipped_integration_groups": 3,
+    "report": "rights_gps_audit_report.txt",
+    "execution": [
+      {
+        "mode": "--runtime-info",
+        "status": "PASS",
+        "exit_code": 0,
+        "seconds": 11.78,
+        "report": "runtime_info_report.txt"
+      },
+      {
+        "mode": "--audit-selftest",
+        "status": "PASS",
+        "exit_code": 0,
+        "seconds": 128.17,
+        "report": "audit_selftest_report.txt"
+      }
+    ],
+    "test_exe_sha256": "400f2418d60b2ef8d4cd864f874d8e68ed2b69062c5609ab8442b3d87d6d7b51"
+  },
   "real_game": "NOT_TESTED"
 }
