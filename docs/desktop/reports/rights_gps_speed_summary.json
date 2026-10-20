@@ -12,7 +12,10 @@
     "checks": 22,
     "failed": 0,
     "house_ms": 1840,
-    "report": "gps_speed_report.txt"
+    "report": "gps_speed_report.txt",
+    "previous_house_ms": 4477,
+    "previous_source_commit": "c8e01c925e05418b81fc49cb96b042a3e00aa74f",
+    "previous_report": "gps_speed_before_report.txt"
   },
   "native_windows_ci": "PENDING",
   "full_audit": "PENDING",
