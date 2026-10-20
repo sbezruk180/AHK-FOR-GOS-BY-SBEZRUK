@@ -33,7 +33,7 @@ global PhysicalInputBusy := 0, IDCaptureState := "", GameMenuStarting := "", Gam
 global TextSendMode := "Memory", g_RemoteOperation := "", ChatQueueBusy := 0
 global SafeModeEnabled := "Off", SafeBlockWhenChat := "Off", SafeVehicleChecks := "Off", SafeDistanceChecks := "Off"
 global ActionCooldownMs := 0, LastActionTick := 0, FixtureChatOpen := 0, ChatTransportStatus := ""
-global DialogDelay := 0, WrongDialogStyle := 0
+global DialogDelay := 0, DialogReads := 0, DialogWaits := 0, CancelAtSelect := 0
 global MainWindow := 0, ListWindow := 0, EditWindow := 0, ChatWindow := 0
 global ListProc := 0, EditProc := 0, ListCallback := 0, EditCallback := 0
 global Selected := -1, Applied := "", OpenCalls := 0, Escapes := 0, DownCalls := 0, CancelAtDown := 0
@@ -94,12 +94,20 @@ Check("cancellation during real scrolling stops GPS", !RunGpsDialogAction("GPS",
 Check("cancelled GPS does not enter number or finish scroll", Applied = "" && DownCalls = 2 && Selected = -1)
 Check("cancelled GPS releases all ownership", !PhysicalInputBusy && !IsObject(GameMenuStarting) && !IsObject(GameMenuLease))
 FixtureReset(0)
-DialogDelay := 1400
-Check("GPS waits for a delayed server dialog", RunGpsDialogAction("GPS", 15, "155") && Selected = 15 && Applied == "155" && DownCalls = 15 && OpenCalls = 1)
+DialogDelay := 650
+Check("opening pause lets GPS appear before real navigation", RunGpsDialogAction("GPS", 15, "155") && Selected = 15 && Applied == "155" && DownCalls = 15 && OpenCalls = 1)
+Check("GPS runs with unreadable dialog state and never polls it", DialogReads = 0 && DialogWaits = 0)
+Check("direct sequence releases ownership", !PhysicalInputBusy && !IsObject(GameMenuStarting) && !IsObject(GameMenuLease))
 FixtureReset(0)
-WrongDialogStyle := 1
-Check("unexpected dialog stops without navigation or number", !RunGpsDialogAction("GPS", 15, "155") && DownCalls = 0 && Applied = "" && OpenCalls = 1)
-Check("dialog timeout releases ownership", !PhysicalInputBusy && !IsObject(GameMenuStarting) && !IsObject(GameMenuLease))
+CancelAfterOpen := 1
+Check("GPS opening pause is cancellable", !RunGpsDialogAction("GPS", 15, "155") && CancelledAt > 0 && DownCalls = 0 && Applied = "" && OpenCalls = 1)
+Check("opening cancellation releases ownership", !PhysicalInputBusy && !IsObject(GameMenuStarting) && !IsObject(GameMenuLease))
+FixtureReset(0)
+CancelAtSelect := 1
+Check("GPS stops between selection and digits", !RunGpsDialogAction("GPS", 15, "155") && Selected = 15 && Applied = "" && KeysAfterCancel = 0)
+Check("selection cancellation releases ownership", !PhysicalInputBusy && !IsObject(GameMenuStarting) && !IsObject(GameMenuLease))
+FixtureReset(0)
+Check("GPS works again after cancellation", RunGpsDialogAction("GPS", 16, "1") && Selected = 16 && Applied == "1" && OpenCalls = 1)
 Report .= "Checks=" . Checks . " Failed=" . Failures . "`r`n"
 FileDelete, %A_ScriptDir%\game_menu_report.txt
 FileAppend, %Report%, %A_ScriptDir%\game_menu_report.txt, UTF-8
@@ -117,16 +125,20 @@ DllCall("ShowWindow", "Ptr", ListWindow, "Int", 5)
 DllCall("SetFocus", "Ptr", ListWindow)
 return
 GameDialog_ReadState() {
-    global ListWindow, EditWindow, WrongDialogStyle
-    if DllCall("IsWindowVisible", "Ptr", EditWindow)
-        return {Active: 1, Style: 1}
-    return {Active: DllCall("IsWindowVisible", "Ptr", ListWindow), Style: WrongDialogStyle ? 0 : 2}
+    global DialogReads
+    DialogReads++
+    return ""
+}
+GameDialog_Wait(args*) {
+    global DialogWaits
+    DialogWaits++
+    return false
 }
 FixtureReset(chat) {
     global
     Selected := -1, Applied := "", OpenCalls := 0, Escapes := 0, DownCalls := 0, CancelAtDown := 0
     ForeignMemoryCalls := 0, ForeignResult := "", CancelAfterOpen := 0, CancelledAt := 0, KeysAfterCancel := 0
-    DialogDelay := 0, WrongDialogStyle := 0
+    DialogDelay := 0, DialogReads := 0, DialogWaits := 0, CancelAtSelect := 0
     FixtureChatOpen := chat
     DllCall("ShowWindow", "Ptr", EditWindow, "Int", 0)
     DllCall("ShowWindow", "Ptr", ListWindow, "Int", 0)
@@ -150,6 +162,10 @@ FixtureListProc(hwnd, msg, w, l) {
         DllCall("ShowWindow", "Ptr", ListWindow, "Int", 0)
         DllCall("ShowWindow", "Ptr", EditWindow, "Int", 5)
         DllCall("SetFocus", "Ptr", EditWindow)
+        if (CancelAtSelect) {
+            AutomationEpoch++
+            CancelledAt := TickNow()
+        }
         return 0
     }
     return DllCall("CallWindowProcW", "Ptr", ListProc, "Ptr", hwnd, "UInt", msg, "Ptr", w, "Ptr", l, "Ptr")
@@ -295,7 +311,7 @@ def main():
     for path, wanted in NAMES.items():
         source = (args.source_root / path).read_text(encoding='cp1251')
         for name, _, _, body in functions(source):
-            if name in wanted if wanted is not None else (name.startswith('GameMenu_') or name == 'GameDialog_Wait'):
+            if name in wanted if wanted is not None else name.startswith('GameMenu_'):
                 pieces.append(body)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_bytes('\n\n'.join(pieces).replace('\n', '\r\n').encode('utf-8-sig'))

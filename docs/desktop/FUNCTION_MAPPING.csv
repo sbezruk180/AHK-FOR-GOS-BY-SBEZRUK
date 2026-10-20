@@ -1029,14 +1029,14 @@ SendGpsDialogDown,AHK_FOR_GOS_BY_SBEZRUK.ahk:22211,app/actions.ahk:1134,Адап
 RunGpsDialogAction,AHK_FOR_GOS_BY_SBEZRUK.ahk:22222,app/actions.ahk:1147,Адаптирована,"Добавлены владение вводом/паузы клавиш, приватный ввод или пассивное открытие; регрессии и native стенд. GTA/OBS требуют отдельной проверки"
 ServiceCodes_GetText,AHK_FOR_GOS_BY_SBEZRUK.ahk:22255,app/ui_documents.ahk:207,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 ServiceCodes_Show,AHK_FOR_GOS_BY_SBEZRUK.ahk:22298,app/ui_documents.ahk:250,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-InputAction_DoEnterID,AHK_FOR_GOS_BY_SBEZRUK.ahk:22429,app/actions.ahk:1199,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-Action_DoInCar,AHK_FOR_GOS_BY_SBEZRUK.ahk:22562,app/actions.ahk:1217,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-Action_DoDoc,AHK_FOR_GOS_BY_SBEZRUK.ahk:22584,app/actions.ahk:1224,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-Action_DoSearch,AHK_FOR_GOS_BY_SBEZRUK.ahk:22595,app/actions.ahk:1231,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-InputAction_DoSOS,AHK_FOR_GOS_BY_SBEZRUK.ahk:22607,app/actions.ahk:1239,Адаптирована,Адаптирован путь пользовательских данных/отчётов
-InputAction_DoWantedList,AHK_FOR_GOS_BY_SBEZRUK.ahk:22631,app/actions.ahk:1248,Адаптирована,Адаптирован путь пользовательских данных/отчётов
-Action_DoArrest,AHK_FOR_GOS_BY_SBEZRUK.ahk:22861,app/actions.ahk:1265,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ReadAutoReportMinutes,AHK_FOR_GOS_BY_SBEZRUK.ahk:22925,app/actions.ahk:1273,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+InputAction_DoEnterID,AHK_FOR_GOS_BY_SBEZRUK.ahk:22429,app/actions.ahk:1198,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+Action_DoInCar,AHK_FOR_GOS_BY_SBEZRUK.ahk:22562,app/actions.ahk:1216,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+Action_DoDoc,AHK_FOR_GOS_BY_SBEZRUK.ahk:22584,app/actions.ahk:1223,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+Action_DoSearch,AHK_FOR_GOS_BY_SBEZRUK.ahk:22595,app/actions.ahk:1230,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+InputAction_DoSOS,AHK_FOR_GOS_BY_SBEZRUK.ahk:22607,app/actions.ahk:1238,Адаптирована,Адаптирован путь пользовательских данных/отчётов
+InputAction_DoWantedList,AHK_FOR_GOS_BY_SBEZRUK.ahk:22631,app/actions.ahk:1247,Адаптирована,Адаптирован путь пользовательских данных/отчётов
+Action_DoArrest,AHK_FOR_GOS_BY_SBEZRUK.ahk:22861,app/actions.ahk:1264,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ReadAutoReportMinutes,AHK_FOR_GOS_BY_SBEZRUK.ahk:22925,app/actions.ahk:1272,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 ToggleLawDoc,AHK_FOR_GOS_BY_SBEZRUK.ahk:22997,app/ui_documents.ahk:268,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 LawDoc_PrefixById,AHK_FOR_GOS_BY_SBEZRUK.ahk:23027,app/ui_documents.ahk:298,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 ToggleLawDocFromChat,AHK_FOR_GOS_BY_SBEZRUK.ahk:23036,app/ui_documents.ahk:307,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
