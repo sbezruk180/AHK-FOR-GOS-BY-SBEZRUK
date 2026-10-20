@@ -361,12 +361,12 @@ ApplyActionTemplate(str) {
     return str
 }
 
-SendConfigSequence(sequenceText, delayMs := "", ByRef batchId := "", onFirstSent := "") {
+SendConfigSequence(sequenceText, delayMs := "", ByRef batchId := "", onFirstSent := "", source := "RPSequence") {
     global SequenceLineDelay
     NormalizeNumberRange(SequenceLineDelay, 700, 250, 3000)
     if (delayMs = "" || delayMs < SequenceLineDelay)
         delayMs := SequenceLineDelay
-    return ChatQueue_EnqueueSequence(sequenceText, "RPSequence", delayMs, batchId, onFirstSent)
+    return ChatQueue_EnqueueSequence(sequenceText, source, delayMs, batchId, onFirstSent)
 }
 
 SplitConfigSequenceMiddle(sequenceText, ByRef firstPart, ByRef secondPart) {

@@ -555,6 +555,11 @@ callWithParams(hProcess, dwFunc, aParams, bCleanupStack = true, thiscall = false
         NumPut(stackParamCount * 4, injectData, codeLength + 2, "UChar")
         codeLength += 3
     }
+    ; The game API return value is not a Windows thread exit status. In
+    ; particular, void functions may leave 0xFFFFFFFF in EAX after sending.
+    ; Only a normal return reaches this marker; exceptions still bypass it.
+    NumPut(0xC031, injectData, codeLength, "UShort") ; xor eax, eax
+    codeLength += 2
     NumPut(0xC2, injectData, codeLength, "UChar")
     NumPut(4, injectData, codeLength + 1, "UShort")
     codeLength += 3

@@ -2402,9 +2402,7 @@ SendConfigSequence(RP_Protocol, 900)
 return
 
 DoRights:
-if !CanRunAction("права", false, true, false, false, true)
-    return
-SendConfigSequence(RP_Rights, 1000)
+Action_DoRights()
 return
 
 DoCardDS:

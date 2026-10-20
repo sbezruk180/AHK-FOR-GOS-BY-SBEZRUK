@@ -1,0 +1,20 @@
+{
+  "scope": "rights memory return code / queue busy handling / faster GPS",
+  "base_commit": "c8e01c925e05418b81fc49cb96b042a3e00aa74f",
+  "release_exe_sha256": "a99af62b8cd8ee84f57c47173eb3c4256d7809516ae85a17156a44c72839f6b2",
+  "local_rights_queue": {
+    "checks": 12,
+    "failed": 0,
+    "native_x86": "SKIPPED in U64 host",
+    "report": "rights_queue_report.txt"
+  },
+  "local_gps": {
+    "checks": 22,
+    "failed": 0,
+    "house_ms": 1840,
+    "report": "gps_speed_report.txt"
+  },
+  "native_windows_ci": "PENDING",
+  "full_audit": "PENDING",
+  "real_game": "NOT_TESTED"
+}
