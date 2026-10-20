@@ -150,6 +150,9 @@ ControlGetText, cancelledText,, ahk_id %MainText%
 Check("slow CPS cancellation is prompt", cancelResult = -2 && cancelElapsed < 800 && StrLen(cancelledText) <= 2)
 Check("slow CPS cancellation releases input", !PhysicalInputBusy)
 ChatTypingDelayMs := savedSpeed[1], ChatTypingSpeedMode := savedSpeed[2], ChatTypingMinCPS := savedSpeed[3], ChatTypingMaxCPS := savedSpeed[4]
+; Cancellation intentionally leaves a partial digit. The next independent
+; mixed-language test requests clearExisting=false, so reset its sink here.
+ControlSetText,,, ahk_id %MainText%
 if (!FixtureLayoutFallback) {
     russianResult := SendChatTyped("/m Стоп! ID:42", false, false, "", 0)
     Check("Russian physical typing result=" . russianResult . " error=" . ChatTypingLastError . " layout=" . InputLayoutLastError, russianResult = 1)
