@@ -1,0 +1,87 @@
+{
+  "workflow": "Standalone Windows EXE",
+  "run_id": "39453890873",
+  "url": "https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK/actions/runs/39453890873",
+  "job_url": "https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK/actions/runs/39453890873/job/118735547150",
+  "commit": "77c0ae38ddd338c8474448ef8d7cb47d0823c315",
+  "conclusion": "SUCCESS",
+  "release_exe_sha256": "a99af62b8cd8ee84f57c47173eb3c4256d7809516ae85a17156a44c72839f6b2",
+  "steps": [
+    {
+      "name": "Set up job",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/checkout@v4",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/setup-python@v5",
+      "conclusion": "success"
+    },
+    {
+      "name": "Build and verify official ANSI x86 executable",
+      "conclusion": "success"
+    },
+    {
+      "name": "Native x86 boot and embedded-resource probe",
+      "conclusion": "success"
+    },
+    {
+      "name": "Native Windows GUI and sidebar compatibility (Unicode test host)",
+      "conclusion": "success"
+    },
+    {
+      "name": "Previous law edition and custom overrides",
+      "conclusion": "success"
+    },
+    {
+      "name": "Native private TXT, character typing and paced menu input",
+      "conclusion": "success"
+    },
+    {
+      "name": "Faction typing routes paste and memory independently",
+      "conclusion": "success"
+    },
+    {
+      "name": "Native x86 rights sequence and thread return regression",
+      "conclusion": "success"
+    },
+    {
+      "name": "Native chat commands, Alt+T and English aliases",
+      "conclusion": "success"
+    },
+    {
+      "name": "Native GPS, menu ownership and cancellation",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/upload-artifact@v4",
+      "conclusion": "success"
+    },
+    {
+      "name": "Post Run actions/setup-python@v5",
+      "conclusion": "success"
+    },
+    {
+      "name": "Post Run actions/checkout@v4",
+      "conclusion": "success"
+    },
+    {
+      "name": "Complete job",
+      "conclusion": "success"
+    }
+  ],
+  "native_A32_memory_fixture": {
+    "checks": 13,
+    "failed": 0,
+    "previous_stub_expected_failure": "sent=1; state=unknown; calls=1",
+    "fixed_stub": "all five rights lines; existing-operation pause/resume; cancellation; no clipboard; uncertain return; abnormal native thread exit remains rejected",
+    "target": "owned current process; actual production x86 emitter/UDF/queue; no GTA"
+  },
+  "not_tested": [
+    "real Amazing client/server",
+    "OBS frames",
+    "exclusive fullscreen"
+  ]
+}
