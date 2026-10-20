@@ -31,11 +31,32 @@ RunChatTypingRegression() {
     AuditAssert("FastTyping types ordinary text", ChatTyping_ShouldType("FastTyping", "îáû÷íûé òåêñò", commands))
     AuditAssert("FactionTyping types faction text", ChatTyping_ShouldType("FactionTyping", "/d äîêëàä", commands))
     AuditAssert("FactionTyping leaves other commands to paste", !ChatTyping_ShouldType("FactionTyping", "/me ïğîâåğèë", commands))
+    AuditAssert("Faction memory mode types operational commands", ChatTyping_ShouldType("FactionTypingMemory", "/cuff 42", commands))
+    AuditAssert("Faction memory mode leaves ordinary text untyped", !ChatTyping_ShouldType("FactionTypingMemory", "/me action", commands))
+    AuditAssert("Legacy faction UI label remains compatible", ChatTyping_ModeFromLabel("Ïå÷àòü ôğàêöèè") = "FactionTyping")
+    speed := "Ñëó÷àéíûé òåìï (ñèìâ/ñ)", minimum := 150, maximum := 80
+    ChatTyping_NormalizeSpeedConfig(speed, minimum, maximum)
+    AuditAssert("Variable speed swaps reversed CPS endpoints", speed = "RandomCPS" && minimum = 80 && maximum = 150)
+    speed := "invalid", minimum := "bad", maximum := "bad"
+    ChatTyping_NormalizeSpeedConfig(speed, minimum, maximum)
+    AuditAssert("Variable speed defaults keep old configuration fixed", speed = "Fixed" && minimum = 20 && maximum = 40)
+    minimum := 0, maximum := 9999
+    ChatTyping_NormalizeSpeedConfig(speed, minimum, maximum)
+    AuditAssert("Variable speed bounds are finite", minimum = 1 && maximum = 1000)
+    AuditAssert("Variable speed counts physical key time", ChatTyping_NextCharWait(20, 20, 10) = 40)
+    AuditAssert("Variable speed never adds negative wait", ChatTyping_NextCharWait(1000, 1000, 10) = 0)
+    bounded := true
+    Loop, 100 {
+        pause := ChatTyping_NextCharWait(20, 40, 10)
+        bounded := bounded && pause >= 15 && pause <= 40
+    }
+    AuditAssert("Variable speed sampling stays within CPS range", bounded)
+    AuditAssert("Variable speed yields to explicit RP zero override", !ChatTyping_UsesVariableSpeed("RandomCPS", 0) && !ChatTyping_UsesVariableSpeed("Fixed") && ChatTyping_UsesVariableSpeed("RandomCPS") && ChatTyping_UsesVariableSpeed("RandomCPS", "bad"))
     AuditAssert("Keyboard never selects typing", !ChatTyping_ShouldType("Keyboard", "/r äîêëàä", commands))
     AuditAssert("Typed sender accepts literal keyboard punctuation", ChatTyping_IsSingleLine("!+^#%{Enter} ñîîáùåíèå"))
     AuditAssert("Typed sender rejects newline with accidental Enter", !ChatTyping_IsSingleLine("ïåğâàÿ`nâòîğàÿ"))
     AuditAssert("Typed sender rejects tab", !ChatTyping_IsSingleLine("/r`tdoc"))
-    for index, mode in ["Auto", "Memory", "Keyboard", "FastTyping", "FactionTyping"]
+    for index, mode in ["Auto", "Memory", "Keyboard", "FastTyping", "FactionTyping", "FactionTypingMemory"]
         AuditAssert("Chat send mode label roundtrip " . mode, ChatTyping_ModeFromLabel(ChatTyping_ModeLabel(mode)) = mode)
     AuditAssert("Unknown send label selects Auto", ChatTyping_ModeFromLabel("invalid") = "Auto")
     RunChatTypingPhysicalRegression()

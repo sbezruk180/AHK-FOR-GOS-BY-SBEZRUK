@@ -148,6 +148,30 @@ DesktopSmoke_Run() {
         LoadCustomFunctions()
         steps := CustomFunction_Parse(CustomFunctions[1].Script, parseError)
         DesktopSmoke_Assert("custom function reload and parser", CustomFunctions[1].Name = "Проверка сохранения" && parseError = "" && steps.Length() = 3)
+        oldSpeed := [TextSendMode, ChatTypingSpeedMode, ChatTypingMinCPS, ChatTypingMaxCPS, ChatTypingDelayMs]
+        GuiControl, 2:ChooseString, CFG_TextSendMode, % ChatTyping_ModeLabel("FactionTypingMemory")
+        GuiControl, 2:ChooseString, CFG_ChatTypingSpeedMode, % ChatTyping_SpeedLabel("RandomCPS")
+        GuiControl, 2:, CFG_ChatTypingMinCPS, 80
+        GuiControl, 2:, CFG_ChatTypingMaxCPS, 150
+        GuiControlGet, chosenTransport, 2:, CFG_TextSendMode
+        GuiControlGet, chosenSpeed, 2:, CFG_ChatTypingSpeedMode
+        GuiControlGet, chosenMinimum, 2:, CFG_ChatTypingMinCPS
+        GuiControlGet, chosenMaximum, 2:, CFG_ChatTypingMaxCPS
+        TextSendMode := ChatTyping_ModeFromLabel(chosenTransport), ChatTypingSpeedMode := chosenSpeed
+        ChatTypingMinCPS := chosenMinimum, ChatTypingMaxCPS := chosenMaximum
+        ChatTyping_NormalizeSpeedConfig(ChatTypingSpeedMode, ChatTypingMinCPS, ChatTypingMaxCPS)
+        speedFixture := AppHost_DataDir() . "\typing_speed_ui_roundtrip.ini"
+        ; Keep the production file's encoding (including UTF-16 on English CI).
+        FileCopy, %ConfigFile%, %speedFixture%, 1
+        wroteSpeed := !ErrorLevel && WriteUISafetyAndAudioToIni(speedFixture)
+        TextSendMode := "Auto", ChatTypingSpeedMode := "Fixed", ChatTypingMinCPS := 1, ChatTypingMaxCPS := 1
+        LoadUISafetyAndAudioFromIni(speedFixture)
+        DesktopSmoke_Assert("faction/CPS GUI controls survive production INI roundtrip", wroteSpeed && TextSendMode = "FactionTypingMemory" && ChatTypingSpeedMode = "RandomCPS" && ChatTypingMinCPS = 80 && ChatTypingMaxCPS = 150)
+        TextSendMode := oldSpeed[1], ChatTypingSpeedMode := oldSpeed[2], ChatTypingMinCPS := oldSpeed[3], ChatTypingMaxCPS := oldSpeed[4], ChatTypingDelayMs := oldSpeed[5]
+        GuiControl, 2:ChooseString, CFG_TextSendMode, % ChatTyping_ModeLabel(TextSendMode)
+        GuiControl, 2:ChooseString, CFG_ChatTypingSpeedMode, % ChatTyping_SpeedLabel(ChatTypingSpeedMode)
+        GuiControl, 2:, CFG_ChatTypingMinCPS, %ChatTypingMinCPS%
+        GuiControl, 2:, CFG_ChatTypingMaxCPS, %ChatTypingMaxCPS%
         audit := LawCorpus_Audit()
         DesktopSmoke_Assert("20 documents available without external laws folder", audit.Ok && audit.Documents = 20 && !FileExist(A_ScriptDir . "\laws"))
         ToggleLawDoc(5, "flter1", "ter1")

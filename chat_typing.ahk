@@ -1,5 +1,8 @@
 ; Fast literal typing. Included before configuration loading; AutoHotkey 1.1 ANSI.
 global ChatTypingDelayMs := 5
+global ChatTypingSpeedMode := "Fixed"
+global ChatTypingMinCPS := 20
+global ChatTypingMaxCPS := 40
 global ChatFactionCommands := ChatTyping_DefaultCommands()
 global ChatTypingLastError := ""
 
@@ -57,22 +60,62 @@ ChatTyping_IsFactionCommand(text, commandList) {
 }
 
 ChatTyping_ShouldType(mode, text, commands) {
-    return mode = "FastTyping" || (mode = "FactionTyping" && ChatTyping_IsFactionCommand(text, commands))
+    return mode = "FastTyping" || ((mode = "FactionTyping" || mode = "FactionTypingMemory") && ChatTyping_IsFactionCommand(text, commands))
 }
 
 ChatTyping_ModeLabel(mode) {
-    static labels := {Auto: "Авто", Memory: "Память", Keyboard: "Вставка", FastTyping: "Печать всего", FactionTyping: "Печать фракции"}
+    static labels := {Auto: "Авто", Memory: "Память", Keyboard: "Вставка", FastTyping: "Печать всего", FactionTyping: "Фракция: остальное вставка", FactionTypingMemory: "Фракция: остальное память"}
     return labels.HasKey(mode) ? labels[mode] : labels.Auto
 }
 
 ChatTyping_ModeFromLabel(label) {
-    static modes := {"Авто": "Auto", "Память": "Memory", "Вставка": "Keyboard", "Печать всего": "FastTyping", "Печать фракции": "FactionTyping"}
+    static modes := {"Авто": "Auto", "Память": "Memory", "Вставка": "Keyboard", "Печать всего": "FastTyping", "Печать фракции": "FactionTyping", "Фракция: остальное вставка": "FactionTyping", "Фракция: остальное память": "FactionTypingMemory"}
     label := Trim(label)
     if modes.HasKey(label)
         return modes[label]
-    if (label = "Auto" || label = "Memory" || label = "Keyboard" || label = "FastTyping" || label = "FactionTyping")
+    if (label = "Auto" || label = "Memory" || label = "Keyboard" || label = "FastTyping" || label = "FactionTyping" || label = "FactionTypingMemory")
         return label
     return "Auto"
+}
+
+ChatTyping_NormalizeSpeedConfig(ByRef mode, ByRef minimum, ByRef maximum) {
+    mode := mode = "RandomCPS" || mode = "Случайный темп (симв/с)" ? "RandomCPS" : "Fixed"
+    if !RegExMatch(Trim(minimum), "^\d+$")
+        minimum := 20
+    if !RegExMatch(Trim(maximum), "^\d+$")
+        maximum := 40
+    minimum := Max(1, Min(1000, minimum + 0)), maximum := Max(1, Min(1000, maximum + 0))
+    if (minimum > maximum) {
+        swap := minimum, minimum := maximum, maximum := swap
+    }
+}
+
+ChatTyping_SpeedLabel(mode) {
+    return mode = "RandomCPS" ? "Случайный темп (симв/с)" : "Постоянный интервал"
+}
+
+ChatTyping_UsesVariableSpeed(mode, override := "") {
+    return mode = "RandomCPS" && !RegExMatch(Trim(override), "^[+-]?\d+(?:\.\d+)?$")
+}
+
+ChatTyping_NextCharWait(minimum, maximum, elapsedMs := 0) {
+    ; Called with validated integer CPS bounds. Time already spent pressing a
+    ; physical key counts towards its start-to-start interval.
+    Random, rate, %minimum%, %maximum%
+    return Max(0, Round(1000.0 / rate) - Max(0, elapsedMs))
+}
+
+ChatTyping_WaitInterval(delayMs, epoch, hwnd, contextGuard := "") {
+    started := TickNow()
+    Loop {
+        Sleep, -1
+        if (!ChatTyping_IsReady(epoch, hwnd, contextGuard) || isInChat() != 1)
+            return false
+        remaining := delayMs - ((TickNow() - started) & 0xFFFFFFFF)
+        if (remaining <= 0)
+            return true
+        DllCall("Sleep", "UInt", Min(10, remaining))
+    }
 }
 
 ChatTyping_IsSingleLine(text) {
@@ -244,6 +287,7 @@ ChatTyping_WaitForChatOpen(epoch, gameHwnd, contextGuard := "", timeoutMs := 700
 
 SendChatTyped(text, submit := true, clearExisting := true, contextGuard := "", delayOverride := "") {
     global MockMode, AuditTestMode, PhysicalInputBusy, AutomationEpoch, IDCaptureState, ChatTypingDelayMs, ChatTypingLastError
+    global ChatTypingSpeedMode, ChatTypingMinCPS, ChatTypingMaxCPS
     text := "" . text, ChatTypingLastError := ""
     if (!ChatTyping_IsSingleLine(text) || IsObject(IDCaptureState)) {
         ChatTypingLastError := IsObject(IDCaptureState) ? "Активен ввод ID." : "Для печати нужна одна строка."
@@ -270,6 +314,9 @@ SendChatTyped(text, submit := true, clearExisting := true, contextGuard := "", d
     timerPeriodSet := false, oldLayout := 0
     try {
         delay := ChatTyping_EffectiveDelay(ChatTypingDelayMs, delayOverride)
+        speedMode := ChatTypingSpeedMode, minCPS := ChatTypingMinCPS, maxCPS := ChatTypingMaxCPS
+        ChatTyping_NormalizeSpeedConfig(speedMode, minCPS, maxCPS)
+        variable := ChatTyping_UsesVariableSpeed(speedMode, delayOverride)
         gameThread := DllCall("GetWindowThreadProcessId", "Ptr", gameHwnd, "Ptr", 0, "UInt")
         oldLayout := DllCall("GetKeyboardLayout", "UInt", gameThread, "Ptr")
         if !ChatTyping_BuildKeyPlan(text, plan, ChatTypingLastError)
@@ -299,6 +346,7 @@ SendChatTyped(text, submit := true, clearExisting := true, contextGuard := "", d
         }
 
         for index, key in plan {
+            charStarted := TickNow()
             if (!ChatTyping_IsReady(epoch, gameHwnd, contextGuard) || isInChat() != 1)
                 return -2
             if !ChatTyping_ActivateLayout(key.Layout, epoch, gameHwnd, gameThread, contextGuard, key) {
@@ -309,8 +357,9 @@ SendChatTyped(text, submit := true, clearExisting := true, contextGuard := "", d
             if (token = "" || !SafeSend(token, "Text", epoch))
                 return -2
             if (index < plan.Length()) {
-                DllCall("Sleep", "UInt", delay)
-                Sleep, -1
+                pause := variable ? ChatTyping_NextCharWait(minCPS, maxCPS, TickNow() - charStarted) : delay
+                if !ChatTyping_WaitInterval(pause, epoch, gameHwnd, contextGuard)
+                    return -2
             }
         }
         if (!ChatTyping_IsReady(epoch, gameHwnd, contextGuard) || isInChat() != 1)

@@ -72,25 +72,24 @@ ChatTransport_Send(text, source := "ChatTransport", role := "", contextGuard := 
 
     ApplyGameProcessSelector()
     NormalizeTextSendMode(TextSendMode)
-    if (TextSendMode = "FastTyping" || TextSendMode = "FactionTyping") {
+    transportMode := TextSendMode
+    if (TextSendMode = "FastTyping" || TextSendMode = "FactionTyping" || TextSendMode = "FactionTypingMemory") {
         if ChatTyping_ShouldType(TextSendMode, text, ChatFactionCommands) {
             result := SendChatTyped(text, true, true, contextGuard, ChatTransport_TypingDelayOverride(source, role, text))
             status := result = 1 ? ChatTyping_ModeLabel(TextSendMode) : (result = -2 ? "Печать прервана; повтор отключён" : "Печать: " . (ChatTypingLastError != "" ? ChatTypingLastError : "отправка недоступна"))
             ChatTransport_SetStatus(status, source, result = 1 ? "INFO" : "WARN")
             return result
         }
-        ok := SendChatKeyboard(text, contextGuard)
-        ChatTransport_SetStatus(ok ? "Вставка (остальной текст)" : "Вставка: " . ChatKeyboardLastError, source, ok ? "INFO" : "WARN")
-        return ok ? 1 : -1
+        transportMode := TextSendMode = "FactionTypingMemory" ? "Memory" : "Keyboard"
     }
-    if (TextSendMode = "Keyboard")
+    if (transportMode = "Keyboard")
     {
         ok := SendChatKeyboard(text, contextGuard)
         ChatTransport_SetStatus(ok ? "Вставка" : "Вставка: " . ChatKeyboardLastError, source, ok ? "INFO" : "WARN")
         return ok ? 1 : -1
     }
 
-    if (TextSendMode = "Memory")
+    if (transportMode = "Memory")
     {
         if IsObject(g_RemoteOperation)
             return -2
@@ -99,6 +98,10 @@ ChatTransport_Send(text, source := "ChatTransport", role := "", contextGuard := 
             memoryError := MemoryGetShortError()
             if IsObject(g_RemoteOperation)
                 return -2
+            if (TextSendMode = "FactionTypingMemory") {
+                ChatTransport_SetStatus("Память недоступна: " . memoryError . "; вставка отключена для этого режима", source, "WARN")
+                return -1
+            }
             ok := SendChatKeyboard(text, contextGuard)
             ChatTransport_SetStatus(ok ? "Вставка: память недоступна (" . memoryError . ")" : "Отправка: " . ChatKeyboardLastError, source, ok ? "INFO" : "WARN")
             return ok ? 1 : -1

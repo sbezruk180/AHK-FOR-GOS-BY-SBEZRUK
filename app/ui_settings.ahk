@@ -787,11 +787,11 @@ BuildSettingsGui() {
     AddOutlinedPanel(2, 240, 390, 904, 212, panel, cardEdge, 1)
     idChoice := IDCheckEnabled ? "On" : "Off"
     textModeLabel := ChatTyping_ModeLabel(TextSendMode)
-    Settings_AddControl("Режим отправки", "CFG_TextSendMode", textModeLabel, 240, 170, 190, "DropDown", "Авто|Память|Вставка|Печать всего|Печать фракции", text, inputText)
-    Settings_AddControl("Тест без игры (Mock)", "CFG_MockMode", MockMode, 446, 170, 150, "DropDown", "Off|On", text, inputText)
-    Settings_AddControl("Очередь чата", "CFG_ChatQueueEnabled", ChatQueueEnabled, 612, 170, 150, "DropDown", "On|Off", text, inputText)
-    Settings_AddControl("Проверка ID", "CFG_IDCheckEnabled", idChoice, 778, 170, 150, "DropDown", "On|Off", text, inputText)
-    Settings_AddControl("SafeMode", "CFG_SafeModeEnabled", SafeModeEnabled, 944, 170, 180, "DropDown", "On|Off", text, inputText)
+    Settings_AddControl("Режим отправки", "CFG_TextSendMode", textModeLabel, 256, 170, 300, "DropDown", "Авто|Память|Вставка|Печать всего|Фракция: остальное вставка|Фракция: остальное память", text, inputText)
+    Settings_AddControl("Тест без игры (Mock)", "CFG_MockMode", MockMode, 572, 170, 120, "DropDown", "Off|On", text, inputText)
+    Settings_AddControl("Очередь чата", "CFG_ChatQueueEnabled", ChatQueueEnabled, 708, 170, 120, "DropDown", "On|Off", text, inputText)
+    Settings_AddControl("Проверка ID", "CFG_IDCheckEnabled", idChoice, 844, 170, 120, "DropDown", "On|Off", text, inputText)
+    Settings_AddControl("SafeMode", "CFG_SafeModeEnabled", SafeModeEnabled, 980, 170, 144, "DropDown", "On|Off", text, inputText)
     Settings_AddControl("Блок при открытом чате", "CFG_SafeBlockWhenChat", SafeBlockWhenChat, 240, 244, 200, "DropDown", "On|Off", text, inputText)
     Settings_AddControl("Требовать чат", "CFG_SafeRequireChatForEditable", SafeRequireChatForEditable, 456, 244, 190, "DropDown", "On|Off", text, inputText)
     Settings_AddControl("Проверка транспорта", "CFG_SafeVehicleChecks", SafeVehicleChecks, 662, 244, 190, "DropDown", "On|Off", text, inputText)
@@ -820,7 +820,7 @@ BuildSettingsGui() {
     Gui, 2:Font, Norm s9 c%muted%, Segoe UI
     Gui, 2:Add, Text, x240 y668 w884 h46 vCFG_ChatConnectionStatus BackgroundTrans +Wrap, % ChatTransport_GetConnectionSummary(0)
 
-    AddOutlinedPanel(2, 240, 730, 904, 234, panel, cardEdge, 1)
+    AddOutlinedPanel(2, 240, 730, 904, 336, panel, cardEdge, 1)
     Gui, 2:Font, s11 Bold c%text%, Segoe UI
     Gui, 2:Add, Text, x256 y742 w868 h24 BackgroundTrans, Печать и ручной ввод ID
     Settings_AddControl("Интервал печати, мс (1–100)", "CFG_ChatTypingDelayMs", ChatTypingDelayMs, 256, 778, 214, "Edit", "", text, inputText)
@@ -828,10 +828,13 @@ BuildSettingsGui() {
     Settings_AddControl("Время ввода ID, сек", "CFG_IDCaptureTimeoutSec", IDCaptureTimeoutSec, 768, 778, 164, "Edit", "", text, inputText)
     Gui, 2:Font, Norm s9 c%muted%, Segoe UI
     Gui, 2:Add, Text, x950 y782 w174 h58 +Wrap BackgroundTrans, По бинду «Ввести ID вручную». Повтор бинда применяет ID.
-    Settings_AddControl("Команды для режима «Печать фракции»", "CFG_ChatFactionCommands", ChatFactionCommands, 256, 852, 868, "Edit", "", text, inputText)
+    Settings_AddControl("Темп набора", "CFG_ChatTypingSpeedMode", ChatTyping_SpeedLabel(ChatTypingSpeedMode), 256, 852, 300, "DropDown", "Постоянный интервал|Случайный темп (симв/с)", text, inputText)
+    Settings_AddControl("От, симв/с (1–1000)", "CFG_ChatTypingMinCPS", ChatTypingMinCPS, 576, 852, 180, "Edit", "", text, inputText)
+    Settings_AddControl("До, симв/с (1–1000)", "CFG_ChatTypingMaxCPS", ChatTypingMaxCPS, 776, 852, 180, "Edit", "", text, inputText)
+    Settings_AddControl("Команды для режима «Печать фракции»", "CFG_ChatFactionCommands", ChatFactionCommands, 256, 926, 868, "Edit", "", text, inputText)
     Gui, 2:Font, Norm s9 c%muted%, Segoe UI
-    Gui, 2:Add, Text, x256 y924 w868 h32 +Wrap BackgroundTrans, Интервал — между символами; RP до/после действия вводится без этой паузы. Фракционные команды: через пробел или `;. Остальной текст вставляется.
-    Settings_RecordExtent(974)
+    Gui, 2:Add, Text, x256 y998 w868 h54 +Wrap BackgroundTrans, Темп задаётся в символах/сек.; фактическая скорость ограничена игрой и удержанием клавиши 10 мс. Интервал и случайный темп не меняют паузы действий/RP. Фракционные команды: через пробел или `;.
+    Settings_RecordExtent(1078)
 
     SettingsBuildingPage := 3
     Gui, 2:Tab, 3
@@ -1164,10 +1167,14 @@ ApplyCfgUiValuesToGlobals() {
     PostTimerEnabled := CFG_PostTimerEnabled
     TextSendMode := ChatTyping_ModeFromLabel(CFG_TextSendMode)
     ChatTypingDelayMs := CFG_ChatTypingDelayMs
+    ChatTypingSpeedMode := CFG_ChatTypingSpeedMode
+    ChatTypingMinCPS := CFG_ChatTypingMinCPS
+    ChatTypingMaxCPS := CFG_ChatTypingMaxCPS
     ChatFactionCommands := CFG_ChatFactionCommands
     IDEntryMode := CFG_IDEntryMode
     IDCaptureTimeoutSec := CFG_IDCaptureTimeoutSec
     ChatTyping_NormalizeDelay(ChatTypingDelayMs)
+    ChatTyping_NormalizeSpeedConfig(ChatTypingSpeedMode, ChatTypingMinCPS, ChatTypingMaxCPS)
     ChatTyping_NormalizeCommands(ChatFactionCommands)
     NormalizeIDEntryMode(IDEntryMode)
     IDCaptureTimeoutSec := IDCapture_NormalizeTimeout(IDCaptureTimeoutSec)

@@ -1,8 +1,8 @@
 ﻿Desktop integration probe
 Runtime=1.1.37.02 | Unicode=1 | PtrSize=8
-Compiled=1 | Data=Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-cfx53dvs\data
+Compiled=1 | Data=Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\desktop-check-hed1eex3\data
 No real game or OBS verification.
-INFO | startup WorkingSetMiB=54.61 PeakMiB=54.61
+INFO | startup WorkingSetMiB=54.89 PeakMiB=54.89
 PASS | compiled standalone host
 PASS | application mutex acquired
 PASS | duplicate application mutex detected
@@ -81,6 +81,7 @@ PASS | stop countdown does not retain chat queue ownership
 PASS | queued action completes while stop countdown is visible
 PASS | custom function persistence
 PASS | custom function reload and parser
+PASS | faction/CPS GUI controls survive production INI roundtrip
 PASS | 20 documents available without external laws folder
 PASS | native legislation viewer opens
 PASS | reference guide opens GuideSignals
@@ -117,5 +118,5 @@ PASS | same-EXE diagnostic finishes in custom data directory
 PASS | diagnostic does not replace parent instance
 PASS | diagnostic report opens in own application GUI
 PASS | closing settings destroys its native window
-INFO | after native smoke WorkingSetMiB=241.07 PeakMiB=245.00
-Checks=114 | Failed=0
+INFO | after native smoke WorkingSetMiB=244.26 PeakMiB=244.26
+Checks=115 | Failed=0

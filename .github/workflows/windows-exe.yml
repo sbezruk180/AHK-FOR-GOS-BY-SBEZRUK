@@ -85,6 +85,17 @@ jobs:
           $process.Refresh()
           if ($failed.Count -gt 0 -or $process.ExitCode -ne 0) { throw "Native input failed: $($process.ExitCode)" }
           Write-Output 'Actual InputHook and key events; game predicate/action sink/decoration are explicit fixture seams.'
+      - name: Faction typing routes paste and memory independently
+        shell: pwsh
+        run: |
+          $fixture = Join-Path $env:RUNNER_TEMP 'ahk-chat-route-fixture/native.ahk'
+          python tools/build_chat_route_fixture.py $fixture
+          $ahk = (Resolve-Path '.build/toolchain/1.1.37.02/AutoHotkeyU64.exe').Path
+          $process = Start-Process -FilePath $ahk -ArgumentList @('/ErrorStdOut', "`"$fixture`"") -PassThru
+          if (-not $process.WaitForExit(15000)) { $process.Kill(); throw 'Chat route fixture timed out' }
+          Get-Content (Join-Path (Split-Path $fixture) 'chat_route_report.txt') -Encoding utf8
+          $process.Refresh()
+          if ($process.ExitCode -ne 0) { throw "Chat routes failed: $($process.ExitCode)" }
       - name: Native chat commands, Alt+T and English aliases
         shell: pwsh
         run: |

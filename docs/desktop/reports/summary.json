@@ -2,46 +2,59 @@
   "architecture": "TEST_U64",
   "real_game": "NOT_TESTED",
   "real_OBS": "NOT_TESTED",
+  "scope": "signals, builder, GPS and faction/CPS typing",
   "results": [
     {
       "mode": "--desktop-smoke",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 28.67,
+      "seconds": 94.32,
       "report": "desktop_smoke_report.txt"
     },
     {
       "mode": "--audit-selftest",
       "status": "PASS",
       "exit_code": 0,
-      "seconds": 50.23,
+      "seconds": 123.06,
       "report": "audit_selftest_report.txt"
     }
   ],
-  "scope": "signals, removed guides, builder UI, GPS readiness",
-  "test_exe_sha256": "63d4ab2bcf66195b6c8eaae49c1860bdcad2460a51c1904bd7c9cae07027189e",
-  "gps_native": {
-    "checks": 17,
-    "failed": 0,
-    "baseline_checks": 17,
-    "baseline_failed": 2,
-    "report": "game_menu_report.txt",
-    "baseline_report": "gps_dialog_before_report.txt",
-    "baseline_commit": "0dfaa5bd862dc1bd1462fbb79354f4e565dbe9a7",
-    "fixture_sha256": "79513563d7fa5388785ad91c09f7b0344a5d56c4dbbe24d2276c017104af95cd",
-    "seams": [
-      "game process/window",
-      "memory command",
-      "chat flag",
-      "read-only dialog-state observer"
-    ]
+  "final_gui": [
+    {
+      "mode": "--desktop-smoke",
+      "status": "PASS",
+      "exit_code": 0,
+      "seconds": 92.77,
+      "report": "desktop_smoke_report.txt"
+    }
+  ],
+  "test_host_provenance": {
+    "audit_exe_sha256": "91578cfbdde09b4eac73b99e36c3fc973e2d46704455d46db9e66d9dea994342",
+    "final_gui_exe_sha256": "6af340c022eb96d089d964331ca72bc5f77c04b8899bc28c1b272d946900d9d0",
+    "source_differences": [
+      "tests/desktop_smoke.ahk"
+    ],
+    "all_application_sources_identical": true,
+    "note": "Only the GUI fixture changed to retain the input INI encoding; application sources match exactly."
   },
-  "txt_native": {
+  "native_routes": {
+    "checks": 11,
+    "failed": 0,
+    "report": "chat_route_report.txt",
+    "seams": "three counting transport sinks; no game/clipboard/memory"
+  },
+  "native_physical_input": {
     "checks": 33,
     "failed": 0,
-    "report": "text_bind_report.txt",
-    "fixture_sha256": "1f1be1827f37f8ad5b624e35ba1bd01c22dc40c82bf83b56ae8ec440fee3d2ca",
-    "note": "Existing route/removal regression only; user postponed the real-client TXT refusal investigation."
+    "report": "private_input_report.txt",
+    "seams": "game predicates, action sink and decoration",
+    "mixed_RU_US": "SKIPPED in Wine"
   },
-  "other_reports": "Historical reports are retained; only the tests listed here ran for this source revision."
+  "native_gps": {
+    "checks": 17,
+    "failed": 0,
+    "report": "game_menu_report.txt",
+    "seams": "game process, chat flag, memory command and dialog observer"
+  },
+  "historical_reports": "Other retained reports, including TXT refusal analysis, are historical; no real-client TXT fix claimed."
 }

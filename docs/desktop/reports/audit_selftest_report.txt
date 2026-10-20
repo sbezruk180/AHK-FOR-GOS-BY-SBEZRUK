@@ -134,6 +134,16 @@ PASS | Faction command punctuation is not delimiter
 PASS | FastTyping types ordinary text
 PASS | FactionTyping types faction text
 PASS | FactionTyping leaves other commands to paste
+PASS | Faction memory mode types operational commands
+PASS | Faction memory mode leaves ordinary text untyped
+PASS | Legacy faction UI label remains compatible
+PASS | Variable speed swaps reversed CPS endpoints
+PASS | Variable speed defaults keep old configuration fixed
+PASS | Variable speed bounds are finite
+PASS | Variable speed counts physical key time
+PASS | Variable speed never adds negative wait
+PASS | Variable speed sampling stays within CPS range
+PASS | Variable speed yields to explicit RP zero override
 PASS | Keyboard never selects typing
 PASS | Typed sender accepts literal keyboard punctuation
 PASS | Typed sender rejects newline with accidental Enter
@@ -143,6 +153,7 @@ PASS | Chat send mode label roundtrip Memory
 PASS | Chat send mode label roundtrip Keyboard
 PASS | Chat send mode label roundtrip FastTyping
 PASS | Chat send mode label roundtrip FactionTyping
+PASS | Chat send mode label roundtrip FactionTypingMemory
 PASS | Unknown send label selects Auto
 PASS | Typing CP1251 byte decodes to Unicode 1
 PASS | Typing CP1251 byte decodes to Unicode 2
@@ -385,10 +396,16 @@ PASS | ID capture unrelated held digit does not block confirmation
 PASS | ID capture modifier-only activation releases its initial guard
 PASS | Chat/ID settings: stable mode roundtrip FastTyping
 PASS | Chat/ID settings: speed and exact commands FastTyping
+PASS | Chat settings: variable CPS range roundtrip FastTyping
 PASS | Chat/ID settings: capture mode and deadline FastTyping
 PASS | Chat/ID settings: stable mode roundtrip FactionTyping
 PASS | Chat/ID settings: speed and exact commands FactionTyping
+PASS | Chat settings: variable CPS range roundtrip FactionTyping
 PASS | Chat/ID settings: capture mode and deadline FactionTyping
+PASS | Chat/ID settings: stable mode roundtrip FactionTypingMemory
+PASS | Chat/ID settings: speed and exact commands FactionTypingMemory
+PASS | Chat settings: variable CPS range roundtrip FactionTypingMemory
+PASS | Chat/ID settings: capture mode and deadline FactionTypingMemory
 PASS | OBS setting survives appearance save On
 PASS | OBS setting survives appearance save Off
 PASS | ID capture pauses queued chat without consuming it
@@ -479,4 +496,4 @@ PASS | F24 settings fits work area
 SKIP | ANSI x86 game ABI, module enumeration and HANDLE lifecycle need Windows A32 integration
 SKIP | Real Windows GUI/DPI, OBS capture, game offsets, remote-thread stress and screenshot files require target integration
 
-Checks: 474 | Failed: 0 | Skipped integration groups: 3
+Checks: 491 | Failed: 0 | Skipped integration groups: 3
