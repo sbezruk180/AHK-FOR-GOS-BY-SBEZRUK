@@ -18,7 +18,7 @@
 | Нативный ввод и печать | **33 / 0 ошибок** | Реальные клавиши и точный текст; 10 символов при 5 CPS — 2132 мс с подготовкой; отмена паузы при 1 CPS менее 800 мс; освобождение перехвата, Enter/Space/Esc, фокус и поколение |
 | Нативный GPS/меню | **17 / 0 ошибок** | LISTBOX/EDIT и реальные клавиши: дом, организация, задержка списка 1400 мс, неожиданный тип окна, отмена и владение вводом. Повторён после изменения общего транспорта |
 | Инвентарь / laws / PE | PASS | CP1251/CRLF, 20 хешей laws, единственные функции/включения, ресурсы EXE соответствуют исходникам |
-| Windows CI итоговой сборки | Ожидается после публикации | [Статус](reports/windows_ci_result.json) |
+| Windows CI итоговой сборки | **PASS** | [Run 39432079983](https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK/actions/runs/39432079983), commit `086b254a11b832f13d73ec75ea992fc4ad98057f`: ANSI x86 запуск, GUI, ввод/кириллица/CPS/отмена, оба маршрута фракции, laws, TXT и GPS; [подтверждение](reports/windows_ci_result.json) |
 
 [Протоколы и происхождение](reports/summary.json), [audit](reports/audit_selftest_report.txt), [GUI](reports/desktop_smoke_report.txt), [маршруты](reports/chat_route_report.txt), [клавиши](reports/private_input_report.txt), [GPS](reports/game_menu_report.txt).
 

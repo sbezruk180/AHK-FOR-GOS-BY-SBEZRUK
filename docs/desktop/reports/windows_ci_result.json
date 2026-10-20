@@ -1,10 +1,35 @@
 {
-  "conclusion": "PENDING",
-  "scope": "signals, builder, GPS and faction/CPS typing",
-  "previous_result": "windows_ci_signals_builder_2026-10-20.json",
+  "workflow": "Standalone Windows EXE",
+  "run_id": "39432079983",
+  "url": "https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK/actions/runs/39432079983",
+  "job_url": "https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK/actions/runs/39432079983/job/118659401691",
+  "commit": "086b254a11b832f13d73ec75ea992fc4ad98057f",
+  "conclusion": "SUCCESS",
+  "release_exe_sha256": "55cf2e669ec0b392b2e57c1d04794c02b0c8db0fed24daeabeaf87f5a6455c24",
+  "verified": [
+    "native Windows build and PE/source validation",
+    "shipped ANSI x86 EXE boot and embedded resource probe",
+    "native Windows GUI / profiles / signal and builder compatibility in Unicode test host",
+    "law upgrade and custom override precedence",
+    "native private input, exact Cyrillic typing, CPS pacing and cancellation",
+    "production faction route fixture: typing vs paste vs memory; no fallback on uncertain memory",
+    "native chat registration / aliases / private input fixture",
+    "native GPS / paced menu / ownership / cancellation fixture"
+  ],
+  "fixture_note": "Game predicates, memory/clipboard transport sinks and dialog-state/capture observations are explicit seams as documented per fixture. GUI/physical keyboard probes use the official Unicode x64 test host/runtime. Full ANSI Cyrillic regressions are skipped when the hosted Windows codepage is not 1251; the cloud ACP1251 audit is recorded separately.",
+  "earlier_attempts": [
+    {
+      "run_id": "39431574704",
+      "conclusion": "FAILURE",
+      "reason": "Fixture retained the intentionally cancelled digit before the independent Russian-text test. Reset the sink; product sources and binary unchanged."
+    }
+  ],
+  "previous_scope_result": "windows_ci_signals_builder_2026-10-20.json",
   "not_claimed": [
-    "real Amazing client and dialog ABI",
+    "real Amazing client or dialog offsets",
+    "actual game memory/clipboard command delivery",
     "OBS frames",
+    "exclusive Direct3D fullscreen",
     "user-reported TXT refusal resolved"
   ]
 }
