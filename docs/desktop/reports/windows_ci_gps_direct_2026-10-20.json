@@ -1,0 +1,77 @@
+{
+  "workflow": "Standalone Windows EXE",
+  "run_id": "39441705017",
+  "url": "https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK/actions/runs/39441705017",
+  "job_url": "https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK/actions/runs/39441705017/job/118692959956",
+  "commit": "90d1c61fdcc8629f480cd6d02ae142be2ce185e9",
+  "conclusion": "SUCCESS",
+  "release_exe_sha256": "ccc26077d054a06eddaca56cb2fab0df201d6f545240678f1e9b7b792b802982",
+  "steps": [
+    {
+      "name": "Set up job",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/checkout@v4",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/setup-python@v5",
+      "conclusion": "success"
+    },
+    {
+      "name": "Build and verify official ANSI x86 executable",
+      "conclusion": "success"
+    },
+    {
+      "name": "Native x86 boot and embedded-resource probe",
+      "conclusion": "success"
+    },
+    {
+      "name": "Native Windows GUI and sidebar compatibility (Unicode test host)",
+      "conclusion": "success"
+    },
+    {
+      "name": "Previous law edition and custom overrides",
+      "conclusion": "success"
+    },
+    {
+      "name": "Native private TXT, character typing and paced menu input",
+      "conclusion": "success"
+    },
+    {
+      "name": "Faction typing routes paste and memory independently",
+      "conclusion": "success"
+    },
+    {
+      "name": "Native chat commands, Alt+T and English aliases",
+      "conclusion": "success"
+    },
+    {
+      "name": "Native GPS, menu ownership and cancellation",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/upload-artifact@v4",
+      "conclusion": "success"
+    },
+    {
+      "name": "Post Run actions/setup-python@v5",
+      "conclusion": "success"
+    },
+    {
+      "name": "Post Run actions/checkout@v4",
+      "conclusion": "success"
+    },
+    {
+      "name": "Complete job",
+      "conclusion": "success"
+    }
+  ],
+  "not_tested": [
+    "real Amazing client",
+    "actual memory/clipboard delivery to game",
+    "OBS frames",
+    "exclusive fullscreen"
+  ]
+}

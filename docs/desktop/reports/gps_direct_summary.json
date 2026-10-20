@@ -30,7 +30,12 @@
   },
   "release_exe_sha256": "ccc26077d054a06eddaca56cb2fab0df201d6f545240678f1e9b7b792b802982",
   "test_exe_sha256": "ccd6a3f133711cae9a1a26c42fea95caa9eef016161f12ee84c26ee053ceb452",
-  "windows_ci": "PENDING",
+  "windows_ci": {
+    "conclusion": "SUCCESS",
+    "run_id": "39441705017",
+    "url": "https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK/actions/runs/39441705017",
+    "proof": "windows_ci_gps_direct_2026-10-20.json"
+  },
   "opening_pause_ms": 1000,
   "selection_pause_ms": 500,
   "down_pause_ms": 35,
