@@ -1,0 +1,15 @@
+{
+  "workflow": "Standalone Windows EXE",
+  "conclusion": "SUCCESS",
+  "run_id": "39228439839",
+  "url": "https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK/actions/runs/39228439839",
+  "job_url": "https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK/actions/runs/39228439839/job/117980333953",
+  "commit": "d8d03885e8b903fbd49e3ead28474fed0a83ac2e",
+  "release_exe_sha256": "e49a932275fdaa529ccfc8b3c7d822b0d333f44bc9451bf6d23152397c6024b0",
+  "scope": "Signals, builder and GPS; all Windows job steps passed before the subsequent faction/CPS update.",
+  "not_claimed": [
+    "real Amazing dialog ABI",
+    "OBS frames",
+    "user-reported TXT refusal resolved"
+  ]
+}

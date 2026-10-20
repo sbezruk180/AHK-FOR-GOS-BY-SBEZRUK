@@ -1,10 +1,10 @@
 {
   "conclusion": "PENDING",
-  "scope": "signals, builder, GPS dialog readiness",
-  "previous_result": "windows_ci_text_repair_2026-10-19.json",
+  "scope": "signals, builder, GPS and faction/CPS typing",
+  "previous_result": "windows_ci_signals_builder_2026-10-20.json",
   "not_claimed": [
-    "real Amazing client and dialog offsets",
+    "real Amazing client and dialog ABI",
     "OBS frames",
-    "TXT refusal resolved"
+    "user-reported TXT refusal resolved"
   ]
 }

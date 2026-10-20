@@ -192,6 +192,9 @@ LoadUISafetyAndAudioFromIni(fileName) {
     IniRead, ActionTimerY, %fileName%, UI, ActionTimerY, 180
     IniRead, TextSendMode, %fileName%, UI, TextSendMode, Auto
     IniRead, ChatTypingDelayMs, %fileName%, UI, ChatTypingDelayMs, 5
+    IniRead, ChatTypingSpeedMode, %fileName%, UI, ChatTypingSpeedMode, Fixed
+    IniRead, ChatTypingMinCPS, %fileName%, UI, ChatTypingMinCPS, 20
+    IniRead, ChatTypingMaxCPS, %fileName%, UI, ChatTypingMaxCPS, 40
     ChatFactionCommands := IniReadText(fileName, "UI", "ChatFactionCommands", ChatTyping_DefaultCommands())
     IniRead, IDEntryMode, %fileName%, UI, IDEntryMode, Перехват цифр
     IniRead, IDCaptureTimeoutSec, %fileName%, UI, IDCaptureTimeoutSec, 3
@@ -313,6 +316,7 @@ NormalizeLoadedUISettings() {
     NormalizeNumberRange(ActionTimerY, 180, -4000, 8000)
     NormalizeTextSendMode(TextSendMode)
     ChatTyping_NormalizeDelay(ChatTypingDelayMs)
+    ChatTyping_NormalizeSpeedConfig(ChatTypingSpeedMode, ChatTypingMinCPS, ChatTypingMaxCPS)
     ChatTyping_NormalizeCommands(ChatFactionCommands)
     NormalizeIDEntryMode(IDEntryMode)
     IDCaptureTimeoutSec := IDCapture_NormalizeTimeout(IDCaptureTimeoutSec)
@@ -430,6 +434,9 @@ WriteUISafetyAndAudioToIni(fileName) {
     CheckedIniWrite(ActionTimerY, fileName, "UI", "ActionTimerY")
     CheckedIniWrite(TextSendMode, fileName, "UI", "TextSendMode")
     CheckedIniWrite(ChatTypingDelayMs, fileName, "UI", "ChatTypingDelayMs")
+    CheckedIniWrite(ChatTypingSpeedMode, fileName, "UI", "ChatTypingSpeedMode")
+    CheckedIniWrite(ChatTypingMinCPS, fileName, "UI", "ChatTypingMinCPS")
+    CheckedIniWrite(ChatTypingMaxCPS, fileName, "UI", "ChatTypingMaxCPS")
     IniWriteText(ChatFactionCommands, fileName, "UI", "ChatFactionCommands")
     CheckedIniWrite(IDEntryMode, fileName, "UI", "IDEntryMode")
     CheckedIniWrite(IDCaptureTimeoutSec, fileName, "UI", "IDCaptureTimeoutSec")

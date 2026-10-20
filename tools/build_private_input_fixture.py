@@ -31,6 +31,7 @@ global MockMode := "Off", AuditTestMode := 0, AutomationEpoch := 4, CurrentProfi
 global PhysicalInputBusy := 0, IDCaptureState := "", GameMenuLease := "", ServiceUIInputState := "", ServiceUIConfirmState := ""
 global ServiceUIAuditInputs := [], PrivateTextInputBusy := 0, BindMenuEditMode := 0, CustomFunctions := []
 global Trig_GpsD := "", Trig_GpsOS := "", FixtureTrigger := "!тест", UIRoundness := 12
+global ChatTypingSpeedMode := "Fixed", ChatTypingMinCPS := 20, ChatTypingMaxCPS := 40
 global FixtureLayoutFallback := 0, GameMenuStarting := "", ChatQueueBusy := 0
 global FixtureStatesCreated := 0, FixtureStatesDeleted := 0, CapturedGps := "", GpsBurst := "55"
 global PrivacyAllowed := 1, ServiceUILastInputError := "", FixtureChatOpen := 0, ChatTypingDelayMs := 0
@@ -128,6 +129,27 @@ Check("20 characters do not inherit menu key delays", textElapsed < 1400)
 Check("typing releases input ownership and restores caller delay", !PhysicalInputBusy && A_KeyDelay = beforeDelay && A_KeyDuration = beforeDuration)
 Leaked := ""
 ControlSetText,,, ahk_id %MainText%
+savedSpeed := [ChatTypingDelayMs, ChatTypingSpeedMode, ChatTypingMinCPS, ChatTypingMaxCPS]
+ChatTypingDelayMs := 1, ChatTypingSpeedMode := "RandomCPS", ChatTypingMinCPS := 5, ChatTypingMaxCPS := 5
+ControlSetText,,, ahk_id %MainText%
+slowStarted := TickNow()
+slowResult := SendChatTyped("1234567890", false, false)
+slowElapsed := TickNow() - slowStarted
+ControlGetText, slowText,, ahk_id %MainText%
+Check("CPS pacing delivers exact physical text", slowResult = 1 && slowText == "1234567890")
+Check("five CPS paces ten characters across nine intervals", slowElapsed >= 1750 && slowElapsed < 3500)
+Report .= "FiveCps10CharsMs=" . slowElapsed . "`r`n"
+ChatTypingMinCPS := 1, ChatTypingMaxCPS := 1
+ControlSetText,,, ahk_id %MainText%
+SetTimer, CancelSlowTyping, -350
+cancelStarted := TickNow()
+cancelResult := SendChatTyped("1234567890", false, false)
+cancelElapsed := TickNow() - cancelStarted
+SetTimer, CancelSlowTyping, Off
+ControlGetText, cancelledText,, ahk_id %MainText%
+Check("slow CPS cancellation is prompt", cancelResult = -2 && cancelElapsed < 800 && StrLen(cancelledText) <= 2)
+Check("slow CPS cancellation releases input", !PhysicalInputBusy)
+ChatTypingDelayMs := savedSpeed[1], ChatTypingSpeedMode := savedSpeed[2], ChatTypingMinCPS := savedSpeed[3], ChatTypingMaxCPS := savedSpeed[4]
 if (!FixtureLayoutFallback) {
     russianResult := SendChatTyped("/m Стоп! ID:42", false, false, "", 0)
     Check("Russian physical typing result=" . russianResult . " error=" . ChatTypingLastError . " layout=" . InputLayoutLastError, russianResult = 1)
@@ -142,6 +164,9 @@ Report .= "Checks=" . Checks . " Failed=" . Failures . " KeyHoldMs=" . KeyDurati
 FileDelete, %A_ScriptDir%\private_input_report.txt
 FileAppend, %Report%, %A_ScriptDir%\private_input_report.txt, UTF-8
 ExitApp, %Failures%
+CancelSlowTyping:
+AutomationEpoch++
+return
 GpsFallback:
 SendLevel, 2
 SendEvent, {Escape}

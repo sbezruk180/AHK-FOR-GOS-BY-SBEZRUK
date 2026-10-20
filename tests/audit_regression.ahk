@@ -329,18 +329,21 @@ Audit_ChatIDIntegration(scratch) {
     WriteUISafetyAndAudioToIni(backup)
     try {
         ChatTypingDelayMs := 17
+        ChatTypingSpeedMode := "RandomCPS", ChatTypingMinCPS := 80, ChatTypingMaxCPS := 150
         ChatFactionCommands := "/frac /cuff /deject /mdc /chase"
         IDEntryMode := "Перехват цифр", IDCaptureTimeoutSec := 3
-        for _, mode in ["FastTyping", "FactionTyping"] {
+        for _, mode in ["FastTyping", "FactionTyping", "FactionTypingMemory"] {
             TextSendMode := mode
             ConfigWriteFailed := 0
             wrote := WriteUISafetyAndAudioToIni(fixture)
             TextSendMode := "Auto", ChatTypingDelayMs := 1, ChatFactionCommands := "/r"
             IDEntryMode := "Через чат", IDCaptureTimeoutSec := 15
+            ChatTypingSpeedMode := "Fixed", ChatTypingMinCPS := 1, ChatTypingMaxCPS := 1
             LoadUISafetyAndAudioFromIni(fixture)
             NormalizeTextSendMode(TextSendMode)
             AuditAssert("Chat/ID settings: stable mode roundtrip " . mode, wrote && TextSendMode = mode)
             AuditAssert("Chat/ID settings: speed and exact commands " . mode, ChatTypingDelayMs = 17 && ChatFactionCommands == "/frac /cuff /deject /mdc /chase")
+            AuditAssert("Chat settings: variable CPS range roundtrip " . mode, ChatTypingSpeedMode = "RandomCPS" && ChatTypingMinCPS = 80 && ChatTypingMaxCPS = 150)
             AuditAssert("Chat/ID settings: capture mode and deadline " . mode, IDEntryMode = "Перехват цифр" && IDCaptureTimeoutSec = 3)
         }
         for _, obs in ["On", "Off"] {
