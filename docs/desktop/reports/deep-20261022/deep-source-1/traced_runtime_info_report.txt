@@ -1,0 +1,14 @@
+﻿Product=AHK FOR GOS
+Compiled=0
+Runtime=1.1.37.02
+PointerSize=4
+Unicode=0
+SystemCodepage=1251
+DataDir=D:\a\_temp\deep-source-1-work\traced\runtime-info
+SourceIntrospection=1
+LawDocuments=20
+LawBundleReceived=2026-10-19
+LawBundledMatches=0
+GameCompatibility=NOT_TESTED
+OBSFrames=NOT_TESTED
+CyrillicLegacyRequirement=Windows system ANSI codepage 1251

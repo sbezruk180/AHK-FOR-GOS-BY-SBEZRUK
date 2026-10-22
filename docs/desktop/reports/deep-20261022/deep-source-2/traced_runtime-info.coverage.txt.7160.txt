@@ -1,0 +1,13 @@
+﻿AppHost_ArgumentValue|1
+AppHost_CanWrite|1
+AppHost_DataDir|22
+AppHost_ExpandSource|46
+AppHost_Init|1
+AppHost_IsAbsolutePath|47
+AppHost_LawPath|20
+AppHost_ReadLaw|20
+AppHost_RuntimeInfo|1
+AppHost_SourceText|1
+AppHost_UseUpdatedBundledLaw|20
+ChatTyping_DefaultCommands|1
+HasCommandLineArg|3

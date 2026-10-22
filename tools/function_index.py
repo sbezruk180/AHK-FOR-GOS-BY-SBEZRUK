@@ -140,7 +140,7 @@ def inventory(root=ROOT):
     for r in rows: r['callers'] = callers[r['name']]
     catalog=[]
     bindings=read_source(Path(root)/'app/bindings.ahk')
-    state=read_source(Path(root)/'app/state.ahk')
+    state='\n'.join(read_source(p) for p in graph.files)
     defaults=dict(re.findall(r'(?m)^global (\w+) := \"([^\"]*)\"$',state))
     handlers=dict(re.findall(r'labelMap\[\"([^\"]+)\"\] := \"([^\"]+)\"',bindings))
     for line,code in enumerate(bindings.splitlines(),1):

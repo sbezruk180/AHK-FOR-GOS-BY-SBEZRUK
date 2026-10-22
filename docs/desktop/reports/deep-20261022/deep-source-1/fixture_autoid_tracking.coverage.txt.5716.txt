@@ -1,0 +1,12 @@
+﻿AutoTargetID_ClearFailure|26
+AutoTargetID_Poll|37
+AutoTargetID_RequestConfirmation|8
+AutoTargetID_ResetCandidate|36
+AutoTargetID_TargetKey|30
+ContextAssistant_Close|29
+ContextAssistant_ConfirmHotkeysActive|2
+ContextAssistant_GetConfirmationPrompt|8
+ContextAssistant_GetOverlayPosition|5
+ContextAssistant_MakeWindowPassive|5
+ContextAssistant_ShowConfirmationOverlay|5
+ContextAssistant_Submit|2

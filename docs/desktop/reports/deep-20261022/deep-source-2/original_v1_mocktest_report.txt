@@ -1,0 +1,23 @@
+AHK FOR GOS BY SBEZRUK v1.0 MockMode regression
+PASS | представление
+PASS | /d
+PASS | SOS принят
+PASS | SOS прибыл
+PASS | гражданский принят
+PASS | гражданский прибыл
+PASS | ДТП принят
+PASS | ДТП прибыл
+PASS | ДТП оформление
+PASS | ДТП завершено
+PASS | патруль
+PASS | пост
+PASS | колонна
+PASS | эвакуация начало
+PASS | эвакуация конец
+PASS | Chase с ID
+PASS | Chase без ID
+PASS | сервисные мастера и штраф
+PASS | автоматический доклад
+PASS | отмена всей автоматизации
+RESULT=PASS
+LIVE GAME: NOT RUN

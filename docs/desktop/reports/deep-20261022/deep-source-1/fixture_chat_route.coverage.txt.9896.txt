@@ -1,0 +1,6 @@
+﻿ChatTransport_Send|9
+ChatTyping_IsFactionCommand|8
+ChatTyping_ModeFromLabel|9
+ChatTyping_ModeLabel|3
+ChatTyping_NormalizeCommands|5
+ChatTyping_ShouldType|9
