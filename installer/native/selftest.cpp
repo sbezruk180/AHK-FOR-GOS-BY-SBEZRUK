@@ -164,9 +164,13 @@ int SelfTest(const fs::path &report) {
     check("uninstall removes bundled A32",
           !fs::exists(o.root / L"runtime" / L"AutoHotkeyA32.exe"));
     fs::remove(o.root / L"my-unrelated.txt");
-    fs::remove(o.root);
+    Write(o.root / L"profiles.ini", profile);
+    check("profile-preserving removal retains reinstall metadata",
+          ReadRecord(o.root).profilesKept);
     auto reinstalled = Install(o, cancel, notify);
     check("reinstall after removal", reinstalled.ok);
+    check("reinstall preserves portable profile beside source",
+          Read(o.root / L"profiles.ini") == profile);
     check("reinstall reuses saved profiles",
           Read(o.data / L"profiles.ini") == profile);
     auto full = Uninstall(o, false, cancel, notify);

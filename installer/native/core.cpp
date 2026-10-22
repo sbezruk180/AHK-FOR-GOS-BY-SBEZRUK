@@ -317,6 +317,10 @@ Record ReadRecord(const fs::path &root) {
   while (std::getline(in, line)) {
     if (line.empty())
       continue;
+    if (line == "#profiles-preserved") {
+      r.profilesKept = true;
+      continue;
+    }
     auto pos = line.find('|');
     if (pos == line.npos)
       Fail(L"Неверный манифест.");
@@ -343,6 +347,8 @@ bool CanManage(const fs::path &root) {
 }
 static std::string RecordText(const Record &r) {
   std::string s = "AHKFORGOS-INSTALL-1\n" + std::to_string(r.mode) + "\n";
+  if (r.profilesKept)
+    s += "#profiles-preserved\n";
   for (auto &e : r.files)
     s += Utf8(e.first) + "|" + e.second + "\n";
   return s;
@@ -814,6 +820,12 @@ Result Uninstall(const Options &o, bool keepData, std::atomic<bool> &cancel,
     auto record = ReadRecord(o.root);
     if (RunningFrom(o.root))
       Fail(L"Закройте AHK FOR GOS перед удалением.");
+    record.profilesKept = keepData;
+    Text(o.root / L"install.manifest.new", RecordText(record));
+    if (!MoveFileExW((o.root / L"install.manifest.new").c_str(),
+                     (o.root / L"install.manifest").c_str(),
+                     MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH))
+      Fail(LastErrorText(L"Не сохранить параметры удаления"));
     unsigned i = 0;
     for (auto &e : record.files) {
       CopyCancelled(cancel);
@@ -854,7 +866,8 @@ Result Uninstall(const Options &o, bool keepData, std::atomic<bool> &cancel,
         RegDeleteTreeW(HKEY_CURRENT_USER, RegistryKey);
     }
     EmptyDirs(o.root, record);
-    if (!Same(SelfPath(), o.root / L"Uninstall.exe") && !result.failed) {
+    if (!Same(SelfPath(), o.root / L"Uninstall.exe") && !result.failed &&
+        !keepData) {
       DeleteFileW((o.root / L"install.manifest").c_str());
       RemoveDirectoryW(o.root.c_str());
     }
@@ -1041,7 +1054,8 @@ bool FinishRemove(const fs::path &root) {
     if (!DeleteFileW((root / L"Uninstall.exe").c_str()) &&
         GetLastError() != ERROR_FILE_NOT_FOUND)
       return false;
-    DeleteFileW((root / L"install.manifest").c_str());
+    if (!r.profilesKept)
+      DeleteFileW((root / L"install.manifest").c_str());
     EmptyDirs(root, r);
     RemoveDirectoryW(root.c_str());
     return true;

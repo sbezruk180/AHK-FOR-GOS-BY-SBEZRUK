@@ -24,6 +24,7 @@ struct Entry {
 };
 struct Record {
   int mode = 1;
+  bool profilesKept = false;
   std::vector<std::pair<std::wstring, std::string>> files;
 };
 struct Options {
