@@ -1,0 +1,56 @@
+{
+  "provenance": {
+    "source_runtime": {
+      "original_sha256": "6a98b438b67da7316e9251eb1a92cd5384a8349d239a77903f7282fa076a77c3",
+      "test_host_sha256": "da91a152e05d4803c2313bf488d832ef1ce7705bf73ade6f89379d945ebf9391",
+      "only_resource_type_changed": 24,
+      "activeCodePage": "ru-RU"
+    },
+    "compiled_host": {
+      "original_sha256": "5c43313efdbf5b960dbce5198ef9c30f56881cdaa3c6a383ffcddc33501083c5",
+      "test_host_sha256": "666c448297592c98004efd56f17a0e3d6947ffd931c171ff9cc97de5cf9d9364",
+      "only_resource_type_changed": 24,
+      "activeCodePage": "ru-RU"
+    },
+    "runtime_archive_sha256": "6f3663f7cdd25063c8c8728f5d9b07813ced8780522fd1f124ba539e2854215f"
+  },
+  "results": [
+    {
+      "exit_code": 0,
+      "seconds": 0.62,
+      "report": "D:\\a\\_temp\\deep-probe\\exe_stock\\runtime_info_report.txt",
+      "failures": [],
+      "status": "PASS",
+      "form": "exe_stock",
+      "PointerSize": 4,
+      "Unicode": 0,
+      "Compiled": 1,
+      "SystemCodepage": 1252
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.19,
+      "report": "D:\\a\\_temp\\deep-probe\\exe_cp1251\\runtime_info_report.txt",
+      "failures": [],
+      "status": "PASS",
+      "form": "exe_cp1251",
+      "PointerSize": 4,
+      "Unicode": 0,
+      "Compiled": 1,
+      "SystemCodepage": 1251
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.25,
+      "report": "D:\\a\\_temp\\deep-probe\\source_cp1251\\runtime_info_report.txt",
+      "failures": [],
+      "status": "PASS",
+      "form": "source_cp1251",
+      "PointerSize": 4,
+      "Unicode": 0,
+      "Compiled": 0,
+      "SystemCodepage": 1251
+    }
+  ],
+  "game": "NOT_TESTED"
+}
