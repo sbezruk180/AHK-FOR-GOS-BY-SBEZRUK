@@ -2,7 +2,7 @@
 Guide_RunRegression() {
     global
     catalog := Guide_GetCatalog()
-    AuditAssert("Guides: only requested signals remain", catalog.Length() = 1 && !IsObject(Guide_GetMeta(22)) && !IsObject(Guide_GetMeta(23)))
+    AuditAssert("Guides: signals and rights without removed scenarios", catalog.Length() = 2 && IsObject(Guide_GetMeta(24)) && !IsObject(Guide_GetMeta(22)) && !IsObject(Guide_GetMeta(23)))
     timetable := Guide_SignalsText()
     timesOK := true
     for _, time in ["03:30", "07:30", "15:30", "19:30", "10:00", "19:00", "03:00Ц03:10", "07:00Ц07:10", "15:00Ц15:10", "19:00Ц19:10", "09:30Ц09:40", "18:30Ц18:40"]
@@ -22,8 +22,18 @@ Guide_RunRegression() {
         pages := Guide_GetPages(meta.Id)
         for _, page in pages
             combined .= StrReplace(page, "`r`n`r`nPgUp / PgDn Ч листать | Esc Ч закрыть")
-        AuditAssert("Guides: pagination preserves all scenario text " . meta.Id, pages.Length() >= 4 && RegExReplace(original, "\s+") = RegExReplace(combined, "\s+"))
+        AuditAssert("Guides: pagination preserves all scenario text " . meta.Id, pages.Length() >= (meta.Id = 21 ? 4 : 1) && RegExReplace(original, "\s+") = RegExReplace(combined, "\s+"))
     }
+    savedRights := RP_Rights
+    RP_Rights := "ѕраво на адвоката.`nѕраво на звонок."
+    firstRights := Guide_GetPages(24)
+    RP_Rights := "ќбновлЄнный текст прав профил€."
+    updatedRights := Guide_GetPages(24)
+    AuditAssert("Guides: rights viewer follows profile text without stale cache", InStr(firstRights[1], "ѕраво на звонок.") && InStr(updatedRights[1], RP_Rights) && !InStr(updatedRights[1], "ѕраво на звонок."))
+    RP_Rights := ""
+    emptyRights := Guide_GetPages(24)
+    AuditAssert("Guides: empty rights show configuration hint", InStr(emptyRights[1], "“екст прав не задан"))
+    RP_Rights := savedRights
     AuditAssert("Guides: invalid ID has no pages", Guide_GetPages(0).Length() = 0 && !Guide_Toggle(999))
     for token, value in savedTriggers
         SetDynamicGlobalValue("Trig_" . token, value)

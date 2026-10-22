@@ -234,7 +234,7 @@ def write_index(output, coverage=None):
     for r in data['catalog']:
         lines.append(f"{r['Token']} | {r.get('Label','')} | {r['file']}:{r['line']} | handler: {r['handler'] or 'см. диспетчер каталога'} | hotkey: {r['default_hotkey'] or '(не задана)'} | TXT: {r['default_trigger'] or '(не задан)'} | {r.get('HotkeyVar','')} / {r.get('TriggerVar','')}")
     output = Path(output); output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text('\r\n'.join(lines)+'\r\n', encoding='utf-8-sig', newline='')
+    output.write_text('\r\n'.join(line.rstrip() for line in lines)+'\r\n', encoding='utf-8-sig', newline='')
     output.with_suffix('.json').write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     return data
 

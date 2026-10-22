@@ -114,6 +114,8 @@ NormalizeBindListToken(item) {
         return "Fine"
     if (compact = "protocol")
         return "Protocol"
+    if (compact = "guiderights" or compact = "rightsgui")
+        return "GuideRights"
     if (compact = "rights")
         return "Rights"
     if (compact = "cardds")
@@ -1271,6 +1273,7 @@ GetBoundLabelByToken(token) {
         labelMap["AssistDrugs"] := "DoAssistDrugs"
         labelMap["AssistPDPCuff"] := "DoAssistPDPCuff"
         labelMap["GuideSignals"] := "DoGuideSignals"
+        labelMap["GuideRights"] := "DoGuideRights"
         labelMap["VU"] := "DoToggleVU"
         labelMap["FP"] := "DoToggleFP"
         labelMap["KON"] := "DoToggleKON"
@@ -1461,6 +1464,7 @@ GetBindCatalog() {
     catalog.Push({Token: "AssistPDPCuff", Label: "Наручники после ПДП", Category: "Контекстный помощник", HotkeyVar: "Bind_AssistPDPCuff", TriggerVar: "Trig_AssistPDPCuff", Hint: "Подтверждение наручников после помощи", Safe: "On", Enabled: 0, ExposeInSettings: 0, InternalOnly: 1})
     catalog.Push({Token: "GpsD", Label: "GPS Д", Category: "Транспорт / прочее", HotkeyVar: "", TriggerVar: "Trig_GpsD"})
     catalog.Push({Token: "GpsOS", Label: "GPS ОС", Category: "Транспорт / прочее", HotkeyVar: "", TriggerVar: "Trig_GpsOS"})
+    catalog.Push({Token: "GuideRights", Label: "Права — текстовое окно", Category: "Документы", HotkeyVar: "Bind_GuideRights", TriggerVar: "Trig_GuideRights", Hint: "Текст прав текущего профиля; PgUp / PgDn — листать"})
     catalog.Push({Token: "GuideSignals", Label: "Сигналы СО", Category: "Документы", HotkeyVar: "Bind_GuideSignals", TriggerVar: "Trig_GuideSignals", Hint: "Справочное окно; PgUp / PgDn — листать"})
     catalog.Push({Token: "VU", Label: "ВУ", Category: "Документы", HotkeyVar: "", TriggerVar: "Trig_VU"})
     catalog.Push({Token: "FP", Label: "ФП", Category: "Документы", HotkeyVar: "", TriggerVar: "Trig_FP"})
