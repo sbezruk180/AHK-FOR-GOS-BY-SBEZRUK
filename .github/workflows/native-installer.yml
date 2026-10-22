@@ -1,0 +1,94 @@
+name: Native graphical installer and uninstaller
+on:
+  workflow_dispatch:
+  push:
+    branches: [audit-fixes-obs-search-gui-20261009]
+    paths: ['installer/**', 'tools/build_installer.py', '.github/workflows/native-installer.yml']
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+      - name: Build native Windows programs from source with static CRT
+        shell: pwsh
+        run: |
+          python tools/build_installer.py --output dist/installer
+          if ($LASTEXITCODE -ne 0) { throw 'Native installer build failed' }
+          python tools/verify_installer.py release
+          if ($LASTEXITCODE -ne 0) { throw 'Shipping installer package is stale' }
+          python tools/verify_installer.py dist/installer
+          if ($LASTEXITCODE -ne 0) { throw 'MSVC installer package is stale' }
+      - name: Three actual installation, upgrade, rollback and deletion tests in Temp
+        shell: pwsh
+        run: |
+          $out = Join-Path $env:RUNNER_TEMP 'native-installer'
+          New-Item -ItemType Directory -Force $out | Out-Null
+          foreach ($repeat in 1..3) {
+            $report = Join-Path $out "shipping-core-$repeat.txt"
+            $p = Start-Process -FilePath (Resolve-Path 'release/AHK_FOR_GOS_Setup.exe') -ArgumentList @('--self-test', "`"$report`"") -PassThru
+            if (-not $p.WaitForExit(120000)) { $p.Kill(); throw 'Shipping core timeout' }
+            if (Test-Path $report) { Get-Content $report }
+            if ($p.ExitCode -ne 0) { throw "Shipping core failed: $($p.ExitCode)" }
+          }
+          $report = Join-Path $out 'msvc-core.txt'
+          $p = Start-Process -FilePath (Resolve-Path 'dist/installer/AHK_FOR_GOS_Setup.exe') -ArgumentList @('--self-test', "`"$report`"") -PassThru -Wait
+          if (Test-Path $report) { Get-Content $report }
+          if ($p.ExitCode -ne 0) { throw 'MSVC core tests failed' }
+      - name: Real UI windows, choices, instruction and guarded removal review
+        shell: pwsh
+        run: |
+          $out = Join-Path $env:RUNNER_TEMP 'native-installer'
+          foreach ($kind in @('Setup','Uninstall')) {
+            $report = Join-Path $out "shipping-ui-$kind.txt"
+            $p = Start-Process -FilePath (Resolve-Path "release/AHK_FOR_GOS_$kind.exe") -ArgumentList @('--ui-test', "`"$report`"") -PassThru
+            if (-not $p.WaitForExit(30000)) { $p.Kill(); throw 'UI check timeout' }
+            if (Test-Path $report) { Get-Content $report }
+            if ($p.ExitCode -ne 0) { throw "Native $kind UI failed" }
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-installer-tests
+          path: ${{ runner.temp }}/native-installer/*
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: msvc-native-installer
+          path: dist/installer/*
+  evidence:
+    if: always()
+    needs: verify
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/download-artifact@v4
+        with:
+          name: native-installer-tests
+          path: ${{ runner.temp }}/installer-results
+      - name: Publish text evidence without changing application code
+        shell: bash
+        run: |
+          set -euo pipefail
+          branch=audit-evidence-20261022
+          git switch -c "$branch" "origin/$branch"
+          target="audit-results/${{ github.run_id }}/native-installer"
+          mkdir -p "$target"
+          find "$RUNNER_TEMP/installer-results" -maxdepth 1 -type f -name '*.txt' -exec cp {} "$target/" \;
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -f "$target"
+          git commit -m "Native installer evidence for run ${{ github.run_id }}"
+          git push origin "HEAD:$branch"
