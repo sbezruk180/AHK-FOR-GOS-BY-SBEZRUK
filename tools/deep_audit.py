@@ -176,12 +176,21 @@ def startup_check(command, folder, env):
         rows['second_instance_gui_count']=len(active_gui)
         user=ctypes.WinDLL('user32',use_last_error=True)
         user.PostMessageW.argtypes=[ctypes.c_void_p,ctypes.c_uint,ctypes.c_size_t,ctypes.c_ssize_t]
+        user.GetDlgItem.argtypes=[ctypes.c_void_p,ctypes.c_int]
+        user.GetDlgItem.restype=ctypes.c_void_p
+        user.SendMessageTimeoutW.argtypes=[ctypes.c_void_p,ctypes.c_uint,ctypes.c_size_t,ctypes.c_ssize_t,ctypes.c_uint,ctypes.c_uint,ctypes.POINTER(ctypes.c_size_t)]
         for hwnd in dialogs:
-            user.PostMessageW(hwnd,0x111,1,0)  # acknowledge the expected duplicate warning
+            button=user.GetDlgItem(hwnd,1)
+            result=ctypes.c_size_t()
+            if button:
+                user.SendMessageTimeoutW(button,0xF5,0,0,2,2000,ctypes.byref(result))
+            user.PostMessageW(hwnd,0x10,0,0)
+        rows['singleton'] = p.poll() is None and bool(dialogs) and not active_gui
         try:
             second.wait(timeout=8)
-            rows['singleton'] = p.poll() is None and not active_gui
+            rows['warning_acknowledged'] = True
         except subprocess.TimeoutExpired:
+            rows['warning_acknowledged'] = False
             second.kill();second.wait()
         user=ctypes.WinDLL('user32',use_last_error=True)
         user.PostMessageW.argtypes=[ctypes.c_void_p,ctypes.c_uint,ctypes.c_size_t,ctypes.c_ssize_t]

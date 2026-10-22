@@ -1,9 +1,6 @@
 name: Repeated EXE and source audit
 on:
   workflow_dispatch:
-  push:
-    branches: [audit-fixes-obs-search-gui-20261009]
-    paths: ['tools/deep_audit.py', 'tools/function_index.py', '.github/workflows/deep-audit.yml']
 permissions:
   contents: read
 concurrency:
