@@ -1,0 +1,16 @@
+{
+  "environment": "Wine 10 / Xvfb; explicitly test-only Unicode x64 EXE, not game ABI",
+  "release_sha256": "fbe20a816569de2906d7260e0d6e6a1de728b3485ccb4a2ff80a9bc745e4a450",
+  "test_host_sha256": "ac884f36f83493288a6fe02e96d45cd6714689d844046daaf5521ce0a15c297d",
+  "audit": {
+    "checks": 496,
+    "failed": 0,
+    "skipped_integration_groups": 3
+  },
+  "desktop": {
+    "checks": 120,
+    "failed": 0
+  },
+  "game": "NOT_TESTED",
+  "OBS_frames": "NOT_TESTED"
+}
