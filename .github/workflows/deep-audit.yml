@@ -1,0 +1,27 @@
+name: Repeated EXE and source audit
+on:
+  workflow_dispatch:
+  push:
+    branches: [audit-fixes-obs-search-gui-20261009]
+    paths: ['tools/deep_audit.py', 'tools/function_index.py', '.github/workflows/deep-audit.yml']
+permissions:
+  contents: read
+jobs:
+  native-locale-probe:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify original executable and native ANSI x86 source with scoped CP1251
+        shell: pwsh
+        run: |
+          python tools/verify_exe.py release/AHK_FOR_GOS.exe
+          python tools/deep_audit.py --probe --output "$env:RUNNER_TEMP/deep-probe"
+          if ($LASTEXITCODE -ne 0) { throw 'Native locale probe failed; no full ANSI test claim' }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-locale-probe
+          path: ${{ runner.temp }}/deep-probe/*.json
