@@ -65,7 +65,7 @@ NOUNS = dict(Label="подпись",Text="текст",Index="индекс",Page=
 def describe(row):
     if row['purpose']: return row['purpose']
     name=row['name']
-    law=re.fullmatch(r'(LawText_)?(vu|fp|kon|fzop|ter|tk|arg|uk|vv|koap|pdd|oruzh|upk)([0-9]+)',name,re.I)
+    law=re.fullmatch(r'(LawText_)?(vu|fp|kon|fzop|ter|tk|arg|uk|vv|koap|pdd|oruzh|upk|kas|fsb|fsin|vs|sud|ord|gt)([0-9]+)',name,re.I)
     if law:
         return ('Получить текст страницы ' if law[1] else 'Показать/закрыть страницу ') + law[3] + ' документа ' + law[2].upper()
     remainder=name.split('_',1)[-1]
@@ -138,7 +138,20 @@ def inventory(root=ROOT):
     for r in rows:
         for n in r['calls']: callers[n].append(r['name'])
     for r in rows: r['callers'] = callers[r['name']]
-    return {'functions': rows, 'events': events, 'source_sha256': source_hashes}
+    catalog=[]
+    bindings=read_source(Path(root)/'app/bindings.ahk')
+    state=read_source(Path(root)/'app/state.ahk')
+    defaults=dict(re.findall(r'(?m)^global (\w+) := \"([^\"]*)\"$',state))
+    handlers=dict(re.findall(r'labelMap\[\"([^\"]+)\"\] := \"([^\"]+)\"',bindings))
+    for line,code in enumerate(bindings.splitlines(),1):
+        if 'catalog.Push({Token:' not in code:continue
+        fields=dict(re.findall(r'(\w+): \"([^\"]*)\"',code))
+        if not fields.get('Token'):continue
+        fields.update(file='app/bindings.ahk',line=line,handler=handlers.get(fields['Token'],''))
+        fields['default_hotkey']=defaults.get(fields.get('HotkeyVar',''),'')
+        fields['default_trigger']=defaults.get(fields.get('TriggerVar',''),'')
+        catalog.append(fields)
+    return {'functions': rows, 'events': events, 'catalog':catalog,'source_sha256': source_hashes}
 
 
 HOOK = '''
@@ -217,6 +230,9 @@ def write_index(output, coverage=None):
         lines.append('')
     lines.append('ИМЕНОВАННЫЕ ОБРАБОТЧИКИ: ' + str(len(data['events'])))
     for r in data['events']: lines.append(f"{r['name']} | {r['file']}:{r['line']} | {r['action']}")
+    lines += ['', 'КАТАЛОГ ПОЛЬЗОВАТЕЛЬСКИХ ДЕЙСТВИЙ: '+str(len(data['catalog'])), 'Указаны исходные значения; настройки конкретного пользователя здесь не читаются.']
+    for r in data['catalog']:
+        lines.append(f"{r['Token']} | {r.get('Label','')} | {r['file']}:{r['line']} | handler: {r['handler'] or 'см. диспетчер каталога'} | hotkey: {r['default_hotkey'] or '(не задана)'} | TXT: {r['default_trigger'] or '(не задан)'} | {r.get('HotkeyVar','')} / {r.get('TriggerVar','')}")
     output = Path(output); output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text('\r\n'.join(lines)+'\r\n', encoding='utf-8-sig', newline='')
     output.with_suffix('.json').write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')

@@ -34,6 +34,7 @@ FIXTURES = [
  ('game_menu','build_game_menu_fixture.py','game_menu_report.txt'),
  ('text_bind','build_text_bind_fixture.py','text_bind_report.txt'),
  ('autoid_tracking','build_autoid_tracking_fixture.py','autoid_tracking_report.txt'),
+ ('law_windows','build_law_windows_fixture.py','law_windows_report.txt'),
 ]
 
 
