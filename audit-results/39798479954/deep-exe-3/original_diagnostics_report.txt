@@ -1,0 +1,113 @@
+AHK FOR GOS BY SBEZRUK diagnostics report
+Time: 2026-10-22 14:48:46
+Project: D:\a\_temp\deep-exe-3-work\original\diagnostics
+Script: D:\a\_temp\deep-exe-3-work\hosts\AHK_FOR_GOS_TEST_CP1251.exe
+Mode: CLI read-only diagnostics
+
+
+== Runtime safety ==
+No GUI, hotkeys, timers, clipboard, GTA memory, profiles/themes writes, or game actions are intentionally used in this mode.
+[PASS] High | diagnostics guard before normal startup (static) | guard is in auto-execute before InitProfiles/ApplyAllBinds/CreateHUD
+
+== Capture ==
+Защита захвата: состояние ещё не проверено.
+
+== Files ==
+[PASS] High | main exists | D:\a\_temp\deep-exe-3-work\hosts\AHK_FOR_GOS_TEST_CP1251.exe
+[PASS] High | main non-empty | size=5309440
+[PASS] High | main has no BOM | D:\a\_temp\deep-exe-3-work\hosts\AHK_FOR_GOS_TEST_CP1251.exe
+[PASS] High | helper embedded source present | D:\a\_temp\deep-exe-3-work\original\diagnostics\helper.ahk
+[PASS] High | common embedded source present | D:\a\_temp\deep-exe-3-work\original\diagnostics\common.ahk
+[PASS] High | UDF embedded source present | D:\a\_temp\deep-exe-3-work\original\diagnostics\UDF.ahk
+[PASS] High | active profiles config exists | D:\a\_temp\deep-exe-3-work\original\diagnostics\profiles.ini
+[PASS] High | active profiles config non-empty | size=20642
+[PASS] High | active profiles config has no BOM | D:\a\_temp\deep-exe-3-work\original\diagnostics\profiles.ini
+themes.ini: optional file is not present; built-in themes remain available
+
+== Self-test summary ==
+Summary: WARN
+Total checks: 122
+Critical failed: 0
+High failed: 0
+Medium warnings: 1
+Low notes: 0
+LIVE GAME: NOT RUN
+
+
+== Error log tail ==
+No log file found
+
+== Profile and theme summary ==
+Active config: D:\a\_temp\deep-exe-3-work\original\diagnostics\profiles.ini
+Active profile: Основной
+ThemeMode: Graphite
+themes.ini: missing
+
+== Safe settings ==
+SafeModeEnabled=Off
+SafeBlockWhenChat=Off
+SafeVehicleChecks=Off
+SafeRequireChatForEditable=Off
+SafeTooltipWarnings=Off
+SafeDistanceChecks=Off
+SafeDistanceLimit=12
+
+== Chat transport ==
+TextSendMode=Auto
+GameWindowTitle=AMAZING ONLINE
+GameProcessName=gta_sa.exe
+AzmpExpectedSHA256=
+MockMode=Off
+[PASS] Critical | unified chat transport wrapper
+[PASS] High | Auto send mode is available
+[PASS] High | window-title locator and EXE fallback are present
+
+== ChatLog and target ID ==
+ChatLog.Enabled=On
+ChatLog.Path=H1:54:433A5C416D617A696E672047616D65735C416D617A696E67204F6E6C696E655C50435C616D617A696E675C636861746C6F672E747874
+ChatLog.PlayerNickname=H1:16:53656D656E5F4C756B617368656E6B6F
+ChatLog.AutoCleanup=Off
+ChatLog.MaxSizeKB=512
+ChatLog.KeepTailKB=32
+AutoTargetIDEnabled=On
+[PASS] High | ChatLogReader routes lookups through queue
+[PASS] High | RMB target resolver is present
+
+== Context assistant (legacy/internal) ==
+AssistOOPEnabled=On
+AssistStunEnabled=On
+AssistChaseEnabled=On
+AssistHouseEnabled=On
+AssistDrugsEnabled=On
+AssistPDPCuffEnabled=On
+Registration: disabled; profile values are retained only for backward compatibility
+[PASS] High | six context actions remain internal and unregistered | 92 unique items; 8 required; 6 Assist internal; 2 Hijack legacy
+[PASS] Critical | context actions use queue
+
+== Official legislation corpus ==
+Source: https://forum.amazing-online.com/forums/zakonodatelstvo.732/
+TerritoryMapMode=Local
+[PASS] Critical | 20 official documents are readable | docs=20, chars=695338
+[PASS] Critical | every detected article heading is indexed | pages=244, headings=761, failures=0
+[WARN] Medium | optional local assets for 11 territory map groups | groups=11, failures=17
+[PASS] Critical | law-query capture never submits chat
+
+== Bind-list summary ==
+Catalog items: 92
+Hotkey fields: 62
+Trigger fields: 74
+
+== Bind conflict scan ==
+[PASS] High | duplicate catalog tokens
+[PASS] Medium | duplicate non-empty hotkeys
+[PASS] Medium | duplicate non-empty triggers
+[PASS] High | missing labels for hotkey catalog actions
+[PASS] Medium | WantedList trigger is present | Trig_WantedList=!р
+[PASS] Medium | fixed search trigger conflict | !пнайти
+
+== Summary ==
+Status: WARN
+Total checks: 27
+Failures: 0
+Warnings: 1
+Notes: 0
