@@ -1,0 +1,52 @@
+name: Targeted startup and portable source audit
+on:
+  workflow_dispatch:
+  push:
+    branches: [audit-fixes-obs-search-gui-20261009]
+    paths: ['tools/startup_audit.py', '.github/workflows/startup-audit.yml']
+permissions:
+  contents: read
+jobs:
+  startup:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Three real startups for each form, mutex warning, Exit, portable diagnostics
+        shell: pwsh
+        run: |
+          python tools/startup_audit.py --output "$env:RUNNER_TEMP/startup-audit"
+          if ($LASTEXITCODE -ne 0) { throw 'Startup audit infrastructure failed' }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: startup-audit
+          path: ${{ runner.temp }}/startup-audit/*
+  evidence:
+    needs: startup
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/download-artifact@v4
+        with:
+          path: ${{ runner.temp }}/startup-results
+      - shell: bash
+        run: |
+          set -euo pipefail
+          branch=audit-evidence-20261022
+          git switch -c "$branch" "origin/$branch"
+          target="audit-results/${{ github.run_id }}"
+          mkdir -p "$target"
+          cp -R "$RUNNER_TEMP/startup-results/." "$target/"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -f "$target"
+          git commit -m "Targeted native startup evidence for run ${{ github.run_id }}"
+          git push origin "HEAD:$branch"
