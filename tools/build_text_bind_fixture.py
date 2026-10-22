@@ -26,7 +26,8 @@ MigrateConfigIfNeeded()
 LoadUISettings()
 LoadLastProfile()
 LoadCustomFunctions()
-SplitPath, A_AhkPath, ownProcess
+ownRuntime := A_IsCompiled ? A_ScriptFullPath : A_AhkPath
+SplitPath, ownRuntime, ownProcess
 GameProcessName := ownProcess, GameWindowTitle := "Text binding fixture"
 GameLocator_Configure(GameWindowTitle, GameProcessName)
 SetKeyDelay, 20, 20
