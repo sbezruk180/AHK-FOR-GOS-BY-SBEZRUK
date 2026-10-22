@@ -8,11 +8,11 @@
   "official_runtime_archive_sha256": "6f3663f7cdd25063c8c8728f5d9b07813ced8780522fd1f124ba539e2854215f",
   "installer_sources": {
     "installer/native/app.manifest": "4058551a1862d1ffe686358196b6e922ba4e514573cdb70aaac8a0aa19de656c",
-    "installer/native/core.cpp": "6a8824e416591bb6ed7032fed958cb9d6ce4fed85dfa63091f7a2018dbd6f7b1",
+    "installer/native/core.cpp": "3f3b8f01460eb42e0d756ecccf0641aa9ec328ce8946f30169bd19c4c8f21525",
     "installer/native/core.hpp": "8cc86664e64b811c91882c082a41e712c8955e6728ffdc8689310e3a5f5a21ed",
     "installer/native/main.cpp": "11b69dbbf9aabc3895c512acbceafb8398720c22cb742c95a1b5ec6bcd69ed7b",
-    "installer/native/selftest.cpp": "3f969b7357b6f7e2289ccdc8cbebb45e34836284126c649b5f739ceece162ea0",
-    "installer/native/ui.cpp": "b63736fbf4a189d2b5d2800defafa9621693b60f6f22276d3440cc31164ddafb"
+    "installer/native/selftest.cpp": "861a07ed84735e99c69eb2b97c6ca1bd134a18c61ea97ac29b0136331c49d19b",
+    "installer/native/ui.cpp": "94d5d0fa7fe0699563f5c44ab65e73825105f94d72b5eea87be6fb1f78f5ba11"
   },
   "entries": [
     {
@@ -36,8 +36,8 @@
     {
       "path": "Uninstall.exe",
       "modes": 3,
-      "bytes": 1510912,
-      "sha256": "9016098f70e4829105ac452fd330290a9ef9daf1c0969d21a59aa43aba7b9820"
+      "bytes": 1515008,
+      "sha256": "f5d80ce7618a1de36a5aeb366324996ff853fcd7ab9355553bc666eaab124153"
     },
     {
       "path": "app\\actions.ahk",
@@ -474,12 +474,12 @@
   ],
   "artifacts": {
     "AHK_FOR_GOS_Setup.exe": {
-      "bytes": 13159424,
-      "sha256": "0314887df251af1c410ef90d0d33d2cf4a4ad03c33ef2cd89566b21fb527e2c9"
+      "bytes": 13166592,
+      "sha256": "1ec7d1fbcc5e95b8b42b99e5b806550176cec265427357a2f85be6a4daf21bd7"
     },
     "AHK_FOR_GOS_Uninstall.exe": {
-      "bytes": 1510912,
-      "sha256": "9016098f70e4829105ac452fd330290a9ef9daf1c0969d21a59aa43aba7b9820"
+      "bytes": 1515008,
+      "sha256": "f5d80ce7618a1de36a5aeb366324996ff853fcd7ab9355553bc666eaab124153"
     }
   }
 }

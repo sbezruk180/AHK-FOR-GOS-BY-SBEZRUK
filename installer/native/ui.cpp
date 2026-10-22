@@ -508,7 +508,7 @@ static void Body(Graphics &g) {
                        L"пользовательские скрипты не затрагиваются."
                      : L"Сканирование ничего не удаляет. Следующий экран "
                        L"покажет\nточные пути; по умолчанию ни один файл не "
-                       L"выбран.\n\nЧужие .ahk перемещаются в корзину. "
+                       L"выбран.\n\nПо возможности используется корзина. "
                        L"Недоступные папки\nи ссылки пропускаются и отражаются "
                        L"в результате.");
       Text(g, text, 296, 384, 650, 144, 14, muted);
@@ -727,8 +727,11 @@ static void Work(int task) {
             r.failed += external.failed;
             r.warnings.insert(r.warnings.end(), external.warnings.begin(),
                               external.warnings.end());
-            if (r.failed)
+            if (r.failed) {
               r.ok = false;
+              r.message = L"Удаление завершено не полностью. Неудалённые файлы "
+                          L"указаны в отчёте.";
+            }
           } else {
             r = external;
             r.cancelled = true;
@@ -1217,8 +1220,6 @@ static LRESULT CALLBACK WindowProc(HWND h, UINT m, WPARAM w, LPARAM l) {
     if (worker.joinable())
       worker.join();
     working = false;
-    if (Removing && w != 3 && !completed.cancelled)
-      cleanupOnExit = true;
     if (w == 3) {
       if (completed.cancelled) {
         BuildPage(1);

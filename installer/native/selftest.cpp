@@ -242,6 +242,21 @@ int SelfTest(const fs::path &report) {
           oldExeRemoved.ok &&
               !fs::exists(legacyOptions.root / L"AHK_FOR_GOS.exe") &&
               !fs::exists(legacyOptions.data));
+    Options fresh = o;
+    fresh.root = base / L"fresh-retry";
+    fresh.data = base / L"fresh-data";
+    fresh.mode = 2;
+    fresh.failAfter = 8;
+    auto failedFresh = Install(fresh, cancel, notify);
+    check("fresh installation failure is reported", !failedFresh.ok);
+    check("rollback removes new empty directories",
+          !fs::exists(fresh.root) || fs::is_empty(fresh.root));
+    fresh.failAfter = -1;
+    auto retried = Install(fresh, cancel, notify);
+    check("fresh installation can retry after rollback", retried.ok);
+    check("retry has a complete ownership record",
+          ReadRecord(fresh.root).mode == 2);
+    Uninstall(fresh, false, cancel, notify);
     auto rogue = base / L"rogue";
     fs::create_directories(rogue);
     Write(rogue / L"personal.txt", {'p'});
