@@ -55,13 +55,6 @@ Guide_GetPages(id) {
         return cache[id]
     pages := []
     for _, chapter in Guide_GetChapters(id) {
-    global RP_Rights
-    if (id = 24) {
-        text := Trim(ApplyTemplate(RP_Rights), " `t`r`n")
-        if (text = "")
-            text := "Текст прав не задан. Заполните его в настройках RP текущего профиля."
-        return [{Title: "Права задержанного", Text: text . "`r`n"}]
-    }
         body := chapter.Title . "`r`n`r`n" . Trim(chapter.Text, "`r`n")
         parts := LawGui_MeasuredPages(body, layout.ContentW, Max(60, layout.BodyH - 52), layout.FontSize)
         for _, part in parts
