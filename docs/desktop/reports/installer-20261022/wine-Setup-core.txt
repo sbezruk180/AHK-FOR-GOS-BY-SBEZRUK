@@ -39,7 +39,9 @@ PASS | uninstall keep profiles
 PASS | keep profiles preserves exact bytes
 PASS | uninstall preserves unrelated files
 PASS | uninstall removes bundled A32
+PASS | profile-preserving removal retains reinstall metadata
 PASS | reinstall after removal
+PASS | reinstall preserves portable profile beside source
 PASS | reinstall reuses saved profiles
 PASS | full project removal
 PASS | full removes project data
@@ -66,4 +68,4 @@ PASS | install rejects occupied unrelated folder
 PASS | uninstall rejects unrelated folder
 PASS | unrelated folder remains intact
 SKIP | symlink creation unavailable in this environment
-Checks=64 Failed=0
+Checks=66 Failed=0

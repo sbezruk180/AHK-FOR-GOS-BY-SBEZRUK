@@ -2,17 +2,17 @@
   "environment": "Wine 10 / Xvfb; native x64 setup and uninstaller; real Temp file operations and actual screen pixels",
   "artifacts": {
     "AHK_FOR_GOS_Setup.exe": {
-      "bytes": 13166592,
-      "sha256": "1ec7d1fbcc5e95b8b42b99e5b806550176cec265427357a2f85be6a4daf21bd7"
+      "bytes": 13170176,
+      "sha256": "4d63d3125213112bed7379bce843b7865a577478f4c2c3702b67a48c3acdc352"
     },
     "AHK_FOR_GOS_Uninstall.exe": {
-      "bytes": 1515008,
-      "sha256": "f5d80ce7618a1de36a5aeb366324996ff853fcd7ab9355553bc666eaab124153"
+      "bytes": 1517056,
+      "sha256": "d943c1f7d681791ac4574a8c689bdd884ea0d473b95629cf78f99b5bb3399898"
     }
   },
   "application_sha256": "fbe20a816569de2906d7260e0d6e6a1de728b3485ccb4a2ff80a9bc745e4a450",
   "core": {
-    "checks": 64,
+    "checks": 66,
     "failed": 0,
     "skipped": [
       "Native 32-bit app boot unavailable in Wine64",
