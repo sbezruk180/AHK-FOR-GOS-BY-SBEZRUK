@@ -2002,6 +2002,10 @@ DoBindMenuToggle:
 ToggleBindMenuEditMode()
 return
 
+DoGuideRights:
+Guide_Toggle(24, true)
+return
+
 DoGuideSignals:
 Guide_Toggle(21, true)
 return

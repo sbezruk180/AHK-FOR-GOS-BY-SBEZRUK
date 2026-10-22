@@ -5,7 +5,8 @@ global GuideCurrentPages := {}
 Guide_GetCatalog() {
     static catalog := ""
     if !IsObject(catalog)
-        catalog := [{Id: 21, Name: "СО: ВГП и RP-капты", Token: "GuideSignals", Trigger: "!сигналы"}]
+        catalog := [{Id: 21, Name: "СО: ВГП и RP-капты", Token: "GuideSignals", Trigger: "!сигналы"}
+            , {Id: 24, Name: "Права задержанного", Token: "GuideRights", Trigger: "!правагуи"}]
     return catalog
 }
 
@@ -17,6 +18,13 @@ Guide_GetMeta(id) {
 }
 
 Guide_GetChapters(id) {
+    global RP_Rights
+    if (id = 24) {
+        text := Trim(ApplyTemplate(RP_Rights), " `t`r`n")
+        if (text = "")
+            text := "Текст прав не задан. Заполните его в настройках RP текущего профиля."
+        return [{Title: "Права задержанного", Text: text . "`r`n"}]
+    }
     if (id = 21)
         source := Guide_SignalsText()
     else
@@ -42,16 +50,25 @@ Guide_GetPages(id) {
     key := layout.ContentW . "|" . layout.BodyH . "|" . layout.FontSize . "|" . A_ScreenDPI
     if (key != layoutKey)
         cache := {}, layoutKey := key
-    if cache.HasKey(id)
+    ; Rights reflect edits and profile changes immediately; never reuse stale text.
+    if (id != 24 && cache.HasKey(id))
         return cache[id]
     pages := []
     for _, chapter in Guide_GetChapters(id) {
+    global RP_Rights
+    if (id = 24) {
+        text := Trim(ApplyTemplate(RP_Rights), " `t`r`n")
+        if (text = "")
+            text := "Текст прав не задан. Заполните его в настройках RP текущего профиля."
+        return [{Title: "Права задержанного", Text: text . "`r`n"}]
+    }
         body := chapter.Title . "`r`n`r`n" . Trim(chapter.Text, "`r`n")
         parts := LawGui_MeasuredPages(body, layout.ContentW, Max(60, layout.BodyH - 52), layout.FontSize)
         for _, part in parts
             pages.Push(part . "`r`n`r`nPgUp / PgDn — листать | Esc — закрыть")
     }
-    cache[id] := pages
+    if (id != 24)
+        cache[id] := pages
     return pages
 }
 

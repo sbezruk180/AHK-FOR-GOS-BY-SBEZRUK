@@ -509,6 +509,10 @@ global Bind_GuideSignals := ""
 global Trig_GuideSignals := "!сигналы"
 global CFG_Bind_GuideSignals := ""
 global CFG_Trig_GuideSignals := ""
+global Bind_GuideRights := ""
+global Trig_GuideRights := "!правагуи"
+global CFG_Bind_GuideRights := ""
+global CFG_Trig_GuideRights := ""
 
 
 global Trig_Intro := ""
