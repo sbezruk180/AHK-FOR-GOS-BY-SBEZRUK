@@ -1,0 +1,155 @@
+{
+  "provenance": {
+    "source_runtime": {
+      "original_sha256": "6a98b438b67da7316e9251eb1a92cd5384a8349d239a77903f7282fa076a77c3",
+      "test_host_sha256": "da91a152e05d4803c2313bf488d832ef1ce7705bf73ade6f89379d945ebf9391",
+      "only_resource_type_changed": 24,
+      "activeCodePage": "ru-RU"
+    },
+    "compiled_host": {
+      "original_sha256": "5c43313efdbf5b960dbce5198ef9c30f56881cdaa3c6a383ffcddc33501083c5",
+      "test_host_sha256": "666c448297592c98004efd56f17a0e3d6947ffd931c171ff9cc97de5cf9d9364",
+      "only_resource_type_changed": 24,
+      "activeCodePage": "ru-RU"
+    },
+    "runtime_archive_sha256": "6f3663f7cdd25063c8c8728f5d9b07813ced8780522fd1f124ba539e2854215f"
+  },
+  "startup": [
+    {
+      "started": true,
+      "singleton": true,
+      "clean_exit": true,
+      "second_instance_warning": true,
+      "second_instance_gui_count": 0,
+      "warning_acknowledged": true,
+      "exit_code": 0,
+      "status": "PASS",
+      "form": "exe",
+      "repeat": 1
+    },
+    {
+      "started": true,
+      "singleton": true,
+      "clean_exit": true,
+      "second_instance_warning": true,
+      "second_instance_gui_count": 0,
+      "warning_acknowledged": true,
+      "exit_code": 0,
+      "status": "PASS",
+      "form": "exe",
+      "repeat": 2
+    },
+    {
+      "started": true,
+      "singleton": true,
+      "clean_exit": true,
+      "second_instance_warning": true,
+      "second_instance_gui_count": 0,
+      "warning_acknowledged": true,
+      "exit_code": 0,
+      "status": "PASS",
+      "form": "exe",
+      "repeat": 3
+    },
+    {
+      "started": true,
+      "singleton": true,
+      "clean_exit": true,
+      "second_instance_warning": true,
+      "second_instance_gui_count": 0,
+      "warning_acknowledged": true,
+      "exit_code": 0,
+      "status": "PASS",
+      "form": "source",
+      "repeat": 1
+    },
+    {
+      "started": true,
+      "singleton": true,
+      "clean_exit": true,
+      "second_instance_warning": true,
+      "second_instance_gui_count": 0,
+      "warning_acknowledged": true,
+      "exit_code": 0,
+      "status": "PASS",
+      "form": "source",
+      "repeat": 2
+    },
+    {
+      "started": true,
+      "singleton": true,
+      "clean_exit": true,
+      "second_instance_warning": true,
+      "second_instance_gui_count": 0,
+      "warning_acknowledged": true,
+      "exit_code": 0,
+      "status": "PASS",
+      "form": "source",
+      "repeat": 3
+    }
+  ],
+  "portable_source": [
+    {
+      "exit_code": 0,
+      "seconds": 16.95,
+      "report": "source-1-selftest_report.txt",
+      "failures": [],
+      "status": "PASS",
+      "form": "source",
+      "repeat": 1,
+      "mode": "selftest"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 8.01,
+      "report": "source-1-diagnostics_report.txt",
+      "failures": [],
+      "status": "PASS",
+      "form": "source",
+      "repeat": 1,
+      "mode": "diagnostics"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 16.91,
+      "report": "source-2-selftest_report.txt",
+      "failures": [],
+      "status": "PASS",
+      "form": "source",
+      "repeat": 2,
+      "mode": "selftest"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 8.14,
+      "report": "source-2-diagnostics_report.txt",
+      "failures": [],
+      "status": "PASS",
+      "form": "source",
+      "repeat": 2,
+      "mode": "diagnostics"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 17.01,
+      "report": "source-3-selftest_report.txt",
+      "failures": [],
+      "status": "PASS",
+      "form": "source",
+      "repeat": 3,
+      "mode": "selftest"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 8.3,
+      "report": "source-3-diagnostics_report.txt",
+      "failures": [],
+      "status": "PASS",
+      "form": "source",
+      "repeat": 3,
+      "mode": "diagnostics"
+    }
+  ],
+  "game": "NOT_TESTED",
+  "completed": true
+}
