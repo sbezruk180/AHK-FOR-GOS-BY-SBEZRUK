@@ -168,9 +168,19 @@ def startup_check(command, folder, env):
         if second_env.get('AHK_AUDIT_COVERAGE'):
             second_env['AHK_AUDIT_COVERAGE'] += '.second'
         second = subprocess.Popen([str(x) for x in command]+['--data-dir',str(folder)],cwd=ROOT,env=second_env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+        time.sleep(1)
+        second_windows=capture_windows(second.pid)
+        dialogs=[h for h,c in second_windows if c=='#32770']
+        active_gui=[h for h,c in second_windows if c=='AutoHotkeyGUI']
+        rows['second_instance_warning']=bool(dialogs)
+        rows['second_instance_gui_count']=len(active_gui)
+        user=ctypes.WinDLL('user32',use_last_error=True)
+        user.PostMessageW.argtypes=[ctypes.c_void_p,ctypes.c_uint,ctypes.c_size_t,ctypes.c_ssize_t]
+        for hwnd in dialogs:
+            user.PostMessageW(hwnd,0x111,1,0)  # acknowledge the expected duplicate warning
         try:
             second.wait(timeout=8)
-            rows['singleton'] = p.poll() is None
+            rows['singleton'] = p.poll() is None and not active_gui
         except subprocess.TimeoutExpired:
             second.kill();second.wait()
         user=ctypes.WinDLL('user32',use_last_error=True)
@@ -211,8 +221,20 @@ def run_audit(output, form, repeat):
         phase='traced' if traced else 'original'
         source=source_trace if traced else ROOT
         command=[trace_exe if traced else exe] if form=='exe' else [ahk,'/ErrorStdOut','/CP1251',source/'AHK_FOR_GOS_BY_SBEZRUK.ahk']
+        startup_env=dict(os.environ)
+        if traced:startup_env['AHK_AUDIT_COVERAGE']=str(output/(phase+'_startup.coverage.txt'))
+        startup_row=startup_check(command,work/phase/'startup',startup_env)
+        startup_row.update(mode='startup-singleton-exit',phase=phase)
+        summary['cases'].append(startup_row)
         for mode,report_name in CASES:
             data=work/phase/mode
+            data.mkdir(parents=True,exist_ok=True)
+            # CLI diagnostics intentionally do not initialize profiles. Seed from
+            # the actual normal startup above, not invented empty INI defaults.
+            if mode in ('selftest','diagnostics'):
+                for ini in ('profiles.ini','profiles_updated.ini','themes.ini','custom_functions.ini'):
+                    f=work/phase/'startup'/ini
+                    if f.exists():shutil.copyfile(f,data/ini)
             env=dict(os.environ)
             if traced:env['AHK_AUDIT_COVERAGE']=str(output/(phase+'_'+mode+'.coverage.txt'))
             if mode=='diagnostics':
@@ -221,6 +243,8 @@ def run_audit(output, form, repeat):
                 if old.exists():shutil.copyfile(old,data/'selftest_report.txt')
             row,text=invoke(command+['--'+mode,'--data-dir',data],data,report_name,timeout=300,env=env)
             row.update(mode=mode,phase=phase)
+            if form=='source' and mode=='desktop-smoke' and row['exit_code']==2 and len(row['failures'])==2 and all(any(expected in x for expected in ('compiled standalone host','20 documents available without external laws folder')) for x in row['failures']):
+                row['status']='EXPECTED_EXE_ONLY_ASSERTIONS'
             # Diagnostics reports missing game/process conditions explicitly.
             if mode=='diagnostics' and row['exit_code']==0 and text:row['status']='DIAGNOSTIC_FINDINGS' if row['failures'] else 'PASS'
             for suffix in ('', '.console.txt'):
@@ -230,16 +254,23 @@ def run_audit(output, form, repeat):
             summary['cases'].append(row)
             (output/'summary.json').write_text(json.dumps(summary,indent=2)+'\n')
             print(json.dumps({k:row[k] for k in ('mode','phase','status','exit_code','seconds')}),flush=True)
-        env=dict(os.environ)
-        if traced:env['AHK_AUDIT_COVERAGE']=str(output/(phase+'_startup.coverage.txt'))
-        row=startup_check(command,work/phase/'startup',env);row.update(mode='startup-singleton-exit',phase=phase)
-        summary['cases'].append(row)
     # Fixture sinks/predicates are explicit; actual IO is Win32/keyboard, not GTA.
     for name,builder,report_name in FIXTURES:
         folder=work/'fixtures'/name;script=folder/'native.ahk';folder.mkdir(parents=True,exist_ok=True)
         subprocess.run([sys.executable,str(source_trace/'tools'/builder),str(script)],check=True)
         # Extracted production functions refer to counters from the disposable copy.
         text=decode(script.read_bytes())
+        if name=='private_input':
+            old='    Check("Russian exact text actual=[" . typedRussian . "]", typedRussian == "/m Стоп! ID:42")'
+            replacement=r'''    VarSetCapacity(wide, 2048, 0)
+    wideLength := DllCall("GetWindowTextW", "Ptr", MainText, "Ptr", &wide, "Int", 1024)
+    hex := ""
+    Loop %wideLength%
+        hex .= Format("{:04X}", NumGet(wide, (A_Index-1)*2, "UShort"))
+    Report .= "Russian ANSI readback=[" . typedRussian . "]; UTF16=" . hex . "`r`n"
+    Check("Russian exact UTF16 target text", hex == "002F006D002004210442043E043F0021002000490044003A00340032")'''
+            assert old in text
+            text=text.replace(old,replacement,1)
         if '__AuditCoverage_Hit(name)' not in text:script.write_text(text+'\n'+HOOK,encoding='utf-8-sig')
         command=[compiled_fixture(script,runtime,folder/'native.exe')] if form=='exe' else [ahk,'/ErrorStdOut',script]
         data=folder/'data';env=dict(os.environ);env['AHK_AUDIT_COVERAGE']=str(output/('fixture_'+name+'.coverage.txt'))

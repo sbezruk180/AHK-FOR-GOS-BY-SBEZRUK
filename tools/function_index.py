@@ -168,7 +168,7 @@ __AuditCoverage_Save(reason := "", code := 0) {
     global __AuditCoverageCounts, __AuditCoveragePath
     if (__AuditCoveragePath = "" || !IsObject(__AuditCoverageCounts))
         return
-    file := FileOpen(__AuditCoveragePath, "w", "UTF-8")
+    file := FileOpen(__AuditCoveragePath . "." . DllCall("GetCurrentProcessId") . ".txt", "w", "UTF-8")
     if !IsObject(file)
         return
     for name, count in __AuditCoverageCounts
