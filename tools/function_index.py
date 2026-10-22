@@ -58,6 +58,26 @@ PURPOSES = {
 }
 
 
+VERBS = dict(Get="Получить",Read="Прочитать",Load="Загрузить",Show="Показать",Open="Открыть",Close="Закрыть",Run="Выполнить",Build="Сформировать",Set="Установить",Update="Обновить",Save="Сохранить",Parse="Разобрать",Is="Проверить",Has="Проверить наличие",Can="Проверить возможность",Reset="Сбросить",Check="Проверить",Validate="Проверить",Add="Добавить",Remove="Удалить",Normalize="Нормализовать",Release="Освободить",Acquire="Захватить",Start="Запустить",Stop="Остановить",Render="Отрисовать",Confirm="Подтвердить",Submit="Применить",Restore="Восстановить",Toggle="Переключить",Resolve="Определить",Ensure="Обеспечить",Encode="Закодировать",Decode="Декодировать",Apply="Применить",Append="Дописать",Register="Зарегистрировать",Capture="Перехватить",Find="Найти",Wait="Дождаться",Type="Напечатать",Try="Попытаться выполнить",Create="Создать",Destroy="Уничтожить",Format="Отформатировать",Execute="Выполнить",Send="Отправить",Write="Записать",Poll="Опросить",Select="Выбрать",Cancel="Отменить",Clear="Очистить",Init="Инициализировать",Refresh="Обновить",On="Обработать событие",Audit="Проверить")
+NOUNS = dict(Label="подпись",Text="текст",Index="индекс",Page="страницу",Name="имя",Value="значение",Status="состояние",Token="токен команды",Alias="алиас",Result="результат",Path="путь",Dialog="диалог",Window="окно",Input="ввод",Target="цель",Player="игрока",State="состояние",Config="настройки",Profile="профиль",Theme="тему",Key="клавишу",Hotkey="горячую клавишу",Trigger="текстовый триггер",Bind="бинд",Item="элемент",Queue="очередь",Rows="строки",Data="данные",Memory="память",Handle="дескриптор",Line="строку",Action="действие",Map="карту",Layout="раскладку",Signature="сигнатуру",Date="дату",Time="время",Position="положение",Bounds="границы",Rect="прямоугольник",Response="ответ",Report="отчёт",Error="ошибку",Clipboard="буфер обмена",Selection="выделение",Owner="владение",Lease="право ввода",Reservation="резервирование",Code="код",Notice="уведомление",Settings="настройки",Corpus="базу законов",Doc="документ",Source="исходный текст",Host="оболочку приложения",Function="пользовательскую функцию",Control="элемент интерфейса",Button="кнопку",Tab="вкладку",Font="шрифт",Color="цвет",Candidate="кандидата",Prompt="подсказку",Match="совпадение",Distance="расстояние",Route="маршрут",Thread="поток",Chars="символы",Speed="скорость",Timer="таймер",Task="задачу",Log="журнал",File="файл",Asset="ресурс",Law="законодательство",Search="поиск")
+
+
+def describe(row):
+    if row['purpose']: return row['purpose']
+    name=row['name']
+    law=re.fullmatch(r'(LawText_)?(vu|fp|kon|fzop|ter|tk|arg|uk|vv|koap|pdd|oruzh|upk)([0-9]+)',name,re.I)
+    if law:
+        return ('Получить текст страницы ' if law[1] else 'Показать/закрыть страницу ') + law[3] + ' документа ' + law[2].upper()
+    remainder=name.split('_',1)[-1]
+    tokens=re.findall(r'[A-Z]+(?=[A-Z][a-z]|$)|[A-Z]?[a-z]+|[0-9]+',remainder)
+    if tokens and tokens[0] in VERBS:
+        intent=VERBS[tokens[0]]+' '+' '.join(NOUNS.get(x,x) for x in tokens[1:])
+    else:
+        intent=remainder
+    effects='; операции: '+', '.join(row['commands']) if row['commands'] else ''
+    return row['subsystem']+': '+intent+effects+'; код: '+row['first_statement'][:100]
+
+
 def masked(text):
     """Mask strings/comments before finding real call sites (not source assertions)."""
     out = list(text)
@@ -189,7 +209,9 @@ def write_index(output, coverage=None):
         lines.append(('ФУНКЦИИ ПРИЛОЖЕНИЯ' if kind=='application' else 'ФУНКЦИИ ТЕСТОВ') + ': ' + str(len(rows)))
         for r in rows:
             counters = coverage.get(r['name'], {})
-            purpose = r['purpose'] or r['subsystem'] + '; ' + ('операции: ' + ', '.join(r['commands']) if r['commands'] else 'код: ' + r['first_statement'])
+            r['coverage'] = counters
+            r['description'] = describe(r)
+            purpose = describe(r)
             evidence = ', '.join(f'{form}={value}' for form,value in sorted(counters.items())) or 'трассировка ещё не импортирована'
             lines.append(f"{r['name']} | {r['file']}:{r['line']}-{r['end_line']} | {purpose} | calls: {', '.join(r['calls']) or '-'} | входы: {evidence}")
         lines.append('')
