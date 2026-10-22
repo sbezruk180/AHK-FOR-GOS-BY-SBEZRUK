@@ -1,0 +1,127 @@
+﻿Desktop integration probe
+Runtime=1.1.37.02 | Unicode=1 | PtrSize=8
+Compiled=1 | Data=Z:\workspace\.ahk-cloud\desktop\rights-gui-fixed\desktop-smoke
+No real game or OBS verification.
+INFO | startup WorkingSetMiB=54.83 PeakMiB=54.83
+PASS | compiled standalone host
+PASS | application mutex acquired
+PASS | duplicate application mutex detected
+PASS | first startup creates compatible INI
+PASS | configuration schema 14
+PASS | hotkeys really registered
+PASS | all catalog handlers including direct UI/GPS dispatch
+PASS | violet navigation blend uses real hex channels
+PASS | fullscreen-safe settings preserve foreground
+PASS | settings page profile
+PASS | sidebar button dispatch profile
+PASS | interactive controls do not overlap profile
+PASS | settings page safety
+PASS | sidebar button dispatch safety
+PASS | interactive controls do not overlap safety
+PASS | settings page appearance
+PASS | sidebar button dispatch appearance
+PASS | interactive controls do not overlap appearance
+PASS | settings page reports
+PASS | sidebar button dispatch reports
+PASS | interactive controls do not overlap reports
+PASS | settings page operations
+PASS | sidebar button dispatch operations
+PASS | interactive controls do not overlap operations
+PASS | settings page hotkeys_main
+PASS | sidebar button dispatch hotkeys_main
+PASS | interactive controls do not overlap hotkeys_main
+PASS | settings page hotkeys_transport
+PASS | sidebar button dispatch hotkeys_transport
+PASS | interactive controls do not overlap hotkeys_transport
+PASS | settings page text_triggers
+PASS | sidebar button dispatch text_triggers
+PASS | interactive controls do not overlap text_triggers
+PASS | settings page documents
+PASS | sidebar button dispatch documents
+PASS | interactive controls do not overlap documents
+PASS | settings page rp_person
+PASS | sidebar button dispatch rp_person
+PASS | interactive controls do not overlap rp_person
+PASS | settings page rp_vehicle
+PASS | sidebar button dispatch rp_vehicle
+PASS | interactive controls do not overlap rp_vehicle
+PASS | settings page automation
+PASS | sidebar button dispatch automation
+PASS | interactive controls do not overlap automation
+PASS | settings page screenshots
+PASS | sidebar button dispatch screenshots
+PASS | interactive controls do not overlap screenshots
+PASS | TXT recovery restores the actual Alt+T hotkey control
+PASS | settings catalog keeps all 13 pages
+PASS | sidebar has one native button for each page
+PASS | legacy navigation is hidden
+PASS | native HUD exists
+PASS | native bind list exists
+PASS | custom bind list color survives shared styling
+PASS | custom timer colors survive shared styling
+PASS | bind list controls do not overlap 420x320
+PASS | bind list fits window 420x320
+PASS | bind list controls do not overlap 520x390
+PASS | bind list fits window 520x390
+PASS | bind list controls do not overlap 760x740
+PASS | bind list fits window 760x740
+PASS | HUD/list promotion does not activate another window
+PASS | private TXT input mode survives INI reload
+PASS | private TXT opener is registered in dispatch map
+PASS | private TXT window requests privacy independently of global switch
+PASS | private window stays hidden without confirmed OS exclusion
+PASS | private TXT window never activates and is click-through
+PASS | actual atomic profile save
+PASS | private opener key survives profile reload
+PASS | identity and binds survive profile reload
+PASS | profile save preserves unknown keys
+PASS | real queue reaches mock transport
+PASS | stop request sends both messages before following action
+PASS | stop countdown does not retain chat queue ownership
+PASS | queued action completes while stop countdown is visible
+PASS | custom function persistence
+PASS | custom function reload and parser
+PASS | faction/CPS GUI controls survive production INI roundtrip
+PASS | 20 documents available without external laws folder
+PASS | native legislation viewer opens
+PASS | reference guide opens GuideSignals
+PASS | guide keeps foreground and capture registration GuideSignals
+PASS | every guide page renders and next wraps GuideSignals
+PASS | guide previous wraps GuideSignals
+PASS | same guide command closes viewer GuideSignals
+PASS | reference guide opens GuideRights
+PASS | guide keeps foreground and capture registration GuideRights
+PASS | every guide page renders and next wraps GuideRights
+PASS | guide previous wraps GuideRights
+PASS | same guide command closes viewer GuideRights
+PASS | law search result fixture opens
+PASS | guide takes page navigation from an open law search
+PASS | guide can switch to law
+PASS | law can switch to guide
+PASS | guide can switch to service codes
+PASS | hide-law key closes reference guide
+PASS | last-document key reopens reference guide
+PASS | guides never enqueue chat messages
+PASS | guide configuration saves atomically
+PASS | guide TXT and hotkeys survive profile reload
+PASS | builder opens native editor
+PASS | builder inserts step at selection without losing following lines
+PASS | builder native undo restores source
+PASS | builder check rejects an invalid step
+PASS | builder check accepts valid editor contents
+PASS | builder preview opens own details window
+PASS | builder preview cannot run the script
+PASS | builder duplicate includes unsaved script
+PASS | builder duplicate avoids bind conflicts
+PASS | builder copy survives INI reload
+PASS | auto ID updates existing native confirmation
+PASS | confirmation applies the displayed ID
+PASS | confirmation decline preserves selection
+PASS | cancellation drains pending work
+PASS | diagnostic launch returns owned process HANDLE
+PASS | same-EXE diagnostic finishes in custom data directory
+PASS | diagnostic does not replace parent instance
+PASS | diagnostic report opens in own application GUI
+PASS | closing settings destroys its native window
+INFO | after native smoke WorkingSetMiB=248.93 PeakMiB=252.84
+Checks=120 | Failed=0

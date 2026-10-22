@@ -1,0 +1,80 @@
+{
+  "provenance": {
+    "source_runtime": {
+      "original_sha256": "6a98b438b67da7316e9251eb1a92cd5384a8349d239a77903f7282fa076a77c3",
+      "test_host_sha256": "da91a152e05d4803c2313bf488d832ef1ce7705bf73ade6f89379d945ebf9391",
+      "only_resource_type_changed": 24,
+      "activeCodePage": "ru-RU"
+    },
+    "compiled_host": {
+      "original_sha256": "fbe20a816569de2906d7260e0d6e6a1de728b3485ccb4a2ff80a9bc745e4a450",
+      "test_host_sha256": "fc946c2c9ca7b2e8646f858187fdef0e8d13849e0fd9e41dd662f7d2a5ec731c",
+      "only_resource_type_changed": 24,
+      "activeCodePage": "ru-RU"
+    },
+    "runtime_archive_sha256": "6f3663f7cdd25063c8c8728f5d9b07813ced8780522fd1f124ba539e2854215f"
+  },
+  "release_sha256": "fbe20a816569de2906d7260e0d6e6a1de728b3485ccb4a2ff80a9bc745e4a450",
+  "game": "NOT_TESTED",
+  "OBS_frames": "NOT_TESTED",
+  "cases": [
+    {
+      "exit_code": 0,
+      "seconds": 0.62,
+      "report": "exe_runtime_info_report.txt",
+      "failures": [],
+      "status": "PASS",
+      "form": "exe",
+      "mode": "runtime-info"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 49.25,
+      "report": "exe_audit_selftest_report.txt",
+      "failures": [],
+      "status": "PASS",
+      "form": "exe",
+      "mode": "audit-selftest"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 21.52,
+      "report": "exe_desktop_smoke_report.txt",
+      "failures": [],
+      "status": "PASS",
+      "form": "exe",
+      "mode": "desktop-smoke"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.23,
+      "report": "source_runtime_info_report.txt",
+      "failures": [],
+      "status": "PASS",
+      "form": "source",
+      "mode": "runtime-info"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 46.05,
+      "report": "source_audit_selftest_report.txt",
+      "failures": [],
+      "status": "PASS",
+      "form": "source",
+      "mode": "audit-selftest"
+    },
+    {
+      "exit_code": 2,
+      "seconds": 19.05,
+      "report": "source_desktop_smoke_report.txt",
+      "failures": [
+        "FAIL | compiled standalone host\r",
+        "FAIL | 20 documents available without external laws folder\r"
+      ],
+      "status": "EXPECTED_EXE_ONLY_ASSERTIONS",
+      "form": "source",
+      "mode": "desktop-smoke"
+    }
+  ],
+  "completed": true
+}
