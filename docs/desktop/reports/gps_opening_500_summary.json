@@ -1,0 +1,14 @@
+{
+  "date": "2026-10-22",
+  "scope": "GPS opening pause only",
+  "previous_ms": 650,
+  "opening_ms": 500,
+  "checks": 22,
+  "failed": 0,
+  "exit_code": 0,
+  "report": "gps_opening_500_report.txt",
+  "house_fixture_ms": 1717,
+  "release_exe_sha256": "5c43313efdbf5b960dbce5198ef9c30f56881cdaa3c6a383ffcddc33501083c5",
+  "real_game": "NOT_TESTED",
+  "windows_ci": "PENDING"
+}
