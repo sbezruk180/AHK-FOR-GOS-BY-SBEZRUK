@@ -25,3 +25,61 @@ jobs:
         with:
           name: native-locale-probe
           path: ${{ runner.temp }}/deep-probe/*.json
+
+  audit:
+    needs: native-locale-probe
+    runs-on: windows-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        form: [exe, source]
+        repeat: [1, 2, 3]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Repeat complete native x86 scenarios and isolated coverage
+        shell: pwsh
+        run: |
+          python tools/deep_audit.py --form ${{ matrix.form }} --repeat ${{ matrix.repeat }} --output "$env:RUNNER_TEMP/deep-${{ matrix.form }}-${{ matrix.repeat }}"
+          if ($LASTEXITCODE -ne 0) { throw 'Audit runner failed; inspect partial reports' }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: deep-${{ matrix.form }}-${{ matrix.repeat }}
+          path: ${{ runner.temp }}/deep-${{ matrix.form }}-${{ matrix.repeat }}/*
+          if-no-files-found: error
+  publish-evidence:
+    if: always()
+    needs: [native-locale-probe, audit]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/download-artifact@v4
+        with:
+          path: ${{ runner.temp }}/deep-results
+      - name: Publish disposable audit reports to evidence branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          branch=audit-evidence-20261022
+          if git show-ref --verify --quiet "refs/remotes/origin/$branch"; then
+            git switch -c "$branch" "origin/$branch"
+          else
+            git switch -c "$branch"
+          fi
+          target="audit-results/${{ github.run_id }}"
+          mkdir -p "$target"
+          cp -R "$RUNNER_TEMP/deep-results/." "$target/"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$target"
+          git commit -m "Native EXE/source audit evidence for run ${{ github.run_id }}"
+          git push origin "HEAD:$branch"
