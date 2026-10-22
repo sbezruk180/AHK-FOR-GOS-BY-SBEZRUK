@@ -1167,7 +1167,7 @@ RunGpsDialogAction(actionName, downCount, gpsNumber, inputEpoch := 0) {
         stage := "открытие /gps"
         ; Amazing GPS is driven by keys; do not inspect SA-MP dialog memory.
         ; Keep a cancellable opening pause before navigation.
-        lease := GameMenu_SendCommand(reservation, "/gps", 650, false)
+        lease := GameMenu_SendCommand(reservation, "/gps", 500, false)
         if !IsObject(lease)
             return false
         ; GPS alone uses shorter key presses; other game menus keep 30/50 ms.
