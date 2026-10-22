@@ -238,7 +238,7 @@ def run_audit(output, form, repeat):
         folder=work/'fixtures'/name;script=folder/'native.ahk';folder.mkdir(parents=True,exist_ok=True)
         subprocess.run([sys.executable,str(source_trace/'tools'/builder),str(script)],check=True)
         # Extracted production functions refer to counters from the disposable copy.
-        text=script.read_text('utf-8-sig')
+        text=decode(script.read_bytes())
         if '__AuditCoverage_Hit(name)' not in text:script.write_text(text+'\n'+HOOK,encoding='utf-8-sig')
         command=[compiled_fixture(script,runtime,folder/'native.exe')] if form=='exe' else [ahk,'/ErrorStdOut',script]
         data=folder/'data';env=dict(os.environ);env['AHK_AUDIT_COVERAGE']=str(output/('fixture_'+name+'.coverage.txt'))
