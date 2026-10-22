@@ -1,0 +1,88 @@
+{
+  "provenance": {
+    "source_runtime": {
+      "original_sha256": "6a98b438b67da7316e9251eb1a92cd5384a8349d239a77903f7282fa076a77c3",
+      "test_host_sha256": "da91a152e05d4803c2313bf488d832ef1ce7705bf73ade6f89379d945ebf9391",
+      "only_resource_type_changed": 24,
+      "activeCodePage": "ru-RU"
+    },
+    "compiled_host": {
+      "original_sha256": "e41d358528c85b4cc87786b77e49722936eab87fb127363261791ef53d1e4c8f",
+      "test_host_sha256": "04e99cae106f448ec2ae2c51beaced94ac9ae730052492c010df41f6115694f9",
+      "only_resource_type_changed": 24,
+      "activeCodePage": "ru-RU"
+    },
+    "runtime_archive_sha256": "6f3663f7cdd25063c8c8728f5d9b07813ced8780522fd1f124ba539e2854215f"
+  },
+  "release_sha256": "e41d358528c85b4cc87786b77e49722936eab87fb127363261791ef53d1e4c8f",
+  "game": "NOT_TESTED",
+  "OBS_frames": "NOT_TESTED",
+  "cases": [
+    {
+      "exit_code": 0,
+      "seconds": 1.49,
+      "report": "exe_runtime_info_report.txt",
+      "failures": [],
+      "status": "PASS",
+      "form": "exe",
+      "mode": "runtime-info"
+    },
+    {
+      "exit_code": 1,
+      "seconds": 53.69,
+      "report": "exe_audit_selftest_report.txt",
+      "failures": [
+        "FAIL | Guides: pagination preserves all scenario text 24\r",
+        "FAIL | Guides: rights viewer follows profile text without stale cache\r",
+        "FAIL | Guides: empty rights show configuration hint\r"
+      ],
+      "status": "FAIL",
+      "form": "exe",
+      "mode": "audit-selftest"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 30.77,
+      "report": "exe_desktop_smoke_report.txt",
+      "failures": [],
+      "status": "PASS",
+      "form": "exe",
+      "mode": "desktop-smoke"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.23,
+      "report": "source_runtime_info_report.txt",
+      "failures": [],
+      "status": "PASS",
+      "form": "source",
+      "mode": "runtime-info"
+    },
+    {
+      "exit_code": 1,
+      "seconds": 51.31,
+      "report": "source_audit_selftest_report.txt",
+      "failures": [
+        "FAIL | Guides: pagination preserves all scenario text 24\r",
+        "FAIL | Guides: rights viewer follows profile text without stale cache\r",
+        "FAIL | Guides: empty rights show configuration hint\r"
+      ],
+      "status": "FAIL",
+      "form": "source",
+      "mode": "audit-selftest"
+    },
+    {
+      "exit_code": 2,
+      "seconds": 21.39,
+      "report": "source_desktop_smoke_report.txt",
+      "failures": [
+        "FAIL | compiled standalone host\r",
+        "FAIL | 20 documents available without external laws folder\r"
+      ],
+      "status": "EXPECTED_EXE_ONLY_ASSERTIONS",
+      "form": "source",
+      "mode": "desktop-smoke"
+    }
+  ],
+  "completed": true
+}
