@@ -44,6 +44,7 @@ jobs:
           if (Test-Path $report) { Get-Content $report }
           if ($p.ExitCode -ne 0) { throw 'MSVC core tests failed' }
       - name: Real UI windows, choices, instruction and guarded removal review
+        if: always()
         shell: pwsh
         run: |
           $out = Join-Path $env:RUNNER_TEMP 'native-installer'

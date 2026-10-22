@@ -125,8 +125,8 @@ def main():
     for old in ['uninstall.cmd','uninstall.ps1','AHK_FOR_GOS.sha256','AHK_FOR_GOS.build.json']:
         p=ROOT/old if old.endswith(('.cmd','.ps1')) else ROOT/'release'/old
         if p.exists():known[old]=(3,p.read_bytes())
-    (work/'known-hashes.txt').write_text(''.join(name+'|'+digest(b)+'\n' for name,(_,b) in sorted(known.items())),encoding='utf-8')
-    allowed=work/'owned-files.txt';allowed.write_text('\n'.join(sorted([*known,'Uninstall.exe']))+'\n',encoding='utf-8')
+    (work/'known-hashes.txt').write_text(''.join(name+'|'+digest(b)+'\n' for name,(_,b) in sorted(known.items())),encoding='utf-8',newline='\n')
+    allowed=work/'owned-files.txt';allowed.write_text('\n'.join(sorted([*known,'Uninstall.exe']))+'\n',encoding='utf-8',newline='\n')
     uninstaller=compile_program(args,work,allowed,True)
     inputs['Uninstall.exe']=(3,uninstaller.read_bytes())
     pack=bytearray(b'AHKGOS01'+struct.pack('<I',len(inputs)));entries=[]

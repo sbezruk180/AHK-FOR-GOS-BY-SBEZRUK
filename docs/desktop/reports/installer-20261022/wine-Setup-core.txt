@@ -58,8 +58,12 @@ PASS | legacy removal preserves foreign AHK
 PASS | legacy keep profiles preserves bytes
 PASS | recognise previous EXE distribution
 PASS | remove legacy EXE and requested project data
+PASS | fresh installation failure is reported
+PASS | rollback removes new empty directories
+PASS | fresh installation can retry after rollback
+PASS | retry has a complete ownership record
 PASS | install rejects occupied unrelated folder
 PASS | uninstall rejects unrelated folder
 PASS | unrelated folder remains intact
 SKIP | symlink creation unavailable in this environment
-Checks=60 Failed=0
+Checks=64 Failed=0

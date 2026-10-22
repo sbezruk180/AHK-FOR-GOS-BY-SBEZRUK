@@ -260,6 +260,8 @@ static std::vector<std::pair<std::wstring, std::string>> KnownFiles() {
   std::vector<std::pair<std::wstring, std::string>> known;
   std::string line;
   while (std::getline(stream, line)) {
+    if (!line.empty() && line.back() == '\r')
+      line.pop_back();
     auto divider = line.find('|');
     if (divider == line.npos)
       Fail(L"Неверный каталог файлов.");
@@ -691,6 +693,11 @@ Result Install(const Options &o, std::atomic<bool> &cancel,
       if (ec)
         result.warnings.push_back(L"Не восстановлен файл: " +
                                   (o.root / (*it)).wstring());
+    }
+    if (!stage.empty()) {
+      EmptyDirs(o.root, record);
+      if (!hadRecord && old.files.empty())
+        RemoveDirectoryW(o.root.c_str());
     }
     if (!stage.empty() && result.warnings.empty()) {
       std::error_code ec;
