@@ -1618,3 +1618,98 @@ CaptureRefreshTimer | app/events.ahk:2754 | Capture_RefreshWindows()
 SaveUiDebounced | app/events.ahk:2758 | SaveUISettings()
 DesktopSmokeLabel | app/events.ahk:2762 | DesktopSmoke_Run()
 DoPrivateTextInput | app/events.ahk:2766 | PrivateText_Open()
+
+КАТАЛОГ ПОЛЬЗОВАТЕЛЬСКИХ ДЕЙСТВИЙ: 92
+Указаны исходные значения; настройки конкретного пользователя здесь не читаются.
+TextCommandInput | Окно текстовых команд | app/bindings.ahk:1390 | handler: DoPrivateTextInput | hotkey: !t | TXT: (не задан) | Bind_TextCommandInput / 
+OpenSettings | Открыть меню | app/bindings.ahk:1391 | handler: см. диспетчер каталога | hotkey: F10 | TXT: (не задан) | Bind_OpenSettings / 
+ToggleBindList | Показать bind-list | app/bindings.ahk:1392 | handler: см. диспетчер каталога | hotkey: F11 | TXT: (не задан) | Bind_ToggleBindList / 
+ToggleLastLawDoc | Последний закон | app/bindings.ahk:1393 | handler: DoToggleLastLawDoc | hotkey: (не задана) | TXT: (не задан) | Bind_ToggleLastLawDoc / 
+HideLawGui | Скрыть окно закона | app/bindings.ahk:1394 | handler: DoHideLawGui | hotkey: Pause | TXT: (не задан) | Bind_HideLawGui / 
+LawSearchSubmit | Запустить поиск законов | app/bindings.ahk:1395 | handler: DoLawSearchClipboard | hotkey: ^+f | TXT: (не задан) | Bind_LawSearchSubmit / 
+ToggleHUD | Показать HUD | app/bindings.ahk:1396 | handler: см. диспетчер каталога | hotkey: F12 | TXT: (не задан) | Bind_ToggleHUD / 
+IDOverlay | ID-плашка | app/bindings.ahk:1397 | handler: DoToggleIDOverlay | hotkey: F5 | TXT: (не задан) | Bind_IDOverlay / 
+ConfirmID | Принять найденный ID | app/bindings.ahk:1398 | handler: DoConfirmID | hotkey: F1 | TXT: (не задан) | Bind_ConfirmID / 
+RejectID | Отклонить найденный ID | app/bindings.ahk:1399 | handler: DoRejectID | hotkey: F2 | TXT: (не задан) | Bind_RejectID / 
+EnterID | Ввести ID вручную | app/bindings.ahk:1400 | handler: DoEnterID | hotkey: !1 | TXT: (не задан) | Bind_EnterID / Trig_EnterID
+ResetID | Сброс ID | app/bindings.ahk:1401 | handler: DoResetID | hotkey: ^Numpad0 | TXT: (не задан) | Bind_ResetID / Trig_ResetID
+OpenBindsTab | Настройки биндов | app/bindings.ahk:1402 | handler: DoOpenBindsTab | hotkey: (не задана) | TXT: !бинды | Bind_OpenBindsTab / Trig_OpenBindsTab
+Intro | Представление | app/bindings.ahk:1404 | handler: DoIntro | hotkey: !2 | TXT: (не задан) | Bind_Intro / Trig_Intro
+SOS | SOS | app/bindings.ahk:1405 | handler: DoSOS | hotkey: F9 | TXT: (не задан) | Bind_SOS / Trig_SOS
+Chase | Chase с ID | app/bindings.ahk:1406 | handler: DoChase | hotkey: !3 | TXT: (не задан) | Bind_Chase / Trig_Chase
+ChaseNoID | Chase без ID | app/bindings.ahk:1407 | handler: DoChaseNoID | hotkey: Insert | TXT: (не задан) | Bind_ChaseNoID / Trig_ChaseNoID
+Deject | Deject | app/bindings.ahk:1408 | handler: DoDeject | hotkey: !4 | TXT: (не задан) | Bind_Deject / Trig_Deject
+Cuff | Cuff | app/bindings.ahk:1409 | handler: DoCuff | hotkey: !5 | TXT: (не задан) | Bind_Cuff / Trig_Cuff
+InCar | InCar | app/bindings.ahk:1410 | handler: DoInCar | hotkey: !6 | TXT: (не задан) | Bind_InCar / Trig_InCar
+StopChase | Остановка | app/bindings.ahk:1411 | handler: DoStopChase | hotkey: !7 | TXT: (не задан) | Bind_StopChase / Trig_StopChase
+Doc | Служебное удостоверение | app/bindings.ahk:1412 | handler: DoDoc | hotkey: !8 | TXT: (не задан) | Bind_Doc / Trig_Doc
+Search | Досмотр | app/bindings.ahk:1413 | handler: DoSearch | hotkey: !9 | TXT: (не задан) | Bind_Search / Trig_Search
+PersonalFile | Личное дело | app/bindings.ahk:1414 | handler: DoPersonalFile | hotkey: (не задана) | TXT: !лд | Bind_PersonalFile / Trig_PersonalFile
+Su | Корректировка розыска | app/bindings.ahk:1415 | handler: DoSu | hotkey: (не задана) | TXT: !су | Bind_Su / Trig_Su
+Dep | Деп | app/bindings.ahk:1417 | handler: DoDep | hotkey: (не задана) | TXT: !деп | Bind_Dep / Trig_Dep
+WantedList | Розыскиваемые | app/bindings.ahk:1418 | handler: DoWantedList | hotkey: (не задана) | TXT: !р | Bind_WantedList / Trig_WantedList
+SOSStart | SOS выехал | app/bindings.ahk:1419 | handler: DoSOSStart | hotkey: (не задана) | TXT: !сос | Bind_SOSStart / Trig_SOSStart
+SOSArrive | SOS прибыл | app/bindings.ahk:1420 | handler: DoSOSArrive | hotkey: (не задана) | TXT: !сос1 | Bind_SOSArrive / Trig_SOSArrive
+HijackStart | Угон выехал | app/bindings.ahk:1421 | handler: DoHijackStart | hotkey: (не задана) | TXT: !угон | Bind_HijackStart / Trig_HijackStart
+HijackArrive | Угон прибыл | app/bindings.ahk:1422 | handler: DoHijackArrive | hotkey: (не задана) | TXT: !угон1 | Bind_HijackArrive / Trig_HijackArrive
+CallStart | ДТП вызов принят | app/bindings.ahk:1423 | handler: DoCallStart | hotkey: (не задана) | TXT: !выз | Bind_CallStart / Trig_CallStart
+CallArrive | ДТП прибыли | app/bindings.ahk:1424 | handler: DoCallArrive | hotkey: (не задана) | TXT: !выз1 | Bind_CallArrive / Trig_CallArrive
+CallWorkStart | ДТП оформление старт | app/bindings.ahk:1425 | handler: DoCallWorkStart | hotkey: (не задана) | TXT: (не задан) | Bind_CallWorkStart / Trig_CallWorkStart
+CallWorkEnd | ДТП оформление конец | app/bindings.ahk:1426 | handler: DoCallWorkEnd | hotkey: (не задана) | TXT: (не задан) | Bind_CallWorkEnd / Trig_CallWorkEnd
+CivilCallStart | Гражданский вызов принят | app/bindings.ahk:1427 | handler: DoCivilCallStart | hotkey: (не задана) | TXT: (не задан) | Bind_CivilCallStart / Trig_CivilCallStart
+CivilCallArrive | Гражданский вызов: прибыл | app/bindings.ahk:1428 | handler: DoCivilCallArrive | hotkey: (не задана) | TXT: (не задан) | Bind_CivilCallArrive / Trig_CivilCallArrive
+MaskCall | Маска и звонок | app/bindings.ahk:1429 | handler: DoMaskCall | hotkey: (не задана) | TXT: !м | Bind_MaskCall / Trig_MaskCall
+RecordCheck | Проверка записи | app/bindings.ahk:1430 | handler: DoRecordCheck | hotkey: (не задана) | TXT: !упр | Bind_RecordCheck / Trig_RecordCheck
+TrainCrash | Крушение поезда | app/bindings.ahk:1431 | handler: DoTrainCrash | hotkey: (не задана) | TXT: !поезд | Bind_TrainCrash / Trig_TrainCrash
+PatrolStart | Патруль старт | app/bindings.ahk:1433 | handler: DoPatrolStart | hotkey: (не задана) | TXT: !патруль | Bind_PatrolStart / Trig_PatrolStart
+PatrolCont | Патруль прод. | app/bindings.ahk:1434 | handler: DoPatrolCont | hotkey: (не задана) | TXT: !патруль1 | Bind_PatrolCont / Trig_PatrolCont
+PatrolEnd | Патруль конец | app/bindings.ahk:1435 | handler: DoPatrolEnd | hotkey: (не задана) | TXT: !патруль2 | Bind_PatrolEnd / Trig_PatrolEnd
+PostStart | Пост старт | app/bindings.ahk:1436 | handler: DoPostStart | hotkey: (не задана) | TXT: !пост | Bind_PostStart / Trig_PostStart
+PostCont | Пост прод. | app/bindings.ahk:1437 | handler: DoPostCont | hotkey: (не задана) | TXT: !пост1 | Bind_PostCont / Trig_PostCont
+PostEnd | Пост конец | app/bindings.ahk:1438 | handler: DoPostEnd | hotkey: (не задана) | TXT: !пост2 | Bind_PostEnd / Trig_PostEnd
+AutoPatrol | Автопатруль · 10 мин | app/bindings.ahk:1439 | handler: DoAutoPatrolToggle | hotkey: (не задана) | TXT: !апатруль | Bind_AutoPatrol / Trig_AutoPatrol
+AutoPost | Автопост · 10 мин | app/bindings.ahk:1440 | handler: DoAutoPostToggle | hotkey: (не задана) | TXT: !апост | Bind_AutoPost / Trig_AutoPost
+ConvoyStart | Колонна старт | app/bindings.ahk:1441 | handler: DoConvoyStart | hotkey: (не задана) | TXT: !вк | Bind_ConvoyStart / Trig_ConvoyStart
+ConvoyCont | Колонна прод. | app/bindings.ahk:1442 | handler: DoConvoyCont | hotkey: (не задана) | TXT: (не задан) | Bind_ConvoyCont / Trig_ConvoyCont
+ConvoyEnd | Колонна конец | app/bindings.ahk:1443 | handler: DoConvoyEnd | hotkey: (не задана) | TXT: !вк1 | Bind_ConvoyEnd / Trig_ConvoyEnd
+TowStart | Эвакуация старт | app/bindings.ahk:1444 | handler: DoTowStart | hotkey: (не задана) | TXT: !эв | Bind_TowStart / Trig_TowStart
+TowEnd | Эвакуация конец | app/bindings.ahk:1445 | handler: DoTowEnd | hotkey: (не задана) | TXT: !эв1 | Bind_TowEnd / Trig_TowEnd
+CarSearch | Осмотр ТС | app/bindings.ahk:1446 | handler: DoCarSearch | hotkey: (не задана) | TXT: !обтс | Bind_CarSearch / Trig_CarSearch
+VehicleLookup | Пробив номера ТС | app/bindings.ahk:1447 | handler: DoVehicleLookup | hotkey: (не задана) | TXT: !поисктс | Bind_VehicleLookup / Trig_VehicleLookup
+WantedRemoval | Снятие розыска | app/bindings.ahk:1448 | handler: DoWantedRemoval | hotkey: (не задана) | TXT: !снятие | Bind_WantedRemoval / Trig_WantedRemoval
+Arrest | Арест | app/bindings.ahk:1449 | handler: DoArrest | hotkey: (не задана) | TXT: !ар | Bind_Arrest / Trig_Arrest
+Fine | Штраф | app/bindings.ahk:1450 | handler: DoFine | hotkey: (не задана) | TXT: !ш | Bind_Fine / Trig_Fine
+Protocol | Протокол | app/bindings.ahk:1451 | handler: DoProtocol | hotkey: (не задана) | TXT: !протокол | Bind_Protocol / Trig_Protocol
+Rights | Права | app/bindings.ahk:1452 | handler: DoRights | hotkey: (не задана) | TXT: !права | Bind_Rights / Trig_Rights
+CardDS | Визитка DS | app/bindings.ahk:1453 | handler: DoCardDS | hotkey: (не задана) | TXT: !визиткадс | Bind_CardDS / Trig_CardDS
+CardVK | Визитка VK | app/bindings.ahk:1454 | handler: DoCardVK | hotkey: (не задана) | TXT: !визиткавк | Bind_CardVK / Trig_CardVK
+MDSFormation | Строй | app/bindings.ahk:1455 | handler: DoMDSFormation | hotkey: (не задана) | TXT: !строй | Bind_MDSFormation / Trig_MDSFormation
+AssistOOP | Пробив ООП | app/bindings.ahk:1456 | handler: DoAssistOOP | hotkey: (не задана) | TXT: !ооп | Bind_AssistOOP / Trig_AssistOOP
+AssistStun | Оглушение | app/bindings.ahk:1457 | handler: DoAssistStun | hotkey: (не задана) | TXT: !оглуш | Bind_AssistStun / Trig_AssistStun
+AssistChase | Преследование | app/bindings.ahk:1458 | handler: DoAssistChase | hotkey: (не задана) | TXT: !погоня | Bind_AssistChase / Trig_AssistChase
+AssistHouse | Сигнализация дома | app/bindings.ahk:1459 | handler: DoAssistHouse | hotkey: (не задана) | TXT: !домgps | Bind_AssistHouse / Trig_AssistHouse
+AssistDrugs | Наркотики рядом | app/bindings.ahk:1460 | handler: DoAssistDrugs | hotkey: (не задана) | TXT: !наркоид | Bind_AssistDrugs / Trig_AssistDrugs
+AssistPDPCuff | Наручники после ПДП | app/bindings.ahk:1461 | handler: DoAssistPDPCuff | hotkey: (не задана) | TXT: !пдпнаруч | Bind_AssistPDPCuff / Trig_AssistPDPCuff
+GpsD | GPS Д | app/bindings.ahk:1462 | handler: см. диспетчер каталога | hotkey: (не задана) | TXT: !д |  / Trig_GpsD
+GpsOS | GPS ОС | app/bindings.ahk:1463 | handler: см. диспетчер каталога | hotkey: (не задана) | TXT: !ос |  / Trig_GpsOS
+GuideSignals | Сигналы СО | app/bindings.ahk:1464 | handler: DoGuideSignals | hotkey: (не задана) | TXT: !сигналы | Bind_GuideSignals / Trig_GuideSignals
+VU | ВУ | app/bindings.ahk:1465 | handler: DoToggleVU | hotkey: (не задана) | TXT: !вузакон |  / Trig_VU
+FP | ФП | app/bindings.ahk:1466 | handler: DoToggleFP | hotkey: (не задана) | TXT: !фп |  / Trig_FP
+KON | Конст. | app/bindings.ahk:1467 | handler: DoToggleKON | hotkey: (не задана) | TXT: !кон |  / Trig_KON
+FZOP | ФЗОП | app/bindings.ahk:1468 | handler: DoToggleFZOP | hotkey: (не задана) | TXT: !фзоп |  / Trig_FZOP
+TER | Терр. | app/bindings.ahk:1469 | handler: DoToggleTER | hotkey: (не задана) | TXT: !тер |  / Trig_TER
+TK | ТК | app/bindings.ahk:1470 | handler: DoToggleTK | hotkey: (не задана) | TXT: !тк |  / Trig_TK
+ARG | АРГ | app/bindings.ahk:1471 | handler: DoToggleARG | hotkey: (не задана) | TXT: !арг |  / Trig_ARG
+UK | УК | app/bindings.ahk:1472 | handler: DoToggleUK | hotkey: (не задана) | TXT: !ук |  / Trig_UK
+VV | Вертикаль | app/bindings.ahk:1473 | handler: DoToggleVV | hotkey: (не задана) | TXT: !вв |  / Trig_VV
+KOAP | КоАП | app/bindings.ahk:1474 | handler: DoToggleKOAP | hotkey: (не задана) | TXT: !коап |  / Trig_KOAP
+PDD | ПДД | app/bindings.ahk:1475 | handler: DoTogglePDD | hotkey: (не задана) | TXT: !пдд |  / Trig_PDD
+ORUZH | Оружие | app/bindings.ahk:1476 | handler: DoToggleORUZH | hotkey: (не задана) | TXT: !оруж |  / Trig_ORUZH
+UPK | УПК | app/bindings.ahk:1477 | handler: DoToggleUPK | hotkey: (не задана) | TXT: !упк |  / Trig_UPK
+KAS | КАС | app/bindings.ahk:1478 | handler: DoToggleKAS | hotkey: (не задана) | TXT: !кас |  / Trig_KAS
+FSB | ФЗ о ФСБ | app/bindings.ahk:1479 | handler: DoToggleFSB | hotkey: (не задана) | TXT: !фсб |  / Trig_FSB
+FSIN | ФЗ о ФСИН | app/bindings.ahk:1480 | handler: DoToggleFSIN | hotkey: (не задана) | TXT: !фсин |  / Trig_FSIN
+VS | Военная служба | app/bindings.ahk:1481 | handler: DoToggleVS | hotkey: (не задана) | TXT: !фзовс |  / Trig_VS
+SUD | Судебная система | app/bindings.ahk:1482 | handler: DoToggleSUD | hotkey: (не задана) | TXT: !суд |  / Trig_SUD
+ORD | ОРД | app/bindings.ahk:1483 | handler: DoToggleORD | hotkey: (не задана) | TXT: !орд |  / Trig_ORD
+GT | Гостайна | app/bindings.ahk:1484 | handler: DoToggleGT | hotkey: (не задана) | TXT: !гостайна |  / Trig_GT

@@ -1,0 +1,106 @@
+﻿ПРОВЕРКА В РЕАЛЬНОМ AMAZING — НЕ ВЫПОЛНЕНА В ОБЛАЧНОЙ СРЕДЕ
+Это список для отдельной проверки на своём клиенте; ни один пункт ниже не считается пройденным автоматически.
+Для каждого действия: 3 успешных выполнения, затем отмена, смена фокуса и повторный запуск. Не проверять действия на посторонних игроках.
+Формы: EXE / исходный AHK через официальный AutoHotkey v1.1 ANSI x86. Использовать отдельную копию INI и фиксировать режим отправки, версию клиента и результат.
+К каждому пункту заполнить: EXE 1/2/3; AHK 1/2/3; отмена; фокус; ошибка/лог.
+
+[ ] Окно текстовых команд (TextCommandInput) | TXT: - | app/bindings.ahk:1390 | DoPrivateTextInput
+[ ] Открыть меню (OpenSettings) | TXT: - | app/bindings.ahk:1391 | диспетчер каталога
+[ ] Показать bind-list (ToggleBindList) | TXT: - | app/bindings.ahk:1392 | диспетчер каталога
+[ ] Последний закон (ToggleLastLawDoc) | TXT: - | app/bindings.ahk:1393 | DoToggleLastLawDoc
+[ ] Скрыть окно закона (HideLawGui) | TXT: - | app/bindings.ahk:1394 | DoHideLawGui
+[ ] Запустить поиск законов (LawSearchSubmit) | TXT: - | app/bindings.ahk:1395 | DoLawSearchClipboard
+[ ] Показать HUD (ToggleHUD) | TXT: - | app/bindings.ahk:1396 | диспетчер каталога
+[ ] ID-плашка (IDOverlay) | TXT: - | app/bindings.ahk:1397 | DoToggleIDOverlay
+[ ] Принять найденный ID (ConfirmID) | TXT: - | app/bindings.ahk:1398 | DoConfirmID
+[ ] Отклонить найденный ID (RejectID) | TXT: - | app/bindings.ahk:1399 | DoRejectID
+[ ] Ввести ID вручную (EnterID) | TXT: - | app/bindings.ahk:1400 | DoEnterID
+[ ] Сброс ID (ResetID) | TXT: - | app/bindings.ahk:1401 | DoResetID
+[ ] Настройки биндов (OpenBindsTab) | TXT: !бинды | app/bindings.ahk:1402 | DoOpenBindsTab
+[ ] Представление (Intro) | TXT: - | app/bindings.ahk:1404 | DoIntro
+[ ] SOS (SOS) | TXT: - | app/bindings.ahk:1405 | DoSOS
+[ ] Chase с ID (Chase) | TXT: - | app/bindings.ahk:1406 | DoChase
+[ ] Chase без ID (ChaseNoID) | TXT: - | app/bindings.ahk:1407 | DoChaseNoID
+[ ] Deject (Deject) | TXT: - | app/bindings.ahk:1408 | DoDeject
+[ ] Cuff (Cuff) | TXT: - | app/bindings.ahk:1409 | DoCuff
+[ ] InCar (InCar) | TXT: - | app/bindings.ahk:1410 | DoInCar
+[ ] Остановка (StopChase) | TXT: - | app/bindings.ahk:1411 | DoStopChase
+[ ] Служебное удостоверение (Doc) | TXT: - | app/bindings.ahk:1412 | DoDoc
+[ ] Досмотр (Search) | TXT: - | app/bindings.ahk:1413 | DoSearch
+[ ] Личное дело (PersonalFile) | TXT: !лд | app/bindings.ahk:1414 | DoPersonalFile
+[ ] Корректировка розыска (Su) | TXT: !су | app/bindings.ahk:1415 | DoSu
+[ ] Деп (Dep) | TXT: !деп | app/bindings.ahk:1417 | DoDep
+[ ] Розыскиваемые (WantedList) | TXT: !р | app/bindings.ahk:1418 | DoWantedList
+[ ] SOS выехал (SOSStart) | TXT: !сос | app/bindings.ahk:1419 | DoSOSStart
+[ ] SOS прибыл (SOSArrive) | TXT: !сос1 | app/bindings.ahk:1420 | DoSOSArrive
+[ ] Угон выехал (HijackStart) | TXT: !угон | app/bindings.ahk:1421 | DoHijackStart
+[ ] Угон прибыл (HijackArrive) | TXT: !угон1 | app/bindings.ahk:1422 | DoHijackArrive
+[ ] ДТП вызов принят (CallStart) | TXT: !выз | app/bindings.ahk:1423 | DoCallStart
+[ ] ДТП прибыли (CallArrive) | TXT: !выз1 | app/bindings.ahk:1424 | DoCallArrive
+[ ] ДТП оформление старт (CallWorkStart) | TXT: - | app/bindings.ahk:1425 | DoCallWorkStart
+[ ] ДТП оформление конец (CallWorkEnd) | TXT: - | app/bindings.ahk:1426 | DoCallWorkEnd
+[ ] Гражданский вызов принят (CivilCallStart) | TXT: - | app/bindings.ahk:1427 | DoCivilCallStart
+[ ] Гражданский вызов: прибыл (CivilCallArrive) | TXT: - | app/bindings.ahk:1428 | DoCivilCallArrive
+[ ] Маска и звонок (MaskCall) | TXT: !м | app/bindings.ahk:1429 | DoMaskCall
+[ ] Проверка записи (RecordCheck) | TXT: !упр | app/bindings.ahk:1430 | DoRecordCheck
+[ ] Крушение поезда (TrainCrash) | TXT: !поезд | app/bindings.ahk:1431 | DoTrainCrash
+[ ] Патруль старт (PatrolStart) | TXT: !патруль | app/bindings.ahk:1433 | DoPatrolStart
+[ ] Патруль прод. (PatrolCont) | TXT: !патруль1 | app/bindings.ahk:1434 | DoPatrolCont
+[ ] Патруль конец (PatrolEnd) | TXT: !патруль2 | app/bindings.ahk:1435 | DoPatrolEnd
+[ ] Пост старт (PostStart) | TXT: !пост | app/bindings.ahk:1436 | DoPostStart
+[ ] Пост прод. (PostCont) | TXT: !пост1 | app/bindings.ahk:1437 | DoPostCont
+[ ] Пост конец (PostEnd) | TXT: !пост2 | app/bindings.ahk:1438 | DoPostEnd
+[ ] Автопатруль · 10 мин (AutoPatrol) | TXT: !апатруль | app/bindings.ahk:1439 | DoAutoPatrolToggle
+[ ] Автопост · 10 мин (AutoPost) | TXT: !апост | app/bindings.ahk:1440 | DoAutoPostToggle
+[ ] Колонна старт (ConvoyStart) | TXT: !вк | app/bindings.ahk:1441 | DoConvoyStart
+[ ] Колонна прод. (ConvoyCont) | TXT: - | app/bindings.ahk:1442 | DoConvoyCont
+[ ] Колонна конец (ConvoyEnd) | TXT: !вк1 | app/bindings.ahk:1443 | DoConvoyEnd
+[ ] Эвакуация старт (TowStart) | TXT: !эв | app/bindings.ahk:1444 | DoTowStart
+[ ] Эвакуация конец (TowEnd) | TXT: !эв1 | app/bindings.ahk:1445 | DoTowEnd
+[ ] Осмотр ТС (CarSearch) | TXT: !обтс | app/bindings.ahk:1446 | DoCarSearch
+[ ] Пробив номера ТС (VehicleLookup) | TXT: !поисктс | app/bindings.ahk:1447 | DoVehicleLookup
+[ ] Снятие розыска (WantedRemoval) | TXT: !снятие | app/bindings.ahk:1448 | DoWantedRemoval
+[ ] Арест (Arrest) | TXT: !ар | app/bindings.ahk:1449 | DoArrest
+[ ] Штраф (Fine) | TXT: !ш | app/bindings.ahk:1450 | DoFine
+[ ] Протокол (Protocol) | TXT: !протокол | app/bindings.ahk:1451 | DoProtocol
+[ ] Права (Rights) | TXT: !права | app/bindings.ahk:1452 | DoRights
+[ ] Визитка DS (CardDS) | TXT: !визиткадс | app/bindings.ahk:1453 | DoCardDS
+[ ] Визитка VK (CardVK) | TXT: !визиткавк | app/bindings.ahk:1454 | DoCardVK
+[ ] Строй (MDSFormation) | TXT: !строй | app/bindings.ahk:1455 | DoMDSFormation
+[ ] Пробив ООП (AssistOOP) | TXT: !ооп | app/bindings.ahk:1456 | DoAssistOOP
+[ ] Оглушение (AssistStun) | TXT: !оглуш | app/bindings.ahk:1457 | DoAssistStun
+[ ] Преследование (AssistChase) | TXT: !погоня | app/bindings.ahk:1458 | DoAssistChase
+[ ] Сигнализация дома (AssistHouse) | TXT: !домgps | app/bindings.ahk:1459 | DoAssistHouse
+[ ] Наркотики рядом (AssistDrugs) | TXT: !наркоид | app/bindings.ahk:1460 | DoAssistDrugs
+[ ] Наручники после ПДП (AssistPDPCuff) | TXT: !пдпнаруч | app/bindings.ahk:1461 | DoAssistPDPCuff
+[ ] GPS Д (GpsD) | TXT: !д | app/bindings.ahk:1462 | диспетчер каталога
+[ ] GPS ОС (GpsOS) | TXT: !ос | app/bindings.ahk:1463 | диспетчер каталога
+[ ] Сигналы СО (GuideSignals) | TXT: !сигналы | app/bindings.ahk:1464 | DoGuideSignals
+[ ] ВУ (VU) | TXT: !вузакон | app/bindings.ahk:1465 | DoToggleVU
+[ ] ФП (FP) | TXT: !фп | app/bindings.ahk:1466 | DoToggleFP
+[ ] Конст. (KON) | TXT: !кон | app/bindings.ahk:1467 | DoToggleKON
+[ ] ФЗОП (FZOP) | TXT: !фзоп | app/bindings.ahk:1468 | DoToggleFZOP
+[ ] Терр. (TER) | TXT: !тер | app/bindings.ahk:1469 | DoToggleTER
+[ ] ТК (TK) | TXT: !тк | app/bindings.ahk:1470 | DoToggleTK
+[ ] АРГ (ARG) | TXT: !арг | app/bindings.ahk:1471 | DoToggleARG
+[ ] УК (UK) | TXT: !ук | app/bindings.ahk:1472 | DoToggleUK
+[ ] Вертикаль (VV) | TXT: !вв | app/bindings.ahk:1473 | DoToggleVV
+[ ] КоАП (KOAP) | TXT: !коап | app/bindings.ahk:1474 | DoToggleKOAP
+[ ] ПДД (PDD) | TXT: !пдд | app/bindings.ahk:1475 | DoTogglePDD
+[ ] Оружие (ORUZH) | TXT: !оруж | app/bindings.ahk:1476 | DoToggleORUZH
+[ ] УПК (UPK) | TXT: !упк | app/bindings.ahk:1477 | DoToggleUPK
+[ ] КАС (KAS) | TXT: !кас | app/bindings.ahk:1478 | DoToggleKAS
+[ ] ФЗ о ФСБ (FSB) | TXT: !фсб | app/bindings.ahk:1479 | DoToggleFSB
+[ ] ФЗ о ФСИН (FSIN) | TXT: !фсин | app/bindings.ahk:1480 | DoToggleFSIN
+[ ] Военная служба (VS) | TXT: !фзовс | app/bindings.ahk:1481 | DoToggleVS
+[ ] Судебная система (SUD) | TXT: !суд | app/bindings.ahk:1482 | DoToggleSUD
+[ ] ОРД (ORD) | TXT: !орд | app/bindings.ahk:1483 | DoToggleORD
+[ ] Гостайна (GT) | TXT: !гостайна | app/bindings.ahk:1484 | DoToggleGT
+
+[ ] Auto ID: ПКМ на игроке → немедленное предложение; новая цель заменяет старую; F1 принять/F2 отклонить; переподключение игры.
+[ ] Права: все пять строк в режиме Память, без повторов; прекращение после отмены.
+[ ] GPS: дом/организация 1/155/10000; при задержке сервера не теряются стрелки/номер; отмена и смена фокуса.
+[ ] Ввод: Печать всего, оба режима Фракции, Вставка, Память, Авто; русский/английский текст; диапазон CPS.
+[ ] OBS: записать видео каждого собственного GUI/оверлея и цифрового ввода, проверить реальные кадры всех способов захвата.
+[ ] Полноэкранный Amazing: GUI не сворачивает игру; возврат фокуса и работа горячих клавиш.
+[ ] Длительная сессия: перезапуск игры, смена профилей, память/CPU, отсутствие оставшихся процессов после выхода.
