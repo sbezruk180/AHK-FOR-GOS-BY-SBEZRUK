@@ -2,6 +2,7 @@
 """Disposable native ANSI x86 audit hosts. Never patches the distributed EXE."""
 from pathlib import Path
 import argparse
+import ctypes
 import hashlib
 import json
 import os
@@ -17,6 +18,23 @@ sys.path.insert(0, str(ROOT / 'tools'))
 sys.path.insert(0, str(ROOT / 'tools/build'))
 from build_exe import verified_runtime, update_windows, LOCK
 from pe_resources import PE
+from function_index import instrument, HOOK
+
+CASES = [
+ ('runtime-info','runtime_info_report.txt'), ('selftest','selftest_report.txt'),
+ ('audit-selftest','audit_selftest_report.txt'), ('context-mocktest','context_assistant_test.txt'),
+ ('autoreport-mocktest','autoreport_mocktest_report.txt'), ('law-search-test','law_search_test_report.txt'),
+ ('v1-mocktest','v1_mocktest_report.txt'), ('desktop-smoke','desktop_smoke_report.txt'),
+ ('diagnostics','diagnostics_report.txt'),
+]
+FIXTURES = [
+ ('private_input','build_private_input_fixture.py','private_input_report.txt'),
+ ('chat_route','build_chat_route_fixture.py','chat_route_report.txt'),
+ ('memory_sequence','build_memory_sequence_fixture.py','memory_sequence_report.txt'),
+ ('game_menu','build_game_menu_fixture.py','game_menu_report.txt'),
+ ('text_bind','build_text_bind_fixture.py','text_bind_report.txt'),
+ ('autoid_tracking','build_autoid_tracking_fixture.py','autoid_tracking_report.txt'),
+]
 
 
 def sha(path):
@@ -107,15 +125,163 @@ def probe(output):
     return result
 
 
+def compiled_fixture(script, runtime, output):
+    shutil.copyfile(runtime / LOCK['base'], output)
+    code = script.read_text('utf-8-sig').encode('utf-8')
+    update_windows(output, [(10, '>AUTOHOTKEY SCRIPT<', code)])
+    localized = output.with_name(output.stem + '_CP1251.exe')
+    locale_host(output, localized)
+    return localized
+
+
+def capture_windows(pid):
+    user = ctypes.WinDLL('user32', use_last_error=True)
+    found = []
+    callback_type = ctypes.WINFUNCTYPE(ctypes.c_int, ctypes.c_void_p, ctypes.c_void_p)
+    user.GetWindowThreadProcessId.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_uint)]
+    user.GetClassNameW.argtypes = [ctypes.c_void_p, ctypes.c_wchar_p, ctypes.c_int]
+    def visit(hwnd, extra):
+        owner = ctypes.c_uint()
+        user.GetWindowThreadProcessId(hwnd, ctypes.byref(owner))
+        if owner.value == pid:
+            name = ctypes.create_unicode_buffer(256)
+            user.GetClassNameW(hwnd, name, 256)
+            found.append((int(hwnd), name.value))
+        return 1
+    cb = callback_type(visit)
+    user.EnumWindows.argtypes = [callback_type, ctypes.c_void_p]
+    user.EnumWindows(cb, None)
+    return found
+
+
+def startup_check(command, folder, env):
+    """Real normal startup, second-instance suppression, tray/menu Exit command."""
+    folder.mkdir(parents=True, exist_ok=True)
+    p = subprocess.Popen([str(x) for x in command]+['--data-dir',str(folder)], cwd=ROOT, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    rows = {'started':False,'singleton':False,'clean_exit':False}
+    try:
+        time.sleep(3)
+        windows = capture_windows(p.pid)
+        rows['started'] = p.poll() is None and any(cls == 'AutoHotkey' for _,cls in windows)
+        second_env = dict(env)
+        if second_env.get('AHK_AUDIT_COVERAGE'):
+            second_env['AHK_AUDIT_COVERAGE'] += '.second'
+        second = subprocess.Popen([str(x) for x in command]+['--data-dir',str(folder)],cwd=ROOT,env=second_env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+        try:
+            second.wait(timeout=8)
+            rows['singleton'] = p.poll() is None
+        except subprocess.TimeoutExpired:
+            second.kill();second.wait()
+        user=ctypes.WinDLL('user32',use_last_error=True)
+        user.PostMessageW.argtypes=[ctypes.c_void_p,ctypes.c_uint,ctypes.c_size_t,ctypes.c_ssize_t]
+        for hwnd,cls in windows:
+            if cls == 'AutoHotkey':
+                user.PostMessageW(hwnd,0x111,65405,0)
+        try:
+            p.wait(timeout=12)
+            rows['clean_exit'] = p.returncode == 0
+        except subprocess.TimeoutExpired:
+            p.kill();p.wait()
+        rows['exit_code'] = p.returncode
+    finally:
+        if p.poll() is None:p.kill();p.wait()
+    rows['status'] = 'PASS' if all(rows[k] for k in ('started','singleton','clean_exit')) else 'FAIL'
+    return rows
+
+
+def run_audit(output, form, repeat):
+    output.mkdir(parents=True, exist_ok=True)
+    work=output.parent/(output.name+'-work');work.mkdir(parents=True,exist_ok=True)
+    ahk, exe, runtime, provenance=prepare(work/'hosts')
+    probe_row,probe_text=invoke([ahk,'/ErrorStdOut','/CP1251',ROOT/'AHK_FOR_GOS_BY_SBEZRUK.ahk','--runtime-info','--data-dir',work/'cp-probe'],work/'cp-probe','runtime_info_report.txt')
+    if 'SystemCodepage=1251' not in probe_text or probe_row['exit_code']:
+        raise RuntimeError('Native ANSI CP1251 requirement is not satisfied')
+    summary={'form':form,'repeat':repeat,'commit':subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT).decode().strip(),
+      'release_sha256':sha(ROOT/'release/AHK_FOR_GOS.exe'),'provenance':provenance,
+      'real_game':'NOT_TESTED','real_OBS':'NOT_TESTED','cases':[]}
+    (output/'summary.json').write_text(json.dumps(summary,indent=2)+'\n')
+    source_trace=work.parent/(work.name+'-instrumented')
+    instrument(ROOT,source_trace)
+    trace_exe=None
+    if form=='exe':
+        subprocess.run([sys.executable,str(source_trace/'tools/build_exe.py'),'--runtime',str(runtime),'--output',str(work/'instrumented.exe')],check=True)
+        trace_exe=work/'instrumented_TEST_CP1251.exe';locale_host(work/'instrumented.exe',trace_exe)
+    for traced in (False,True):
+        phase='traced' if traced else 'original'
+        source=source_trace if traced else ROOT
+        command=[trace_exe if traced else exe] if form=='exe' else [ahk,'/ErrorStdOut','/CP1251',source/'AHK_FOR_GOS_BY_SBEZRUK.ahk']
+        for mode,report_name in CASES:
+            data=work/phase/mode
+            env=dict(os.environ)
+            if traced:env['AHK_AUDIT_COVERAGE']=str(output/(phase+'_'+mode+'.coverage.txt'))
+            if mode=='diagnostics':
+                data.mkdir(parents=True,exist_ok=True)
+                old=work/phase/'selftest'/'selftest_report.txt'
+                if old.exists():shutil.copyfile(old,data/'selftest_report.txt')
+            row,text=invoke(command+['--'+mode,'--data-dir',data],data,report_name,timeout=300,env=env)
+            row.update(mode=mode,phase=phase)
+            # Diagnostics reports missing game/process conditions explicitly.
+            if mode=='diagnostics' and row['exit_code']==0 and text:row['status']='DIAGNOSTIC_FINDINGS' if row['failures'] else 'PASS'
+            for suffix in ('', '.console.txt'):
+                f=data/(report_name+suffix)
+                if f.exists():shutil.copyfile(f,output/(phase+'_'+report_name+suffix))
+            row['report']=phase+'_'+report_name
+            summary['cases'].append(row)
+            (output/'summary.json').write_text(json.dumps(summary,indent=2)+'\n')
+            print(json.dumps({k:row[k] for k in ('mode','phase','status','exit_code','seconds')}),flush=True)
+        env=dict(os.environ)
+        if traced:env['AHK_AUDIT_COVERAGE']=str(output/(phase+'_startup.coverage.txt'))
+        row=startup_check(command,work/phase/'startup',env);row.update(mode='startup-singleton-exit',phase=phase)
+        summary['cases'].append(row)
+    # Fixture sinks/predicates are explicit; actual IO is Win32/keyboard, not GTA.
+    for name,builder,report_name in FIXTURES:
+        folder=work/'fixtures'/name;script=folder/'native.ahk';folder.mkdir(parents=True,exist_ok=True)
+        subprocess.run([sys.executable,str(source_trace/'tools'/builder),str(script)],check=True)
+        # Extracted production functions refer to counters from the disposable copy.
+        text=script.read_text('utf-8-sig')
+        if '__AuditCoverage_Hit(name)' not in text:script.write_text(text+'\n'+HOOK,encoding='utf-8-sig')
+        command=[compiled_fixture(script,runtime,folder/'native.exe')] if form=='exe' else [ahk,'/ErrorStdOut',script]
+        data=folder/'data';env=dict(os.environ);env['AHK_AUDIT_COVERAGE']=str(output/('fixture_'+name+'.coverage.txt'))
+        row,text=invoke(command+['--data-dir',data],folder,report_name,timeout=150,env=env)
+        row.update(mode=name,phase='fixture',report='fixture_'+report_name)
+        for suffix in ('','.console.txt'):
+            f=folder/(report_name+suffix)
+            if f.exists():shutil.copyfile(f,output/('fixture_'+report_name+suffix))
+        summary['cases'].append(row)
+        print(json.dumps({k:row[k] for k in ('mode','phase','status','exit_code','seconds')}),flush=True)
+        (output/'summary.json').write_text(json.dumps(summary,indent=2)+'\n')
+    # Report and terminate only leaked AHK hosts owned by this audit directory.
+    prefix=str(work).replace("'","''")
+    ps="$p='"+prefix+"'; @(Get-CimInstance Win32_Process | Where-Object { $_.ExecutablePath -and $_.ExecutablePath.StartsWith($p) } | Select-Object ProcessId,Name) | ConvertTo-Json -Compress"
+    leak=subprocess.run(['powershell','-NoProfile','-Command',ps],stdout=subprocess.PIPE,stderr=subprocess.PIPE,timeout=30)
+    raw=leak.stdout.decode('utf-8-sig',errors='replace').strip()
+    summary['remaining_processes']=json.loads(raw) if raw else []
+    if summary['remaining_processes']:
+        items=summary['remaining_processes'];items=items if isinstance(items,list) else [items]
+        for p in items:subprocess.run(['taskkill','/PID',str(p['ProcessId']),'/T','/F'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+    summary['completed']=True
+    summary['original_failures']=[r['mode'] for r in summary['cases'] if r['phase']=='original' and r['status']=='FAIL']
+    summary['tracing_failures']=[r['mode'] for r in summary['cases'] if r['phase']=='traced' and r['status']=='FAIL']
+    summary['fixture_failures']=[r['mode'] for r in summary['cases'] if r['phase']=='fixture' and r['status']=='FAIL']
+    (output/'summary.json').write_text(json.dumps(summary,indent=2)+'\n')
+    print('AUDIT_COMPLETED '+json.dumps({k:summary[k] for k in ('form','repeat','original_failures','tracing_failures','fixture_failures','remaining_processes')}),flush=True)
+    # Findings are exported for review, not hidden by stopping after the first case.
+    return summary
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--probe', action='store_true')
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--form',choices=['exe','source'])
+    parser.add_argument('--repeat',type=int,default=1)
     args = parser.parse_args()
     if os.name != 'nt':
         parser.error('Native Windows required; this audit does not substitute Wine64 for ANSI x86')
     if args.probe:
         probe(args.output.resolve())
+    elif args.form:
+        run_audit(args.output.resolve(),args.form,args.repeat)
 
 
 if __name__ == '__main__':
