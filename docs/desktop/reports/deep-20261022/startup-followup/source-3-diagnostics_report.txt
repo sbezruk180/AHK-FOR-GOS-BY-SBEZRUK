@@ -1,0 +1,159 @@
+AHK FOR GOS BY SBEZRUK diagnostics report
+Time: 2026-10-22 15:01:50
+Project: D:\a\_temp\startup-audit-work\portable-source
+Script: D:\a\_temp\startup-audit-work\portable-source\AHK_FOR_GOS_BY_SBEZRUK.ahk
+Mode: CLI read-only diagnostics
+
+
+== Runtime safety ==
+No GUI, hotkeys, timers, clipboard, GTA memory, profiles/themes writes, or game actions are intentionally used in this mode.
+[PASS] High | diagnostics guard before normal startup (static) | guard is in auto-execute before InitProfiles/ApplyAllBinds/CreateHUD
+
+== Capture ==
+Защита захвата: состояние ещё не проверено.
+
+== Files ==
+[PASS] High | main exists | D:\a\_temp\startup-audit-work\portable-source\AHK_FOR_GOS_BY_SBEZRUK.ahk
+[PASS] High | main non-empty | size=2577
+[PASS] High | main has no BOM | D:\a\_temp\startup-audit-work\portable-source\AHK_FOR_GOS_BY_SBEZRUK.ahk
+[PASS] High | helper exists | D:\a\_temp\startup-audit-work\portable-source\helper.ahk
+[PASS] High | helper non-empty | size=162844
+[PASS] High | helper has no BOM | D:\a\_temp\startup-audit-work\portable-source\helper.ahk
+[PASS] High | common exists | D:\a\_temp\startup-audit-work\portable-source\common.ahk
+[PASS] High | common non-empty | size=40818
+[PASS] High | common has no BOM | D:\a\_temp\startup-audit-work\portable-source\common.ahk
+[PASS] High | UDF exists | D:\a\_temp\startup-audit-work\portable-source\UDF.ahk
+[PASS] High | UDF non-empty | size=58354
+[PASS] High | UDF has no BOM | D:\a\_temp\startup-audit-work\portable-source\UDF.ahk
+[PASS] High | active profiles config exists | D:\a\_temp\startup-audit-work\portable-source\profiles.ini
+[PASS] High | active profiles config non-empty | size=20642
+[PASS] High | active profiles config has no BOM | D:\a\_temp\startup-audit-work\portable-source\profiles.ini
+themes.ini: optional file is not present; built-in themes remain available
+
+== Self-test summary ==
+Summary: WARN
+Total checks: 122
+Critical failed: 0
+High failed: 0
+Medium warnings: 1
+Low notes: 0
+LIVE GAME: NOT RUN
+
+
+== Error log tail ==
+Source: D:\a\_temp\startup-audit-work\portable-source\logs\amz_gos.log
+[20261022150051] [INFO] [AutoReport] Queued chat line: /r экипаж Р202: пост КПП, состав 3.
+[20261022150051] [INFO] [AutoReport] Started: mode=Пост, duration=10 min
+[20261022150051] [INFO] [AutoReport] Queued chat line: /r экипаж Р202: пост КПП, состав 3.
+[20261022150051] [INFO] [AutoReport] Stopped: reason=completed, sent=0, skipped=0
+[20261022150051] [INFO] [AutoReport] Queued chat line: /r экипаж Р101: патрулируем А-1, состав 2.
+[20261022150051] [INFO] [AutoReport] Started: mode=Патруль, duration=20 min
+[20261022150051] [INFO] [AutoReport] Stopped: reason=cancel-all, sent=0, skipped=0
+[20261022150100] [INFO] [System] Script start
+[20261022150104] [INFO] [System] Script exit: Menu
+[20261022150120] [INFO] [AutoReport] Queued chat line: /r экипаж Р101: патрулируем А-1, состав 2.
+[20261022150120] [INFO] [AutoReport] Started: mode=Патруль, duration=20 min
+[20261022150120] [INFO] [AutoReport] Queued chat line: /r экипаж Р101: патрулируем А-1, состав 2.
+[20261022150120] [INFO] [AutoReport] Stopped: reason=replace, sent=0, skipped=0
+[20261022150120] [INFO] [AutoReport] Queued chat line: /r экипаж Р202: пост КПП, состав 3.
+[20261022150120] [INFO] [AutoReport] Started: mode=Пост, duration=15 min
+[20261022150120] [INFO] [AutoReport] Stopped: reason=mock-stop, sent=0, skipped=0
+[20261022150120] [INFO] [AutoReport] Queued chat line: /r экипаж Р202: пост КПП, состав 3.
+[20261022150120] [INFO] [AutoReport] Started: mode=Пост, duration=10 min
+[20261022150120] [INFO] [AutoReport] Queued chat line: /r экипаж Р202: пост КПП, состав 3.
+[20261022150120] [INFO] [AutoReport] Stopped: reason=completed, sent=0, skipped=0
+[20261022150120] [INFO] [AutoReport] Queued chat line: /r экипаж Р101: патрулируем А-1, состав 2.
+[20261022150120] [INFO] [AutoReport] Started: mode=Патруль, duration=20 min
+[20261022150120] [INFO] [AutoReport] Stopped: reason=cancel-all, sent=0, skipped=0
+[20261022150129] [INFO] [System] Script start
+[20261022150133] [INFO] [System] Script exit: Menu
+[20261022150149] [INFO] [AutoReport] Queued chat line: /r экипаж Р101: патрулируем А-1, состав 2.
+[20261022150149] [INFO] [AutoReport] Started: mode=Патруль, duration=20 min
+[20261022150149] [INFO] [AutoReport] Queued chat line: /r экипаж Р101: патрулируем А-1, состав 2.
+[20261022150149] [INFO] [AutoReport] Stopped: reason=replace, sent=0, skipped=0
+[20261022150149] [INFO] [AutoReport] Queued chat line: /r экипаж Р202: пост КПП, состав 3.
+[20261022150149] [INFO] [AutoReport] Started: mode=Пост, duration=15 min
+[20261022150149] [INFO] [AutoReport] Stopped: reason=mock-stop, sent=0, skipped=0
+[20261022150149] [INFO] [AutoReport] Queued chat line: /r экипаж Р202: пост КПП, состав 3.
+[20261022150149] [INFO] [AutoReport] Started: mode=Пост, duration=10 min
+[20261022150149] [INFO] [AutoReport] Queued chat line: /r экипаж Р202: пост КПП, состав 3.
+[20261022150149] [INFO] [AutoReport] Stopped: reason=completed, sent=0, skipped=0
+[20261022150149] [INFO] [AutoReport] Queued chat line: /r экипаж Р101: патрулируем А-1, состав 2.
+[20261022150149] [INFO] [AutoReport] Started: mode=Патруль, duration=20 min
+[20261022150149] [INFO] [AutoReport] Stopped: reason=cancel-all, sent=0, skipped=0
+
+
+== Profile and theme summary ==
+Active config: D:\a\_temp\startup-audit-work\portable-source\profiles.ini
+Active profile: Основной
+ThemeMode: Graphite
+themes.ini: missing
+
+== Safe settings ==
+SafeModeEnabled=Off
+SafeBlockWhenChat=Off
+SafeVehicleChecks=Off
+SafeRequireChatForEditable=Off
+SafeTooltipWarnings=Off
+SafeDistanceChecks=Off
+SafeDistanceLimit=12
+
+== Chat transport ==
+TextSendMode=Auto
+GameWindowTitle=AMAZING ONLINE
+GameProcessName=gta_sa.exe
+AzmpExpectedSHA256=
+MockMode=Off
+[PASS] Critical | unified chat transport wrapper
+[PASS] High | Auto send mode is available
+[PASS] High | window-title locator and EXE fallback are present
+
+== ChatLog and target ID ==
+ChatLog.Enabled=On
+ChatLog.Path=H1:54:433A5C416D617A696E672047616D65735C416D617A696E67204F6E6C696E655C50435C616D617A696E675C636861746C6F672E747874
+ChatLog.PlayerNickname=H1:16:53656D656E5F4C756B617368656E6B6F
+ChatLog.AutoCleanup=Off
+ChatLog.MaxSizeKB=512
+ChatLog.KeepTailKB=32
+AutoTargetIDEnabled=On
+[PASS] High | ChatLogReader routes lookups through queue
+[PASS] High | RMB target resolver is present
+
+== Context assistant (legacy/internal) ==
+AssistOOPEnabled=On
+AssistStunEnabled=On
+AssistChaseEnabled=On
+AssistHouseEnabled=On
+AssistDrugsEnabled=On
+AssistPDPCuffEnabled=On
+Registration: disabled; profile values are retained only for backward compatibility
+[PASS] High | six context actions remain internal and unregistered | 92 unique items; 8 required; 6 Assist internal; 2 Hijack legacy
+[PASS] Critical | context actions use queue
+
+== Official legislation corpus ==
+Source: https://forum.amazing-online.com/forums/zakonodatelstvo.732/
+TerritoryMapMode=Local
+[PASS] Critical | 20 official documents are readable | docs=20, chars=695338
+[PASS] Critical | every detected article heading is indexed | pages=244, headings=761, failures=0
+[WARN] Medium | optional local assets for 11 territory map groups | groups=11, failures=17
+[PASS] Critical | law-query capture never submits chat
+
+== Bind-list summary ==
+Catalog items: 92
+Hotkey fields: 62
+Trigger fields: 74
+
+== Bind conflict scan ==
+[PASS] High | duplicate catalog tokens
+[PASS] Medium | duplicate non-empty hotkeys
+[PASS] Medium | duplicate non-empty triggers
+[PASS] High | missing labels for hotkey catalog actions
+[PASS] Medium | WantedList trigger is present | Trig_WantedList=!р
+[PASS] Medium | fixed search trigger conflict | !пнайти
+
+== Summary ==
+Status: WARN
+Total checks: 33
+Failures: 0
+Warnings: 1
+Notes: 0

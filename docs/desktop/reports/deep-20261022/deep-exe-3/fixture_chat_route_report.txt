@@ -1,0 +1,13 @@
+﻿Production chat routing; transport functions are counting seams.
+PASS | faction command uses physical typing in FactionTyping
+PASS | ordinary text chooses only its configured transport in FactionTyping
+PASS | routing never mutates saved mode FactionTyping
+PASS | faction command uses physical typing in FactionTypingMemory
+PASS | ordinary text chooses only its configured transport in FactionTypingMemory
+PASS | routing never mutates saved mode FactionTypingMemory
+PASS | faction memory refuses unavailable memory without clipboard
+PASS | precheck discovering an in-flight operation never retries
+PASS | uncertain memory send never pastes or retries
+PASS | all-text mode still types ordinary messages
+PASS | command prefixes are not confused
+Checks=11 Failed=0

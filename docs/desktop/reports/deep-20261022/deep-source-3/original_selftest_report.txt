@@ -1,0 +1,135 @@
+AHK FOR GOS BY SBEZRUK v1.0 regression self-test
+Runtime: AutoHotkey 1.1.37.02 | ANSI=1 | PtrSize=4
+Project: D:\a\_temp\deep-source-3-work\original\selftest
+LIVE GAME: NOT RUN
+
+[PASS] Critical | file exists: AHK_FOR_GOS_BY_SBEZRUK.ahk
+[PASS] High | CP1251 artifact has no BOM: AHK_FOR_GOS_BY_SBEZRUK.ahk
+[PASS] High | CRLF only: AHK_FOR_GOS_BY_SBEZRUK.ahk
+[FAIL] Critical | file exists: helper.ahk
+[FAIL] High | CP1251 artifact has no BOM: helper.ahk
+[FAIL] High | CRLF only: helper.ahk
+[FAIL] Critical | file exists: UDF.ahk
+[FAIL] High | CP1251 artifact has no BOM: UDF.ahk
+[FAIL] High | CRLF only: UDF.ahk
+[FAIL] Critical | file exists: common.ahk
+[FAIL] High | CP1251 artifact has no BOM: common.ahk
+[FAIL] High | CRLF only: common.ahk
+[FAIL] Critical | official law exists: VU
+[FAIL] High | official law has no BOM: VU
+[FAIL] High | official law CRLF only: VU
+[FAIL] Critical | official law exists: FP
+[FAIL] High | official law has no BOM: FP
+[FAIL] High | official law CRLF only: FP
+[FAIL] Critical | official law exists: KON
+[FAIL] High | official law has no BOM: KON
+[FAIL] High | official law CRLF only: KON
+[FAIL] Critical | official law exists: FZOP
+[FAIL] High | official law has no BOM: FZOP
+[FAIL] High | official law CRLF only: FZOP
+[FAIL] Critical | official law exists: TER
+[FAIL] High | official law has no BOM: TER
+[FAIL] High | official law CRLF only: TER
+[FAIL] Critical | official law exists: TK
+[FAIL] High | official law has no BOM: TK
+[FAIL] High | official law CRLF only: TK
+[FAIL] Critical | official law exists: ARG
+[FAIL] High | official law has no BOM: ARG
+[FAIL] High | official law CRLF only: ARG
+[FAIL] Critical | official law exists: UK
+[FAIL] High | official law has no BOM: UK
+[FAIL] High | official law CRLF only: UK
+[FAIL] Critical | official law exists: VV
+[FAIL] High | official law has no BOM: VV
+[FAIL] High | official law CRLF only: VV
+[FAIL] Critical | official law exists: KOAP
+[FAIL] High | official law has no BOM: KOAP
+[FAIL] High | official law CRLF only: KOAP
+[FAIL] Critical | official law exists: PDD
+[FAIL] High | official law has no BOM: PDD
+[FAIL] High | official law CRLF only: PDD
+[FAIL] Critical | official law exists: ORUZH
+[FAIL] High | official law has no BOM: ORUZH
+[FAIL] High | official law CRLF only: ORUZH
+[FAIL] Critical | official law exists: UPK
+[FAIL] High | official law has no BOM: UPK
+[FAIL] High | official law CRLF only: UPK
+[FAIL] Critical | official law exists: KAS
+[FAIL] High | official law has no BOM: KAS
+[FAIL] High | official law CRLF only: KAS
+[FAIL] Critical | official law exists: FSB
+[FAIL] High | official law has no BOM: FSB
+[FAIL] High | official law CRLF only: FSB
+[FAIL] Critical | official law exists: FSIN
+[FAIL] High | official law has no BOM: FSIN
+[FAIL] High | official law CRLF only: FSIN
+[FAIL] Critical | official law exists: VS
+[FAIL] High | official law has no BOM: VS
+[FAIL] High | official law CRLF only: VS
+[FAIL] Critical | official law exists: SUD
+[FAIL] High | official law has no BOM: SUD
+[FAIL] High | official law CRLF only: SUD
+[FAIL] Critical | official law exists: ORD
+[FAIL] High | official law has no BOM: ORD
+[FAIL] High | official law CRLF only: ORD
+[FAIL] Critical | official law exists: GT
+[FAIL] High | official law has no BOM: GT
+[FAIL] High | official law CRLF only: GT
+[PASS] Critical | AHK v1.1 ANSI 32-bit runtime
+[PASS] Critical | release v1.0 and schema v14
+[PASS] Critical | active INI uses v1.0/v14
+[PASS] Critical | single helper and modular include contract
+[PASS] Critical | method helper is fully removed
+[PASS] Critical | pointer validation supports x86 LargeAddressAware
+[FAIL] Critical | Auto ID keeps a validated cache across stable reads
+[FAIL] High | NOT_IN_POOL uses soft pool refresh
+[PASS] High | !коды reuses legislation GUI
+[PASS] Critical | balanced code braces | delta=0
+[PASS] Critical | no duplicate functions
+[PASS] Critical | no duplicate labels
+[PASS] Critical | literal Gosub targets exist
+[PASS] Critical | v13 migration is idempotent and legacy-safe | repeat is byte-stable; new commands added; obsolete MDS keys removed
+[PASS] Critical | all v12 fields are in read/write pipeline | 17 fields and pre-migration backup
+[PASS] Critical | two role forms and exact templates | 13 exact expansions
+[PASS] High | formation and tow workflow wording | formation=1, start=1, ensure=1, tow-last=1, timer=1, removed-mds=1, end=1
+[PASS] Critical | configurable !апатруль and !апост
+[PASS] Critical | action timers are wired to patrol, post and evacuation
+[PASS] High | action timer lifecycle and position persistence
+[PASS] Critical | 13 unique settings pages
+[PASS] High | profile UI exposes both role forms
+[PASS] High | civil reports visible; Hijack rows hidden
+[PASS] Critical | catalog tokens, visibility and handlers | 92 unique items; 8 required; 6 Assist internal; 2 Hijack legacy
+[PASS] High | active profile has no bind conflicts | no conflicts
+[PASS] High | text hotstrings use a game-scoped hook without memory discovery (static)
+[PASS] Critical | default F12/F5/Pause and independent Chase binds
+[PASS] Critical | Chase ID and no-ID commands
+[PASS] Critical | law query is captured locally and cancelled with Escape
+[PASS] High | law-search submit key is configurable Ctrl+Shift+F
+[PASS] Critical | evidence recognition matrix | 32/32
+[PASS] High | evidence retains report identity, pending, focus-retry and cooldown guards
+[PASS] Critical | law index covers 20 documents and every article heading | docs=20, pages=244, headings=761, failures=0
+[PASS] Critical | official offline corpus: 20 readable documents | docs=20, chars=695338, failures=0
+[PASS] Critical | territory map groups and official URLs are valid
+[WARN] Medium | optional local map images for 11 groups | groups=11, failures=17
+[PASS] High | territory map profile mode and two UI choices
+[PASS] Critical | current KOAP article 17.4 is present
+[PASS] Critical | current VU point 3.20 is present
+[PASS] Critical | current TER service-territory definitions are present
+[PASS] Critical | current TER colony access rule is present
+[PASS] Critical | deleted FZOP article 8 point 10 is absent
+[PASS] High | dynamic corpus pagination replaces fixed summaries
+[PASS] High | law exact and compact references
+[PASS] High | law natural query, word forms and permutation
+[PASS] High | law bounded typo and negative example
+[PASS] High | law results cap at 30 and retain total count
+[PASS] High | no article-specific search bonuses
+[PASS] Critical | AutoReport scheduler mock
+[PASS] High | AutoReport UI and cancellation hooks
+
+Summary: FAIL
+Total checks: 122
+Critical failed: 24
+High failed: 47
+Medium warnings: 1
+Low notes: 0
+LIVE GAME: NOT RUN

@@ -1,0 +1,38 @@
+PASS | exact target opens on first poll with two reads
+PASS | original 310x54 overlay geometry
+PASS | overlay keeps foreground game window
+PASS | overlay remains passive and click-through
+PASS | same target performs one read without rebuilding
+PASS | another player replaces pending proposal in first poll
+PASS | replacement retains HWND and capture registration
+PASS | replacement still leaves selection unchanged
+PASS | F1 accepts latest visible player
+PASS | accepted target is not offered again
+PASS | F2 declines and preserves accepted ID
+PASS | declined target remains suppressed while held
+PASS | new target is proposed after decline without releasing RMB
+PASS | return to previously declined target replaces new proposal
+PASS | aiming at selected target clears obsolete proposal
+PASS | fallback mask requires another timer observation
+PASS | long mask survives scan and confirmation unchanged
+PASS | long mask accepted without numeric overflow
+PASS | changed target during final read never opens proposal
+PASS | unrelated action confirmation is never replaced
+PASS | manual assistant input is never replaced
+PASS | digit capture suppresses memory reads
+PASS | active typing suppresses memory reads
+PASS | open chat suppresses memory reads
+PASS | unknown chat suppresses reads and resets candidate
+PASS | inactive game suppresses memory reads
+PASS | mock mode suppresses memory reads
+PASS | disabled auto ID suppresses memory reads
+PASS | RMB release skips reads and clears offer lock
+PASS | 30ms throttle limits repeated scans
+PASS | cancellation during scan suppresses stale proposal
+PASS | focus loss during scan suppresses stale proposal
+PASS | absent player never changes selected ID
+PASS | new PED cannot inherit previous fallback stability
+PASS | idle timer performs zero memory reads
+PASS | actual 30ms timer opens proposal quickly
+PASS | actual timer replaces unanswered proposal
+SUMMARY PASS=37 FAIL=0

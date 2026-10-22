@@ -1,0 +1,6129 @@
+{
+  "run_id": "39798479954",
+  "workflow_url": "https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK/actions/runs/39798479954",
+  "release_sha256": "5c43313efdbf5b960dbce5198ef9c30f56881cdaa3c6a383ffcddc33501083c5",
+  "statistics": {
+    "application_functions": 1383,
+    "test_functions": 32,
+    "named_labels": 194,
+    "catalog_actions": 92,
+    "app_entered_any": 990,
+    "app_entered_both": 986,
+    "app_entered_three_runs_each": 986
+  },
+  "records": [
+    {
+      "form": "exe",
+      "repeat": 2,
+      "commit": "0a0303dbcf6c4b8aacc50c9a6f2ce77a56285c0e",
+      "release_sha256": "5c43313efdbf5b960dbce5198ef9c30f56881cdaa3c6a383ffcddc33501083c5",
+      "provenance": {
+        "source_runtime": {
+          "original_sha256": "6a98b438b67da7316e9251eb1a92cd5384a8349d239a77903f7282fa076a77c3",
+          "test_host_sha256": "da91a152e05d4803c2313bf488d832ef1ce7705bf73ade6f89379d945ebf9391",
+          "only_resource_type_changed": 24,
+          "activeCodePage": "ru-RU"
+        },
+        "compiled_host": {
+          "original_sha256": "5c43313efdbf5b960dbce5198ef9c30f56881cdaa3c6a383ffcddc33501083c5",
+          "test_host_sha256": "666c448297592c98004efd56f17a0e3d6947ffd931c171ff9cc97de5cf9d9364",
+          "only_resource_type_changed": 24,
+          "activeCodePage": "ru-RU"
+        },
+        "runtime_archive_sha256": "6f3663f7cdd25063c8c8728f5d9b07813ced8780522fd1f124ba539e2854215f"
+      },
+      "real_game": "NOT_TESTED",
+      "real_OBS": "NOT_TESTED",
+      "cases": [
+        {
+          "started": true,
+          "singleton": false,
+          "clean_exit": true,
+          "second_instance_warning": true,
+          "second_instance_gui_count": 0,
+          "exit_code": 0,
+          "status": "FAIL",
+          "mode": "startup-singleton-exit",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.19,
+          "report": "original_runtime_info_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "runtime-info",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 31.02,
+          "report": "original_selftest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "selftest",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 52.88,
+          "report": "original_audit_selftest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "audit-selftest",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.2,
+          "report": "original_context_assistant_test.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "context-mocktest",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.22,
+          "report": "original_autoreport_mocktest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "autoreport-mocktest",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 27.25,
+          "report": "original_law_search_test_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "law-search-test",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.22,
+          "report": "original_v1_mocktest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "v1-mocktest",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 28.27,
+          "report": "original_desktop_smoke_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "desktop-smoke",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 14.66,
+          "report": "original_diagnostics_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "diagnostics",
+          "phase": "original"
+        },
+        {
+          "started": true,
+          "singleton": false,
+          "clean_exit": true,
+          "second_instance_warning": true,
+          "second_instance_gui_count": 0,
+          "exit_code": 0,
+          "status": "FAIL",
+          "mode": "startup-singleton-exit",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.22,
+          "report": "traced_runtime_info_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "runtime-info",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 49.01,
+          "report": "traced_selftest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "selftest",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 77.78,
+          "report": "traced_audit_selftest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "audit-selftest",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.2,
+          "report": "traced_context_assistant_test.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "context-mocktest",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.2,
+          "report": "traced_autoreport_mocktest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "autoreport-mocktest",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 42.73,
+          "report": "traced_law_search_test_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "law-search-test",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.22,
+          "report": "traced_v1_mocktest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "v1-mocktest",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 28.5,
+          "report": "traced_desktop_smoke_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "desktop-smoke",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 20.51,
+          "report": "traced_diagnostics_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "diagnostics",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 6.39,
+          "report": "fixture_private_input_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "private_input",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.03,
+          "report": "fixture_chat_route_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "chat_route",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.28,
+          "report": "fixture_memory_sequence_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "memory_sequence",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 10.5,
+          "report": "fixture_game_menu_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "game_menu",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 21.0,
+          "report": "fixture_text_bind_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "text_bind",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.84,
+          "report": "fixture_autoid_tracking_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "autoid_tracking",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 10.45,
+          "report": "fixture_law_windows_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "law_windows",
+          "phase": "fixture"
+        }
+      ],
+      "remaining_processes": [],
+      "completed": true,
+      "original_failures": [
+        "startup-singleton-exit"
+      ],
+      "tracing_failures": [
+        "startup-singleton-exit"
+      ],
+      "fixture_failures": []
+    },
+    {
+      "form": "exe",
+      "repeat": 1,
+      "commit": "0a0303dbcf6c4b8aacc50c9a6f2ce77a56285c0e",
+      "release_sha256": "5c43313efdbf5b960dbce5198ef9c30f56881cdaa3c6a383ffcddc33501083c5",
+      "provenance": {
+        "source_runtime": {
+          "original_sha256": "6a98b438b67da7316e9251eb1a92cd5384a8349d239a77903f7282fa076a77c3",
+          "test_host_sha256": "da91a152e05d4803c2313bf488d832ef1ce7705bf73ade6f89379d945ebf9391",
+          "only_resource_type_changed": 24,
+          "activeCodePage": "ru-RU"
+        },
+        "compiled_host": {
+          "original_sha256": "5c43313efdbf5b960dbce5198ef9c30f56881cdaa3c6a383ffcddc33501083c5",
+          "test_host_sha256": "666c448297592c98004efd56f17a0e3d6947ffd931c171ff9cc97de5cf9d9364",
+          "only_resource_type_changed": 24,
+          "activeCodePage": "ru-RU"
+        },
+        "runtime_archive_sha256": "6f3663f7cdd25063c8c8728f5d9b07813ced8780522fd1f124ba539e2854215f"
+      },
+      "real_game": "NOT_TESTED",
+      "real_OBS": "NOT_TESTED",
+      "cases": [
+        {
+          "started": true,
+          "singleton": false,
+          "clean_exit": true,
+          "second_instance_warning": true,
+          "second_instance_gui_count": 0,
+          "exit_code": 0,
+          "status": "FAIL",
+          "mode": "startup-singleton-exit",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.16,
+          "report": "original_runtime_info_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "runtime-info",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 23.75,
+          "report": "original_selftest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "selftest",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 42.55,
+          "report": "original_audit_selftest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "audit-selftest",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.19,
+          "report": "original_context_assistant_test.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "context-mocktest",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.17,
+          "report": "original_autoreport_mocktest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "autoreport-mocktest",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 20.28,
+          "report": "original_law_search_test_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "law-search-test",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.17,
+          "report": "original_v1_mocktest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "v1-mocktest",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 19.03,
+          "report": "original_desktop_smoke_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "desktop-smoke",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 10.98,
+          "report": "original_diagnostics_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "diagnostics",
+          "phase": "original"
+        },
+        {
+          "started": true,
+          "singleton": false,
+          "clean_exit": true,
+          "second_instance_warning": true,
+          "second_instance_gui_count": 0,
+          "exit_code": 0,
+          "status": "FAIL",
+          "mode": "startup-singleton-exit",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.16,
+          "report": "traced_runtime_info_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "runtime-info",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 34.95,
+          "report": "traced_selftest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "selftest",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 57.34,
+          "report": "traced_audit_selftest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "audit-selftest",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.17,
+          "report": "traced_context_assistant_test.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "context-mocktest",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.17,
+          "report": "traced_autoreport_mocktest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "autoreport-mocktest",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 31.09,
+          "report": "traced_law_search_test_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "law-search-test",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.19,
+          "report": "traced_v1_mocktest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "v1-mocktest",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 21.62,
+          "report": "traced_desktop_smoke_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "desktop-smoke",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 15.11,
+          "report": "traced_diagnostics_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "diagnostics",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 6.36,
+          "report": "fixture_private_input_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "private_input",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.03,
+          "report": "fixture_chat_route_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "chat_route",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.28,
+          "report": "fixture_memory_sequence_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "memory_sequence",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 10.17,
+          "report": "fixture_game_menu_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "game_menu",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 20.14,
+          "report": "fixture_text_bind_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "text_bind",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.78,
+          "report": "fixture_autoid_tracking_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "autoid_tracking",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 8.0,
+          "report": "fixture_law_windows_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "law_windows",
+          "phase": "fixture"
+        }
+      ],
+      "remaining_processes": [],
+      "completed": true,
+      "original_failures": [
+        "startup-singleton-exit"
+      ],
+      "tracing_failures": [
+        "startup-singleton-exit"
+      ],
+      "fixture_failures": []
+    },
+    {
+      "form": "source",
+      "repeat": 3,
+      "commit": "0a0303dbcf6c4b8aacc50c9a6f2ce77a56285c0e",
+      "release_sha256": "5c43313efdbf5b960dbce5198ef9c30f56881cdaa3c6a383ffcddc33501083c5",
+      "provenance": {
+        "source_runtime": {
+          "original_sha256": "6a98b438b67da7316e9251eb1a92cd5384a8349d239a77903f7282fa076a77c3",
+          "test_host_sha256": "da91a152e05d4803c2313bf488d832ef1ce7705bf73ade6f89379d945ebf9391",
+          "only_resource_type_changed": 24,
+          "activeCodePage": "ru-RU"
+        },
+        "compiled_host": {
+          "original_sha256": "5c43313efdbf5b960dbce5198ef9c30f56881cdaa3c6a383ffcddc33501083c5",
+          "test_host_sha256": "666c448297592c98004efd56f17a0e3d6947ffd931c171ff9cc97de5cf9d9364",
+          "only_resource_type_changed": 24,
+          "activeCodePage": "ru-RU"
+        },
+        "runtime_archive_sha256": "6f3663f7cdd25063c8c8728f5d9b07813ced8780522fd1f124ba539e2854215f"
+      },
+      "real_game": "NOT_TESTED",
+      "real_OBS": "NOT_TESTED",
+      "cases": [
+        {
+          "started": true,
+          "singleton": false,
+          "clean_exit": true,
+          "second_instance_warning": true,
+          "second_instance_gui_count": 0,
+          "exit_code": 0,
+          "status": "FAIL",
+          "mode": "startup-singleton-exit",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.19,
+          "report": "original_runtime_info_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "runtime-info",
+          "phase": "original"
+        },
+        {
+          "exit_code": 1,
+          "seconds": 23.7,
+          "report": "original_selftest_report.txt",
+          "failures": [
+            "[FAIL] Critical | file exists: helper.ahk\r",
+            "[FAIL] High | CP1251 artifact has no BOM: helper.ahk\r",
+            "[FAIL] High | CRLF only: helper.ahk\r",
+            "[FAIL] Critical | file exists: UDF.ahk\r",
+            "[FAIL] High | CP1251 artifact has no BOM: UDF.ahk\r",
+            "[FAIL] High | CRLF only: UDF.ahk\r",
+            "[FAIL] Critical | file exists: common.ahk\r",
+            "[FAIL] High | CP1251 artifact has no BOM: common.ahk\r",
+            "[FAIL] High | CRLF only: common.ahk\r",
+            "[FAIL] Critical | official law exists: VU\r",
+            "[FAIL] High | official law has no BOM: VU\r",
+            "[FAIL] High | official law CRLF only: VU\r",
+            "[FAIL] Critical | official law exists: FP\r",
+            "[FAIL] High | official law has no BOM: FP\r",
+            "[FAIL] High | official law CRLF only: FP\r",
+            "[FAIL] Critical | official law exists: KON\r",
+            "[FAIL] High | official law has no BOM: KON\r",
+            "[FAIL] High | official law CRLF only: KON\r",
+            "[FAIL] Critical | official law exists: FZOP\r",
+            "[FAIL] High | official law has no BOM: FZOP\r",
+            "[FAIL] High | official law CRLF only: FZOP\r",
+            "[FAIL] Critical | official law exists: TER\r",
+            "[FAIL] High | official law has no BOM: TER\r",
+            "[FAIL] High | official law CRLF only: TER\r",
+            "[FAIL] Critical | official law exists: TK\r",
+            "[FAIL] High | official law has no BOM: TK\r",
+            "[FAIL] High | official law CRLF only: TK\r",
+            "[FAIL] Critical | official law exists: ARG\r",
+            "[FAIL] High | official law has no BOM: ARG\r",
+            "[FAIL] High | official law CRLF only: ARG\r",
+            "[FAIL] Critical | official law exists: UK\r",
+            "[FAIL] High | official law has no BOM: UK\r",
+            "[FAIL] High | official law CRLF only: UK\r",
+            "[FAIL] Critical | official law exists: VV\r",
+            "[FAIL] High | official law has no BOM: VV\r",
+            "[FAIL] High | official law CRLF only: VV\r",
+            "[FAIL] Critical | official law exists: KOAP\r",
+            "[FAIL] High | official law has no BOM: KOAP\r",
+            "[FAIL] High | official law CRLF only: KOAP\r",
+            "[FAIL] Critical | official law exists: PDD\r",
+            "[FAIL] High | official law has no BOM: PDD\r",
+            "[FAIL] High | official law CRLF only: PDD\r",
+            "[FAIL] Critical | official law exists: ORUZH\r",
+            "[FAIL] High | official law has no BOM: ORUZH\r",
+            "[FAIL] High | official law CRLF only: ORUZH\r",
+            "[FAIL] Critical | official law exists: UPK\r",
+            "[FAIL] High | official law has no BOM: UPK\r",
+            "[FAIL] High | official law CRLF only: UPK\r",
+            "[FAIL] Critical | official law exists: KAS\r",
+            "[FAIL] High | official law has no BOM: KAS\r",
+            "[FAIL] High | official law CRLF only: KAS\r",
+            "[FAIL] Critical | official law exists: FSB\r",
+            "[FAIL] High | official law has no BOM: FSB\r",
+            "[FAIL] High | official law CRLF only: FSB\r",
+            "[FAIL] Critical | official law exists: FSIN\r",
+            "[FAIL] High | official law has no BOM: FSIN\r",
+            "[FAIL] High | official law CRLF only: FSIN\r",
+            "[FAIL] Critical | official law exists: VS\r",
+            "[FAIL] High | official law has no BOM: VS\r",
+            "[FAIL] High | official law CRLF only: VS\r",
+            "[FAIL] Critical | official law exists: SUD\r",
+            "[FAIL] High | official law has no BOM: SUD\r",
+            "[FAIL] High | official law CRLF only: SUD\r",
+            "[FAIL] Critical | official law exists: ORD\r",
+            "[FAIL] High | official law has no BOM: ORD\r",
+            "[FAIL] High | official law CRLF only: ORD\r",
+            "[FAIL] Critical | official law exists: GT\r",
+            "[FAIL] High | official law has no BOM: GT\r",
+            "[FAIL] High | official law CRLF only: GT\r",
+            "[FAIL] Critical | Auto ID keeps a validated cache across stable reads\r",
+            "[FAIL] High | NOT_IN_POOL uses soft pool refresh\r"
+          ],
+          "status": "FAIL",
+          "mode": "selftest",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 40.64,
+          "report": "original_audit_selftest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "audit-selftest",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.17,
+          "report": "original_context_assistant_test.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "context-mocktest",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.2,
+          "report": "original_autoreport_mocktest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "autoreport-mocktest",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 21.08,
+          "report": "original_law_search_test_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "law-search-test",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.24,
+          "report": "original_v1_mocktest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "v1-mocktest",
+          "phase": "original"
+        },
+        {
+          "exit_code": 2,
+          "seconds": 21.73,
+          "report": "original_desktop_smoke_report.txt",
+          "failures": [
+            "FAIL | compiled standalone host\r",
+            "FAIL | 20 documents available without external laws folder\r"
+          ],
+          "status": "EXPECTED_EXE_ONLY_ASSERTIONS",
+          "mode": "desktop-smoke",
+          "phase": "original"
+        },
+        {
+          "exit_code": 1,
+          "seconds": 11.5,
+          "report": "original_diagnostics_report.txt",
+          "failures": [
+            "[FAIL] High | helper exists | D:\\a\\_temp\\deep-source-3-work\\original\\diagnostics\\helper.ahk\r",
+            "[FAIL] High | common exists | D:\\a\\_temp\\deep-source-3-work\\original\\diagnostics\\common.ahk\r",
+            "[FAIL] High | UDF exists | D:\\a\\_temp\\deep-source-3-work\\original\\diagnostics\\UDF.ahk\r",
+            "[FAIL] High | window-title locator and EXE fallback are present\r",
+            "[FAIL] High | RMB target resolver is present\r"
+          ],
+          "status": "FAIL",
+          "mode": "diagnostics",
+          "phase": "original"
+        },
+        {
+          "started": true,
+          "singleton": false,
+          "clean_exit": true,
+          "second_instance_warning": true,
+          "second_instance_gui_count": 0,
+          "exit_code": 0,
+          "status": "FAIL",
+          "mode": "startup-singleton-exit",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.22,
+          "report": "traced_runtime_info_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "runtime-info",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 1,
+          "seconds": 34.72,
+          "report": "traced_selftest_report.txt",
+          "failures": [
+            "[FAIL] Critical | file exists: helper.ahk\r",
+            "[FAIL] High | CP1251 artifact has no BOM: helper.ahk\r",
+            "[FAIL] High | CRLF only: helper.ahk\r",
+            "[FAIL] Critical | file exists: UDF.ahk\r",
+            "[FAIL] High | CP1251 artifact has no BOM: UDF.ahk\r",
+            "[FAIL] High | CRLF only: UDF.ahk\r",
+            "[FAIL] Critical | file exists: common.ahk\r",
+            "[FAIL] High | CP1251 artifact has no BOM: common.ahk\r",
+            "[FAIL] High | CRLF only: common.ahk\r",
+            "[FAIL] Critical | official law exists: VU\r",
+            "[FAIL] High | official law has no BOM: VU\r",
+            "[FAIL] High | official law CRLF only: VU\r",
+            "[FAIL] Critical | official law exists: FP\r",
+            "[FAIL] High | official law has no BOM: FP\r",
+            "[FAIL] High | official law CRLF only: FP\r",
+            "[FAIL] Critical | official law exists: KON\r",
+            "[FAIL] High | official law has no BOM: KON\r",
+            "[FAIL] High | official law CRLF only: KON\r",
+            "[FAIL] Critical | official law exists: FZOP\r",
+            "[FAIL] High | official law has no BOM: FZOP\r",
+            "[FAIL] High | official law CRLF only: FZOP\r",
+            "[FAIL] Critical | official law exists: TER\r",
+            "[FAIL] High | official law has no BOM: TER\r",
+            "[FAIL] High | official law CRLF only: TER\r",
+            "[FAIL] Critical | official law exists: TK\r",
+            "[FAIL] High | official law has no BOM: TK\r",
+            "[FAIL] High | official law CRLF only: TK\r",
+            "[FAIL] Critical | official law exists: ARG\r",
+            "[FAIL] High | official law has no BOM: ARG\r",
+            "[FAIL] High | official law CRLF only: ARG\r",
+            "[FAIL] Critical | official law exists: UK\r",
+            "[FAIL] High | official law has no BOM: UK\r",
+            "[FAIL] High | official law CRLF only: UK\r",
+            "[FAIL] Critical | official law exists: VV\r",
+            "[FAIL] High | official law has no BOM: VV\r",
+            "[FAIL] High | official law CRLF only: VV\r",
+            "[FAIL] Critical | official law exists: KOAP\r",
+            "[FAIL] High | official law has no BOM: KOAP\r",
+            "[FAIL] High | official law CRLF only: KOAP\r",
+            "[FAIL] Critical | official law exists: PDD\r",
+            "[FAIL] High | official law has no BOM: PDD\r",
+            "[FAIL] High | official law CRLF only: PDD\r",
+            "[FAIL] Critical | official law exists: ORUZH\r",
+            "[FAIL] High | official law has no BOM: ORUZH\r",
+            "[FAIL] High | official law CRLF only: ORUZH\r",
+            "[FAIL] Critical | official law exists: UPK\r",
+            "[FAIL] High | official law has no BOM: UPK\r",
+            "[FAIL] High | official law CRLF only: UPK\r",
+            "[FAIL] Critical | official law exists: KAS\r",
+            "[FAIL] High | official law has no BOM: KAS\r",
+            "[FAIL] High | official law CRLF only: KAS\r",
+            "[FAIL] Critical | official law exists: FSB\r",
+            "[FAIL] High | official law has no BOM: FSB\r",
+            "[FAIL] High | official law CRLF only: FSB\r",
+            "[FAIL] Critical | official law exists: FSIN\r",
+            "[FAIL] High | official law has no BOM: FSIN\r",
+            "[FAIL] High | official law CRLF only: FSIN\r",
+            "[FAIL] Critical | official law exists: VS\r",
+            "[FAIL] High | official law has no BOM: VS\r",
+            "[FAIL] High | official law CRLF only: VS\r",
+            "[FAIL] Critical | official law exists: SUD\r",
+            "[FAIL] High | official law has no BOM: SUD\r",
+            "[FAIL] High | official law CRLF only: SUD\r",
+            "[FAIL] Critical | official law exists: ORD\r",
+            "[FAIL] High | official law has no BOM: ORD\r",
+            "[FAIL] High | official law CRLF only: ORD\r",
+            "[FAIL] Critical | official law exists: GT\r",
+            "[FAIL] High | official law has no BOM: GT\r",
+            "[FAIL] High | official law CRLF only: GT\r",
+            "[FAIL] Critical | Auto ID keeps a validated cache across stable reads\r",
+            "[FAIL] High | NOT_IN_POOL uses soft pool refresh\r"
+          ],
+          "status": "FAIL",
+          "mode": "selftest",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 59.61,
+          "report": "traced_audit_selftest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "audit-selftest",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.19,
+          "report": "traced_context_assistant_test.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "context-mocktest",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.24,
+          "report": "traced_autoreport_mocktest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "autoreport-mocktest",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 31.62,
+          "report": "traced_law_search_test_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "law-search-test",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.22,
+          "report": "traced_v1_mocktest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "v1-mocktest",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 2,
+          "seconds": 22.03,
+          "report": "traced_desktop_smoke_report.txt",
+          "failures": [
+            "FAIL | compiled standalone host\r",
+            "FAIL | 20 documents available without external laws folder\r"
+          ],
+          "status": "EXPECTED_EXE_ONLY_ASSERTIONS",
+          "mode": "desktop-smoke",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 1,
+          "seconds": 15.58,
+          "report": "traced_diagnostics_report.txt",
+          "failures": [
+            "[FAIL] High | helper exists | D:\\a\\_temp\\deep-source-3-work\\traced\\diagnostics\\helper.ahk\r",
+            "[FAIL] High | common exists | D:\\a\\_temp\\deep-source-3-work\\traced\\diagnostics\\common.ahk\r",
+            "[FAIL] High | UDF exists | D:\\a\\_temp\\deep-source-3-work\\traced\\diagnostics\\UDF.ahk\r",
+            "[FAIL] High | window-title locator and EXE fallback are present\r",
+            "[FAIL] High | RMB target resolver is present\r"
+          ],
+          "status": "FAIL",
+          "mode": "diagnostics",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 6.44,
+          "report": "fixture_private_input_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "private_input",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.03,
+          "report": "fixture_chat_route_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "chat_route",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.28,
+          "report": "fixture_memory_sequence_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "memory_sequence",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 10.44,
+          "report": "fixture_game_menu_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "game_menu",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 31.5,
+          "report": "fixture_text_bind_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "text_bind",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.77,
+          "report": "fixture_autoid_tracking_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "autoid_tracking",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 7.78,
+          "report": "fixture_law_windows_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "law_windows",
+          "phase": "fixture"
+        }
+      ],
+      "remaining_processes": [],
+      "completed": true,
+      "original_failures": [
+        "startup-singleton-exit",
+        "selftest",
+        "diagnostics"
+      ],
+      "tracing_failures": [
+        "startup-singleton-exit",
+        "selftest",
+        "diagnostics"
+      ],
+      "fixture_failures": []
+    },
+    {
+      "form": "source",
+      "repeat": 2,
+      "commit": "0a0303dbcf6c4b8aacc50c9a6f2ce77a56285c0e",
+      "release_sha256": "5c43313efdbf5b960dbce5198ef9c30f56881cdaa3c6a383ffcddc33501083c5",
+      "provenance": {
+        "source_runtime": {
+          "original_sha256": "6a98b438b67da7316e9251eb1a92cd5384a8349d239a77903f7282fa076a77c3",
+          "test_host_sha256": "da91a152e05d4803c2313bf488d832ef1ce7705bf73ade6f89379d945ebf9391",
+          "only_resource_type_changed": 24,
+          "activeCodePage": "ru-RU"
+        },
+        "compiled_host": {
+          "original_sha256": "5c43313efdbf5b960dbce5198ef9c30f56881cdaa3c6a383ffcddc33501083c5",
+          "test_host_sha256": "666c448297592c98004efd56f17a0e3d6947ffd931c171ff9cc97de5cf9d9364",
+          "only_resource_type_changed": 24,
+          "activeCodePage": "ru-RU"
+        },
+        "runtime_archive_sha256": "6f3663f7cdd25063c8c8728f5d9b07813ced8780522fd1f124ba539e2854215f"
+      },
+      "real_game": "NOT_TESTED",
+      "real_OBS": "NOT_TESTED",
+      "cases": [
+        {
+          "started": true,
+          "singleton": false,
+          "clean_exit": true,
+          "second_instance_warning": true,
+          "second_instance_gui_count": 0,
+          "exit_code": 0,
+          "status": "FAIL",
+          "mode": "startup-singleton-exit",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.26,
+          "report": "original_runtime_info_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "runtime-info",
+          "phase": "original"
+        },
+        {
+          "exit_code": 1,
+          "seconds": 31.56,
+          "report": "original_selftest_report.txt",
+          "failures": [
+            "[FAIL] Critical | file exists: helper.ahk\r",
+            "[FAIL] High | CP1251 artifact has no BOM: helper.ahk\r",
+            "[FAIL] High | CRLF only: helper.ahk\r",
+            "[FAIL] Critical | file exists: UDF.ahk\r",
+            "[FAIL] High | CP1251 artifact has no BOM: UDF.ahk\r",
+            "[FAIL] High | CRLF only: UDF.ahk\r",
+            "[FAIL] Critical | file exists: common.ahk\r",
+            "[FAIL] High | CP1251 artifact has no BOM: common.ahk\r",
+            "[FAIL] High | CRLF only: common.ahk\r",
+            "[FAIL] Critical | official law exists: VU\r",
+            "[FAIL] High | official law has no BOM: VU\r",
+            "[FAIL] High | official law CRLF only: VU\r",
+            "[FAIL] Critical | official law exists: FP\r",
+            "[FAIL] High | official law has no BOM: FP\r",
+            "[FAIL] High | official law CRLF only: FP\r",
+            "[FAIL] Critical | official law exists: KON\r",
+            "[FAIL] High | official law has no BOM: KON\r",
+            "[FAIL] High | official law CRLF only: KON\r",
+            "[FAIL] Critical | official law exists: FZOP\r",
+            "[FAIL] High | official law has no BOM: FZOP\r",
+            "[FAIL] High | official law CRLF only: FZOP\r",
+            "[FAIL] Critical | official law exists: TER\r",
+            "[FAIL] High | official law has no BOM: TER\r",
+            "[FAIL] High | official law CRLF only: TER\r",
+            "[FAIL] Critical | official law exists: TK\r",
+            "[FAIL] High | official law has no BOM: TK\r",
+            "[FAIL] High | official law CRLF only: TK\r",
+            "[FAIL] Critical | official law exists: ARG\r",
+            "[FAIL] High | official law has no BOM: ARG\r",
+            "[FAIL] High | official law CRLF only: ARG\r",
+            "[FAIL] Critical | official law exists: UK\r",
+            "[FAIL] High | official law has no BOM: UK\r",
+            "[FAIL] High | official law CRLF only: UK\r",
+            "[FAIL] Critical | official law exists: VV\r",
+            "[FAIL] High | official law has no BOM: VV\r",
+            "[FAIL] High | official law CRLF only: VV\r",
+            "[FAIL] Critical | official law exists: KOAP\r",
+            "[FAIL] High | official law has no BOM: KOAP\r",
+            "[FAIL] High | official law CRLF only: KOAP\r",
+            "[FAIL] Critical | official law exists: PDD\r",
+            "[FAIL] High | official law has no BOM: PDD\r",
+            "[FAIL] High | official law CRLF only: PDD\r",
+            "[FAIL] Critical | official law exists: ORUZH\r",
+            "[FAIL] High | official law has no BOM: ORUZH\r",
+            "[FAIL] High | official law CRLF only: ORUZH\r",
+            "[FAIL] Critical | official law exists: UPK\r",
+            "[FAIL] High | official law has no BOM: UPK\r",
+            "[FAIL] High | official law CRLF only: UPK\r",
+            "[FAIL] Critical | official law exists: KAS\r",
+            "[FAIL] High | official law has no BOM: KAS\r",
+            "[FAIL] High | official law CRLF only: KAS\r",
+            "[FAIL] Critical | official law exists: FSB\r",
+            "[FAIL] High | official law has no BOM: FSB\r",
+            "[FAIL] High | official law CRLF only: FSB\r",
+            "[FAIL] Critical | official law exists: FSIN\r",
+            "[FAIL] High | official law has no BOM: FSIN\r",
+            "[FAIL] High | official law CRLF only: FSIN\r",
+            "[FAIL] Critical | official law exists: VS\r",
+            "[FAIL] High | official law has no BOM: VS\r",
+            "[FAIL] High | official law CRLF only: VS\r",
+            "[FAIL] Critical | official law exists: SUD\r",
+            "[FAIL] High | official law has no BOM: SUD\r",
+            "[FAIL] High | official law CRLF only: SUD\r",
+            "[FAIL] Critical | official law exists: ORD\r",
+            "[FAIL] High | official law has no BOM: ORD\r",
+            "[FAIL] High | official law CRLF only: ORD\r",
+            "[FAIL] Critical | official law exists: GT\r",
+            "[FAIL] High | official law has no BOM: GT\r",
+            "[FAIL] High | official law CRLF only: GT\r",
+            "[FAIL] Critical | Auto ID keeps a validated cache across stable reads\r",
+            "[FAIL] High | NOT_IN_POOL uses soft pool refresh\r"
+          ],
+          "status": "FAIL",
+          "mode": "selftest",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 52.5,
+          "report": "original_audit_selftest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "audit-selftest",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.2,
+          "report": "original_context_assistant_test.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "context-mocktest",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.25,
+          "report": "original_autoreport_mocktest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "autoreport-mocktest",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 27.76,
+          "report": "original_law_search_test_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "law-search-test",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.25,
+          "report": "original_v1_mocktest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "v1-mocktest",
+          "phase": "original"
+        },
+        {
+          "exit_code": 2,
+          "seconds": 23.47,
+          "report": "original_desktop_smoke_report.txt",
+          "failures": [
+            "FAIL | compiled standalone host\r",
+            "FAIL | 20 documents available without external laws folder\r"
+          ],
+          "status": "EXPECTED_EXE_ONLY_ASSERTIONS",
+          "mode": "desktop-smoke",
+          "phase": "original"
+        },
+        {
+          "exit_code": 1,
+          "seconds": 15.02,
+          "report": "original_diagnostics_report.txt",
+          "failures": [
+            "[FAIL] High | helper exists | D:\\a\\_temp\\deep-source-2-work\\original\\diagnostics\\helper.ahk\r",
+            "[FAIL] High | common exists | D:\\a\\_temp\\deep-source-2-work\\original\\diagnostics\\common.ahk\r",
+            "[FAIL] High | UDF exists | D:\\a\\_temp\\deep-source-2-work\\original\\diagnostics\\UDF.ahk\r",
+            "[FAIL] High | window-title locator and EXE fallback are present\r",
+            "[FAIL] High | RMB target resolver is present\r"
+          ],
+          "status": "FAIL",
+          "mode": "diagnostics",
+          "phase": "original"
+        },
+        {
+          "started": true,
+          "singleton": false,
+          "clean_exit": true,
+          "second_instance_warning": true,
+          "second_instance_gui_count": 0,
+          "exit_code": 0,
+          "status": "FAIL",
+          "mode": "startup-singleton-exit",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.25,
+          "report": "traced_runtime_info_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "runtime-info",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 1,
+          "seconds": 46.01,
+          "report": "traced_selftest_report.txt",
+          "failures": [
+            "[FAIL] Critical | file exists: helper.ahk\r",
+            "[FAIL] High | CP1251 artifact has no BOM: helper.ahk\r",
+            "[FAIL] High | CRLF only: helper.ahk\r",
+            "[FAIL] Critical | file exists: UDF.ahk\r",
+            "[FAIL] High | CP1251 artifact has no BOM: UDF.ahk\r",
+            "[FAIL] High | CRLF only: UDF.ahk\r",
+            "[FAIL] Critical | file exists: common.ahk\r",
+            "[FAIL] High | CP1251 artifact has no BOM: common.ahk\r",
+            "[FAIL] High | CRLF only: common.ahk\r",
+            "[FAIL] Critical | official law exists: VU\r",
+            "[FAIL] High | official law has no BOM: VU\r",
+            "[FAIL] High | official law CRLF only: VU\r",
+            "[FAIL] Critical | official law exists: FP\r",
+            "[FAIL] High | official law has no BOM: FP\r",
+            "[FAIL] High | official law CRLF only: FP\r",
+            "[FAIL] Critical | official law exists: KON\r",
+            "[FAIL] High | official law has no BOM: KON\r",
+            "[FAIL] High | official law CRLF only: KON\r",
+            "[FAIL] Critical | official law exists: FZOP\r",
+            "[FAIL] High | official law has no BOM: FZOP\r",
+            "[FAIL] High | official law CRLF only: FZOP\r",
+            "[FAIL] Critical | official law exists: TER\r",
+            "[FAIL] High | official law has no BOM: TER\r",
+            "[FAIL] High | official law CRLF only: TER\r",
+            "[FAIL] Critical | official law exists: TK\r",
+            "[FAIL] High | official law has no BOM: TK\r",
+            "[FAIL] High | official law CRLF only: TK\r",
+            "[FAIL] Critical | official law exists: ARG\r",
+            "[FAIL] High | official law has no BOM: ARG\r",
+            "[FAIL] High | official law CRLF only: ARG\r",
+            "[FAIL] Critical | official law exists: UK\r",
+            "[FAIL] High | official law has no BOM: UK\r",
+            "[FAIL] High | official law CRLF only: UK\r",
+            "[FAIL] Critical | official law exists: VV\r",
+            "[FAIL] High | official law has no BOM: VV\r",
+            "[FAIL] High | official law CRLF only: VV\r",
+            "[FAIL] Critical | official law exists: KOAP\r",
+            "[FAIL] High | official law has no BOM: KOAP\r",
+            "[FAIL] High | official law CRLF only: KOAP\r",
+            "[FAIL] Critical | official law exists: PDD\r",
+            "[FAIL] High | official law has no BOM: PDD\r",
+            "[FAIL] High | official law CRLF only: PDD\r",
+            "[FAIL] Critical | official law exists: ORUZH\r",
+            "[FAIL] High | official law has no BOM: ORUZH\r",
+            "[FAIL] High | official law CRLF only: ORUZH\r",
+            "[FAIL] Critical | official law exists: UPK\r",
+            "[FAIL] High | official law has no BOM: UPK\r",
+            "[FAIL] High | official law CRLF only: UPK\r",
+            "[FAIL] Critical | official law exists: KAS\r",
+            "[FAIL] High | official law has no BOM: KAS\r",
+            "[FAIL] High | official law CRLF only: KAS\r",
+            "[FAIL] Critical | official law exists: FSB\r",
+            "[FAIL] High | official law has no BOM: FSB\r",
+            "[FAIL] High | official law CRLF only: FSB\r",
+            "[FAIL] Critical | official law exists: FSIN\r",
+            "[FAIL] High | official law has no BOM: FSIN\r",
+            "[FAIL] High | official law CRLF only: FSIN\r",
+            "[FAIL] Critical | official law exists: VS\r",
+            "[FAIL] High | official law has no BOM: VS\r",
+            "[FAIL] High | official law CRLF only: VS\r",
+            "[FAIL] Critical | official law exists: SUD\r",
+            "[FAIL] High | official law has no BOM: SUD\r",
+            "[FAIL] High | official law CRLF only: SUD\r",
+            "[FAIL] Critical | official law exists: ORD\r",
+            "[FAIL] High | official law has no BOM: ORD\r",
+            "[FAIL] High | official law CRLF only: ORD\r",
+            "[FAIL] Critical | official law exists: GT\r",
+            "[FAIL] High | official law has no BOM: GT\r",
+            "[FAIL] High | official law CRLF only: GT\r",
+            "[FAIL] Critical | Auto ID keeps a validated cache across stable reads\r",
+            "[FAIL] High | NOT_IN_POOL uses soft pool refresh\r"
+          ],
+          "status": "FAIL",
+          "mode": "selftest",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 76.84,
+          "report": "traced_audit_selftest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "audit-selftest",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.22,
+          "report": "traced_context_assistant_test.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "context-mocktest",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.3,
+          "report": "traced_autoreport_mocktest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "autoreport-mocktest",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 41.83,
+          "report": "traced_law_search_test_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "law-search-test",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.28,
+          "report": "traced_v1_mocktest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "v1-mocktest",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 2,
+          "seconds": 28.0,
+          "report": "traced_desktop_smoke_report.txt",
+          "failures": [
+            "FAIL | compiled standalone host\r",
+            "FAIL | 20 documents available without external laws folder\r"
+          ],
+          "status": "EXPECTED_EXE_ONLY_ASSERTIONS",
+          "mode": "desktop-smoke",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 1,
+          "seconds": 20.56,
+          "report": "traced_diagnostics_report.txt",
+          "failures": [
+            "[FAIL] High | helper exists | D:\\a\\_temp\\deep-source-2-work\\traced\\diagnostics\\helper.ahk\r",
+            "[FAIL] High | common exists | D:\\a\\_temp\\deep-source-2-work\\traced\\diagnostics\\common.ahk\r",
+            "[FAIL] High | UDF exists | D:\\a\\_temp\\deep-source-2-work\\traced\\diagnostics\\UDF.ahk\r",
+            "[FAIL] High | window-title locator and EXE fallback are present\r",
+            "[FAIL] High | RMB target resolver is present\r"
+          ],
+          "status": "FAIL",
+          "mode": "diagnostics",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 7.0,
+          "report": "fixture_private_input_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "private_input",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.03,
+          "report": "fixture_chat_route_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "chat_route",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.3,
+          "report": "fixture_memory_sequence_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "memory_sequence",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 10.23,
+          "report": "fixture_game_menu_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "game_menu",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 25.78,
+          "report": "fixture_text_bind_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "text_bind",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.8,
+          "report": "fixture_autoid_tracking_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "autoid_tracking",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 10.94,
+          "report": "fixture_law_windows_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "law_windows",
+          "phase": "fixture"
+        }
+      ],
+      "remaining_processes": [],
+      "completed": true,
+      "original_failures": [
+        "startup-singleton-exit",
+        "selftest",
+        "diagnostics"
+      ],
+      "tracing_failures": [
+        "startup-singleton-exit",
+        "selftest",
+        "diagnostics"
+      ],
+      "fixture_failures": []
+    },
+    {
+      "form": "source",
+      "repeat": 1,
+      "commit": "0a0303dbcf6c4b8aacc50c9a6f2ce77a56285c0e",
+      "release_sha256": "5c43313efdbf5b960dbce5198ef9c30f56881cdaa3c6a383ffcddc33501083c5",
+      "provenance": {
+        "source_runtime": {
+          "original_sha256": "6a98b438b67da7316e9251eb1a92cd5384a8349d239a77903f7282fa076a77c3",
+          "test_host_sha256": "da91a152e05d4803c2313bf488d832ef1ce7705bf73ade6f89379d945ebf9391",
+          "only_resource_type_changed": 24,
+          "activeCodePage": "ru-RU"
+        },
+        "compiled_host": {
+          "original_sha256": "5c43313efdbf5b960dbce5198ef9c30f56881cdaa3c6a383ffcddc33501083c5",
+          "test_host_sha256": "666c448297592c98004efd56f17a0e3d6947ffd931c171ff9cc97de5cf9d9364",
+          "only_resource_type_changed": 24,
+          "activeCodePage": "ru-RU"
+        },
+        "runtime_archive_sha256": "6f3663f7cdd25063c8c8728f5d9b07813ced8780522fd1f124ba539e2854215f"
+      },
+      "real_game": "NOT_TESTED",
+      "real_OBS": "NOT_TESTED",
+      "cases": [
+        {
+          "started": true,
+          "singleton": false,
+          "clean_exit": true,
+          "second_instance_warning": true,
+          "second_instance_gui_count": 0,
+          "exit_code": 0,
+          "status": "FAIL",
+          "mode": "startup-singleton-exit",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.25,
+          "report": "original_runtime_info_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "runtime-info",
+          "phase": "original"
+        },
+        {
+          "exit_code": 1,
+          "seconds": 33.62,
+          "report": "original_selftest_report.txt",
+          "failures": [
+            "[FAIL] Critical | file exists: helper.ahk\r",
+            "[FAIL] High | CP1251 artifact has no BOM: helper.ahk\r",
+            "[FAIL] High | CRLF only: helper.ahk\r",
+            "[FAIL] Critical | file exists: UDF.ahk\r",
+            "[FAIL] High | CP1251 artifact has no BOM: UDF.ahk\r",
+            "[FAIL] High | CRLF only: UDF.ahk\r",
+            "[FAIL] Critical | file exists: common.ahk\r",
+            "[FAIL] High | CP1251 artifact has no BOM: common.ahk\r",
+            "[FAIL] High | CRLF only: common.ahk\r",
+            "[FAIL] Critical | official law exists: VU\r",
+            "[FAIL] High | official law has no BOM: VU\r",
+            "[FAIL] High | official law CRLF only: VU\r",
+            "[FAIL] Critical | official law exists: FP\r",
+            "[FAIL] High | official law has no BOM: FP\r",
+            "[FAIL] High | official law CRLF only: FP\r",
+            "[FAIL] Critical | official law exists: KON\r",
+            "[FAIL] High | official law has no BOM: KON\r",
+            "[FAIL] High | official law CRLF only: KON\r",
+            "[FAIL] Critical | official law exists: FZOP\r",
+            "[FAIL] High | official law has no BOM: FZOP\r",
+            "[FAIL] High | official law CRLF only: FZOP\r",
+            "[FAIL] Critical | official law exists: TER\r",
+            "[FAIL] High | official law has no BOM: TER\r",
+            "[FAIL] High | official law CRLF only: TER\r",
+            "[FAIL] Critical | official law exists: TK\r",
+            "[FAIL] High | official law has no BOM: TK\r",
+            "[FAIL] High | official law CRLF only: TK\r",
+            "[FAIL] Critical | official law exists: ARG\r",
+            "[FAIL] High | official law has no BOM: ARG\r",
+            "[FAIL] High | official law CRLF only: ARG\r",
+            "[FAIL] Critical | official law exists: UK\r",
+            "[FAIL] High | official law has no BOM: UK\r",
+            "[FAIL] High | official law CRLF only: UK\r",
+            "[FAIL] Critical | official law exists: VV\r",
+            "[FAIL] High | official law has no BOM: VV\r",
+            "[FAIL] High | official law CRLF only: VV\r",
+            "[FAIL] Critical | official law exists: KOAP\r",
+            "[FAIL] High | official law has no BOM: KOAP\r",
+            "[FAIL] High | official law CRLF only: KOAP\r",
+            "[FAIL] Critical | official law exists: PDD\r",
+            "[FAIL] High | official law has no BOM: PDD\r",
+            "[FAIL] High | official law CRLF only: PDD\r",
+            "[FAIL] Critical | official law exists: ORUZH\r",
+            "[FAIL] High | official law has no BOM: ORUZH\r",
+            "[FAIL] High | official law CRLF only: ORUZH\r",
+            "[FAIL] Critical | official law exists: UPK\r",
+            "[FAIL] High | official law has no BOM: UPK\r",
+            "[FAIL] High | official law CRLF only: UPK\r",
+            "[FAIL] Critical | official law exists: KAS\r",
+            "[FAIL] High | official law has no BOM: KAS\r",
+            "[FAIL] High | official law CRLF only: KAS\r",
+            "[FAIL] Critical | official law exists: FSB\r",
+            "[FAIL] High | official law has no BOM: FSB\r",
+            "[FAIL] High | official law CRLF only: FSB\r",
+            "[FAIL] Critical | official law exists: FSIN\r",
+            "[FAIL] High | official law has no BOM: FSIN\r",
+            "[FAIL] High | official law CRLF only: FSIN\r",
+            "[FAIL] Critical | official law exists: VS\r",
+            "[FAIL] High | official law has no BOM: VS\r",
+            "[FAIL] High | official law CRLF only: VS\r",
+            "[FAIL] Critical | official law exists: SUD\r",
+            "[FAIL] High | official law has no BOM: SUD\r",
+            "[FAIL] High | official law CRLF only: SUD\r",
+            "[FAIL] Critical | official law exists: ORD\r",
+            "[FAIL] High | official law has no BOM: ORD\r",
+            "[FAIL] High | official law CRLF only: ORD\r",
+            "[FAIL] Critical | official law exists: GT\r",
+            "[FAIL] High | official law has no BOM: GT\r",
+            "[FAIL] High | official law CRLF only: GT\r",
+            "[FAIL] Critical | Auto ID keeps a validated cache across stable reads\r",
+            "[FAIL] High | NOT_IN_POOL uses soft pool refresh\r"
+          ],
+          "status": "FAIL",
+          "mode": "selftest",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 52.7,
+          "report": "original_audit_selftest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "audit-selftest",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.22,
+          "report": "original_context_assistant_test.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "context-mocktest",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.27,
+          "report": "original_autoreport_mocktest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "autoreport-mocktest",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 28.12,
+          "report": "original_law_search_test_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "law-search-test",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.25,
+          "report": "original_v1_mocktest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "v1-mocktest",
+          "phase": "original"
+        },
+        {
+          "exit_code": 2,
+          "seconds": 23.23,
+          "report": "original_desktop_smoke_report.txt",
+          "failures": [
+            "FAIL | compiled standalone host\r",
+            "FAIL | 20 documents available without external laws folder\r"
+          ],
+          "status": "EXPECTED_EXE_ONLY_ASSERTIONS",
+          "mode": "desktop-smoke",
+          "phase": "original"
+        },
+        {
+          "exit_code": 1,
+          "seconds": 15.06,
+          "report": "original_diagnostics_report.txt",
+          "failures": [
+            "[FAIL] High | helper exists | D:\\a\\_temp\\deep-source-1-work\\original\\diagnostics\\helper.ahk\r",
+            "[FAIL] High | common exists | D:\\a\\_temp\\deep-source-1-work\\original\\diagnostics\\common.ahk\r",
+            "[FAIL] High | UDF exists | D:\\a\\_temp\\deep-source-1-work\\original\\diagnostics\\UDF.ahk\r",
+            "[FAIL] High | window-title locator and EXE fallback are present\r",
+            "[FAIL] High | RMB target resolver is present\r"
+          ],
+          "status": "FAIL",
+          "mode": "diagnostics",
+          "phase": "original"
+        },
+        {
+          "started": true,
+          "singleton": false,
+          "clean_exit": true,
+          "second_instance_warning": true,
+          "second_instance_gui_count": 0,
+          "exit_code": 0,
+          "status": "FAIL",
+          "mode": "startup-singleton-exit",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.27,
+          "report": "traced_runtime_info_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "runtime-info",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 1,
+          "seconds": 46.06,
+          "report": "traced_selftest_report.txt",
+          "failures": [
+            "[FAIL] Critical | file exists: helper.ahk\r",
+            "[FAIL] High | CP1251 artifact has no BOM: helper.ahk\r",
+            "[FAIL] High | CRLF only: helper.ahk\r",
+            "[FAIL] Critical | file exists: UDF.ahk\r",
+            "[FAIL] High | CP1251 artifact has no BOM: UDF.ahk\r",
+            "[FAIL] High | CRLF only: UDF.ahk\r",
+            "[FAIL] Critical | file exists: common.ahk\r",
+            "[FAIL] High | CP1251 artifact has no BOM: common.ahk\r",
+            "[FAIL] High | CRLF only: common.ahk\r",
+            "[FAIL] Critical | official law exists: VU\r",
+            "[FAIL] High | official law has no BOM: VU\r",
+            "[FAIL] High | official law CRLF only: VU\r",
+            "[FAIL] Critical | official law exists: FP\r",
+            "[FAIL] High | official law has no BOM: FP\r",
+            "[FAIL] High | official law CRLF only: FP\r",
+            "[FAIL] Critical | official law exists: KON\r",
+            "[FAIL] High | official law has no BOM: KON\r",
+            "[FAIL] High | official law CRLF only: KON\r",
+            "[FAIL] Critical | official law exists: FZOP\r",
+            "[FAIL] High | official law has no BOM: FZOP\r",
+            "[FAIL] High | official law CRLF only: FZOP\r",
+            "[FAIL] Critical | official law exists: TER\r",
+            "[FAIL] High | official law has no BOM: TER\r",
+            "[FAIL] High | official law CRLF only: TER\r",
+            "[FAIL] Critical | official law exists: TK\r",
+            "[FAIL] High | official law has no BOM: TK\r",
+            "[FAIL] High | official law CRLF only: TK\r",
+            "[FAIL] Critical | official law exists: ARG\r",
+            "[FAIL] High | official law has no BOM: ARG\r",
+            "[FAIL] High | official law CRLF only: ARG\r",
+            "[FAIL] Critical | official law exists: UK\r",
+            "[FAIL] High | official law has no BOM: UK\r",
+            "[FAIL] High | official law CRLF only: UK\r",
+            "[FAIL] Critical | official law exists: VV\r",
+            "[FAIL] High | official law has no BOM: VV\r",
+            "[FAIL] High | official law CRLF only: VV\r",
+            "[FAIL] Critical | official law exists: KOAP\r",
+            "[FAIL] High | official law has no BOM: KOAP\r",
+            "[FAIL] High | official law CRLF only: KOAP\r",
+            "[FAIL] Critical | official law exists: PDD\r",
+            "[FAIL] High | official law has no BOM: PDD\r",
+            "[FAIL] High | official law CRLF only: PDD\r",
+            "[FAIL] Critical | official law exists: ORUZH\r",
+            "[FAIL] High | official law has no BOM: ORUZH\r",
+            "[FAIL] High | official law CRLF only: ORUZH\r",
+            "[FAIL] Critical | official law exists: UPK\r",
+            "[FAIL] High | official law has no BOM: UPK\r",
+            "[FAIL] High | official law CRLF only: UPK\r",
+            "[FAIL] Critical | official law exists: KAS\r",
+            "[FAIL] High | official law has no BOM: KAS\r",
+            "[FAIL] High | official law CRLF only: KAS\r",
+            "[FAIL] Critical | official law exists: FSB\r",
+            "[FAIL] High | official law has no BOM: FSB\r",
+            "[FAIL] High | official law CRLF only: FSB\r",
+            "[FAIL] Critical | official law exists: FSIN\r",
+            "[FAIL] High | official law has no BOM: FSIN\r",
+            "[FAIL] High | official law CRLF only: FSIN\r",
+            "[FAIL] Critical | official law exists: VS\r",
+            "[FAIL] High | official law has no BOM: VS\r",
+            "[FAIL] High | official law CRLF only: VS\r",
+            "[FAIL] Critical | official law exists: SUD\r",
+            "[FAIL] High | official law has no BOM: SUD\r",
+            "[FAIL] High | official law CRLF only: SUD\r",
+            "[FAIL] Critical | official law exists: ORD\r",
+            "[FAIL] High | official law has no BOM: ORD\r",
+            "[FAIL] High | official law CRLF only: ORD\r",
+            "[FAIL] Critical | official law exists: GT\r",
+            "[FAIL] High | official law has no BOM: GT\r",
+            "[FAIL] High | official law CRLF only: GT\r",
+            "[FAIL] Critical | Auto ID keeps a validated cache across stable reads\r",
+            "[FAIL] High | NOT_IN_POOL uses soft pool refresh\r"
+          ],
+          "status": "FAIL",
+          "mode": "selftest",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 77.84,
+          "report": "traced_audit_selftest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "audit-selftest",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.2,
+          "report": "traced_context_assistant_test.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "context-mocktest",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.28,
+          "report": "traced_autoreport_mocktest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "autoreport-mocktest",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 42.12,
+          "report": "traced_law_search_test_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "law-search-test",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.31,
+          "report": "traced_v1_mocktest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "v1-mocktest",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 2,
+          "seconds": 28.99,
+          "report": "traced_desktop_smoke_report.txt",
+          "failures": [
+            "FAIL | compiled standalone host\r",
+            "FAIL | 20 documents available without external laws folder\r"
+          ],
+          "status": "EXPECTED_EXE_ONLY_ASSERTIONS",
+          "mode": "desktop-smoke",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 1,
+          "seconds": 22.26,
+          "report": "traced_diagnostics_report.txt",
+          "failures": [
+            "[FAIL] High | helper exists | D:\\a\\_temp\\deep-source-1-work\\traced\\diagnostics\\helper.ahk\r",
+            "[FAIL] High | common exists | D:\\a\\_temp\\deep-source-1-work\\traced\\diagnostics\\common.ahk\r",
+            "[FAIL] High | UDF exists | D:\\a\\_temp\\deep-source-1-work\\traced\\diagnostics\\UDF.ahk\r",
+            "[FAIL] High | window-title locator and EXE fallback are present\r",
+            "[FAIL] High | RMB target resolver is present\r"
+          ],
+          "status": "FAIL",
+          "mode": "diagnostics",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 6.34,
+          "report": "fixture_private_input_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "private_input",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.03,
+          "report": "fixture_chat_route_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "chat_route",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.3,
+          "report": "fixture_memory_sequence_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "memory_sequence",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 10.24,
+          "report": "fixture_game_menu_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "game_menu",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 25.62,
+          "report": "fixture_text_bind_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "text_bind",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.86,
+          "report": "fixture_autoid_tracking_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "autoid_tracking",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 11.28,
+          "report": "fixture_law_windows_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "law_windows",
+          "phase": "fixture"
+        }
+      ],
+      "remaining_processes": [],
+      "completed": true,
+      "original_failures": [
+        "startup-singleton-exit",
+        "selftest",
+        "diagnostics"
+      ],
+      "tracing_failures": [
+        "startup-singleton-exit",
+        "selftest",
+        "diagnostics"
+      ],
+      "fixture_failures": []
+    },
+    {
+      "form": "exe",
+      "repeat": 3,
+      "commit": "0a0303dbcf6c4b8aacc50c9a6f2ce77a56285c0e",
+      "release_sha256": "5c43313efdbf5b960dbce5198ef9c30f56881cdaa3c6a383ffcddc33501083c5",
+      "provenance": {
+        "source_runtime": {
+          "original_sha256": "6a98b438b67da7316e9251eb1a92cd5384a8349d239a77903f7282fa076a77c3",
+          "test_host_sha256": "da91a152e05d4803c2313bf488d832ef1ce7705bf73ade6f89379d945ebf9391",
+          "only_resource_type_changed": 24,
+          "activeCodePage": "ru-RU"
+        },
+        "compiled_host": {
+          "original_sha256": "5c43313efdbf5b960dbce5198ef9c30f56881cdaa3c6a383ffcddc33501083c5",
+          "test_host_sha256": "666c448297592c98004efd56f17a0e3d6947ffd931c171ff9cc97de5cf9d9364",
+          "only_resource_type_changed": 24,
+          "activeCodePage": "ru-RU"
+        },
+        "runtime_archive_sha256": "6f3663f7cdd25063c8c8728f5d9b07813ced8780522fd1f124ba539e2854215f"
+      },
+      "real_game": "NOT_TESTED",
+      "real_OBS": "NOT_TESTED",
+      "cases": [
+        {
+          "started": true,
+          "singleton": false,
+          "clean_exit": true,
+          "second_instance_warning": true,
+          "second_instance_gui_count": 0,
+          "exit_code": 0,
+          "status": "FAIL",
+          "mode": "startup-singleton-exit",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.19,
+          "report": "original_runtime_info_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "runtime-info",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 30.7,
+          "report": "original_selftest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "selftest",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 52.72,
+          "report": "original_audit_selftest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "audit-selftest",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.2,
+          "report": "original_context_assistant_test.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "context-mocktest",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.2,
+          "report": "original_autoreport_mocktest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "autoreport-mocktest",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 27.17,
+          "report": "original_law_search_test_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "law-search-test",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.22,
+          "report": "original_v1_mocktest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "v1-mocktest",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 23.03,
+          "report": "original_desktop_smoke_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "desktop-smoke",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 14.61,
+          "report": "original_diagnostics_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "diagnostics",
+          "phase": "original"
+        },
+        {
+          "started": true,
+          "singleton": false,
+          "clean_exit": true,
+          "second_instance_warning": true,
+          "second_instance_gui_count": 0,
+          "exit_code": 0,
+          "status": "FAIL",
+          "mode": "startup-singleton-exit",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.22,
+          "report": "traced_runtime_info_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "runtime-info",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 47.47,
+          "report": "traced_selftest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "selftest",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 78.19,
+          "report": "traced_audit_selftest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "audit-selftest",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.23,
+          "report": "traced_context_assistant_test.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "context-mocktest",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.22,
+          "report": "traced_autoreport_mocktest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "autoreport-mocktest",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 43.41,
+          "report": "traced_law_search_test_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "law-search-test",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.22,
+          "report": "traced_v1_mocktest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "v1-mocktest",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 30.83,
+          "report": "traced_desktop_smoke_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "desktop-smoke",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 21.11,
+          "report": "traced_diagnostics_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "diagnostics",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 7.17,
+          "report": "fixture_private_input_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "private_input",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.05,
+          "report": "fixture_chat_route_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "chat_route",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.31,
+          "report": "fixture_memory_sequence_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "memory_sequence",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 10.09,
+          "report": "fixture_game_menu_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "game_menu",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 20.64,
+          "report": "fixture_text_bind_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "text_bind",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.83,
+          "report": "fixture_autoid_tracking_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "autoid_tracking",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 10.75,
+          "report": "fixture_law_windows_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "law_windows",
+          "phase": "fixture"
+        }
+      ],
+      "remaining_processes": [],
+      "completed": true,
+      "original_failures": [
+        "startup-singleton-exit"
+      ],
+      "tracing_failures": [
+        "startup-singleton-exit"
+      ],
+      "fixture_failures": []
+    }
+  ],
+  "report_findings": [
+    {
+      "form": "exe",
+      "repeat": 1,
+      "file": "deep-exe-1/traced_diagnostics_report.txt",
+      "failures": [],
+      "tail": [
+        "== Summary ==",
+        "Total checks: 27"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 1,
+      "file": "deep-exe-1/original_autoreport_mocktest_report.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "exe",
+      "repeat": 1,
+      "file": "deep-exe-1/fixture_memory_sequence_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks=13 Failed=0"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 1,
+      "file": "deep-exe-1/fixture_game_menu_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks=22 Failed=0"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 1,
+      "file": "deep-exe-1/original_law_search_test_report.txt",
+      "failures": [],
+      "tail": [
+        "PASS | 30-result cap and total"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 1,
+      "file": "deep-exe-1/traced_audit_selftest_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks: 504 | Failed: 0 | Skipped integration groups: 1"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 1,
+      "file": "deep-exe-1/traced_v1_mocktest_report.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "exe",
+      "repeat": 1,
+      "file": "deep-exe-1/traced_law_search_test_report.txt",
+      "failures": [],
+      "tail": [
+        "PASS | 30-result cap and total"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 1,
+      "file": "deep-exe-1/traced_runtime_info_report.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "exe",
+      "repeat": 1,
+      "file": "deep-exe-1/original_runtime_info_report.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "exe",
+      "repeat": 1,
+      "file": "deep-exe-1/traced_context_assistant_test.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "exe",
+      "repeat": 1,
+      "file": "deep-exe-1/traced_selftest_report.txt",
+      "failures": [],
+      "tail": [
+        "Summary: WARN",
+        "Total checks: 122",
+        "Critical failed: 0",
+        "High failed: 0"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 1,
+      "file": "deep-exe-1/fixture_private_input_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks=35 Failed=0 KeyHoldMs=50"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 1,
+      "file": "deep-exe-1/traced_autoreport_mocktest_report.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "exe",
+      "repeat": 1,
+      "file": "deep-exe-1/original_v1_mocktest_report.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "exe",
+      "repeat": 1,
+      "file": "deep-exe-1/fixture_text_bind_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks=35 | Failed=0"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 1,
+      "file": "deep-exe-1/fixture_chat_route_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks=11 Failed=0"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 1,
+      "file": "deep-exe-1/traced_desktop_smoke_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks=115 | Failed=0"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 1,
+      "file": "deep-exe-1/original_diagnostics_report.txt",
+      "failures": [],
+      "tail": [
+        "== Summary ==",
+        "Total checks: 27"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 1,
+      "file": "deep-exe-1/fixture_autoid_tracking_report.txt",
+      "failures": [],
+      "tail": [
+        "SUMMARY PASS=37 FAIL=0"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 1,
+      "file": "deep-exe-1/fixture_law_windows_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks=510 Failed=0"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 1,
+      "file": "deep-exe-1/original_context_assistant_test.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "exe",
+      "repeat": 1,
+      "file": "deep-exe-1/original_desktop_smoke_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks=115 | Failed=0"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 1,
+      "file": "deep-exe-1/original_selftest_report.txt",
+      "failures": [],
+      "tail": [
+        "Summary: WARN",
+        "Total checks: 122",
+        "Critical failed: 0",
+        "High failed: 0"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 1,
+      "file": "deep-exe-1/original_audit_selftest_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks: 504 | Failed: 0 | Skipped integration groups: 1"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 2,
+      "file": "deep-exe-2/traced_diagnostics_report.txt",
+      "failures": [],
+      "tail": [
+        "== Summary ==",
+        "Total checks: 27"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 2,
+      "file": "deep-exe-2/original_autoreport_mocktest_report.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "exe",
+      "repeat": 2,
+      "file": "deep-exe-2/fixture_memory_sequence_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks=13 Failed=0"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 2,
+      "file": "deep-exe-2/fixture_game_menu_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks=22 Failed=0"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 2,
+      "file": "deep-exe-2/original_law_search_test_report.txt",
+      "failures": [],
+      "tail": [
+        "PASS | 30-result cap and total"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 2,
+      "file": "deep-exe-2/traced_audit_selftest_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks: 504 | Failed: 0 | Skipped integration groups: 1"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 2,
+      "file": "deep-exe-2/traced_v1_mocktest_report.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "exe",
+      "repeat": 2,
+      "file": "deep-exe-2/traced_law_search_test_report.txt",
+      "failures": [],
+      "tail": [
+        "PASS | 30-result cap and total"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 2,
+      "file": "deep-exe-2/traced_runtime_info_report.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "exe",
+      "repeat": 2,
+      "file": "deep-exe-2/original_runtime_info_report.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "exe",
+      "repeat": 2,
+      "file": "deep-exe-2/traced_context_assistant_test.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "exe",
+      "repeat": 2,
+      "file": "deep-exe-2/traced_selftest_report.txt",
+      "failures": [],
+      "tail": [
+        "Summary: WARN",
+        "Total checks: 122",
+        "Critical failed: 0",
+        "High failed: 0"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 2,
+      "file": "deep-exe-2/fixture_private_input_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks=35 Failed=0 KeyHoldMs=50"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 2,
+      "file": "deep-exe-2/traced_autoreport_mocktest_report.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "exe",
+      "repeat": 2,
+      "file": "deep-exe-2/original_v1_mocktest_report.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "exe",
+      "repeat": 2,
+      "file": "deep-exe-2/fixture_text_bind_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks=35 | Failed=0"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 2,
+      "file": "deep-exe-2/fixture_chat_route_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks=11 Failed=0"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 2,
+      "file": "deep-exe-2/traced_desktop_smoke_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks=115 | Failed=0"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 2,
+      "file": "deep-exe-2/original_diagnostics_report.txt",
+      "failures": [],
+      "tail": [
+        "== Summary ==",
+        "Total checks: 27"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 2,
+      "file": "deep-exe-2/fixture_autoid_tracking_report.txt",
+      "failures": [],
+      "tail": [
+        "SUMMARY PASS=37 FAIL=0"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 2,
+      "file": "deep-exe-2/fixture_law_windows_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks=510 Failed=0"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 2,
+      "file": "deep-exe-2/original_context_assistant_test.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "exe",
+      "repeat": 2,
+      "file": "deep-exe-2/original_desktop_smoke_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks=115 | Failed=0"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 2,
+      "file": "deep-exe-2/original_selftest_report.txt",
+      "failures": [],
+      "tail": [
+        "Summary: WARN",
+        "Total checks: 122",
+        "Critical failed: 0",
+        "High failed: 0"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 2,
+      "file": "deep-exe-2/original_audit_selftest_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks: 504 | Failed: 0 | Skipped integration groups: 1"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 3,
+      "file": "deep-exe-3/traced_diagnostics_report.txt",
+      "failures": [],
+      "tail": [
+        "== Summary ==",
+        "Total checks: 27"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 3,
+      "file": "deep-exe-3/original_autoreport_mocktest_report.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "exe",
+      "repeat": 3,
+      "file": "deep-exe-3/fixture_memory_sequence_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks=13 Failed=0"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 3,
+      "file": "deep-exe-3/fixture_game_menu_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks=22 Failed=0"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 3,
+      "file": "deep-exe-3/original_law_search_test_report.txt",
+      "failures": [],
+      "tail": [
+        "PASS | 30-result cap and total"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 3,
+      "file": "deep-exe-3/traced_audit_selftest_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks: 504 | Failed: 0 | Skipped integration groups: 1"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 3,
+      "file": "deep-exe-3/traced_v1_mocktest_report.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "exe",
+      "repeat": 3,
+      "file": "deep-exe-3/traced_law_search_test_report.txt",
+      "failures": [],
+      "tail": [
+        "PASS | 30-result cap and total"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 3,
+      "file": "deep-exe-3/traced_runtime_info_report.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "exe",
+      "repeat": 3,
+      "file": "deep-exe-3/original_runtime_info_report.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "exe",
+      "repeat": 3,
+      "file": "deep-exe-3/traced_context_assistant_test.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "exe",
+      "repeat": 3,
+      "file": "deep-exe-3/traced_selftest_report.txt",
+      "failures": [],
+      "tail": [
+        "Summary: WARN",
+        "Total checks: 122",
+        "Critical failed: 0",
+        "High failed: 0"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 3,
+      "file": "deep-exe-3/fixture_private_input_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks=35 Failed=0 KeyHoldMs=50"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 3,
+      "file": "deep-exe-3/traced_autoreport_mocktest_report.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "exe",
+      "repeat": 3,
+      "file": "deep-exe-3/original_v1_mocktest_report.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "exe",
+      "repeat": 3,
+      "file": "deep-exe-3/fixture_text_bind_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks=35 | Failed=0"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 3,
+      "file": "deep-exe-3/fixture_chat_route_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks=11 Failed=0"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 3,
+      "file": "deep-exe-3/traced_desktop_smoke_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks=115 | Failed=0"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 3,
+      "file": "deep-exe-3/original_diagnostics_report.txt",
+      "failures": [],
+      "tail": [
+        "== Summary ==",
+        "Total checks: 27"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 3,
+      "file": "deep-exe-3/fixture_autoid_tracking_report.txt",
+      "failures": [],
+      "tail": [
+        "SUMMARY PASS=37 FAIL=0"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 3,
+      "file": "deep-exe-3/fixture_law_windows_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks=510 Failed=0"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 3,
+      "file": "deep-exe-3/original_context_assistant_test.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "exe",
+      "repeat": 3,
+      "file": "deep-exe-3/original_desktop_smoke_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks=115 | Failed=0"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 3,
+      "file": "deep-exe-3/original_selftest_report.txt",
+      "failures": [],
+      "tail": [
+        "Summary: WARN",
+        "Total checks: 122",
+        "Critical failed: 0",
+        "High failed: 0"
+      ]
+    },
+    {
+      "form": "exe",
+      "repeat": 3,
+      "file": "deep-exe-3/original_audit_selftest_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks: 504 | Failed: 0 | Skipped integration groups: 1"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 1,
+      "file": "deep-source-1/traced_diagnostics_report.txt",
+      "failures": [
+        "[FAIL] High | helper exists | D:\\a\\_temp\\deep-source-1-work\\traced\\diagnostics\\helper.ahk\r",
+        "[FAIL] High | common exists | D:\\a\\_temp\\deep-source-1-work\\traced\\diagnostics\\common.ahk\r",
+        "[FAIL] High | UDF exists | D:\\a\\_temp\\deep-source-1-work\\traced\\diagnostics\\UDF.ahk\r",
+        "[FAIL] High | window-title locator and EXE fallback are present\r",
+        "[FAIL] High | RMB target resolver is present\r"
+      ],
+      "tail": [
+        "== Summary ==",
+        "Total checks: 27"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 1,
+      "file": "deep-source-1/original_autoreport_mocktest_report.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "source",
+      "repeat": 1,
+      "file": "deep-source-1/fixture_memory_sequence_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks=13 Failed=0"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 1,
+      "file": "deep-source-1/fixture_game_menu_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks=22 Failed=0"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 1,
+      "file": "deep-source-1/original_law_search_test_report.txt",
+      "failures": [],
+      "tail": [
+        "PASS | 30-result cap and total"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 1,
+      "file": "deep-source-1/traced_audit_selftest_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks: 502 | Failed: 0 | Skipped integration groups: 2"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 1,
+      "file": "deep-source-1/traced_v1_mocktest_report.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "source",
+      "repeat": 1,
+      "file": "deep-source-1/traced_law_search_test_report.txt",
+      "failures": [],
+      "tail": [
+        "PASS | 30-result cap and total"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 1,
+      "file": "deep-source-1/traced_runtime_info_report.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "source",
+      "repeat": 1,
+      "file": "deep-source-1/original_runtime_info_report.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "source",
+      "repeat": 1,
+      "file": "deep-source-1/traced_context_assistant_test.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "source",
+      "repeat": 1,
+      "file": "deep-source-1/traced_selftest_report.txt",
+      "failures": [
+        "[FAIL] Critical | file exists: helper.ahk\r",
+        "[FAIL] High | CP1251 artifact has no BOM: helper.ahk\r",
+        "[FAIL] High | CRLF only: helper.ahk\r",
+        "[FAIL] Critical | file exists: UDF.ahk\r",
+        "[FAIL] High | CP1251 artifact has no BOM: UDF.ahk\r",
+        "[FAIL] High | CRLF only: UDF.ahk\r",
+        "[FAIL] Critical | file exists: common.ahk\r",
+        "[FAIL] High | CP1251 artifact has no BOM: common.ahk\r",
+        "[FAIL] High | CRLF only: common.ahk\r",
+        "[FAIL] Critical | official law exists: VU\r",
+        "[FAIL] High | official law has no BOM: VU\r",
+        "[FAIL] High | official law CRLF only: VU\r",
+        "[FAIL] Critical | official law exists: FP\r",
+        "[FAIL] High | official law has no BOM: FP\r",
+        "[FAIL] High | official law CRLF only: FP\r",
+        "[FAIL] Critical | official law exists: KON\r",
+        "[FAIL] High | official law has no BOM: KON\r",
+        "[FAIL] High | official law CRLF only: KON\r",
+        "[FAIL] Critical | official law exists: FZOP\r",
+        "[FAIL] High | official law has no BOM: FZOP\r",
+        "[FAIL] High | official law CRLF only: FZOP\r",
+        "[FAIL] Critical | official law exists: TER\r",
+        "[FAIL] High | official law has no BOM: TER\r",
+        "[FAIL] High | official law CRLF only: TER\r",
+        "[FAIL] Critical | official law exists: TK\r",
+        "[FAIL] High | official law has no BOM: TK\r",
+        "[FAIL] High | official law CRLF only: TK\r",
+        "[FAIL] Critical | official law exists: ARG\r",
+        "[FAIL] High | official law has no BOM: ARG\r",
+        "[FAIL] High | official law CRLF only: ARG\r",
+        "[FAIL] Critical | official law exists: UK\r",
+        "[FAIL] High | official law has no BOM: UK\r",
+        "[FAIL] High | official law CRLF only: UK\r",
+        "[FAIL] Critical | official law exists: VV\r",
+        "[FAIL] High | official law has no BOM: VV\r",
+        "[FAIL] High | official law CRLF only: VV\r",
+        "[FAIL] Critical | official law exists: KOAP\r",
+        "[FAIL] High | official law has no BOM: KOAP\r",
+        "[FAIL] High | official law CRLF only: KOAP\r",
+        "[FAIL] Critical | official law exists: PDD\r",
+        "[FAIL] High | official law has no BOM: PDD\r",
+        "[FAIL] High | official law CRLF only: PDD\r",
+        "[FAIL] Critical | official law exists: ORUZH\r",
+        "[FAIL] High | official law has no BOM: ORUZH\r",
+        "[FAIL] High | official law CRLF only: ORUZH\r",
+        "[FAIL] Critical | official law exists: UPK\r",
+        "[FAIL] High | official law has no BOM: UPK\r",
+        "[FAIL] High | official law CRLF only: UPK\r",
+        "[FAIL] Critical | official law exists: KAS\r",
+        "[FAIL] High | official law has no BOM: KAS\r",
+        "[FAIL] High | official law CRLF only: KAS\r",
+        "[FAIL] Critical | official law exists: FSB\r",
+        "[FAIL] High | official law has no BOM: FSB\r",
+        "[FAIL] High | official law CRLF only: FSB\r",
+        "[FAIL] Critical | official law exists: FSIN\r",
+        "[FAIL] High | official law has no BOM: FSIN\r",
+        "[FAIL] High | official law CRLF only: FSIN\r",
+        "[FAIL] Critical | official law exists: VS\r",
+        "[FAIL] High | official law has no BOM: VS\r",
+        "[FAIL] High | official law CRLF only: VS\r",
+        "[FAIL] Critical | official law exists: SUD\r",
+        "[FAIL] High | official law has no BOM: SUD\r",
+        "[FAIL] High | official law CRLF only: SUD\r",
+        "[FAIL] Critical | official law exists: ORD\r",
+        "[FAIL] High | official law has no BOM: ORD\r",
+        "[FAIL] High | official law CRLF only: ORD\r",
+        "[FAIL] Critical | official law exists: GT\r",
+        "[FAIL] High | official law has no BOM: GT\r",
+        "[FAIL] High | official law CRLF only: GT\r",
+        "[FAIL] Critical | Auto ID keeps a validated cache across stable reads\r",
+        "[FAIL] High | NOT_IN_POOL uses soft pool refresh\r"
+      ],
+      "tail": [
+        "Summary: FAIL",
+        "Total checks: 122",
+        "Critical failed: 24",
+        "High failed: 47"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 1,
+      "file": "deep-source-1/fixture_private_input_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks=35 Failed=0 KeyHoldMs=50"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 1,
+      "file": "deep-source-1/traced_autoreport_mocktest_report.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "source",
+      "repeat": 1,
+      "file": "deep-source-1/original_v1_mocktest_report.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "source",
+      "repeat": 1,
+      "file": "deep-source-1/fixture_text_bind_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks=35 | Failed=0"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 1,
+      "file": "deep-source-1/fixture_chat_route_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks=11 Failed=0"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 1,
+      "file": "deep-source-1/traced_desktop_smoke_report.txt",
+      "failures": [
+        "FAIL | compiled standalone host\r",
+        "FAIL | 20 documents available without external laws folder\r"
+      ],
+      "tail": [
+        "Checks=115 | Failed=2"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 1,
+      "file": "deep-source-1/original_diagnostics_report.txt",
+      "failures": [
+        "[FAIL] High | helper exists | D:\\a\\_temp\\deep-source-1-work\\original\\diagnostics\\helper.ahk\r",
+        "[FAIL] High | common exists | D:\\a\\_temp\\deep-source-1-work\\original\\diagnostics\\common.ahk\r",
+        "[FAIL] High | UDF exists | D:\\a\\_temp\\deep-source-1-work\\original\\diagnostics\\UDF.ahk\r",
+        "[FAIL] High | window-title locator and EXE fallback are present\r",
+        "[FAIL] High | RMB target resolver is present\r"
+      ],
+      "tail": [
+        "== Summary ==",
+        "Total checks: 27"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 1,
+      "file": "deep-source-1/fixture_autoid_tracking_report.txt",
+      "failures": [],
+      "tail": [
+        "SUMMARY PASS=37 FAIL=0"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 1,
+      "file": "deep-source-1/fixture_law_windows_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks=510 Failed=0"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 1,
+      "file": "deep-source-1/original_context_assistant_test.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "source",
+      "repeat": 1,
+      "file": "deep-source-1/original_desktop_smoke_report.txt",
+      "failures": [
+        "FAIL | compiled standalone host\r",
+        "FAIL | 20 documents available without external laws folder\r"
+      ],
+      "tail": [
+        "Checks=115 | Failed=2"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 1,
+      "file": "deep-source-1/original_selftest_report.txt",
+      "failures": [
+        "[FAIL] Critical | file exists: helper.ahk\r",
+        "[FAIL] High | CP1251 artifact has no BOM: helper.ahk\r",
+        "[FAIL] High | CRLF only: helper.ahk\r",
+        "[FAIL] Critical | file exists: UDF.ahk\r",
+        "[FAIL] High | CP1251 artifact has no BOM: UDF.ahk\r",
+        "[FAIL] High | CRLF only: UDF.ahk\r",
+        "[FAIL] Critical | file exists: common.ahk\r",
+        "[FAIL] High | CP1251 artifact has no BOM: common.ahk\r",
+        "[FAIL] High | CRLF only: common.ahk\r",
+        "[FAIL] Critical | official law exists: VU\r",
+        "[FAIL] High | official law has no BOM: VU\r",
+        "[FAIL] High | official law CRLF only: VU\r",
+        "[FAIL] Critical | official law exists: FP\r",
+        "[FAIL] High | official law has no BOM: FP\r",
+        "[FAIL] High | official law CRLF only: FP\r",
+        "[FAIL] Critical | official law exists: KON\r",
+        "[FAIL] High | official law has no BOM: KON\r",
+        "[FAIL] High | official law CRLF only: KON\r",
+        "[FAIL] Critical | official law exists: FZOP\r",
+        "[FAIL] High | official law has no BOM: FZOP\r",
+        "[FAIL] High | official law CRLF only: FZOP\r",
+        "[FAIL] Critical | official law exists: TER\r",
+        "[FAIL] High | official law has no BOM: TER\r",
+        "[FAIL] High | official law CRLF only: TER\r",
+        "[FAIL] Critical | official law exists: TK\r",
+        "[FAIL] High | official law has no BOM: TK\r",
+        "[FAIL] High | official law CRLF only: TK\r",
+        "[FAIL] Critical | official law exists: ARG\r",
+        "[FAIL] High | official law has no BOM: ARG\r",
+        "[FAIL] High | official law CRLF only: ARG\r",
+        "[FAIL] Critical | official law exists: UK\r",
+        "[FAIL] High | official law has no BOM: UK\r",
+        "[FAIL] High | official law CRLF only: UK\r",
+        "[FAIL] Critical | official law exists: VV\r",
+        "[FAIL] High | official law has no BOM: VV\r",
+        "[FAIL] High | official law CRLF only: VV\r",
+        "[FAIL] Critical | official law exists: KOAP\r",
+        "[FAIL] High | official law has no BOM: KOAP\r",
+        "[FAIL] High | official law CRLF only: KOAP\r",
+        "[FAIL] Critical | official law exists: PDD\r",
+        "[FAIL] High | official law has no BOM: PDD\r",
+        "[FAIL] High | official law CRLF only: PDD\r",
+        "[FAIL] Critical | official law exists: ORUZH\r",
+        "[FAIL] High | official law has no BOM: ORUZH\r",
+        "[FAIL] High | official law CRLF only: ORUZH\r",
+        "[FAIL] Critical | official law exists: UPK\r",
+        "[FAIL] High | official law has no BOM: UPK\r",
+        "[FAIL] High | official law CRLF only: UPK\r",
+        "[FAIL] Critical | official law exists: KAS\r",
+        "[FAIL] High | official law has no BOM: KAS\r",
+        "[FAIL] High | official law CRLF only: KAS\r",
+        "[FAIL] Critical | official law exists: FSB\r",
+        "[FAIL] High | official law has no BOM: FSB\r",
+        "[FAIL] High | official law CRLF only: FSB\r",
+        "[FAIL] Critical | official law exists: FSIN\r",
+        "[FAIL] High | official law has no BOM: FSIN\r",
+        "[FAIL] High | official law CRLF only: FSIN\r",
+        "[FAIL] Critical | official law exists: VS\r",
+        "[FAIL] High | official law has no BOM: VS\r",
+        "[FAIL] High | official law CRLF only: VS\r",
+        "[FAIL] Critical | official law exists: SUD\r",
+        "[FAIL] High | official law has no BOM: SUD\r",
+        "[FAIL] High | official law CRLF only: SUD\r",
+        "[FAIL] Critical | official law exists: ORD\r",
+        "[FAIL] High | official law has no BOM: ORD\r",
+        "[FAIL] High | official law CRLF only: ORD\r",
+        "[FAIL] Critical | official law exists: GT\r",
+        "[FAIL] High | official law has no BOM: GT\r",
+        "[FAIL] High | official law CRLF only: GT\r",
+        "[FAIL] Critical | Auto ID keeps a validated cache across stable reads\r",
+        "[FAIL] High | NOT_IN_POOL uses soft pool refresh\r"
+      ],
+      "tail": [
+        "Summary: FAIL",
+        "Total checks: 122",
+        "Critical failed: 24",
+        "High failed: 47"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 1,
+      "file": "deep-source-1/original_audit_selftest_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks: 502 | Failed: 0 | Skipped integration groups: 2"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 2,
+      "file": "deep-source-2/traced_diagnostics_report.txt",
+      "failures": [
+        "[FAIL] High | helper exists | D:\\a\\_temp\\deep-source-2-work\\traced\\diagnostics\\helper.ahk\r",
+        "[FAIL] High | common exists | D:\\a\\_temp\\deep-source-2-work\\traced\\diagnostics\\common.ahk\r",
+        "[FAIL] High | UDF exists | D:\\a\\_temp\\deep-source-2-work\\traced\\diagnostics\\UDF.ahk\r",
+        "[FAIL] High | window-title locator and EXE fallback are present\r",
+        "[FAIL] High | RMB target resolver is present\r"
+      ],
+      "tail": [
+        "== Summary ==",
+        "Total checks: 27"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 2,
+      "file": "deep-source-2/original_autoreport_mocktest_report.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "source",
+      "repeat": 2,
+      "file": "deep-source-2/fixture_memory_sequence_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks=13 Failed=0"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 2,
+      "file": "deep-source-2/fixture_game_menu_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks=22 Failed=0"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 2,
+      "file": "deep-source-2/original_law_search_test_report.txt",
+      "failures": [],
+      "tail": [
+        "PASS | 30-result cap and total"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 2,
+      "file": "deep-source-2/traced_audit_selftest_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks: 502 | Failed: 0 | Skipped integration groups: 2"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 2,
+      "file": "deep-source-2/traced_v1_mocktest_report.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "source",
+      "repeat": 2,
+      "file": "deep-source-2/traced_law_search_test_report.txt",
+      "failures": [],
+      "tail": [
+        "PASS | 30-result cap and total"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 2,
+      "file": "deep-source-2/traced_runtime_info_report.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "source",
+      "repeat": 2,
+      "file": "deep-source-2/original_runtime_info_report.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "source",
+      "repeat": 2,
+      "file": "deep-source-2/traced_context_assistant_test.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "source",
+      "repeat": 2,
+      "file": "deep-source-2/traced_selftest_report.txt",
+      "failures": [
+        "[FAIL] Critical | file exists: helper.ahk\r",
+        "[FAIL] High | CP1251 artifact has no BOM: helper.ahk\r",
+        "[FAIL] High | CRLF only: helper.ahk\r",
+        "[FAIL] Critical | file exists: UDF.ahk\r",
+        "[FAIL] High | CP1251 artifact has no BOM: UDF.ahk\r",
+        "[FAIL] High | CRLF only: UDF.ahk\r",
+        "[FAIL] Critical | file exists: common.ahk\r",
+        "[FAIL] High | CP1251 artifact has no BOM: common.ahk\r",
+        "[FAIL] High | CRLF only: common.ahk\r",
+        "[FAIL] Critical | official law exists: VU\r",
+        "[FAIL] High | official law has no BOM: VU\r",
+        "[FAIL] High | official law CRLF only: VU\r",
+        "[FAIL] Critical | official law exists: FP\r",
+        "[FAIL] High | official law has no BOM: FP\r",
+        "[FAIL] High | official law CRLF only: FP\r",
+        "[FAIL] Critical | official law exists: KON\r",
+        "[FAIL] High | official law has no BOM: KON\r",
+        "[FAIL] High | official law CRLF only: KON\r",
+        "[FAIL] Critical | official law exists: FZOP\r",
+        "[FAIL] High | official law has no BOM: FZOP\r",
+        "[FAIL] High | official law CRLF only: FZOP\r",
+        "[FAIL] Critical | official law exists: TER\r",
+        "[FAIL] High | official law has no BOM: TER\r",
+        "[FAIL] High | official law CRLF only: TER\r",
+        "[FAIL] Critical | official law exists: TK\r",
+        "[FAIL] High | official law has no BOM: TK\r",
+        "[FAIL] High | official law CRLF only: TK\r",
+        "[FAIL] Critical | official law exists: ARG\r",
+        "[FAIL] High | official law has no BOM: ARG\r",
+        "[FAIL] High | official law CRLF only: ARG\r",
+        "[FAIL] Critical | official law exists: UK\r",
+        "[FAIL] High | official law has no BOM: UK\r",
+        "[FAIL] High | official law CRLF only: UK\r",
+        "[FAIL] Critical | official law exists: VV\r",
+        "[FAIL] High | official law has no BOM: VV\r",
+        "[FAIL] High | official law CRLF only: VV\r",
+        "[FAIL] Critical | official law exists: KOAP\r",
+        "[FAIL] High | official law has no BOM: KOAP\r",
+        "[FAIL] High | official law CRLF only: KOAP\r",
+        "[FAIL] Critical | official law exists: PDD\r",
+        "[FAIL] High | official law has no BOM: PDD\r",
+        "[FAIL] High | official law CRLF only: PDD\r",
+        "[FAIL] Critical | official law exists: ORUZH\r",
+        "[FAIL] High | official law has no BOM: ORUZH\r",
+        "[FAIL] High | official law CRLF only: ORUZH\r",
+        "[FAIL] Critical | official law exists: UPK\r",
+        "[FAIL] High | official law has no BOM: UPK\r",
+        "[FAIL] High | official law CRLF only: UPK\r",
+        "[FAIL] Critical | official law exists: KAS\r",
+        "[FAIL] High | official law has no BOM: KAS\r",
+        "[FAIL] High | official law CRLF only: KAS\r",
+        "[FAIL] Critical | official law exists: FSB\r",
+        "[FAIL] High | official law has no BOM: FSB\r",
+        "[FAIL] High | official law CRLF only: FSB\r",
+        "[FAIL] Critical | official law exists: FSIN\r",
+        "[FAIL] High | official law has no BOM: FSIN\r",
+        "[FAIL] High | official law CRLF only: FSIN\r",
+        "[FAIL] Critical | official law exists: VS\r",
+        "[FAIL] High | official law has no BOM: VS\r",
+        "[FAIL] High | official law CRLF only: VS\r",
+        "[FAIL] Critical | official law exists: SUD\r",
+        "[FAIL] High | official law has no BOM: SUD\r",
+        "[FAIL] High | official law CRLF only: SUD\r",
+        "[FAIL] Critical | official law exists: ORD\r",
+        "[FAIL] High | official law has no BOM: ORD\r",
+        "[FAIL] High | official law CRLF only: ORD\r",
+        "[FAIL] Critical | official law exists: GT\r",
+        "[FAIL] High | official law has no BOM: GT\r",
+        "[FAIL] High | official law CRLF only: GT\r",
+        "[FAIL] Critical | Auto ID keeps a validated cache across stable reads\r",
+        "[FAIL] High | NOT_IN_POOL uses soft pool refresh\r"
+      ],
+      "tail": [
+        "Summary: FAIL",
+        "Total checks: 122",
+        "Critical failed: 24",
+        "High failed: 47"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 2,
+      "file": "deep-source-2/fixture_private_input_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks=35 Failed=0 KeyHoldMs=50"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 2,
+      "file": "deep-source-2/traced_autoreport_mocktest_report.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "source",
+      "repeat": 2,
+      "file": "deep-source-2/original_v1_mocktest_report.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "source",
+      "repeat": 2,
+      "file": "deep-source-2/fixture_text_bind_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks=35 | Failed=0"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 2,
+      "file": "deep-source-2/fixture_chat_route_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks=11 Failed=0"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 2,
+      "file": "deep-source-2/traced_desktop_smoke_report.txt",
+      "failures": [
+        "FAIL | compiled standalone host\r",
+        "FAIL | 20 documents available without external laws folder\r"
+      ],
+      "tail": [
+        "Checks=115 | Failed=2"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 2,
+      "file": "deep-source-2/original_diagnostics_report.txt",
+      "failures": [
+        "[FAIL] High | helper exists | D:\\a\\_temp\\deep-source-2-work\\original\\diagnostics\\helper.ahk\r",
+        "[FAIL] High | common exists | D:\\a\\_temp\\deep-source-2-work\\original\\diagnostics\\common.ahk\r",
+        "[FAIL] High | UDF exists | D:\\a\\_temp\\deep-source-2-work\\original\\diagnostics\\UDF.ahk\r",
+        "[FAIL] High | window-title locator and EXE fallback are present\r",
+        "[FAIL] High | RMB target resolver is present\r"
+      ],
+      "tail": [
+        "== Summary ==",
+        "Total checks: 27"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 2,
+      "file": "deep-source-2/fixture_autoid_tracking_report.txt",
+      "failures": [],
+      "tail": [
+        "SUMMARY PASS=37 FAIL=0"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 2,
+      "file": "deep-source-2/fixture_law_windows_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks=510 Failed=0"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 2,
+      "file": "deep-source-2/original_context_assistant_test.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "source",
+      "repeat": 2,
+      "file": "deep-source-2/original_desktop_smoke_report.txt",
+      "failures": [
+        "FAIL | compiled standalone host\r",
+        "FAIL | 20 documents available without external laws folder\r"
+      ],
+      "tail": [
+        "Checks=115 | Failed=2"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 2,
+      "file": "deep-source-2/original_selftest_report.txt",
+      "failures": [
+        "[FAIL] Critical | file exists: helper.ahk\r",
+        "[FAIL] High | CP1251 artifact has no BOM: helper.ahk\r",
+        "[FAIL] High | CRLF only: helper.ahk\r",
+        "[FAIL] Critical | file exists: UDF.ahk\r",
+        "[FAIL] High | CP1251 artifact has no BOM: UDF.ahk\r",
+        "[FAIL] High | CRLF only: UDF.ahk\r",
+        "[FAIL] Critical | file exists: common.ahk\r",
+        "[FAIL] High | CP1251 artifact has no BOM: common.ahk\r",
+        "[FAIL] High | CRLF only: common.ahk\r",
+        "[FAIL] Critical | official law exists: VU\r",
+        "[FAIL] High | official law has no BOM: VU\r",
+        "[FAIL] High | official law CRLF only: VU\r",
+        "[FAIL] Critical | official law exists: FP\r",
+        "[FAIL] High | official law has no BOM: FP\r",
+        "[FAIL] High | official law CRLF only: FP\r",
+        "[FAIL] Critical | official law exists: KON\r",
+        "[FAIL] High | official law has no BOM: KON\r",
+        "[FAIL] High | official law CRLF only: KON\r",
+        "[FAIL] Critical | official law exists: FZOP\r",
+        "[FAIL] High | official law has no BOM: FZOP\r",
+        "[FAIL] High | official law CRLF only: FZOP\r",
+        "[FAIL] Critical | official law exists: TER\r",
+        "[FAIL] High | official law has no BOM: TER\r",
+        "[FAIL] High | official law CRLF only: TER\r",
+        "[FAIL] Critical | official law exists: TK\r",
+        "[FAIL] High | official law has no BOM: TK\r",
+        "[FAIL] High | official law CRLF only: TK\r",
+        "[FAIL] Critical | official law exists: ARG\r",
+        "[FAIL] High | official law has no BOM: ARG\r",
+        "[FAIL] High | official law CRLF only: ARG\r",
+        "[FAIL] Critical | official law exists: UK\r",
+        "[FAIL] High | official law has no BOM: UK\r",
+        "[FAIL] High | official law CRLF only: UK\r",
+        "[FAIL] Critical | official law exists: VV\r",
+        "[FAIL] High | official law has no BOM: VV\r",
+        "[FAIL] High | official law CRLF only: VV\r",
+        "[FAIL] Critical | official law exists: KOAP\r",
+        "[FAIL] High | official law has no BOM: KOAP\r",
+        "[FAIL] High | official law CRLF only: KOAP\r",
+        "[FAIL] Critical | official law exists: PDD\r",
+        "[FAIL] High | official law has no BOM: PDD\r",
+        "[FAIL] High | official law CRLF only: PDD\r",
+        "[FAIL] Critical | official law exists: ORUZH\r",
+        "[FAIL] High | official law has no BOM: ORUZH\r",
+        "[FAIL] High | official law CRLF only: ORUZH\r",
+        "[FAIL] Critical | official law exists: UPK\r",
+        "[FAIL] High | official law has no BOM: UPK\r",
+        "[FAIL] High | official law CRLF only: UPK\r",
+        "[FAIL] Critical | official law exists: KAS\r",
+        "[FAIL] High | official law has no BOM: KAS\r",
+        "[FAIL] High | official law CRLF only: KAS\r",
+        "[FAIL] Critical | official law exists: FSB\r",
+        "[FAIL] High | official law has no BOM: FSB\r",
+        "[FAIL] High | official law CRLF only: FSB\r",
+        "[FAIL] Critical | official law exists: FSIN\r",
+        "[FAIL] High | official law has no BOM: FSIN\r",
+        "[FAIL] High | official law CRLF only: FSIN\r",
+        "[FAIL] Critical | official law exists: VS\r",
+        "[FAIL] High | official law has no BOM: VS\r",
+        "[FAIL] High | official law CRLF only: VS\r",
+        "[FAIL] Critical | official law exists: SUD\r",
+        "[FAIL] High | official law has no BOM: SUD\r",
+        "[FAIL] High | official law CRLF only: SUD\r",
+        "[FAIL] Critical | official law exists: ORD\r",
+        "[FAIL] High | official law has no BOM: ORD\r",
+        "[FAIL] High | official law CRLF only: ORD\r",
+        "[FAIL] Critical | official law exists: GT\r",
+        "[FAIL] High | official law has no BOM: GT\r",
+        "[FAIL] High | official law CRLF only: GT\r",
+        "[FAIL] Critical | Auto ID keeps a validated cache across stable reads\r",
+        "[FAIL] High | NOT_IN_POOL uses soft pool refresh\r"
+      ],
+      "tail": [
+        "Summary: FAIL",
+        "Total checks: 122",
+        "Critical failed: 24",
+        "High failed: 47"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 2,
+      "file": "deep-source-2/original_audit_selftest_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks: 502 | Failed: 0 | Skipped integration groups: 2"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 3,
+      "file": "deep-source-3/traced_diagnostics_report.txt",
+      "failures": [
+        "[FAIL] High | helper exists | D:\\a\\_temp\\deep-source-3-work\\traced\\diagnostics\\helper.ahk\r",
+        "[FAIL] High | common exists | D:\\a\\_temp\\deep-source-3-work\\traced\\diagnostics\\common.ahk\r",
+        "[FAIL] High | UDF exists | D:\\a\\_temp\\deep-source-3-work\\traced\\diagnostics\\UDF.ahk\r",
+        "[FAIL] High | window-title locator and EXE fallback are present\r",
+        "[FAIL] High | RMB target resolver is present\r"
+      ],
+      "tail": [
+        "== Summary ==",
+        "Total checks: 27"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 3,
+      "file": "deep-source-3/original_autoreport_mocktest_report.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "source",
+      "repeat": 3,
+      "file": "deep-source-3/fixture_memory_sequence_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks=13 Failed=0"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 3,
+      "file": "deep-source-3/fixture_game_menu_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks=22 Failed=0"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 3,
+      "file": "deep-source-3/original_law_search_test_report.txt",
+      "failures": [],
+      "tail": [
+        "PASS | 30-result cap and total"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 3,
+      "file": "deep-source-3/traced_audit_selftest_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks: 502 | Failed: 0 | Skipped integration groups: 2"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 3,
+      "file": "deep-source-3/traced_v1_mocktest_report.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "source",
+      "repeat": 3,
+      "file": "deep-source-3/traced_law_search_test_report.txt",
+      "failures": [],
+      "tail": [
+        "PASS | 30-result cap and total"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 3,
+      "file": "deep-source-3/traced_runtime_info_report.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "source",
+      "repeat": 3,
+      "file": "deep-source-3/original_runtime_info_report.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "source",
+      "repeat": 3,
+      "file": "deep-source-3/traced_context_assistant_test.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "source",
+      "repeat": 3,
+      "file": "deep-source-3/traced_selftest_report.txt",
+      "failures": [
+        "[FAIL] Critical | file exists: helper.ahk\r",
+        "[FAIL] High | CP1251 artifact has no BOM: helper.ahk\r",
+        "[FAIL] High | CRLF only: helper.ahk\r",
+        "[FAIL] Critical | file exists: UDF.ahk\r",
+        "[FAIL] High | CP1251 artifact has no BOM: UDF.ahk\r",
+        "[FAIL] High | CRLF only: UDF.ahk\r",
+        "[FAIL] Critical | file exists: common.ahk\r",
+        "[FAIL] High | CP1251 artifact has no BOM: common.ahk\r",
+        "[FAIL] High | CRLF only: common.ahk\r",
+        "[FAIL] Critical | official law exists: VU\r",
+        "[FAIL] High | official law has no BOM: VU\r",
+        "[FAIL] High | official law CRLF only: VU\r",
+        "[FAIL] Critical | official law exists: FP\r",
+        "[FAIL] High | official law has no BOM: FP\r",
+        "[FAIL] High | official law CRLF only: FP\r",
+        "[FAIL] Critical | official law exists: KON\r",
+        "[FAIL] High | official law has no BOM: KON\r",
+        "[FAIL] High | official law CRLF only: KON\r",
+        "[FAIL] Critical | official law exists: FZOP\r",
+        "[FAIL] High | official law has no BOM: FZOP\r",
+        "[FAIL] High | official law CRLF only: FZOP\r",
+        "[FAIL] Critical | official law exists: TER\r",
+        "[FAIL] High | official law has no BOM: TER\r",
+        "[FAIL] High | official law CRLF only: TER\r",
+        "[FAIL] Critical | official law exists: TK\r",
+        "[FAIL] High | official law has no BOM: TK\r",
+        "[FAIL] High | official law CRLF only: TK\r",
+        "[FAIL] Critical | official law exists: ARG\r",
+        "[FAIL] High | official law has no BOM: ARG\r",
+        "[FAIL] High | official law CRLF only: ARG\r",
+        "[FAIL] Critical | official law exists: UK\r",
+        "[FAIL] High | official law has no BOM: UK\r",
+        "[FAIL] High | official law CRLF only: UK\r",
+        "[FAIL] Critical | official law exists: VV\r",
+        "[FAIL] High | official law has no BOM: VV\r",
+        "[FAIL] High | official law CRLF only: VV\r",
+        "[FAIL] Critical | official law exists: KOAP\r",
+        "[FAIL] High | official law has no BOM: KOAP\r",
+        "[FAIL] High | official law CRLF only: KOAP\r",
+        "[FAIL] Critical | official law exists: PDD\r",
+        "[FAIL] High | official law has no BOM: PDD\r",
+        "[FAIL] High | official law CRLF only: PDD\r",
+        "[FAIL] Critical | official law exists: ORUZH\r",
+        "[FAIL] High | official law has no BOM: ORUZH\r",
+        "[FAIL] High | official law CRLF only: ORUZH\r",
+        "[FAIL] Critical | official law exists: UPK\r",
+        "[FAIL] High | official law has no BOM: UPK\r",
+        "[FAIL] High | official law CRLF only: UPK\r",
+        "[FAIL] Critical | official law exists: KAS\r",
+        "[FAIL] High | official law has no BOM: KAS\r",
+        "[FAIL] High | official law CRLF only: KAS\r",
+        "[FAIL] Critical | official law exists: FSB\r",
+        "[FAIL] High | official law has no BOM: FSB\r",
+        "[FAIL] High | official law CRLF only: FSB\r",
+        "[FAIL] Critical | official law exists: FSIN\r",
+        "[FAIL] High | official law has no BOM: FSIN\r",
+        "[FAIL] High | official law CRLF only: FSIN\r",
+        "[FAIL] Critical | official law exists: VS\r",
+        "[FAIL] High | official law has no BOM: VS\r",
+        "[FAIL] High | official law CRLF only: VS\r",
+        "[FAIL] Critical | official law exists: SUD\r",
+        "[FAIL] High | official law has no BOM: SUD\r",
+        "[FAIL] High | official law CRLF only: SUD\r",
+        "[FAIL] Critical | official law exists: ORD\r",
+        "[FAIL] High | official law has no BOM: ORD\r",
+        "[FAIL] High | official law CRLF only: ORD\r",
+        "[FAIL] Critical | official law exists: GT\r",
+        "[FAIL] High | official law has no BOM: GT\r",
+        "[FAIL] High | official law CRLF only: GT\r",
+        "[FAIL] Critical | Auto ID keeps a validated cache across stable reads\r",
+        "[FAIL] High | NOT_IN_POOL uses soft pool refresh\r"
+      ],
+      "tail": [
+        "Summary: FAIL",
+        "Total checks: 122",
+        "Critical failed: 24",
+        "High failed: 47"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 3,
+      "file": "deep-source-3/fixture_private_input_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks=35 Failed=0 KeyHoldMs=50"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 3,
+      "file": "deep-source-3/traced_autoreport_mocktest_report.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "source",
+      "repeat": 3,
+      "file": "deep-source-3/original_v1_mocktest_report.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "source",
+      "repeat": 3,
+      "file": "deep-source-3/fixture_text_bind_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks=35 | Failed=0"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 3,
+      "file": "deep-source-3/fixture_chat_route_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks=11 Failed=0"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 3,
+      "file": "deep-source-3/traced_desktop_smoke_report.txt",
+      "failures": [
+        "FAIL | compiled standalone host\r",
+        "FAIL | 20 documents available without external laws folder\r"
+      ],
+      "tail": [
+        "Checks=115 | Failed=2"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 3,
+      "file": "deep-source-3/original_diagnostics_report.txt",
+      "failures": [
+        "[FAIL] High | helper exists | D:\\a\\_temp\\deep-source-3-work\\original\\diagnostics\\helper.ahk\r",
+        "[FAIL] High | common exists | D:\\a\\_temp\\deep-source-3-work\\original\\diagnostics\\common.ahk\r",
+        "[FAIL] High | UDF exists | D:\\a\\_temp\\deep-source-3-work\\original\\diagnostics\\UDF.ahk\r",
+        "[FAIL] High | window-title locator and EXE fallback are present\r",
+        "[FAIL] High | RMB target resolver is present\r"
+      ],
+      "tail": [
+        "== Summary ==",
+        "Total checks: 27"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 3,
+      "file": "deep-source-3/fixture_autoid_tracking_report.txt",
+      "failures": [],
+      "tail": [
+        "SUMMARY PASS=37 FAIL=0"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 3,
+      "file": "deep-source-3/fixture_law_windows_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks=510 Failed=0"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 3,
+      "file": "deep-source-3/original_context_assistant_test.txt",
+      "failures": [],
+      "tail": []
+    },
+    {
+      "form": "source",
+      "repeat": 3,
+      "file": "deep-source-3/original_desktop_smoke_report.txt",
+      "failures": [
+        "FAIL | compiled standalone host\r",
+        "FAIL | 20 documents available without external laws folder\r"
+      ],
+      "tail": [
+        "Checks=115 | Failed=2"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 3,
+      "file": "deep-source-3/original_selftest_report.txt",
+      "failures": [
+        "[FAIL] Critical | file exists: helper.ahk\r",
+        "[FAIL] High | CP1251 artifact has no BOM: helper.ahk\r",
+        "[FAIL] High | CRLF only: helper.ahk\r",
+        "[FAIL] Critical | file exists: UDF.ahk\r",
+        "[FAIL] High | CP1251 artifact has no BOM: UDF.ahk\r",
+        "[FAIL] High | CRLF only: UDF.ahk\r",
+        "[FAIL] Critical | file exists: common.ahk\r",
+        "[FAIL] High | CP1251 artifact has no BOM: common.ahk\r",
+        "[FAIL] High | CRLF only: common.ahk\r",
+        "[FAIL] Critical | official law exists: VU\r",
+        "[FAIL] High | official law has no BOM: VU\r",
+        "[FAIL] High | official law CRLF only: VU\r",
+        "[FAIL] Critical | official law exists: FP\r",
+        "[FAIL] High | official law has no BOM: FP\r",
+        "[FAIL] High | official law CRLF only: FP\r",
+        "[FAIL] Critical | official law exists: KON\r",
+        "[FAIL] High | official law has no BOM: KON\r",
+        "[FAIL] High | official law CRLF only: KON\r",
+        "[FAIL] Critical | official law exists: FZOP\r",
+        "[FAIL] High | official law has no BOM: FZOP\r",
+        "[FAIL] High | official law CRLF only: FZOP\r",
+        "[FAIL] Critical | official law exists: TER\r",
+        "[FAIL] High | official law has no BOM: TER\r",
+        "[FAIL] High | official law CRLF only: TER\r",
+        "[FAIL] Critical | official law exists: TK\r",
+        "[FAIL] High | official law has no BOM: TK\r",
+        "[FAIL] High | official law CRLF only: TK\r",
+        "[FAIL] Critical | official law exists: ARG\r",
+        "[FAIL] High | official law has no BOM: ARG\r",
+        "[FAIL] High | official law CRLF only: ARG\r",
+        "[FAIL] Critical | official law exists: UK\r",
+        "[FAIL] High | official law has no BOM: UK\r",
+        "[FAIL] High | official law CRLF only: UK\r",
+        "[FAIL] Critical | official law exists: VV\r",
+        "[FAIL] High | official law has no BOM: VV\r",
+        "[FAIL] High | official law CRLF only: VV\r",
+        "[FAIL] Critical | official law exists: KOAP\r",
+        "[FAIL] High | official law has no BOM: KOAP\r",
+        "[FAIL] High | official law CRLF only: KOAP\r",
+        "[FAIL] Critical | official law exists: PDD\r",
+        "[FAIL] High | official law has no BOM: PDD\r",
+        "[FAIL] High | official law CRLF only: PDD\r",
+        "[FAIL] Critical | official law exists: ORUZH\r",
+        "[FAIL] High | official law has no BOM: ORUZH\r",
+        "[FAIL] High | official law CRLF only: ORUZH\r",
+        "[FAIL] Critical | official law exists: UPK\r",
+        "[FAIL] High | official law has no BOM: UPK\r",
+        "[FAIL] High | official law CRLF only: UPK\r",
+        "[FAIL] Critical | official law exists: KAS\r",
+        "[FAIL] High | official law has no BOM: KAS\r",
+        "[FAIL] High | official law CRLF only: KAS\r",
+        "[FAIL] Critical | official law exists: FSB\r",
+        "[FAIL] High | official law has no BOM: FSB\r",
+        "[FAIL] High | official law CRLF only: FSB\r",
+        "[FAIL] Critical | official law exists: FSIN\r",
+        "[FAIL] High | official law has no BOM: FSIN\r",
+        "[FAIL] High | official law CRLF only: FSIN\r",
+        "[FAIL] Critical | official law exists: VS\r",
+        "[FAIL] High | official law has no BOM: VS\r",
+        "[FAIL] High | official law CRLF only: VS\r",
+        "[FAIL] Critical | official law exists: SUD\r",
+        "[FAIL] High | official law has no BOM: SUD\r",
+        "[FAIL] High | official law CRLF only: SUD\r",
+        "[FAIL] Critical | official law exists: ORD\r",
+        "[FAIL] High | official law has no BOM: ORD\r",
+        "[FAIL] High | official law CRLF only: ORD\r",
+        "[FAIL] Critical | official law exists: GT\r",
+        "[FAIL] High | official law has no BOM: GT\r",
+        "[FAIL] High | official law CRLF only: GT\r",
+        "[FAIL] Critical | Auto ID keeps a validated cache across stable reads\r",
+        "[FAIL] High | NOT_IN_POOL uses soft pool refresh\r"
+      ],
+      "tail": [
+        "Summary: FAIL",
+        "Total checks: 122",
+        "Critical failed: 24",
+        "High failed: 47"
+      ]
+    },
+    {
+      "form": "source",
+      "repeat": 3,
+      "file": "deep-source-3/original_audit_selftest_report.txt",
+      "failures": [],
+      "tail": [
+        "Checks: 502 | Failed: 0 | Skipped integration groups: 2"
+      ]
+    }
+  ],
+  "not_entered": [
+    {
+      "name": "AppHost_ExportLicenses",
+      "file": "app/host.ahk",
+      "line": 248
+    },
+    {
+      "name": "AZMP_TickElapsed",
+      "file": "UDF.ahk",
+      "line": 66
+    },
+    {
+      "name": "AZMP_CacheTarget",
+      "file": "UDF.ahk",
+      "line": 89
+    },
+    {
+      "name": "AZMP_TargetDiagSet",
+      "file": "UDF.ahk",
+      "line": 104
+    },
+    {
+      "name": "AZMP_TargetDiagSetContext",
+      "file": "UDF.ahk",
+      "line": 143
+    },
+    {
+      "name": "AZMP_TargetDiagIsCurrent",
+      "file": "UDF.ahk",
+      "line": 167
+    },
+    {
+      "name": "AZMP_TargetDiagGetStreak",
+      "file": "UDF.ahk",
+      "line": 179
+    },
+    {
+      "name": "AZMP_TargetDiagGetCode",
+      "file": "UDF.ahk",
+      "line": 199
+    },
+    {
+      "name": "AZMP_TargetDiagGetDetail",
+      "file": "UDF.ahk",
+      "line": 204
+    },
+    {
+      "name": "AZMP_TargetDiagGetText",
+      "file": "UDF.ahk",
+      "line": 209
+    },
+    {
+      "name": "AZMP_TargetDiagSuccess",
+      "file": "UDF.ahk",
+      "line": 215
+    },
+    {
+      "name": "AZMP_TargetDiagMaybeRecover",
+      "file": "UDF.ahk",
+      "line": 227
+    },
+    {
+      "name": "AZMP_TargetDiagGetRecoveryStatus",
+      "file": "UDF.ahk",
+      "line": 280
+    },
+    {
+      "name": "AZMP_TargetDiagMaybeRefreshNotInPool",
+      "file": "UDF.ahk",
+      "line": 285
+    },
+    {
+      "name": "AZMP_ReadProcessByte",
+      "file": "UDF.ahk",
+      "line": 318
+    },
+    {
+      "name": "AZMP_GetGtaPedPoolInfo",
+      "file": "UDF.ahk",
+      "line": 371
+    },
+    {
+      "name": "AZMP_PedFitsPoolSnapshot",
+      "file": "UDF.ahk",
+      "line": 421
+    },
+    {
+      "name": "AZMP_IsPedInGtaPool",
+      "file": "UDF.ahk",
+      "line": 434
+    },
+    {
+      "name": "AZMP_IsValidGamePed",
+      "file": "UDF.ahk",
+      "line": 459
+    },
+    {
+      "name": "AZMP_AddPedCandidate",
+      "file": "UDF.ahk",
+      "line": 473
+    },
+    {
+      "name": "AZMP_ReadGamePedLinks",
+      "file": "UDF.ahk",
+      "line": 490
+    },
+    {
+      "name": "AZMP_GetGamePedCandidates",
+      "file": "UDF.ahk",
+      "line": 511
+    },
+    {
+      "name": "AZMP_PlayerInfoMatchesPed",
+      "file": "UDF.ahk",
+      "line": 539
+    },
+    {
+      "name": "isPlayerInAnyVehicle",
+      "file": "UDF.ahk",
+      "line": 556
+    },
+    {
+      "name": "getPlayerCoordinates",
+      "file": "UDF.ahk",
+      "line": 565
+    },
+    {
+      "name": "getCameraCoordinates",
+      "file": "UDF.ahk",
+      "line": 574
+    },
+    {
+      "name": "addChatMessageEx",
+      "file": "UDF.ahk",
+      "line": 619
+    },
+    {
+      "name": "showDialog",
+      "file": "UDF.ahk",
+      "line": 665
+    },
+    {
+      "name": "AZMP_GetPools",
+      "file": "UDF.ahk",
+      "line": 740
+    },
+    {
+      "name": "AZMP_GetPlayerPool",
+      "file": "UDF.ahk",
+      "line": 750
+    },
+    {
+      "name": "AZMP_GetLabelPool",
+      "file": "UDF.ahk",
+      "line": 758
+    },
+    {
+      "name": "AZMP_IsPlayerListed",
+      "file": "UDF.ahk",
+      "line": 766
+    },
+    {
+      "name": "AZMP_GetPlayerInfo",
+      "file": "UDF.ahk",
+      "line": 778
+    },
+    {
+      "name": "AZMP_ReadProcessString",
+      "file": "UDF.ahk",
+      "line": 792
+    },
+    {
+      "name": "AZMP_ReadCString",
+      "file": "UDF.ahk",
+      "line": 815
+    },
+    {
+      "name": "AZMP_CleanWorldLabelText",
+      "file": "UDF.ahk",
+      "line": 843
+    },
+    {
+      "name": "AZMP_ExtractMaskNumber",
+      "file": "UDF.ahk",
+      "line": 854
+    },
+    {
+      "name": "AZMP_IsMaskDisplayName",
+      "file": "UDF.ahk",
+      "line": 870
+    },
+    {
+      "name": "AZMP_ReadRemoteStdString",
+      "file": "UDF.ahk",
+      "line": 874
+    },
+    {
+      "name": "AZMP_GetNicknameFromPlayerInfo",
+      "file": "UDF.ahk",
+      "line": 894
+    },
+    {
+      "name": "getPlayerNameById",
+      "file": "UDF.ahk",
+      "line": 901
+    },
+    {
+      "name": "getPlayerPedById",
+      "file": "UDF.ahk",
+      "line": 906
+    },
+    {
+      "name": "AZMP_GetGamePedFromPlayerInfo",
+      "file": "UDF.ahk",
+      "line": 917
+    },
+    {
+      "name": "AZMP_GetGamePedCoordinates",
+      "file": "UDF.ahk",
+      "line": 942
+    },
+    {
+      "name": "AZMP_GetPedDistance",
+      "file": "UDF.ahk",
+      "line": 993
+    },
+    {
+      "name": "getPlayerDataByPed",
+      "file": "UDF.ahk",
+      "line": 1018
+    },
+    {
+      "name": "getMaskDataByPed",
+      "file": "UDF.ahk",
+      "line": 1246
+    },
+    {
+      "name": "AZMP_TargetDiagnosticSnapshot",
+      "file": "UDF.ahk",
+      "line": 1368
+    },
+    {
+      "name": "getPlayerIdByPed",
+      "file": "UDF.ahk",
+      "line": 1459
+    },
+    {
+      "name": "GameLocator_GetPID",
+      "file": "common.ahk",
+      "line": 140
+    },
+    {
+      "name": "GameLocator_Activate",
+      "file": "common.ahk",
+      "line": 152
+    },
+    {
+      "name": "MemoryGetStatusText",
+      "file": "common.ahk",
+      "line": 170
+    },
+    {
+      "name": "MemoryGetShortError",
+      "file": "common.ahk",
+      "line": 180
+    },
+    {
+      "name": "GetFileVersionSafe",
+      "file": "common.ahk",
+      "line": 219
+    },
+    {
+      "name": "ProcessHandleIsValid",
+      "file": "common.ahk",
+      "line": 318
+    },
+    {
+      "name": "MemoryInvalidateGameHandle",
+      "file": "common.ahk",
+      "line": 332
+    },
+    {
+      "name": "waitForSingleObject",
+      "file": "common.ahk",
+      "line": 421
+    },
+    {
+      "name": "virtualFreeEx",
+      "file": "common.ahk",
+      "line": 454
+    },
+    {
+      "name": "virtualAllocEx",
+      "file": "common.ahk",
+      "line": 468
+    },
+    {
+      "name": "readDWORD",
+      "file": "common.ahk",
+      "line": 613
+    },
+    {
+      "name": "readFloat",
+      "file": "common.ahk",
+      "line": 633
+    },
+    {
+      "name": "getModuleBaseAddress",
+      "file": "common.ahk",
+      "line": 636
+    },
+    {
+      "name": "openProcess",
+      "file": "common.ahk",
+      "line": 690
+    },
+    {
+      "name": "refreshMemory",
+      "file": "common.ahk",
+      "line": 700
+    },
+    {
+      "name": "refreshSAMP",
+      "file": "common.ahk",
+      "line": 716
+    },
+    {
+      "name": "checkHandles",
+      "file": "common.ahk",
+      "line": 805
+    },
+    {
+      "name": "__unicodeToAnsi",
+      "file": "common.ahk",
+      "line": 913
+    },
+    {
+      "name": "MemoryShutdown",
+      "file": "common.ahk",
+      "line": 1113
+    },
+    {
+      "name": "Capture_Supported",
+      "file": "runtime_support.ahk",
+      "line": 486
+    },
+    {
+      "name": "Settings_ScrollMessage",
+      "file": "runtime_support.ahk",
+      "line": 835
+    },
+    {
+      "name": "Settings_MouseWheel",
+      "file": "runtime_support.ahk",
+      "line": 867
+    },
+    {
+      "name": "JoinStrings",
+      "file": "runtime_support.ahk",
+      "line": 943
+    },
+    {
+      "name": "ImageDimensionsBounded",
+      "file": "runtime_support.ahk",
+      "line": 964
+    },
+    {
+      "name": "TypeChatForEpoch",
+      "file": "runtime_support.ahk",
+      "line": 1063
+    },
+    {
+      "name": "PasteChatForEpoch",
+      "file": "runtime_support.ahk",
+      "line": 1194
+    },
+    {
+      "name": "QueueBatch_Wait",
+      "file": "runtime_support.ahk",
+      "line": 1251
+    },
+    {
+      "name": "ChatTyping_WaitForChatOpen",
+      "file": "chat_typing.ahk",
+      "line": 260
+    },
+    {
+      "name": "IDCapture_Start",
+      "file": "id_capture.ahk",
+      "line": 10
+    },
+    {
+      "name": "IDCapture_ContextIsCurrent",
+      "file": "id_capture.ahk",
+      "line": 95
+    },
+    {
+      "name": "IDCapture_GetModifierMask",
+      "file": "id_capture.ahk",
+      "line": 101
+    },
+    {
+      "name": "IDCapture_GetInitialKeys",
+      "file": "id_capture.ahk",
+      "line": 109
+    },
+    {
+      "name": "IDCapture_KeyboardProc",
+      "file": "id_capture.ahk",
+      "line": 167
+    },
+    {
+      "name": "IDCapture_CreateGui",
+      "file": "id_capture.ahk",
+      "line": 234
+    },
+    {
+      "name": "IDCapture_Tick",
+      "file": "id_capture.ahk",
+      "line": 270
+    },
+    {
+      "name": "IDCapture_RemoveHook",
+      "file": "id_capture.ahk",
+      "line": 346
+    },
+    {
+      "name": "IDCapture_RetryUnhooks",
+      "file": "id_capture.ahk",
+      "line": 351
+    },
+    {
+      "name": "ServiceUI_Message",
+      "file": "service_ui.ahk",
+      "line": 132
+    },
+    {
+      "name": "ServiceDetailsGuiClose",
+      "file": "service_ui.ahk",
+      "line": 167
+    },
+    {
+      "name": "ServiceDetailsGuiEscape",
+      "file": "service_ui.ahk",
+      "line": 171
+    },
+    {
+      "name": "ServiceUI_ResolveConfirm",
+      "file": "service_ui.ahk",
+      "line": 538
+    },
+    {
+      "name": "ServiceConfirmGuiClose",
+      "file": "service_ui.ahk",
+      "line": 556
+    },
+    {
+      "name": "ServiceConfirmGuiEscape",
+      "file": "service_ui.ahk",
+      "line": 560
+    },
+    {
+      "name": "LawCorpus_FindSplitPosition",
+      "file": "helper.ahk",
+      "line": 144
+    },
+    {
+      "name": "LawCorpus_Reset",
+      "file": "helper.ahk",
+      "line": 178
+    },
+    {
+      "name": "LawDoc_GetCurrentPage",
+      "file": "helper.ahk",
+      "line": 248
+    },
+    {
+      "name": "TerritoryMap_GetModeDisplay",
+      "file": "helper.ahk",
+      "line": 282
+    },
+    {
+      "name": "TerritoryMap_ShowCatalog",
+      "file": "helper.ahk",
+      "line": 288
+    },
+    {
+      "name": "TerritoryMap_OpenSelected",
+      "file": "helper.ahk",
+      "line": 324
+    },
+    {
+      "name": "TerritoryMap_OpenOfficial",
+      "file": "helper.ahk",
+      "line": 341
+    },
+    {
+      "name": "TerritoryMap_ShowLocal",
+      "file": "helper.ahk",
+      "line": 359
+    },
+    {
+      "name": "TerritoryMap_GetImageSize",
+      "file": "helper.ahk",
+      "line": 464
+    },
+    {
+      "name": "TerritoryMap_IsThumbnail",
+      "file": "helper.ahk",
+      "line": 488
+    },
+    {
+      "name": "TerritoryMap_PreviousAsset",
+      "file": "helper.ahk",
+      "line": 493
+    },
+    {
+      "name": "TerritoryMap_NextAsset",
+      "file": "helper.ahk",
+      "line": 498
+    },
+    {
+      "name": "TerritoryMap_Navigate",
+      "file": "helper.ahk",
+      "line": 503
+    },
+    {
+      "name": "TerritoryMap_OpenCurrentForum",
+      "file": "helper.ahk",
+      "line": 519
+    },
+    {
+      "name": "TerritoryMap_OpenCurrentLocal",
+      "file": "helper.ahk",
+      "line": 528
+    },
+    {
+      "name": "TerritoryMap_ShellOpen",
+      "file": "helper.ahk",
+      "line": 548
+    },
+    {
+      "name": "TerritoryMap_CloseCatalog",
+      "file": "helper.ahk",
+      "line": 574
+    },
+    {
+      "name": "TerritoryMap_CloseView",
+      "file": "helper.ahk",
+      "line": 582
+    },
+    {
+      "name": "LawGui_FormatBody",
+      "file": "helper.ahk",
+      "line": 700
+    },
+    {
+      "name": "LawGui_GetDocPrefixFromTitle",
+      "file": "helper.ahk",
+      "line": 727
+    },
+    {
+      "name": "LawGui_FormatBodyCore",
+      "file": "helper.ahk",
+      "line": 762
+    },
+    {
+      "name": "LawGui_GetIndent",
+      "file": "helper.ahk",
+      "line": 923
+    },
+    {
+      "name": "LawGui_FormatStructureDisplay",
+      "file": "helper.ahk",
+      "line": 930
+    },
+    {
+      "name": "LawSearch_PageCount",
+      "file": "helper.ahk",
+      "line": 2929
+    },
+    {
+      "name": "LawSearch_AddDocFromPages",
+      "file": "helper.ahk",
+      "line": 2993
+    },
+    {
+      "name": "LawSearch_IsStructuralLine",
+      "file": "helper.ahk",
+      "line": 3306
+    },
+    {
+      "name": "LawSearch_NumericLineHasNestedChildren",
+      "file": "helper.ahk",
+      "line": 3453
+    },
+    {
+      "name": "LawSearch_FlushItem",
+      "file": "helper.ahk",
+      "line": 3501
+    },
+    {
+      "name": "LawSearch_IsMajorHeading",
+      "file": "helper.ahk",
+      "line": 3512
+    },
+    {
+      "name": "LawSearch_IsItemStart",
+      "file": "helper.ahk",
+      "line": 3517
+    },
+    {
+      "name": "LawSearch_GetPointId",
+      "file": "helper.ahk",
+      "line": 3532
+    },
+    {
+      "name": "LawSearch_GetItemTitle",
+      "file": "helper.ahk",
+      "line": 3639
+    },
+    {
+      "name": "LawSearch_GetItemNormTitle",
+      "file": "helper.ahk",
+      "line": 3667
+    },
+    {
+      "name": "LawSearch_GetItemNormBody",
+      "file": "helper.ahk",
+      "line": 3676
+    },
+    {
+      "name": "LawSearch_SelectMode",
+      "file": "helper.ahk",
+      "line": 3687
+    },
+    {
+      "name": "LawSearch_ModeHotstring",
+      "file": "helper.ahk",
+      "line": 3706
+    },
+    {
+      "name": "LawSearch_WaitForQuery",
+      "file": "helper.ahk",
+      "line": 3712
+    },
+    {
+      "name": "LawSearch_RunActive",
+      "file": "helper.ahk",
+      "line": 3716
+    },
+    {
+      "name": "LawSearch_RunActiveFromClipboard",
+      "file": "helper.ahk",
+      "line": 3745
+    },
+    {
+      "name": "LawSearch_RunActiveFromChat",
+      "file": "helper.ahk",
+      "line": 3766
+    },
+    {
+      "name": "LawSearch_DebugQuery",
+      "file": "helper.ahk",
+      "line": 3851
+    },
+    {
+      "name": "LawSearch_DebugEscape",
+      "file": "helper.ahk",
+      "line": 3876
+    },
+    {
+      "name": "LawSearch_DebugCharCodes",
+      "file": "helper.ahk",
+      "line": 3887
+    },
+    {
+      "name": "LawSearch_DebugWords",
+      "file": "helper.ahk",
+      "line": 3902
+    },
+    {
+      "name": "LawSearch_Run",
+      "file": "helper.ahk",
+      "line": 3933
+    },
+    {
+      "name": "LawSearch_Score",
+      "file": "helper.ahk",
+      "line": 3987
+    },
+    {
+      "name": "LawSearch_MinScore",
+      "file": "helper.ahk",
+      "line": 3994
+    },
+    {
+      "name": "LawSearch_GetMeaningfulWords",
+      "file": "helper.ahk",
+      "line": 3999
+    },
+    {
+      "name": "LawSearch_WordMatchScore",
+      "file": "helper.ahk",
+      "line": 4013
+    },
+    {
+      "name": "LawSearch_HasStemWord",
+      "file": "helper.ahk",
+      "line": 4043
+    },
+    {
+      "name": "LawSearch_InsertResult",
+      "file": "helper.ahk",
+      "line": 4101
+    },
+    {
+      "name": "Search_ShowNextResult",
+      "file": "helper.ahk",
+      "line": 4107
+    },
+    {
+      "name": "Search_ShowPrevResult",
+      "file": "helper.ahk",
+      "line": 4127
+    },
+    {
+      "name": "LawSearch_GetShellAccentColor",
+      "file": "helper.ahk",
+      "line": 4146
+    },
+    {
+      "name": "LawSearch_CountDisplayLines",
+      "file": "helper.ahk",
+      "line": 4326
+    },
+    {
+      "name": "LawSearch_GetCurrentPartCount",
+      "file": "helper.ahk",
+      "line": 4340
+    },
+    {
+      "name": "LawSearch_WrapDisplayText",
+      "file": "helper.ahk",
+      "line": 4371
+    },
+    {
+      "name": "LawSearch_WrapLineToArray",
+      "file": "helper.ahk",
+      "line": 4383
+    },
+    {
+      "name": "LawSearch_ShowNotice",
+      "file": "helper.ahk",
+      "line": 4418
+    },
+    {
+      "name": "LawSearch_MergeTokenSets",
+      "file": "helper.ahk",
+      "line": 4804
+    },
+    {
+      "name": "LawSearch_StemToken",
+      "file": "helper.ahk",
+      "line": 4860
+    },
+    {
+      "name": "LawSearch_QueryHasWord",
+      "file": "helper.ahk",
+      "line": 5240
+    },
+    {
+      "name": "LawSearch_FindFuzzyToken",
+      "file": "helper.ahk",
+      "line": 5466
+    },
+    {
+      "name": "LawSearch_LevenshteinCacheStore",
+      "file": "helper.ahk",
+      "line": 5990
+    },
+    {
+      "name": "LawSearch_LevenshteinWithin",
+      "file": "helper.ahk",
+      "line": 6011
+    },
+    {
+      "name": "LawSearch_ArticleSortBonus",
+      "file": "helper.ahk",
+      "line": 6023
+    },
+    {
+      "name": "LawSearch_CheckScope",
+      "file": "helper.ahk",
+      "line": 6171
+    },
+    {
+      "name": "LawSearch_CheckMultipleDocs",
+      "file": "helper.ahk",
+      "line": 6182
+    },
+    {
+      "name": "LogUIError",
+      "file": "app/core.ahk",
+      "line": 111
+    },
+    {
+      "name": "NormalizeSingleLineValue",
+      "file": "app/core.ahk",
+      "line": 234
+    },
+    {
+      "name": "PlayStopTimerSound",
+      "file": "app/core.ahk",
+      "line": 320
+    },
+    {
+      "name": "GameInterface_ShowDialog",
+      "file": "app/core.ahk",
+      "line": 362
+    },
+    {
+      "name": "FormatRussianMinutes",
+      "file": "app/core.ahk",
+      "line": 383
+    },
+    {
+      "name": "MDSApplyTemplate",
+      "file": "app/core.ahk",
+      "line": 400
+    },
+    {
+      "name": "MDSFormationInitialText",
+      "file": "app/core.ahk",
+      "line": 411
+    },
+    {
+      "name": "MDSFormationCountdownText",
+      "file": "app/core.ahk",
+      "line": 416
+    },
+    {
+      "name": "MDSFormationFinishText",
+      "file": "app/core.ahk",
+      "line": 423
+    },
+    {
+      "name": "CloseEmptyChatAfterMDSInput",
+      "file": "app/core.ahk",
+      "line": 428
+    },
+    {
+      "name": "HandleGuiHotkeyDispatch",
+      "file": "app/core.ahk",
+      "line": 467
+    },
+    {
+      "name": "ExtractFirstNumber",
+      "file": "app/core.ahk",
+      "line": 584
+    },
+    {
+      "name": "GetLawDocMeta",
+      "file": "app/core.ahk",
+      "line": 591
+    },
+    {
+      "name": "RunSelfTest",
+      "file": "app/diagnostics.ahk",
+      "line": 667
+    },
+    {
+      "name": "SelfTest_BraceBalance",
+      "file": "app/diagnostics.ahk",
+      "line": 763
+    },
+    {
+      "name": "SelfTest_ContinuationBalance",
+      "file": "app/diagnostics.ahk",
+      "line": 775
+    },
+    {
+      "name": "SelfTest_CheckSyntaxText",
+      "file": "app/diagnostics.ahk",
+      "line": 789
+    },
+    {
+      "name": "Diagnostics_AppendList",
+      "file": "app/diagnostics.ahk",
+      "line": 1136
+    },
+    {
+      "name": "MemoryLiveTest_WriteReport",
+      "file": "app/diagnostics.ahk",
+      "line": 1220
+    },
+    {
+      "name": "MemoryLiveTest_Finish",
+      "file": "app/diagnostics.ahk",
+      "line": 1242
+    },
+    {
+      "name": "MemoryLiveTest_SendRussian",
+      "file": "app/diagnostics.ahk",
+      "line": 1252
+    },
+    {
+      "name": "RunMemoryLiveTest",
+      "file": "app/diagnostics.ahk",
+      "line": 1265
+    },
+    {
+      "name": "SaveThemePreset",
+      "file": "app/profiles.ahk",
+      "line": 33
+    },
+    {
+      "name": "LoadThemePreset",
+      "file": "app/profiles.ahk",
+      "line": 49
+    },
+    {
+      "name": "WriteHudWindowStateToIni",
+      "file": "app/profiles.ahk",
+      "line": 557
+    },
+    {
+      "name": "WriteBindListWindowStateToIni",
+      "file": "app/profiles.ahk",
+      "line": 565
+    },
+    {
+      "name": "WriteSettingsWindowStateToIni",
+      "file": "app/profiles.ahk",
+      "line": 575
+    },
+    {
+      "name": "SaveHUDWindowState",
+      "file": "app/profiles.ahk",
+      "line": 587
+    },
+    {
+      "name": "SaveBindListWindowState",
+      "file": "app/profiles.ahk",
+      "line": 594
+    },
+    {
+      "name": "ApplyProfileModePreset",
+      "file": "app/profiles.ahk",
+      "line": 608
+    },
+    {
+      "name": "SaveGuiToGlobals",
+      "file": "app/profiles.ahk",
+      "line": 774
+    },
+    {
+      "name": "CopyIniFileWithOverwrite",
+      "file": "app/profiles.ahk",
+      "line": 830
+    },
+    {
+      "name": "RefreshAfterProfilesImport",
+      "file": "app/profiles.ahk",
+      "line": 850
+    },
+    {
+      "name": "RefreshAfterThemeImport",
+      "file": "app/profiles.ahk",
+      "line": 860
+    },
+    {
+      "name": "GetFirstProfileName",
+      "file": "app/profiles.ahk",
+      "line": 1301
+    },
+    {
+      "name": "AddProfileToList",
+      "file": "app/profiles.ahk",
+      "line": 1311
+    },
+    {
+      "name": "RemoveProfileFromList",
+      "file": "app/profiles.ahk",
+      "line": 1335
+    },
+    {
+      "name": "WriteCurrentThemeToFile",
+      "file": "app/profiles.ahk",
+      "line": 1363
+    },
+    {
+      "name": "LoadThemeFromFile",
+      "file": "app/profiles.ahk",
+      "line": 1389
+    },
+    {
+      "name": "ExportProfilesPack",
+      "file": "app/profiles.ahk",
+      "line": 1429
+    },
+    {
+      "name": "ValidateProfilesImportFile",
+      "file": "app/profiles.ahk",
+      "line": 1451
+    },
+    {
+      "name": "ImportProfilesPack",
+      "file": "app/profiles.ahk",
+      "line": 1509
+    },
+    {
+      "name": "ExportThemeToFile",
+      "file": "app/profiles.ahk",
+      "line": 1539
+    },
+    {
+      "name": "ImportThemeFromExternalFile",
+      "file": "app/profiles.ahk",
+      "line": 1553
+    },
+    {
+      "name": "GetReplacementProfileAfterDelete",
+      "file": "app/profiles.ahk",
+      "line": 1842
+    },
+    {
+      "name": "DeleteProfile",
+      "file": "app/profiles.ahk",
+      "line": 2181
+    },
+    {
+      "name": "IsBuiltInThemeName",
+      "file": "app/ui_settings.ahk",
+      "line": 192
+    },
+    {
+      "name": "SetSettingsWindowState",
+      "file": "app/ui_settings.ahk",
+      "line": 292
+    },
+    {
+      "name": "ResetStyleDefaults",
+      "file": "app/ui_settings.ahk",
+      "line": 312
+    },
+    {
+      "name": "ApplyGuiSettingsAuto",
+      "file": "app/ui_settings.ahk",
+      "line": 379
+    },
+    {
+      "name": "SettingsActionAllowed",
+      "file": "app/ui_settings.ahk",
+      "line": 437
+    },
+    {
+      "name": "ToggleSettings",
+      "file": "app/ui_settings.ahk",
+      "line": 450
+    },
+    {
+      "name": "Settings_AddAssistantCard",
+      "file": "app/ui_settings.ahk",
+      "line": 622
+    },
+    {
+      "name": "ApplyCfgConfigOnlyProfileFieldsToGlobals",
+      "file": "app/ui_settings.ahk",
+      "line": 1081
+    },
+    {
+      "name": "ApplyCfgCatalogValuesToGlobals",
+      "file": "app/ui_settings.ahk",
+      "line": 1106
+    },
+    {
+      "name": "ApplyCfgUiValuesToGlobals",
+      "file": "app/ui_settings.ahk",
+      "line": 1125
+    },
+    {
+      "name": "ApplyCfgProfileIdentityValuesToGlobals",
+      "file": "app/ui_settings.ahk",
+      "line": 1296
+    },
+    {
+      "name": "ApplyCfgTemplateAndRpTextsToGlobals",
+      "file": "app/ui_settings.ahk",
+      "line": 1312
+    },
+    {
+      "name": "RebuildFloatingGUI",
+      "file": "app/ui_overlays.ahk",
+      "line": 14
+    },
+    {
+      "name": "BindMenuWarn",
+      "file": "app/ui_overlays.ahk",
+      "line": 113
+    },
+    {
+      "name": "BindMenuHotkeyBlockedWarn",
+      "file": "app/ui_overlays.ahk",
+      "line": 121
+    },
+    {
+      "name": "BuildBindMenuAliasList",
+      "file": "app/ui_overlays.ahk",
+      "line": 131
+    },
+    {
+      "name": "HandleBindMenuEnter",
+      "file": "app/ui_overlays.ahk",
+      "line": 146
+    },
+    {
+      "name": "HandleBindMenuApplyHotkey",
+      "file": "app/ui_overlays.ahk",
+      "line": 166
+    },
+    {
+      "name": "BuildChatBindMenuRows",
+      "file": "app/ui_overlays.ahk",
+      "line": 203
+    },
+    {
+      "name": "ShowChatBindMenu",
+      "file": "app/ui_overlays.ahk",
+      "line": 218
+    },
+    {
+      "name": "OpenBindMenuEditMode",
+      "file": "app/ui_overlays.ahk",
+      "line": 416
+    },
+    {
+      "name": "CloseBindMenuEditMode",
+      "file": "app/ui_overlays.ahk",
+      "line": 422
+    },
+    {
+      "name": "NormalizeVisibleStateValue",
+      "file": "app/ui_overlays.ahk",
+      "line": 487
+    },
+    {
+      "name": "SetPendingGuiStateValues",
+      "file": "app/ui_overlays.ahk",
+      "line": 491
+    },
+    {
+      "name": "ApplyPendingGuiState",
+      "file": "app/ui_overlays.ahk",
+      "line": 498
+    },
+    {
+      "name": "ClearPendingGuiStateValues",
+      "file": "app/ui_overlays.ahk",
+      "line": 510
+    },
+    {
+      "name": "SetHUDWindowState",
+      "file": "app/ui_overlays.ahk",
+      "line": 517
+    },
+    {
+      "name": "SetBindListWindowState",
+      "file": "app/ui_overlays.ahk",
+      "line": 535
+    },
+    {
+      "name": "RequestIndependentGuiState",
+      "file": "app/ui_overlays.ahk",
+      "line": 553
+    },
+    {
+      "name": "GetBindListRowsFromListView",
+      "file": "app/ui_overlays.ahk",
+      "line": 977
+    },
+    {
+      "name": "PersistBindListOrderFromRows",
+      "file": "app/ui_overlays.ahk",
+      "line": 1004
+    },
+    {
+      "name": "MoveBindListRow",
+      "file": "app/ui_overlays.ahk",
+      "line": 1031
+    },
+    {
+      "name": "GetBindListRowFromScreenPos",
+      "file": "app/ui_overlays.ahk",
+      "line": 1045
+    },
+    {
+      "name": "BindList_OnLButtonDown",
+      "file": "app/ui_overlays.ahk",
+      "line": 1065
+    },
+    {
+      "name": "BindList_OnLButtonUp",
+      "file": "app/ui_overlays.ahk",
+      "line": 1117
+    },
+    {
+      "name": "ToggleBindOverlay",
+      "file": "app/ui_overlays.ahk",
+      "line": 1218
+    },
+    {
+      "name": "HideBindOverlay",
+      "file": "app/ui_overlays.ahk",
+      "line": 1226
+    },
+    {
+      "name": "BuildBindOverlayRows",
+      "file": "app/ui_overlays.ahk",
+      "line": 1233
+    },
+    {
+      "name": "ShowBindOverlay",
+      "file": "app/ui_overlays.ahk",
+      "line": 1249
+    },
+    {
+      "name": "ToggleBindList",
+      "file": "app/ui_overlays.ahk",
+      "line": 1458
+    },
+    {
+      "name": "ToggleHUD",
+      "file": "app/ui_overlays.ahk",
+      "line": 1463
+    },
+    {
+      "name": "GetCurrentDisplayID",
+      "file": "app/ui_overlays.ahk",
+      "line": 1468
+    },
+    {
+      "name": "ShowIDOverlay",
+      "file": "app/ui_overlays.ahk",
+      "line": 1476
+    },
+    {
+      "name": "HideIDOverlay",
+      "file": "app/ui_overlays.ahk",
+      "line": 1513
+    },
+    {
+      "name": "ToggleIDOverlay",
+      "file": "app/ui_overlays.ahk",
+      "line": 1520
+    },
+    {
+      "name": "ResetCurrentID",
+      "file": "app/ui_overlays.ahk",
+      "line": 1547
+    },
+    {
+      "name": "WM_EXITSIZEMOVE",
+      "file": "app/ui_overlays.ahk",
+      "line": 1559
+    },
+    {
+      "name": "GetAzmpModuleInfo",
+      "file": "app/game.ahk",
+      "line": 3
+    },
+    {
+      "name": "GetAzmpCompatibilitySummary",
+      "file": "app/game.ahk",
+      "line": 49
+    },
+    {
+      "name": "AzmpAllowsTargetRead",
+      "file": "app/game.ahk",
+      "line": 57
+    },
+    {
+      "name": "GetCrosshairTargetPed",
+      "file": "app/game.ahk",
+      "line": 87
+    },
+    {
+      "name": "GetPedCoordinates",
+      "file": "app/game.ahk",
+      "line": 167
+    },
+    {
+      "name": "GetCrosshairTargetDistance",
+      "file": "app/game.ahk",
+      "line": 173
+    },
+    {
+      "name": "GetCameraLookAngleToPed",
+      "file": "app/game.ahk",
+      "line": 205
+    },
+    {
+      "name": "AutoTargetID_SetDiagnostic",
+      "file": "app/game.ahk",
+      "line": 230
+    },
+    {
+      "name": "AutoTargetID_CodeDescription",
+      "file": "app/game.ahk",
+      "line": 237
+    },
+    {
+      "name": "AutoTargetID_IsHardRecoveryCode",
+      "file": "app/game.ahk",
+      "line": 284
+    },
+    {
+      "name": "AutoTargetID_WriteDiagnostic",
+      "file": "app/game.ahk",
+      "line": 291
+    },
+    {
+      "name": "AutoTargetID_HardReset",
+      "file": "app/game.ahk",
+      "line": 305
+    },
+    {
+      "name": "AutoTargetID_DiagnoseAndRecover",
+      "file": "app/game.ahk",
+      "line": 323
+    },
+    {
+      "name": "AutoTargetID_RecordFailure",
+      "file": "app/game.ahk",
+      "line": 416
+    },
+    {
+      "name": "AutoTargetID_ReadAimedID",
+      "file": "app/game.ahk",
+      "line": 451
+    },
+    {
+      "name": "AutoTargetID_CaptureNow",
+      "file": "app/game.ahk",
+      "line": 580
+    },
+    {
+      "name": "Evidence_IsAllowedEvent",
+      "file": "app/chatlog.ahk",
+      "line": 3
+    },
+    {
+      "name": "Evidence_EventLabel",
+      "file": "app/chatlog.ahk",
+      "line": 14
+    },
+    {
+      "name": "Evidence_Arm",
+      "file": "app/chatlog.ahk",
+      "line": 29
+    },
+    {
+      "name": "Evidence_PurgeExpiredPending",
+      "file": "app/chatlog.ahk",
+      "line": 45
+    },
+    {
+      "name": "Evidence_IsPending",
+      "file": "app/chatlog.ahk",
+      "line": 57
+    },
+    {
+      "name": "Evidence_ConsumePending",
+      "file": "app/chatlog.ahk",
+      "line": 63
+    },
+    {
+      "name": "Evidence_ClearDocumentContext",
+      "file": "app/chatlog.ahk",
+      "line": 72
+    },
+    {
+      "name": "Evidence_ArmDocumentsForPlayer",
+      "file": "app/chatlog.ahk",
+      "line": 81
+    },
+    {
+      "name": "Evidence_GetDistanceToPlayerID",
+      "file": "app/chatlog.ahk",
+      "line": 105
+    },
+    {
+      "name": "Evidence_FindPlayerIDByName",
+      "file": "app/chatlog.ahk",
+      "line": 125
+    },
+    {
+      "name": "Evidence_DocumentContextValid",
+      "file": "app/chatlog.ahk",
+      "line": 141
+    },
+    {
+      "name": "Evidence_DocumentSenderMatches",
+      "file": "app/chatlog.ahk",
+      "line": 152
+    },
+    {
+      "name": "Evidence_DocumentSenderIsNear",
+      "file": "app/chatlog.ahk",
+      "line": 182
+    },
+    {
+      "name": "Evidence_MaybeClearDocumentContext",
+      "file": "app/chatlog.ahk",
+      "line": 204
+    },
+    {
+      "name": "Evidence_NormalizeNickname",
+      "file": "app/chatlog.ahk",
+      "line": 220
+    },
+    {
+      "name": "Evidence_LineContainsNickname",
+      "file": "app/chatlog.ahk",
+      "line": 227
+    },
+    {
+      "name": "Evidence_ExtractOtherNickname",
+      "file": "app/chatlog.ahk",
+      "line": 234
+    },
+    {
+      "name": "Evidence_BeginDocumentWindow",
+      "file": "app/chatlog.ahk",
+      "line": 248
+    },
+    {
+      "name": "Evidence_DocumentActivationAllowed",
+      "file": "app/chatlog.ahk",
+      "line": 265
+    },
+    {
+      "name": "Evidence_IsOwnReportLine",
+      "file": "app/chatlog.ahk",
+      "line": 277
+    },
+    {
+      "name": "Evidence_IsOwnActionLine",
+      "file": "app/chatlog.ahk",
+      "line": 299
+    },
+    {
+      "name": "Evidence_DetectChatEvent",
+      "file": "app/chatlog.ahk",
+      "line": 310
+    },
+    {
+      "name": "Evidence_SendScreenshot",
+      "file": "app/chatlog.ahk",
+      "line": 577
+    },
+    {
+      "name": "Evidence_ProcessScreenshotQueue",
+      "file": "app/chatlog.ahk",
+      "line": 597
+    },
+    {
+      "name": "Evidence_DetectReceivedDocument",
+      "file": "app/chatlog.ahk",
+      "line": 665
+    },
+    {
+      "name": "ChatLogReader_CanTrigger",
+      "file": "app/chatlog.ahk",
+      "line": 765
+    },
+    {
+      "name": "ChatLogReader_ExtractNicknameByID",
+      "file": "app/chatlog.ahk",
+      "line": 837
+    },
+    {
+      "name": "ChatLogReader_ApplyDetectedID",
+      "file": "app/chatlog.ahk",
+      "line": 877
+    },
+    {
+      "name": "ChatLogReader_CompleteLookup",
+      "file": "app/chatlog.ahk",
+      "line": 887
+    },
+    {
+      "name": "ChatLogReader_HandleTargetEvent",
+      "file": "app/chatlog.ahk",
+      "line": 915
+    },
+    {
+      "name": "ChatLogReader_LineContainsName",
+      "file": "app/chatlog.ahk",
+      "line": 933
+    },
+    {
+      "name": "ChatLogReader_HandleLookupLine",
+      "file": "app/chatlog.ahk",
+      "line": 945
+    },
+    {
+      "name": "ChatLogReader_ProcessLine",
+      "file": "app/chatlog.ahk",
+      "line": 977
+    },
+    {
+      "name": "CanRunCuffFollowup",
+      "file": "app/actions.ahk",
+      "line": 69
+    },
+    {
+      "name": "DoCuffFollowup",
+      "file": "app/actions.ahk",
+      "line": 82
+    },
+    {
+      "name": "CanRunDejectFollowup",
+      "file": "app/actions.ahk",
+      "line": 96
+    },
+    {
+      "name": "SendDejectRPAfterCommand",
+      "file": "app/actions.ahk",
+      "line": 107
+    },
+    {
+      "name": "ContextAssistant_ShowStatus",
+      "file": "app/actions.ahk",
+      "line": 204
+    },
+    {
+      "name": "ContextAssistant_IDHotkeyContext",
+      "file": "app/actions.ahk",
+      "line": 239
+    },
+    {
+      "name": "ContextAssistant_CloseGameChat",
+      "file": "app/actions.ahk",
+      "line": 326
+    },
+    {
+      "name": "BuildTrainCrashReport",
+      "file": "app/actions.ahk",
+      "line": 489
+    },
+    {
+      "name": "SuElapsedNotify",
+      "file": "app/actions.ahk",
+      "line": 501
+    },
+    {
+      "name": "ChatWizard_Cancel",
+      "file": "app/actions.ahk",
+      "line": 751
+    },
+    {
+      "name": "VehicleLookup_RunWizard",
+      "file": "app/actions.ahk",
+      "line": 836
+    },
+    {
+      "name": "WantedRemoval_GetDepartmentTag",
+      "file": "app/actions.ahk",
+      "line": 916
+    },
+    {
+      "name": "WantedRemoval_RunWizard",
+      "file": "app/actions.ahk",
+      "line": 927
+    },
+    {
+      "name": "WantedRemoval_Execute",
+      "file": "app/actions.ahk",
+      "line": 966
+    },
+    {
+      "name": "Fine_RunWizard",
+      "file": "app/actions.ahk",
+      "line": 1025
+    },
+    {
+      "name": "Fine_ExecuteArticle",
+      "file": "app/actions.ahk",
+      "line": 1044
+    },
+    {
+      "name": "TryHandleGpsEnterCommand",
+      "file": "app/actions.ahk",
+      "line": 1096
+    },
+    {
+      "name": "InputAction_DoEnterID",
+      "file": "app/actions.ahk",
+      "line": 1200
+    },
+    {
+      "name": "Action_DoInCar",
+      "file": "app/actions.ahk",
+      "line": 1218
+    },
+    {
+      "name": "Action_DoDoc",
+      "file": "app/actions.ahk",
+      "line": 1225
+    },
+    {
+      "name": "Action_DoSearch",
+      "file": "app/actions.ahk",
+      "line": 1232
+    },
+    {
+      "name": "InputAction_DoWantedList",
+      "file": "app/actions.ahk",
+      "line": 1249
+    },
+    {
+      "name": "Action_DoArrest",
+      "file": "app/actions.ahk",
+      "line": 1266
+    },
+    {
+      "name": "Action_SuReminderAfterSent",
+      "file": "app/actions.ahk",
+      "line": 1303
+    },
+    {
+      "name": "Action_DoTowStart",
+      "file": "app/actions.ahk",
+      "line": 1351
+    },
+    {
+      "name": "Action_DoTowEnd",
+      "file": "app/actions.ahk",
+      "line": 1369
+    },
+    {
+      "name": "Action_DoCarSearch",
+      "file": "app/actions.ahk",
+      "line": 1385
+    },
+    {
+      "name": "BuildHotkeyConflictStatus",
+      "file": "app/bindings.ahk",
+      "line": 231
+    },
+    {
+      "name": "NormalizeBindMenuHotkeyText",
+      "file": "app/bindings.ahk",
+      "line": 534
+    },
+    {
+      "name": "NormalizeBindMenuFixedName",
+      "file": "app/bindings.ahk",
+      "line": 586
+    },
+    {
+      "name": "GetBindMenuFixedName",
+      "file": "app/bindings.ahk",
+      "line": 595
+    },
+    {
+      "name": "GetBindMenuMetaByFixedName",
+      "file": "app/bindings.ahk",
+      "line": 660
+    },
+    {
+      "name": "GetBindMenuDisplayCommand",
+      "file": "app/bindings.ahk",
+      "line": 761
+    },
+    {
+      "name": "ValidateBindMenuHotkey",
+      "file": "app/bindings.ahk",
+      "line": 773
+    },
+    {
+      "name": "NormalizeBindMenuTriggerText",
+      "file": "app/bindings.ahk",
+      "line": 808
+    },
+    {
+      "name": "ApplyBindMenuTrigger",
+      "file": "app/bindings.ahk",
+      "line": 847
+    },
+    {
+      "name": "GetBindMenuCommandMode",
+      "file": "app/bindings.ahk",
+      "line": 883
+    },
+    {
+      "name": "ApplyBindMenuHotkey",
+      "file": "app/bindings.ahk",
+      "line": 905
+    },
+    {
+      "name": "TryHandleBindMenuLine",
+      "file": "app/bindings.ahk",
+      "line": 941
+    },
+    {
+      "name": "RunSearchModeTrigger",
+      "file": "app/bindings.ahk",
+      "line": 1007
+    },
+    {
+      "name": "TaskScheduler_Invoke",
+      "file": "app/automation.ahk",
+      "line": 164
+    },
+    {
+      "name": "AutoReport_OnTask",
+      "file": "app/automation.ahk",
+      "line": 416
+    },
+    {
+      "name": "ChatQueue_EnqueueMockDemo",
+      "file": "app/automation.ahk",
+      "line": 564
+    },
+    {
+      "name": "StartMDSFormationCountdown",
+      "file": "app/automation.ahk",
+      "line": 629
+    },
+    {
+      "name": "HandleMDSFormationTimerTick",
+      "file": "app/automation.ahk",
+      "line": 644
+    },
+    {
+      "name": "ToggleMDSFormationCountdown",
+      "file": "app/automation.ahk",
+      "line": 668
+    },
+    {
+      "name": "ActionTimer_FormatSeconds",
+      "file": "app/automation.ahk",
+      "line": 728
+    },
+    {
+      "name": "ActionTimer_StartEvacuation",
+      "file": "app/automation.ahk",
+      "line": 762
+    },
+    {
+      "name": "ActionTimer_StartManualService",
+      "file": "app/automation.ahk",
+      "line": 766
+    },
+    {
+      "name": "ActionTimer_ReconcileSettings",
+      "file": "app/automation.ahk",
+      "line": 830
+    },
+    {
+      "name": "ActionTimer_BuildBody",
+      "file": "app/automation.ahk",
+      "line": 879
+    },
+    {
+      "name": "ActionTimer_Rebuild",
+      "file": "app/automation.ahk",
+      "line": 1026
+    },
+    {
+      "name": "LawDoc_PageCount",
+      "file": "app/ui_documents.ahk",
+      "line": 30
+    },
+    {
+      "name": "LawDoc_Navigate",
+      "file": "app/ui_documents.ahk",
+      "line": 95
+    },
+    {
+      "name": "NavigateVU",
+      "file": "app/ui_documents.ahk",
+      "line": 123
+    },
+    {
+      "name": "NavigateFP",
+      "file": "app/ui_documents.ahk",
+      "line": 127
+    },
+    {
+      "name": "NavigateKON",
+      "file": "app/ui_documents.ahk",
+      "line": 131
+    },
+    {
+      "name": "NavigateFZOP",
+      "file": "app/ui_documents.ahk",
+      "line": 135
+    },
+    {
+      "name": "NavigateTER",
+      "file": "app/ui_documents.ahk",
+      "line": 139
+    },
+    {
+      "name": "NavigateTK",
+      "file": "app/ui_documents.ahk",
+      "line": 143
+    },
+    {
+      "name": "NavigateARG",
+      "file": "app/ui_documents.ahk",
+      "line": 147
+    },
+    {
+      "name": "NavigateUK",
+      "file": "app/ui_documents.ahk",
+      "line": 151
+    },
+    {
+      "name": "NavigateVV",
+      "file": "app/ui_documents.ahk",
+      "line": 155
+    },
+    {
+      "name": "NavigateKOAP",
+      "file": "app/ui_documents.ahk",
+      "line": 159
+    },
+    {
+      "name": "NavigatePDD",
+      "file": "app/ui_documents.ahk",
+      "line": 163
+    },
+    {
+      "name": "NavigateUPK",
+      "file": "app/ui_documents.ahk",
+      "line": 167
+    },
+    {
+      "name": "NavigateORUZH",
+      "file": "app/ui_documents.ahk",
+      "line": 171
+    },
+    {
+      "name": "NavigateKAS",
+      "file": "app/ui_documents.ahk",
+      "line": 175
+    },
+    {
+      "name": "NavigateFSB",
+      "file": "app/ui_documents.ahk",
+      "line": 179
+    },
+    {
+      "name": "NavigateFSIN",
+      "file": "app/ui_documents.ahk",
+      "line": 183
+    },
+    {
+      "name": "NavigateVS",
+      "file": "app/ui_documents.ahk",
+      "line": 187
+    },
+    {
+      "name": "NavigateSUD",
+      "file": "app/ui_documents.ahk",
+      "line": 191
+    },
+    {
+      "name": "NavigateORD",
+      "file": "app/ui_documents.ahk",
+      "line": 195
+    },
+    {
+      "name": "NavigateGT",
+      "file": "app/ui_documents.ahk",
+      "line": 199
+    },
+    {
+      "name": "LawSearch_CaptureAndCancelChat",
+      "file": "app/ui_documents.ahk",
+      "line": 203
+    },
+    {
+      "name": "SendChatAuto",
+      "file": "app/chat.ahk",
+      "line": 220
+    },
+    {
+      "name": "WaitForChatQueueIdle",
+      "file": "app/chat.ahk",
+      "line": 227
+    },
+    {
+      "name": "EnsureEnglishLayout",
+      "file": "app/chat.ahk",
+      "line": 291
+    },
+    {
+      "name": "ClearBindMenuChatLine",
+      "file": "app/chat.ahk",
+      "line": 295
+    },
+    {
+      "name": "SplitConfigReportLine",
+      "file": "app/chat.ahk",
+      "line": 411
+    },
+    {
+      "name": "EnsureRussianLayout",
+      "file": "app/chat.ahk",
+      "line": 456
+    },
+    {
+      "name": "PasteOnly",
+      "file": "app/chat.ahk",
+      "line": 460
+    },
+    {
+      "name": "SendTemplateChat",
+      "file": "app/chat.ahk",
+      "line": 501
+    },
+    {
+      "name": "SendTemplateOpen",
+      "file": "app/chat.ahk",
+      "line": 506
+    },
+    {
+      "name": "GetActiveChatText",
+      "file": "app/chat.ahk",
+      "line": 540
+    },
+    {
+      "name": "CaptureChatClipboard",
+      "file": "app/chat.ahk",
+      "line": 545
+    },
+    {
+      "name": "CustomFunction_HotkeyAllowed",
+      "file": "app/custom_functions.ahk",
+      "line": 66
+    },
+    {
+      "name": "RunCustomFunctionTrigger",
+      "file": "app/custom_functions.ahk",
+      "line": 162
+    },
+    {
+      "name": "RunCustomFunction",
+      "file": "app/custom_functions.ahk",
+      "line": 218
+    },
+    {
+      "name": "CustomFunctionBuilder_StoreFields",
+      "file": "app/custom_functions.ahk",
+      "line": 448
+    },
+    {
+      "name": "CustomFunctionBuilder_SaveCurrent",
+      "file": "app/custom_functions.ahk",
+      "line": 457
+    }
+  ],
+  "unknown_trace_names": {},
+  "coverage_meaning": "A counter proves entry into an instrumented copy, not branch coverage or successful game action. Original runs are separate.",
+  "not_tested": [
+    "real Amazing/GTA process, memory offsets and server delivery",
+    "OBS capture frames",
+    "exclusive fullscreen",
+    "long-duration in-game resource use"
+  ],
+  "startup_followup": {
+    "run_id": "39800676372",
+    "results": {
+      "provenance": {
+        "source_runtime": {
+          "original_sha256": "6a98b438b67da7316e9251eb1a92cd5384a8349d239a77903f7282fa076a77c3",
+          "test_host_sha256": "da91a152e05d4803c2313bf488d832ef1ce7705bf73ade6f89379d945ebf9391",
+          "only_resource_type_changed": 24,
+          "activeCodePage": "ru-RU"
+        },
+        "compiled_host": {
+          "original_sha256": "5c43313efdbf5b960dbce5198ef9c30f56881cdaa3c6a383ffcddc33501083c5",
+          "test_host_sha256": "666c448297592c98004efd56f17a0e3d6947ffd931c171ff9cc97de5cf9d9364",
+          "only_resource_type_changed": 24,
+          "activeCodePage": "ru-RU"
+        },
+        "runtime_archive_sha256": "6f3663f7cdd25063c8c8728f5d9b07813ced8780522fd1f124ba539e2854215f"
+      },
+      "startup": [
+        {
+          "started": true,
+          "singleton": true,
+          "clean_exit": true,
+          "second_instance_warning": true,
+          "second_instance_gui_count": 0,
+          "warning_acknowledged": true,
+          "exit_code": 0,
+          "status": "PASS",
+          "form": "exe",
+          "repeat": 1
+        },
+        {
+          "started": true,
+          "singleton": true,
+          "clean_exit": true,
+          "second_instance_warning": true,
+          "second_instance_gui_count": 0,
+          "warning_acknowledged": true,
+          "exit_code": 0,
+          "status": "PASS",
+          "form": "exe",
+          "repeat": 2
+        },
+        {
+          "started": true,
+          "singleton": true,
+          "clean_exit": true,
+          "second_instance_warning": true,
+          "second_instance_gui_count": 0,
+          "warning_acknowledged": true,
+          "exit_code": 0,
+          "status": "PASS",
+          "form": "exe",
+          "repeat": 3
+        },
+        {
+          "started": true,
+          "singleton": true,
+          "clean_exit": true,
+          "second_instance_warning": true,
+          "second_instance_gui_count": 0,
+          "warning_acknowledged": true,
+          "exit_code": 0,
+          "status": "PASS",
+          "form": "source",
+          "repeat": 1
+        },
+        {
+          "started": true,
+          "singleton": true,
+          "clean_exit": true,
+          "second_instance_warning": true,
+          "second_instance_gui_count": 0,
+          "warning_acknowledged": true,
+          "exit_code": 0,
+          "status": "PASS",
+          "form": "source",
+          "repeat": 2
+        },
+        {
+          "started": true,
+          "singleton": true,
+          "clean_exit": true,
+          "second_instance_warning": true,
+          "second_instance_gui_count": 0,
+          "warning_acknowledged": true,
+          "exit_code": 0,
+          "status": "PASS",
+          "form": "source",
+          "repeat": 3
+        }
+      ],
+      "portable_source": [
+        {
+          "exit_code": 0,
+          "seconds": 16.95,
+          "report": "source-1-selftest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "form": "source",
+          "repeat": 1,
+          "mode": "selftest"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 8.01,
+          "report": "source-1-diagnostics_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "form": "source",
+          "repeat": 1,
+          "mode": "diagnostics"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 16.91,
+          "report": "source-2-selftest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "form": "source",
+          "repeat": 2,
+          "mode": "selftest"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 8.14,
+          "report": "source-2-diagnostics_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "form": "source",
+          "repeat": 2,
+          "mode": "diagnostics"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 17.01,
+          "report": "source-3-selftest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "form": "source",
+          "repeat": 3,
+          "mode": "selftest"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 8.3,
+          "report": "source-3-diagnostics_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "form": "source",
+          "repeat": 3,
+          "mode": "diagnostics"
+        }
+      ],
+      "game": "NOT_TESTED",
+      "completed": true
+    }
+  },
+  "review_notes": [
+    "Original raw startup FAIL rows are retained: the first harness did not acknowledge the expected duplicate-warning dialog. Read the targeted startup follow-up for actual behaviour.",
+    "Source selftest and diagnostics fail with a separate data directory because they read source paths from AppHost_DataDir. Portable-source follow-up tests the same code with data beside sources.",
+    "Source desktop-smoke retains two EXE-only assertion failures; these assertions require a compiled host and embedded law resources.",
+    "Optional territory map images are missing (17 assets in 11 groups). No game or OBS test was performed."
+  ]
+}
