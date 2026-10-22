@@ -1,0 +1,317 @@
+{
+  "form": "exe",
+  "repeat": 2,
+  "commit": "908d12a73a2f6938ffbd49f3b4c64a62ee386fd0",
+  "release_sha256": "5c43313efdbf5b960dbce5198ef9c30f56881cdaa3c6a383ffcddc33501083c5",
+  "provenance": {
+    "source_runtime": {
+      "original_sha256": "6a98b438b67da7316e9251eb1a92cd5384a8349d239a77903f7282fa076a77c3",
+      "test_host_sha256": "da91a152e05d4803c2313bf488d832ef1ce7705bf73ade6f89379d945ebf9391",
+      "only_resource_type_changed": 24,
+      "activeCodePage": "ru-RU"
+    },
+    "compiled_host": {
+      "original_sha256": "5c43313efdbf5b960dbce5198ef9c30f56881cdaa3c6a383ffcddc33501083c5",
+      "test_host_sha256": "666c448297592c98004efd56f17a0e3d6947ffd931c171ff9cc97de5cf9d9364",
+      "only_resource_type_changed": 24,
+      "activeCodePage": "ru-RU"
+    },
+    "runtime_archive_sha256": "6f3663f7cdd25063c8c8728f5d9b07813ced8780522fd1f124ba539e2854215f"
+  },
+  "real_game": "NOT_TESTED",
+  "real_OBS": "NOT_TESTED",
+  "cases": [
+    {
+      "exit_code": 0,
+      "seconds": 0.19,
+      "report": "original_runtime_info_report.txt",
+      "failures": [],
+      "status": "PASS",
+      "mode": "runtime-info",
+      "phase": "original"
+    },
+    {
+      "exit_code": 1,
+      "seconds": 31.62,
+      "report": "original_selftest_report.txt",
+      "failures": [
+        "[FAIL] Critical | active INI uses v1.0/v14\r",
+        "[FAIL] High | active profile has no bind conflicts | error: EnterID/ResetID, error: EnterID/OpenBindsTab, error: EnterID/Intro, error: EnterID/SOS, error: EnterID/Chase, error: EnterID/ChaseNoID, error: EnterID/Deject, error: EnterID/Cuff, error: EnterID/InCar, error: EnterID/StopChase, error: EnterID/Doc, error: EnterID/Search, error: EnterID/PersonalFile, error: EnterID/Su, error: EnterID/Dep, error: EnterID/WantedList, error: EnterID/SOSStart, error: EnterID/SOSArrive, error: EnterID/CallStart, error: EnterID/CallArrive, error: EnterID/CallWorkStart, error: EnterID/CallWorkEnd, error: EnterID/CivilCallStart, error: EnterID/CivilCallArrive, error: EnterID/MaskCall, error: EnterID/RecordCheck, error: EnterID/TrainCrash, error: EnterID/PatrolStart, error: EnterID/PatrolCont, error: EnterID/PatrolEnd, error: EnterID/PostStart, error: EnterID/PostCont, error: EnterID/PostEnd, error: EnterID/AutoPatrol, error: EnterID/AutoPost, error: EnterID/ConvoyStart, error: EnterID/ConvoyCont, error: EnterID/ConvoyEnd, error: EnterID/TowStart, error: EnterID/TowEnd, error: EnterID/CarSearch, error: EnterID/VehicleLookup, error: EnterID/WantedRemoval, error: EnterID/Arrest, error: EnterID/Fine, error: EnterID/Protocol, error: EnterID/Rights, error: EnterID/CardDS, error: EnterID/CardVK, error: EnterID/MDSFormation, error: EnterID/GpsD, error: EnterID/GpsOS, error: EnterID/GuideSignals, error: EnterID/VU, error: EnterID/FP, error: EnterID/KON, error: EnterID/FZOP, error: EnterID/TER, error: EnterID/TK, error: EnterID/ARG, error: EnterID/UK, error: EnterID/VV, error: EnterID/KOAP, error: EnterID/PDD, error: EnterID/ORUZH, error: EnterID/UPK, error: EnterID/KAS, error: EnterID/FSB, error: EnterID/FSIN, error: EnterID/VS, error: EnterID/SUD, error: EnterID/ORD, error: EnterID/GT\r"
+      ],
+      "status": "FAIL",
+      "mode": "selftest",
+      "phase": "original"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 51.36,
+      "report": "original_audit_selftest_report.txt",
+      "failures": [],
+      "status": "PASS",
+      "mode": "audit-selftest",
+      "phase": "original"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.2,
+      "report": "original_context_assistant_test.txt",
+      "failures": [],
+      "status": "PASS",
+      "mode": "context-mocktest",
+      "phase": "original"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.2,
+      "report": "original_autoreport_mocktest_report.txt",
+      "failures": [],
+      "status": "PASS",
+      "mode": "autoreport-mocktest",
+      "phase": "original"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 27.36,
+      "report": "original_law_search_test_report.txt",
+      "failures": [],
+      "status": "PASS",
+      "mode": "law-search-test",
+      "phase": "original"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.2,
+      "report": "original_v1_mocktest_report.txt",
+      "failures": [],
+      "status": "PASS",
+      "mode": "v1-mocktest",
+      "phase": "original"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 23.77,
+      "report": "original_desktop_smoke_report.txt",
+      "failures": [],
+      "status": "PASS",
+      "mode": "desktop-smoke",
+      "phase": "original"
+    },
+    {
+      "exit_code": 1,
+      "seconds": 14.75,
+      "report": "original_diagnostics_report.txt",
+      "failures": [
+        "[FAIL] High | active profiles config exists | D:\\a\\_temp\\deep-exe-2-work\\original\\diagnostics\\profiles.ini\r"
+      ],
+      "status": "FAIL",
+      "mode": "diagnostics",
+      "phase": "original"
+    },
+    {
+      "started": true,
+      "singleton": false,
+      "clean_exit": true,
+      "exit_code": 0,
+      "status": "FAIL",
+      "mode": "startup-singleton-exit",
+      "phase": "original"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.23,
+      "report": "traced_runtime_info_report.txt",
+      "failures": [],
+      "status": "PASS",
+      "mode": "runtime-info",
+      "phase": "traced"
+    },
+    {
+      "exit_code": 1,
+      "seconds": 48.56,
+      "report": "traced_selftest_report.txt",
+      "failures": [
+        "[FAIL] Critical | active INI uses v1.0/v14\r",
+        "[FAIL] High | active profile has no bind conflicts | error: EnterID/ResetID, error: EnterID/OpenBindsTab, error: EnterID/Intro, error: EnterID/SOS, error: EnterID/Chase, error: EnterID/ChaseNoID, error: EnterID/Deject, error: EnterID/Cuff, error: EnterID/InCar, error: EnterID/StopChase, error: EnterID/Doc, error: EnterID/Search, error: EnterID/PersonalFile, error: EnterID/Su, error: EnterID/Dep, error: EnterID/WantedList, error: EnterID/SOSStart, error: EnterID/SOSArrive, error: EnterID/CallStart, error: EnterID/CallArrive, error: EnterID/CallWorkStart, error: EnterID/CallWorkEnd, error: EnterID/CivilCallStart, error: EnterID/CivilCallArrive, error: EnterID/MaskCall, error: EnterID/RecordCheck, error: EnterID/TrainCrash, error: EnterID/PatrolStart, error: EnterID/PatrolCont, error: EnterID/PatrolEnd, error: EnterID/PostStart, error: EnterID/PostCont, error: EnterID/PostEnd, error: EnterID/AutoPatrol, error: EnterID/AutoPost, error: EnterID/ConvoyStart, error: EnterID/ConvoyCont, error: EnterID/ConvoyEnd, error: EnterID/TowStart, error: EnterID/TowEnd, error: EnterID/CarSearch, error: EnterID/VehicleLookup, error: EnterID/WantedRemoval, error: EnterID/Arrest, error: EnterID/Fine, error: EnterID/Protocol, error: EnterID/Rights, error: EnterID/CardDS, error: EnterID/CardVK, error: EnterID/MDSFormation, error: EnterID/GpsD, error: EnterID/GpsOS, error: EnterID/GuideSignals, error: EnterID/VU, error: EnterID/FP, error: EnterID/KON, error: EnterID/FZOP, error: EnterID/TER, error: EnterID/TK, error: EnterID/ARG, error: EnterID/UK, error: EnterID/VV, error: EnterID/KOAP, error: EnterID/PDD, error: EnterID/ORUZH, error: EnterID/UPK, error: EnterID/KAS, error: EnterID/FSB, error: EnterID/FSIN, error: EnterID/VS, error: EnterID/SUD, error: EnterID/ORD, error: EnterID/GT\r"
+      ],
+      "status": "FAIL",
+      "mode": "selftest",
+      "phase": "traced"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 80.5,
+      "report": "traced_audit_selftest_report.txt",
+      "failures": [],
+      "status": "PASS",
+      "mode": "audit-selftest",
+      "phase": "traced"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.25,
+      "report": "traced_context_assistant_test.txt",
+      "failures": [],
+      "status": "PASS",
+      "mode": "context-mocktest",
+      "phase": "traced"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.22,
+      "report": "traced_autoreport_mocktest_report.txt",
+      "failures": [],
+      "status": "PASS",
+      "mode": "autoreport-mocktest",
+      "phase": "traced"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 42.92,
+      "report": "traced_law_search_test_report.txt",
+      "failures": [],
+      "status": "PASS",
+      "mode": "law-search-test",
+      "phase": "traced"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.25,
+      "report": "traced_v1_mocktest_report.txt",
+      "failures": [],
+      "status": "PASS",
+      "mode": "v1-mocktest",
+      "phase": "traced"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 28.66,
+      "report": "traced_desktop_smoke_report.txt",
+      "failures": [],
+      "status": "PASS",
+      "mode": "desktop-smoke",
+      "phase": "traced"
+    },
+    {
+      "exit_code": 1,
+      "seconds": 20.7,
+      "report": "traced_diagnostics_report.txt",
+      "failures": [
+        "[FAIL] High | active profiles config exists | D:\\a\\_temp\\deep-exe-2-work\\traced\\diagnostics\\profiles.ini\r"
+      ],
+      "status": "FAIL",
+      "mode": "diagnostics",
+      "phase": "traced"
+    },
+    {
+      "started": true,
+      "singleton": false,
+      "clean_exit": true,
+      "exit_code": 0,
+      "status": "FAIL",
+      "mode": "startup-singleton-exit",
+      "phase": "traced"
+    },
+    {
+      "exit_code": 1,
+      "seconds": 6.84,
+      "report": "fixture_private_input_report.txt",
+      "failures": [
+        "FAIL | Russian exact text actual=[/m ????! ID:42]\r"
+      ],
+      "status": "FAIL",
+      "mode": "private_input",
+      "phase": "fixture"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.06,
+      "report": "fixture_chat_route_report.txt",
+      "failures": [],
+      "status": "PASS",
+      "mode": "chat_route",
+      "phase": "fixture"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.31,
+      "report": "fixture_memory_sequence_report.txt",
+      "failures": [],
+      "status": "PASS",
+      "mode": "memory_sequence",
+      "phase": "fixture"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 10.33,
+      "report": "fixture_game_menu_report.txt",
+      "failures": [],
+      "status": "PASS",
+      "mode": "game_menu",
+      "phase": "fixture"
+    },
+    {
+      "exit_code": 20,
+      "seconds": 32.64,
+      "report": "fixture_text_bind_report.txt",
+      "failures": [
+        "FAIL | physical Alt+T reaches the private native input window\r",
+        "FAIL | physical Alt+T in layout 0409\r",
+        "FAIL | physical Alt+T in layout 0419\r",
+        "FAIL | private window is visible while activation Alt is held\r",
+        "FAIL | open-chat activation accepts a command after releasing Alt\r",
+        "FAIL | chat cleanup runs before capture under input ownership\r",
+        "FAIL | registered chat command dispatches on Space\r",
+        "FAIL | chat alias opens its guide !\u0441\u0438\u0433\u043d\u0430\u043b\u044b\r",
+        "FAIL | chat alias opens its guide !signals\r",
+        "FAIL | chat alias opens its guide !cbuyfks\r",
+        "FAIL | chat alias opens its guide !\u044b\u0448\u043f\u0442\u0444\u0434\u044b\r",
+        "FAIL | Alt+T also opens in private-only mode\r",
+        "FAIL | private opener alias works independently of chat mode !bind\r",
+        "FAIL | private opener alias works independently of chat mode !,byl\r",
+        "FAIL | Alt+T remains available while editing binds\r",
+        "FAIL | chat close-menu command remains registered while editing\r",
+        "FAIL | private hook dispatches alias !signals\r",
+        "FAIL | private hook dispatches alias !cbuyfks\r",
+        "FAIL | explicit command wins over an optional English alias\r",
+        "FAIL | new configured command works after re-registration\r"
+      ],
+      "status": "FAIL",
+      "mode": "text_bind",
+      "phase": "fixture"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.83,
+      "report": "fixture_autoid_tracking_report.txt",
+      "failures": [],
+      "status": "PASS",
+      "mode": "autoid_tracking",
+      "phase": "fixture"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 11.39,
+      "report": "fixture_law_windows_report.txt",
+      "failures": [],
+      "status": "PASS",
+      "mode": "law_windows",
+      "phase": "fixture"
+    }
+  ],
+  "remaining_processes": [],
+  "completed": true,
+  "original_failures": [
+    "selftest",
+    "diagnostics",
+    "startup-singleton-exit"
+  ],
+  "tracing_failures": [
+    "selftest",
+    "diagnostics",
+    "startup-singleton-exit"
+  ],
+  "fixture_failures": [
+    "private_input",
+    "text_bind"
+  ]
+}
