@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Read-only verification of embedded installer payloads and exact source inputs."""
 from pathlib import Path
-import argparse,hashlib,json,struct,sys
+import argparse,hashlib,json,struct,sys,zipfile
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'tools/build'))
 from pe_resources import PE
@@ -37,6 +37,13 @@ def main():
  allowed=set(pe.resource(102).decode('utf-8').splitlines());known=dict(line.split('|',1) for line in pe.resource(104).decode('utf-8').splitlines())
  assert set(entries)<=allowed and set(known)<=allowed
  assert 'AHK_FOR_GOS_BY_SBEZRUK.ahk' in known
+ legacy=json.loads((ROOT/'installer/legacy-files.json').read_text('utf-8'))
+ expected=sorted((name.replace('/','\\')+'|'+digest) for section in ['files','repository_blob_variants'] for name,digest in legacy[section].items())
+ for exe in ['AHK_FOR_GOS_Setup.exe','AHK_FOR_GOS_Uninstall.exe']:
+  resource=PE((directory/exe).read_bytes()).resource(105).decode('utf-8').splitlines()
+  assert sorted(resource)==expected,('legacy catalog mismatch',exe)
+ with zipfile.ZipFile(ROOT/'installer/tests/legacy-6b1a595.zip') as z:
+  assert {n:sha(z.read(n)) for n in z.namelist() if not n.endswith('/')}==legacy['files']
  print(f'PASS: native x64 setup/uninstaller, {count} SHA-256 payloads, {len(graph.files)} exact AHK modules, 20 laws, ANSI x86 runtime, unchanged app EXE')
  print('Packaging verification; real installation and UI results are separate.')
 if __name__=='__main__':main()

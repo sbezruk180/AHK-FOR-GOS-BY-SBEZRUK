@@ -75,10 +75,11 @@ def compile_program(args,work,allowed,uninstall,payload=None):
     rc=work/(prefix+'.rc');obj=work/(prefix+('.res' if os.name=='nt' and not args.cxx else '.o'))
     resource=f'#pragma code_page(65001)\n1 ICON "{(work/"app.ico").as_posix()}"\n1 24 "{(ROOT/"installer/native/app.manifest").as_posix()}"\n102 RCDATA "{allowed.as_posix()}"\n'
     resource+=f'104 RCDATA "{(work/"known-hashes.txt").as_posix()}"\n'
+    resource+=f'105 RCDATA "{(work/"legacy-hashes.txt").as_posix()}"\n'
     if payload:resource+=f'101 RCDATA "{payload.as_posix()}"\n'
     resource+='''1 VERSIONINFO
-FILEVERSION 1,0,0,0
-PRODUCTVERSION 1,0,0,0
+FILEVERSION 1,1,0,0
+PRODUCTVERSION 1,1,0,0
 FILEOS 0x40004L
 FILETYPE 1
 BEGIN
@@ -89,7 +90,7 @@ BEGIN
    VALUE "CompanyName", "SBezruk180\\0"
    VALUE "ProductName", "AHK FOR GOS Setup\\0"
    VALUE "FileDescription", "AHK FOR GOS graphical setup and removal\\0"
-   VALUE "FileVersion", "1.0.0.0\\0"
+   VALUE "FileVersion", "1.1.0.0\\0"
   END
  END
  BLOCK "VarFileInfo"
@@ -126,7 +127,12 @@ def main():
         p=ROOT/old if old.endswith(('.cmd','.ps1')) else ROOT/'release'/old
         if p.exists():known[old]=(3,p.read_bytes())
     (work/'known-hashes.txt').write_text(''.join(name+'|'+digest(b)+'\n' for name,(_,b) in sorted(known.items())),encoding='utf-8',newline='\n')
-    allowed=work/'owned-files.txt';allowed.write_text('\n'.join(sorted([*known,'Uninstall.exe']))+'\n',encoding='utf-8',newline='\n')
+    legacyCatalog=json.loads((ROOT/'installer/legacy-files.json').read_text('utf-8'))
+    legacy=[(name.replace('/','\\'),sha) for section in ['files','repository_blob_variants'] for name,sha in legacyCatalog[section].items()]
+    with zipfile.ZipFile(ROOT/'installer/tests/legacy-6b1a595.zip') as z:
+        assert {name:digest(z.read(name)) for name in z.namelist() if not name.endswith('/')}==legacyCatalog['files'],'Historical fixture/catalog mismatch'
+    (work/'legacy-hashes.txt').write_text(''.join(name+'|'+sha+'\n' for name,sha in sorted(legacy)),encoding='utf-8',newline='\n')
+    allowed=work/'owned-files.txt';allowed.write_text('\n'.join(sorted(set([*known,*(name for name,_ in legacy),'Uninstall.exe'])))+'\n',encoding='utf-8',newline='\n')
     uninstaller=compile_program(args,work,allowed,True)
     inputs['Uninstall.exe']=(3,uninstaller.read_bytes())
     pack=bytearray(b'AHKGOS01'+struct.pack('<I',len(inputs)));entries=[]

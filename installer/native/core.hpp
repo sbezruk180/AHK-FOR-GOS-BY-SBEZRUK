@@ -42,7 +42,7 @@ struct Progress {
 using Notify = std::function<void(const Progress &)>;
 struct Result {
   bool ok = false, cancelled = false;
-  unsigned removed = 0, failed = 0;
+  unsigned removed = 0, removedFolders = 0, failed = 0;
   std::wstring message;
   std::vector<std::wstring> warnings;
 };
@@ -52,6 +52,10 @@ struct FoundFile {
   FILETIME modified{};
   DWORD volume = 0, indexHigh = 0, indexLow = 0;
   bool selected = false;
+  bool directory = false;
+  // A folder is offered only with a complete, link-free snapshot. The user
+  // chooses the whole folder explicitly; additions or changes invalidate it.
+  std::vector<FoundFile> contents;
 };
 struct ScanResult {
   std::vector<FoundFile> files;
@@ -67,6 +71,7 @@ fs::path SelfPath();
 fs::path DefaultRoot();
 fs::path DefaultData();
 fs::path LocateRoot();
+fs::path ResolveRemovalRoot(const fs::path &);
 bool SafeRelative(const std::wstring &);
 void ValidateRoot(const fs::path &);
 void NoLinks(const fs::path &);
@@ -80,7 +85,11 @@ std::vector<fs::path> FixedRoots();
 ScanResult ScanAhk(const std::vector<fs::path> &, std::atomic<bool> &,
                    const Notify &);
 Result RecycleSelected(const std::vector<FoundFile> &, std::atomic<bool> &,
-                       const Notify &);
+                       const Notify &, bool shortcuts = false);
+bool CanRecycleFolder(const fs::path &);
+bool SafeCloudTag(DWORD);
+void RemoveMatchingShortcuts(const std::vector<fs::path> &locations,
+                             const std::vector<fs::path> &targets, Result &);
 Result Install(const Options &, std::atomic<bool> &, const Notify &);
 Result Uninstall(const Options &, bool keepData, std::atomic<bool> &,
                  const Notify &);
@@ -88,6 +97,6 @@ bool RunningFrom(const fs::path &);
 void Launch(const fs::path &);
 void OpenGuide();
 bool FinishRemove(const fs::path &);
-int SelfTest(const fs::path &);
+int SelfTest(const fs::path &, const fs::path &legacyFixture = {});
 std::wstring LastErrorText(const std::wstring &prefix);
 } // namespace gos
