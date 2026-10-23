@@ -227,7 +227,9 @@ int SelfTest(const fs::path &report, const fs::path &legacyFixture) {
     fs::rename(renamed.root / L"app" / L"actions.ahk",
                renamed.root / L"app" / L"actions (copy).ahk");
     Write(renamed.data / L"profiles.ini", profile);
-    auto renameRemoved = Uninstall(renamed, true, cancel, notify);
+    auto trailing = renamed;
+    trailing.root /= L"";
+    auto renameRemoved = Uninstall(trailing, true, cancel, notify);
     check("manifest removal finds renamed main and module",
           renameRemoved.ok &&
               !fs::exists(renamed.root / L"AHK FOR GOS (new name).ahk") &&
@@ -314,6 +316,7 @@ int SelfTest(const fs::path &report, const fs::path &legacyFixture) {
       log +=
           "DIAG | removed shortcuts=" + std::to_string(shortcutResult.removed) +
           " failed=" + std::to_string(shortcutResult.failed) + "\r\n";
+      log += "DIAG | expected root=" + Utf8(scanRoot.wstring()) + "\r\n";
       for (auto &w : shortcutResult.warnings)
         log += "DIAG | " + Utf8(w) + "\r\n";
       for (auto &entry : fs::directory_iterator(shortcuts)) {
