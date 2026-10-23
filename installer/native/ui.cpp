@@ -643,6 +643,8 @@ static void Draw(HDC dc) {
 static Options CurrentOptions() {
   Options o;
   o.root = fs::path(rootText).lexically_normal();
+  if (o.root.filename().empty() && o.root != o.root.root_path())
+    o.root = o.root.parent_path();
   o.data = DefaultData();
   if (liveRemovalTest) {
     o.data = fixtureData;

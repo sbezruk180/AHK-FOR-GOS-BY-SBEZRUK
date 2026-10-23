@@ -25,9 +25,19 @@ static bool SafeHandle(HANDLE h) {
          (!(info.FileAttributes & FILE_ATTRIBUTE_REPARSE_POINT) ||
           SafeCloudTag(info.ReparseTag));
 }
+static fs::path CleanPath(fs::path p) {
+  p = p.lexically_normal();
+  if (p.filename().empty() && p != p.root_path())
+    p = p.parent_path();
+  return p;
+}
 static bool Under(const fs::path &p, const fs::path &root) {
-  auto prefix = root.lexically_normal().wstring() + L"\\";
-  auto path = p.lexically_normal().wstring();
+  auto prefix = CleanPath(root).wstring();
+  if (prefix.empty())
+    return false;
+  if (prefix.back() != L'\\')
+    prefix += L"\\";
+  auto path = CleanPath(p).wstring();
   return path.size() > prefix.size() &&
          _wcsnicmp(path.c_str(), prefix.c_str(), prefix.size()) == 0;
 }
@@ -159,8 +169,7 @@ fs::path DefaultData() {
   return Known(FOLDERID_RoamingAppData) / L"AHK FOR GOS";
 }
 static bool Same(const fs::path &a, const fs::path &b) {
-  return _wcsicmp(a.lexically_normal().c_str(), b.lexically_normal().c_str()) ==
-         0;
+  return _wcsicmp(CleanPath(a).c_str(), CleanPath(b).c_str()) == 0;
 }
 fs::path LocateRoot() {
   if (OwnedRoot(SelfPath().parent_path()))
@@ -377,7 +386,8 @@ static Record LegacyRecord(const fs::path &root) {
   return record;
 }
 
-fs::path ResolveRemovalRoot(const fs::path &root) {
+fs::path ResolveRemovalRoot(const fs::path &input) {
+  auto root = CleanPath(input);
   ValidateRoot(root);
   if (CanManage(root))
     return root;
@@ -588,7 +598,7 @@ bool RunningFrom(const fs::path &root) {
         if (QueryFullProcessImageNameW(h, 0, b, &len)) {
           fs::path p = b;
           auto candidate = p.lexically_normal().wstring(),
-               prefix = root.lexically_normal().wstring() + L"\\";
+               prefix = CleanPath(root).wstring() + L"\\";
           if (_wcsnicmp(candidate.c_str(), prefix.c_str(), prefix.size()) == 0)
             found = true;
         }
@@ -668,7 +678,7 @@ static void Register(const Options &o) {
 }
 static std::vector<fs::path> Parents(fs::path p, const fs::path &root) {
   std::vector<fs::path> v;
-  while (p != root && p.has_relative_path()) {
+  while (!Same(p, root) && p.has_relative_path()) {
     v.push_back(p);
     p = p.parent_path();
   }
@@ -915,6 +925,34 @@ Result Install(const Options &o, std::atomic<bool> &cancel,
     return result;
   }
 }
+static fs::path LongSpelling(fs::path path) {
+  // Shell returns long names even when TEMP or an old shortcut uses 8.3.
+  // Resolve the longest surviving ancestor after a target has been deleted.
+  auto value = path.lexically_normal().wstring();
+  if (value.rfind(L"\\\\?\\", 0) == 0 && value.size() > 5 && value[5] == L':')
+    value.erase(0, 4);
+  fs::path walk(value), suffix;
+  if (!walk.is_absolute())
+    return walk;
+  while (!walk.empty()) {
+    DWORD needed = GetLongPathNameW(walk.c_str(), nullptr, 0);
+    if (needed && needed < 32768) {
+      std::wstring expanded(needed, 0);
+      DWORD written = GetLongPathNameW(walk.c_str(), expanded.data(), needed);
+      if (written && written < needed) {
+        expanded.resize(written);
+        return CleanPath(suffix.empty() ? fs::path(expanded)
+                                        : fs::path(expanded) / suffix);
+      }
+    }
+    auto parent = walk.parent_path();
+    if (parent == walk)
+      break;
+    suffix = suffix.empty() ? walk.filename() : walk.filename() / suffix;
+    walk = parent;
+  }
+  return fs::path(value);
+}
 static bool LinkMatches(const fs::path &link,
                         const std::vector<fs::path> &targets) {
   if (!fs::exists(link))
@@ -930,7 +968,7 @@ static bool LinkMatches(const fs::path &link,
       if (value.rfind(L"\\\\?\\", 0) == 0 && value.size() > 5 &&
           value[5] == L':')
         value.erase(0, 4);
-      fs::path actual(value);
+      fs::path actual = LongSpelling(fs::path(value));
       return actual.is_absolute() &&
              std::any_of(targets.begin(), targets.end(), [&](auto &target) {
                return Same(actual, target) || Under(actual, target);
@@ -984,6 +1022,9 @@ void RemoveMatchingShortcuts(const std::vector<fs::path> &locations,
                              Result &result) {
   if (targets.empty())
     return;
+  std::vector<fs::path> normalized;
+  for (auto &target : targets)
+    normalized.push_back(LongSpelling(target));
   for (auto &location : locations) {
     std::error_code ec;
     if (!fs::exists(location, ec))
@@ -1005,7 +1046,7 @@ void RemoveMatchingShortcuts(const std::vector<fs::path> &locations,
       try {
         NoLinks(p);
         if (_wcsicmp(p.extension().c_str(), L".lnk") == 0 &&
-            LinkMatches(p, targets)) {
+            LinkMatches(p, normalized)) {
           if (DeleteFileW(p.c_str()))
             result.removed++;
           else {
