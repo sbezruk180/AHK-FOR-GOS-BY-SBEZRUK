@@ -1,0 +1,58 @@
+{
+  "run_id": "39819280843",
+  "workflow_url": "https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK/actions/runs/39819280843",
+  "source_commit": "8c0c562c1b43267422cfa207b34d05bfd7286943",
+  "status": "PASS",
+  "artifacts": {
+    "AHK_FOR_GOS_Setup.exe": {
+      "bytes": 13170176,
+      "sha256": "4d63d3125213112bed7379bce843b7865a577478f4c2c3702b67a48c3acdc352"
+    },
+    "AHK_FOR_GOS_Uninstall.exe": {
+      "bytes": 1517056,
+      "sha256": "d943c1f7d681791ac4574a8c689bdd884ea0d473b95629cf78f99b5bb3399898"
+    }
+  },
+  "application_sha256": "fbe20a816569de2906d7260e0d6e6a1de728b3485ccb4a2ff80a9bc745e4a450",
+  "native_results": [
+    {
+      "file": "msvc-core.txt",
+      "checks": 69,
+      "failed": 0,
+      "skips": []
+    },
+    {
+      "file": "shipping-core-1.txt",
+      "checks": 69,
+      "failed": 0,
+      "skips": []
+    },
+    {
+      "file": "shipping-core-2.txt",
+      "checks": 69,
+      "failed": 0,
+      "skips": []
+    },
+    {
+      "file": "shipping-core-3.txt",
+      "checks": 69,
+      "failed": 0,
+      "skips": []
+    },
+    {
+      "file": "shipping-ui-Setup.txt",
+      "checks": 27,
+      "failed": 0,
+      "skips": []
+    },
+    {
+      "file": "shipping-ui-Uninstall.txt",
+      "checks": 28,
+      "failed": 0,
+      "skips": []
+    }
+  ],
+  "whole_computer_scan": "NOT_EXECUTED: scanner tested against a disposable tree; no real user files removed",
+  "full_recycle_bin_roundtrip": "NOT_TESTED: tested zero-selection and changed-file refusal, not recycling user files",
+  "real_game": "NOT_TESTED: application boot/resource probes only"
+}
