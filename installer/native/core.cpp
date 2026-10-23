@@ -926,18 +926,36 @@ static bool LinkMatches(const fs::path &link,
     return false;
   bool matches = false;
   auto test = [&](const fs::path &p) {
-    return p.is_absolute() &&
-           std::any_of(targets.begin(), targets.end(), [&](auto &target) {
-             return Same(p, target) || Under(p, target);
-           });
+    auto match = [&](std::wstring value) {
+      if (value.rfind(L"\\\\?\\", 0) == 0 && value.size() > 5 &&
+          value[5] == L':')
+        value.erase(0, 4);
+      fs::path actual(value);
+      return actual.is_absolute() &&
+             std::any_of(targets.begin(), targets.end(), [&](auto &target) {
+               return Same(actual, target) || Under(actual, target);
+             });
+    };
+    if (match(p.wstring()))
+      return true;
+    DWORD needed = ExpandEnvironmentStringsW(p.c_str(), nullptr, 0);
+    if (!needed || needed > 32768)
+      return false;
+    std::wstring expanded(needed, 0);
+    if (!ExpandEnvironmentStringsW(p.c_str(), expanded.data(), needed))
+      return false;
+    expanded.resize(needed - 1);
+    return match(expanded);
   };
   IPersistFile *f = nullptr;
   if (SUCCEEDED(l->QueryInterface(IID_IPersistFile, (void **)&f))) {
     if (SUCCEEDED(f->Load(link.c_str(), STGM_READ))) {
-      wchar_t b[32768];
+      wchar_t b[32768]{};
       WIN32_FIND_DATAW d{};
-      if (SUCCEEDED(l->GetPath(b, 32768, &d, SLGP_RAWPATH))) {
+      if (SUCCEEDED(l->GetPath(b, 32768, &d, 0))) {
         matches = test(fs::path(b));
+        if (!matches && SUCCEEDED(l->GetPath(b, 32768, &d, SLGP_RAWPATH)))
+          matches = test(fs::path(b));
         // A source shortcut may launch a globally installed AutoHotkey. Its
         // script lives in arguments rather than in the executable target.
         wchar_t args[32768]{};

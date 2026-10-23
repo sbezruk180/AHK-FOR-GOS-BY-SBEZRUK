@@ -3,12 +3,12 @@
   "platform": "Wine 10, x64, Xvfb",
   "artifacts": {
     "AHK_FOR_GOS_Setup.exe": {
-      "bytes": 13302272,
-      "sha256": "e6391ad9440eac2bd7eef21eee2f3607b2456b8c9c42a7194cd4ab67bb8d070d"
+      "bytes": 13310976,
+      "sha256": "025a7cd85207309e38e1532d172a42933dac54394d20617b2cd3b62405917281"
     },
     "AHK_FOR_GOS_Uninstall.exe": {
-      "bytes": 1586688,
-      "sha256": "dd0f6e7581b699142530c3617e1a0229f88d120cc906d9d14eafe8057daa489f"
+      "bytes": 1591296,
+      "sha256": "217f4345a20ee3d601e6117364cd10f77c4ec1650254b28435371f042e5a4556"
     }
   },
   "application_sha256": "fbe20a816569de2906d7260e0d6e6a1de728b3485ccb4a2ff80a9bc745e4a450",

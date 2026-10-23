@@ -1,0 +1,30 @@
+Native GUI smoke in preview mode. No install, registry, scan, deletion or profile writes.
+PASS | native controls within client without overlap
+PASS | keyboard has tab target
+PASS | window is foreground for actual screen verification
+PASS | visible primary button survives parent repaint
+PASS | real Win32 window renders nonempty content to bitmap
+PASS | mode cards exist
+PASS | mode selection changes
+PASS | next opens settings
+PASS | native controls within client without overlap
+PASS | keyboard has tab target
+PASS | window is foreground for actual screen verification
+PASS | visible primary button survives parent repaint
+PASS | real Win32 window renders nonempty content to bitmap
+PASS | path edit has absolute target
+PASS | optional guide opens
+PASS | native controls within client without overlap
+PASS | keyboard has tab target
+PASS | window is foreground for actual screen verification
+PASS | real Win32 window renders nonempty content to bitmap
+PASS | guide returns to previous page
+PASS | native controls within client without overlap
+PASS | keyboard has tab target
+PASS | window is foreground for actual screen verification
+PASS | real Win32 window renders nonempty content to bitmap
+PASS | deletion starts disabled
+PASS | typed confirmation alone cannot enable removal
+PASS | selection plus typing plus acknowledgement enables removal
+PASS | clearing selection disables removal
+Checks=28 Failed=0

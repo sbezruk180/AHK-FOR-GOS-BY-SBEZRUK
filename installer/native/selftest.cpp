@@ -310,6 +310,32 @@ int SelfTest(const fs::path &report, const fs::path &legacyFixture) {
           shortcutResult.removed == 2 &&
               !fs::exists(shortcuts / L"GOS (old version).lnk") &&
               !fs::exists(shortcuts / L"AHK test renamed.lnk"));
+    if (shortcutResult.removed != 2) {
+      log +=
+          "DIAG | removed shortcuts=" + std::to_string(shortcutResult.removed) +
+          " failed=" + std::to_string(shortcutResult.failed) + "\r\n";
+      for (auto &w : shortcutResult.warnings)
+        log += "DIAG | " + Utf8(w) + "\r\n";
+      for (auto &entry : fs::directory_iterator(shortcuts)) {
+        IShellLinkW *link = nullptr;
+        if (FAILED(CoCreateInstance(CLSID_ShellLink, nullptr,
+                                    CLSCTX_INPROC_SERVER, IID_IShellLinkW,
+                                    (void **)&link)))
+          continue;
+        IPersistFile *file = nullptr;
+        if (SUCCEEDED(link->QueryInterface(IID_IPersistFile, (void **)&file))) {
+          if (SUCCEEDED(file->Load(entry.path().c_str(), STGM_READ))) {
+            wchar_t path[32768]{}, args[32768]{};
+            link->GetPath(path, 32768, nullptr, SLGP_RAWPATH);
+            link->GetArguments(args, 32768);
+            log += "DIAG | " + Utf8(entry.path().filename().wstring()) +
+                   " target=" + Utf8(path) + " args=" + Utf8(args) + "\r\n";
+          }
+          file->Release();
+        }
+        link->Release();
+      }
+    }
     check("preserve unrelated shortcut",
           fs::exists(shortcuts / L"Keep me.lnk"));
     auto wholeFolder = ScanAhk({scanRoot}, cancel, notify);
