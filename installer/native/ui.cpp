@@ -36,6 +36,8 @@ static ULONGLONG pageStarted = 0;
 static bool cleanupOnExit = false;
 static fs::path uiReport;
 static unsigned uiPassed = 0, uiFailed = 0;
+static bool liveRemovalTest = false;
+static fs::path fixtureData;
 static std::string uiLog = "Native GUI smoke in preview mode. No install, "
                            "registry, scan, deletion or profile writes.\r\n";
 static constexpr UINT UpdateMessage = WM_APP + 1, DoneMessage = WM_APP + 2;
@@ -276,8 +278,8 @@ static void BuildPage(int next) {
     AddButton(10, 746, 624, 230, 46, L"Продолжить  →", 1);
   } else if (page == 0 && Removing) {
     AddButton(101, 272, 198, 704, 96, L"Все AHK на компьютере", 2,
-              L"Сканирование дисков и выбор .ahk, включая чужие.\nЗатем "
-              L"удаление AHK FOR GOS и его данных.",
+              L"Файлы .ahk и папки с ними целиком, включая содержимое.\n"
+              L"Просмотр списка и ручной выбор перед удалением.",
               choice == 1, L"ПРОВЕРКА");
     AddButton(102, 272, 308, 704, 96, L"Только AHK FOR GOS — полностью", 2,
               L"Файлы приложения, локальный runtime, настройки,\nпрофили, логи "
@@ -344,7 +346,8 @@ static void BuildPage(int next) {
     bulk = true;
     SendMessageW(fileList, WM_SETREDRAW, FALSE, 0);
     for (size_t i = 0; i < scan.files.size(); i++) {
-      auto path = scan.files[i].path.wstring();
+      auto path = (scan.files[i].directory ? L"[ПАПКА ЦЕЛИКОМ] " : L"[ФАЙЛ] ") +
+                  scan.files[i].path.wstring();
       LVITEMW item{};
       item.mask = LVIF_TEXT;
       item.iItem = (int)i;
@@ -357,7 +360,7 @@ static void BuildPage(int next) {
     SendMessageW(fileList, WM_SETREDRAW, TRUE, 0);
     bulk = false;
     CreateEdit(confirmEdit, 203, 272, 529, 220, 37, L"");
-    AddButton(43, 510, 522, 466, 48, L"Понимаю: могут удалиться чужие скрипты",
+    AddButton(43, 510, 522, 466, 48, L"Папки целиком, включая все файлы внутри",
               3, L"", ack);
     AddButton(11, 272, 624, 110, 46, L"Назад");
     AddButton(10, 700, 624, 276, 46, L"Удалить выбранное", 1);
@@ -423,7 +426,7 @@ static void Hero(Graphics &g) {
     Text(g, steps[i], 70, y + 1, 136, 25, 13, (int)i == active ? white : muted,
          (int)i == active);
   }
-  Text(g, L"v1.0  /  SBezruk180", 32, 665, 170, 22, 10,
+  Text(g, L"v1.1  /  SBezruk180", 32, 665, 170, 22, 10,
        Color(255, 111, 121, 149));
   Text(g, Removing ? L"AHK FOR GOS / UNINSTALL" : L"AHK FOR GOS / SETUP", 272,
        29, 500, 24, 10, muted, true);
@@ -598,10 +601,10 @@ static void Body(Graphics &g) {
     Round(g, RectF(272, 529, 220, 37), 9, inputFill, &inputBorder);
     Pill(g, L"НИЧЕГО НЕ ВЫБРАНО АВТОМАТИЧЕСКИ", 272, 86, 330,
          Color(255, 227, 190, 118));
-    Text(g, L"Проверьте каждый файл.", 270, 132, 704, 60, 32, white, true);
+    Text(g, L"Папка — со всем содержимым.", 270, 132, 704, 60, 30, white, true);
     Text(g, L"Для подтверждения введите УДАЛИТЬ", 272, 496, 704, 24, 13, muted);
     Text(g,
-         L"Найдено: " + std::to_wstring(scan.files.size()) +
+         L"Файлов и папок: " + std::to_wstring(scan.files.size()) +
              L" · Пропущено объектов: " + std::to_wstring(scan.skipped),
          272, 585, 704, 24, 12, muted);
   } else if (page == 6) {
@@ -641,6 +644,10 @@ static Options CurrentOptions() {
   Options o;
   o.root = fs::path(rootText).lexically_normal();
   o.data = DefaultData();
+  if (liveRemovalTest) {
+    o.data = fixtureData;
+    o.integration = false;
+  }
   o.mode = Removing ? 1 : choice;
   o.allScripts = Removing && choice == 1;
   o.desktop = desktopLink;
@@ -654,7 +661,9 @@ static void SaveReport(const Result &r) {
                             std::to_wstring(GetCurrentProcessId()) + L".txt");
   std::string s = "AHK FOR GOS — installer / uninstaller\r\n" +
                   Utf8(r.message) + "\r\nDeleted=" + std::to_string(r.removed) +
-                  " Failed=" + std::to_string(r.failed) + "\r\n";
+                  " Folders=" + std::to_string(r.removedFolders) +
+                  " Failed=" + std::to_string(r.failed) +
+                  "\r\nRoot=" + Utf8(rootText) + "\r\n";
   for (auto &w : r.warnings)
     s += Utf8(w) + "\r\n";
   std::vector<unsigned char> b(3 + s.size());
@@ -680,8 +689,11 @@ static void Work(int task) {
   try {
     auto options = CurrentOptions();
     ValidateRoot(options.root);
-    if (task == 2)
+    if (task == 2) {
+      options.root = ResolveRemovalRoot(options.root);
+      rootText = options.root.wstring();
       ReadRecord(options.root);
+    }
     if (Removing && CanManage(options.root) && RunningFrom(options.root))
       throw std::runtime_error(Utf8(L"Закройте AHK FOR GOS перед удалением."));
     cancelled = false;
@@ -717,16 +729,30 @@ static void Work(int task) {
           r = Install(options, cancelled, notify);
         else {
           Result external;
-          if (task == 4 && CanManage(options.root))
+          bool wholeRoot =
+              task == 4 &&
+              std::any_of(scan.files.begin(), scan.files.end(), [&](auto &f) {
+                auto path = options.root.wstring(), parent = f.path.wstring();
+                return f.selected && f.directory &&
+                       (_wcsicmp(path.c_str(), parent.c_str()) == 0 ||
+                        (path.size() > parent.size() &&
+                         path[parent.size()] == L'\\' &&
+                         _wcsnicmp(path.c_str(), parent.c_str(),
+                                   parent.size()) == 0));
+              });
+          if (task == 4 && !wholeRoot && CanManage(options.root))
             PrepareRemoval(options.root);
           if (task == 4)
-            external = RecycleSelected(scan.files, cancelled, notify);
+            external = RecycleSelected(scan.files, cancelled, notify, true);
           if (!cancelled.load()) {
             r = Uninstall(options, choice == 3, cancelled, notify);
             r.removed += external.removed;
+            r.removedFolders += external.removedFolders;
             r.failed += external.failed;
             r.warnings.insert(r.warnings.end(), external.warnings.begin(),
                               external.warnings.end());
+            if (task == 4)
+              r.message += L"\n" + external.message;
             if (r.failed) {
               r.ok = false;
               r.message = L"Удаление завершено не полностью. Неудалённые файлы "
@@ -786,9 +812,8 @@ static void Browse() {
 static void ReviewReady() {
   if (page != 5 || !confirmEdit)
     return;
-  bool any =
-      scan.files.empty() || std::any_of(scan.files.begin(), scan.files.end(),
-                                        [](auto &f) { return f.selected; });
+  bool any = std::any_of(scan.files.begin(), scan.files.end(),
+                         [](auto &f) { return f.selected; });
   auto b = FindButton(10);
   if (b)
     EnableWindow(b->h, ack && any && EditText(confirmEdit) == L"УДАЛИТЬ");
@@ -1022,6 +1047,31 @@ static void Snapshot(const wchar_t *name) {
 static void UiStep() {
   static int step = 0;
   try {
+    if (liveRemovalTest) {
+      if (step == 0) {
+        UiCheck("real installed uninstaller starts", !preview && Removing);
+        Command(103);
+        Command(10);
+        ++step;
+      } else if (step == 1) {
+        UiCheck("real keep-profile selection", choice == 3 && page == 1);
+        Command(10);
+        ++step;
+      } else if (!working.load()) {
+        UiCheck("actual UI removal succeeds", page == 3 && completed.ok);
+        auto root = fs::path(rootText);
+        UiCheck("renamed application removed by actual UI",
+                !fs::exists(root / L"GOS helper (old).exe"));
+        UiCheck("profile survives actual UI removal",
+                fs::exists(fixtureData / L"profiles.ini"));
+        uiLog += "Checks=" + std::to_string(uiPassed + uiFailed) +
+                 " Failed=" + std::to_string(uiFailed) + "\r\n";
+        Write(uiReport, std::vector<unsigned char>(uiLog.begin(), uiLog.end()));
+        KillTimer(window, 2);
+        DestroyWindow(window);
+      }
+      return;
+    }
     switch (step++) {
     case 0:
       UiLayout();
@@ -1269,10 +1319,35 @@ static LRESULT CALLBACK ButtonHook(HWND h, UINT m, WPARAM w, LPARAM l, UINT_PTR,
   return DefSubclassProc(h, m, w, l);
 }
 
-int RunUI(bool demo, const fs::path &report) {
+int RunUI(bool demo, const fs::path &report, bool removalFixture) {
   uiReport = report;
   preview = demo;
-  rootText = (Removing ? LocateRoot() : DefaultRoot()).wstring();
+  liveRemovalTest = removalFixture;
+  if (removalFixture) {
+    auto root = SelfPath().parent_path();
+    wchar_t temp[32768];
+    GetTempPathW(32768, temp);
+    auto tempRoot = fs::path(temp).lexically_normal();
+    if (tempRoot.filename().empty())
+      tempRoot = tempRoot.parent_path();
+    auto base = root.parent_path();
+    auto marker = root / L".uninstall-fixture";
+    if (!Removing || demo || root.filename() != L"interactive-app" ||
+        base.parent_path().lexically_normal() != tempRoot ||
+        base.filename().wstring().rfind(L"AHKGOS-selftest-", 0) != 0 ||
+        report.parent_path() != base || !fs::exists(marker))
+      throw std::runtime_error(
+          "Live removal tests require a disposable Temp fixture");
+    auto bytes = Read(marker);
+    if (std::string(bytes.begin(), bytes.end()) != "AHKGOS-DISPOSABLE-1")
+      throw std::runtime_error("Invalid disposable removal marker");
+    DeleteFileW(marker.c_str());
+    fixtureData = base / L"interactive-profiles";
+    rootText = root.wstring();
+    uiLog = "Actual installed uninstaller UI in disposable Temp fixture. No "
+            "user profiles, registry, desktop or fixed-drive scan.\r\n";
+  } else
+    rootText = (Removing ? LocateRoot() : DefaultRoot()).wstring();
   GdiplusStartupInput input;
   GdiplusStartup(&graphicsToken, &input, nullptr);
   INITCOMMONCONTROLSEX cc{sizeof(cc),
@@ -1335,8 +1410,7 @@ int RunUI(bool demo, const fs::path &report) {
   if (cleanupOnExit && Removing && !preview) {
     try {
       auto root = fs::path(rootText);
-      if (_wcsicmp(SelfPath().c_str(), (root / L"Uninstall.exe").c_str()) ==
-          0) {
+      if (_wcsicmp(SelfPath().parent_path().c_str(), root.c_str()) == 0) {
         wchar_t temp[32768];
         GetTempPathW(32768, temp);
         auto helper =
@@ -1354,9 +1428,13 @@ int RunUI(bool demo, const fs::path &report) {
                            CREATE_NO_WINDOW, nullptr, temp, &si, &pi)) {
           CloseHandle(pi.hThread);
           CloseHandle(pi.hProcess);
-        }
+        } else
+          throw std::runtime_error(
+              Utf8(LastErrorText(L"Не запустить завершение удаления. Повторите "
+                                 L"запуск унинсталлера из другой папки.")));
       }
-    } catch (...) {
+    } catch (const std::exception &e) {
+      MessageBoxW(nullptr, Wide(e.what()).c_str(), Product, MB_ICONERROR);
     }
   }
   for (auto &b : buttons)

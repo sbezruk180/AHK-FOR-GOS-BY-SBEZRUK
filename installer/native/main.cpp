@@ -2,7 +2,7 @@
 #include <objbase.h>
 #include <shellapi.h>
 namespace gos {
-int RunUI(bool, const fs::path &report = {});
+int RunUI(bool, const fs::path &report = {}, bool removalFixture = false);
 }
 int WINAPI wWinMain(HINSTANCE, HINSTANCE, PWSTR, int) {
   CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
@@ -21,6 +21,11 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PWSTR, int) {
     quiet = !args.empty() && args[0] != L"--preview";
     if (args.size() == 2 && args[0] == L"--self-test") {
       result = gos::SelfTest(args[1]);
+    } else if (args.size() == 4 && args[0] == L"--self-test" &&
+               args[2] == L"--legacy-fixture") {
+      result = gos::SelfTest(args[1], args[3]);
+    } else if (args.size() == 2 && args[0] == L"--self-test-removal") {
+      result = gos::RunUI(false, args[1], true);
     } else if (args.size() == 4 && args[0] == L"--finish-remove" &&
                args[2] == L"--wait-pid") {
       // The helper only removes the two remaining product files in a valid

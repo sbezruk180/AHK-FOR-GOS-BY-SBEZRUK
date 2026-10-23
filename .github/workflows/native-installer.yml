@@ -32,15 +32,17 @@ jobs:
         run: |
           $out = Join-Path $env:RUNNER_TEMP 'native-installer'
           New-Item -ItemType Directory -Force $out | Out-Null
+          $fixture = Join-Path $env:RUNNER_TEMP 'legacy-6b1a595'
+          Expand-Archive -Path 'installer/tests/legacy-6b1a595.zip' -DestinationPath $fixture -Force
           foreach ($repeat in 1..3) {
             $report = Join-Path $out "shipping-core-$repeat.txt"
-            $p = Start-Process -FilePath (Resolve-Path 'release/AHK_FOR_GOS_Setup.exe') -ArgumentList @('--self-test', "`"$report`"") -PassThru
+            $p = Start-Process -FilePath (Resolve-Path 'release/AHK_FOR_GOS_Setup.exe') -ArgumentList @('--self-test', "`"$report`"", '--legacy-fixture', "`"$fixture`"") -PassThru
             if (-not $p.WaitForExit(120000)) { $p.Kill(); throw 'Shipping core timeout' }
             if (Test-Path $report) { Get-Content $report }
             if ($p.ExitCode -ne 0) { throw "Shipping core failed: $($p.ExitCode)" }
           }
           $report = Join-Path $out 'msvc-core.txt'
-          $p = Start-Process -FilePath (Resolve-Path 'dist/installer/AHK_FOR_GOS_Setup.exe') -ArgumentList @('--self-test', "`"$report`"") -PassThru -Wait
+          $p = Start-Process -FilePath (Resolve-Path 'dist/installer/AHK_FOR_GOS_Setup.exe') -ArgumentList @('--self-test', "`"$report`"", '--legacy-fixture', "`"$fixture`"") -PassThru -Wait
           if (Test-Path $report) { Get-Content $report }
           if ($p.ExitCode -ne 0) { throw 'MSVC core tests failed' }
       - name: Real UI windows, choices, instruction and guarded removal review

@@ -1,0 +1,37 @@
+{
+  "status": "PASS",
+  "platform": "Wine 10, x64, Xvfb",
+  "artifacts": {
+    "AHK_FOR_GOS_Setup.exe": {
+      "bytes": 13302272,
+      "sha256": "e6391ad9440eac2bd7eef21eee2f3607b2456b8c9c42a7194cd4ab67bb8d070d"
+    },
+    "AHK_FOR_GOS_Uninstall.exe": {
+      "bytes": 1586688,
+      "sha256": "dd0f6e7581b699142530c3617e1a0229f88d120cc906d9d14eafe8057daa489f"
+    }
+  },
+  "application_sha256": "fbe20a816569de2906d7260e0d6e6a1de728b3485ccb4a2ff80a9bc745e4a450",
+  "results": {
+    "core": {
+      "checks": 93,
+      "failed": 0,
+      "skipped": [
+        "ANSI x86 EXE boot (no Wine32)",
+        "ANSI x86 source boot (no Wine32)",
+        "native NTFS symlink unavailable"
+      ]
+    },
+    "setup_ui": {
+      "checks": 27,
+      "failed": 0
+    },
+    "uninstall_ui": {
+      "checks": 28,
+      "failed": 0
+    }
+  },
+  "scope": "Disposable Temp trees only. Real shell deletion of a selected folder including non-AHK files; real temporary LNK target matching; actual installed renamed uninstaller UI and cleanup helper; exact 6b1a595 ZIP contents.",
+  "onedrive_provider": "NOT_TESTED: cloud-tag classification tested, no OneDrive provider available",
+  "whole_computer_scan": "NOT_EXECUTED"
+}

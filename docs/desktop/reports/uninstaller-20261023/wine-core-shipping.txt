@@ -1,0 +1,98 @@
+Native installer core tests. Only disposable Temp directories; no fixed-drive scan, real user profiles, registry or desktop changes.
+PASS | hash SHA256 standard vector
+PASS | reject unsafe relative: ..\evil.ahk
+PASS | reject unsafe relative: C:\evil
+PASS | reject unsafe relative: \\server\file
+PASS | reject unsafe relative: folder\..\evil
+PASS | reject unsafe relative: a.ahk:stream
+PASS | reject unsafe relative: CON
+PASS | reject unsafe relative: aux.txt
+PASS | reject unsafe relative: x\LPT1.ahk
+PASS | reject unsafe relative: file. 
+PASS | reject unsafe relative: .\bad
+PASS | allow normal nested source path
+PASS | reject drive root
+PASS | embedded payload files
+PASS | official A32 runtime is embedded
+PASS | reject invalid embedded package
+PASS | install EXE form
+PASS | installed EXE exact hash
+SKIP | Wine64 environment has no 32-bit application runtime
+PASS | EXE form does not install runtime
+PASS | owned installation record
+PASS | cancel installation before writes
+PASS | cancel preserves current EXE
+PASS | simulated update failure
+PASS | rollback restores previous EXE
+PASS | rollback preserves mode record
+PASS | rollback removes new source
+PASS | switch EXE to source
+PASS | source mode removes old EXE
+PASS | source includes main and graph dependencies
+PASS | source includes runtime
+SKIP | Wine64 environment cannot execute bundled A32
+PASS | source includes laws
+PASS | profile bytes preserved across mode change
+PASS | upgrade source form
+PASS | edited program file backed up
+PASS | uninstall keep profiles
+PASS | keep profiles preserves exact bytes
+PASS | uninstall preserves unrelated files
+PASS | uninstall removes bundled A32
+PASS | profile-preserving removal retains reinstall metadata
+PASS | reinstall after removal
+PASS | reinstall preserves portable profile beside source
+PASS | reinstall reuses saved profiles
+PASS | full project removal
+PASS | full removes project data
+PASS | install rename fixture
+PASS | manifest removal finds renamed main and module
+PASS | keep profiles also removes empty installation folder
+PASS | cloud tag accepted
+PASS | junction symlink and unknown tags rejected
+PASS | common drive root never offered as whole folder
+PASS | scan finds both lower and uppercase AHK
+PASS | scan offers folder including non-AHK contents
+PASS | scan never auto-selects files
+PASS | scan does not delete or change files
+PASS | scan cancellation
+PASS | scan identifies this product EXE even renamed
+PASS | scan does not include other EXE
+PASS | no selection deletes nothing
+PASS | changed file not recycled
+PASS | changed folder contents refuse whole-folder deletion
+PASS | create renamed shortcut fixture
+PASS | create source shortcut fixture with global interpreter
+PASS | create unrelated shortcut fixture
+PASS | remove renamed shortcuts by target or script argument
+PASS | preserve unrelated shortcut
+PASS | selected whole folder including non-AHK files is really removed
+PASS | recognise existing source distribution without marker
+PASS | legacy ownership detection is read only
+PASS | remove recognised legacy source dependencies
+PASS | legacy removal preserves foreign AHK
+PASS | legacy keep profiles preserves bytes
+PASS | recognise previous EXE distribution
+PASS | remove legacy EXE and requested project data
+PASS | recognise renamed portable EXE
+PASS | remove renamed portable EXE and its directory
+PASS | recognise actual 6b1a595 archive with renamed entry
+PASS | all 60 historical archive files removed
+PASS | old portable profile bytes retained
+PASS | archive subdirectories removed
+PASS | wrapper directory resolves actual archive
+PASS | nothing-to-remove is not reported as successful deletion
+PASS | full deletion cleans remaining legacy profiles and root
+PASS | install actual UI deletion fixture
+PASS | actual installed renamed uninstaller GUI deletes application
+PASS | renamed running uninstaller and application folder self-remove
+PASS | real UI removal preserves profile bytes
+PASS | fresh installation failure is reported
+PASS | rollback removes new empty directories
+PASS | fresh installation can retry after rollback
+PASS | retry has a complete ownership record
+PASS | install rejects occupied unrelated folder
+PASS | uninstall rejects unrelated folder
+PASS | unrelated folder remains intact
+SKIP | symlink creation unavailable in this environment
+Checks=93 Failed=0
