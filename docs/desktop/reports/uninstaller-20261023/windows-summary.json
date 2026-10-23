@@ -1,0 +1,58 @@
+{
+  "run_id": "39927845697",
+  "workflow_url": "https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK/actions/runs/39927845697",
+  "source_commit": "e6f80fdf017a0551d0629ed9c1bd6cf7bfdd6e26",
+  "status": "PASS",
+  "artifacts": {
+    "AHK_FOR_GOS_Setup.exe": {
+      "bytes": 13321216,
+      "sha256": "5fb55abf377c6ee4ad85542bf107316768c794d4fe8de1f6d89af381a35a93df"
+    },
+    "AHK_FOR_GOS_Uninstall.exe": {
+      "bytes": 1595904,
+      "sha256": "7ea074f73b95f0c8aa47e73a877503ef759ee8d1203414471357163081340be4"
+    }
+  },
+  "application_sha256": "fbe20a816569de2906d7260e0d6e6a1de728b3485ccb4a2ff80a9bc745e4a450",
+  "native_results": [
+    {
+      "file": "shipping-core-1.txt",
+      "checks": 96,
+      "failed": 0,
+      "skips": []
+    },
+    {
+      "file": "shipping-core-2.txt",
+      "checks": 96,
+      "failed": 0,
+      "skips": []
+    },
+    {
+      "file": "shipping-core-3.txt",
+      "checks": 96,
+      "failed": 0,
+      "skips": []
+    },
+    {
+      "file": "msvc-core.txt",
+      "checks": 96,
+      "failed": 0,
+      "skips": []
+    },
+    {
+      "file": "shipping-ui-Setup.txt",
+      "checks": 27,
+      "failed": 0,
+      "skips": []
+    },
+    {
+      "file": "shipping-ui-Uninstall.txt",
+      "checks": 28,
+      "failed": 0,
+      "skips": []
+    }
+  ],
+  "onedrive_provider": "NOT_TESTED: cloud tag classification tested; no real OneDrive provider present",
+  "whole_computer_scan": "NOT_EXECUTED: only disposable test trees",
+  "user_data": "No real user profiles, desktop shortcuts or registered installation modified by tests; temporary LNK and actual installed fixture UI were exercised"
+}
