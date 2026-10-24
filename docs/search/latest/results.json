@@ -3,11 +3,11 @@
     "engine": "google",
     "query": "ahk for gos",
     "requested_url": "https://www.google.com/search?q=ahk+for+gos&hl=ru",
-    "checked_at": "2026-10-24T12:21:22.360489+00:00",
+    "checked_at": "2026-10-24T12:35:53.086977+00:00",
     "visible_result_count": 0,
     "status": 200,
-    "final_url": "https://www.google.com/sorry/index?continue=https://www.google.com/search%3Fq%3Dahk%2Bfor%2Bgos%26hl%3Dru%26sei%3DwqLcaqGnGtGkptQPo8OPwAM&hl=ru&q=EgSHd182GMPF8tYGIjAiT5mElZqhCu8ywjXeRGbKMVGoK2z3kkSC_DBGrNWi_MByHtKE1WTcvY607X4wzDMyAVJaAUNg0LS53ueV1fIn",
-    "title": "https://www.google.com/search?q=ahk+for+gos&hl=ru&sei=wqLcaqGnGtGkptQPo8OPwAM",
+    "final_url": "https://www.google.com/sorry/index?continue=https://www.google.com/search%3Fq%3Dahk%2Bfor%2Bgos%26hl%3Dru%26sei%3DKabcarqiD5uo5NoPobWT-AQ&hl=ru&q=EgQUf9ajGKrM8tYGIjCAiwHn8ZWuZ7VDnN6rNXYuURqI_XBHGQTNROTHpMJYKze2crrL-bFsOM0l-s1LHxcyAVJaAUNg6JCp8N6lgqly",
+    "title": "https://www.google.com/search?q=ahk+for+gos&hl=ru&sei=KabcarqiD5uo5NoPobWT-AQ",
     "results": [],
     "repository_results": [],
     "verdict": "blocked_or_challenged"
@@ -16,61 +16,81 @@
     "engine": "bing",
     "query": "ahk for gos",
     "requested_url": "https://www.bing.com/search?q=ahk+for+gos",
-    "checked_at": "2026-10-24T12:21:22.361317+00:00",
-    "visible_result_count": 10,
+    "checked_at": "2026-10-24T12:35:53.083884+00:00",
+    "visible_result_count": 14,
     "status": 200,
-    "final_url": "https://www.bing.com/search?q=ahk+for+gos&rdr=1&rdrig=87D45DBAC1CF4D449DD6F1634BEDD3CF",
+    "final_url": "https://www.bing.com/search?q=ahk+for+gos&rdr=1&rdrig=812E8DC04B094A35AB2914EF94850523",
     "title": "ahk for gos - Поиск",
     "results": [
       {
-        "title": "AutoHotkey",
-        "url": "https://www.bing.com/ck/a?!&&p=d99eee557b99c89b220038dc978026485131cf975d0d40030664e7ed42c58e69JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2551787c-5744-675e-1962-6f8056af6667&u=a1aHR0cHM6Ly93d3cuYXV0b2hvdGtleS5jb20v&ntb=1",
-        "target_url": "https://www.autohotkey.com/"
+        "title": "Descend: Jogue e Ganhe Cripto | GAMES.GG",
+        "url": "https://www.bing.com/ck/a?!&&p=df6030453cc9e5eb4fea54c79a6d8cc928290eaf8f004d0f5c846b15e12cf72fJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=07013cdc-a381-601f-2c55-2b20a2926175&u=a1aHR0cHM6Ly9nYW1lcy5nZy9wdC1CUi9kZXNjZW5kLw&ntb=1",
+        "target_url": "https://games.gg/pt-BR/descend/"
       },
       {
-        "title": "Releases: AutoHotkey/AutoHotkey - GitHub",
-        "url": "https://www.bing.com/ck/a?!&&p=a3c6c51bfc5e1713cd105616d8fce5f25fa4bda7da8d854c2a65bbf4594d1132JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2551787c-5744-675e-1962-6f8056af6667&u=a1aHR0cHM6Ly9naXRodWIuY29tL0F1dG9Ib3RrZXkvQXV0b0hvdGtleS9yZWxlYXNlcw&ntb=1",
-        "target_url": "https://github.com/AutoHotkey/AutoHotkey/releases"
+        "title": "Descend.GG Domain Information & Lookup Data",
+        "url": "https://www.bing.com/ck/a?!&&p=c592505632d3444904511d8386b3286a94e673410056b34731c97f55de889f68JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=07013cdc-a381-601f-2c55-2b20a2926175&u=a1aHR0cHM6Ly93d3cuaXBhZGRyZXNzLmNvbS93ZWJzaXRlL2Rlc2NlbmQuZ2cv&ntb=1",
+        "target_url": "https://www.ipaddress.com/website/descend.gg/"
       },
       {
-        "title": "The German Chambers of Commerce Abroad - AHK",
-        "url": "https://www.bing.com/ck/a?!&&p=7ffaef78386ac4d642e8344bfed0ffd44b9354866932cb779482d7b5c647f043JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2551787c-5744-675e-1962-6f8056af6667&u=a1aHR0cHM6Ly93d3cuYWhrLmRlL2VuLw&ntb=1",
-        "target_url": "https://www.ahk.de/en/"
+        "title": "GG.deals - Find Video Games On Sale - Cheap Games",
+        "url": "https://www.bing.com/ck/a?!&&p=916be513e848cd9cc331650e33c75b3dc110c97dff169d67b8d0ea79b9786decJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=07013cdc-a381-601f-2c55-2b20a2926175&u=a1aHR0cHM6Ly9nZy5kZWFscy8&ntb=1",
+        "target_url": "https://gg.deals/"
       },
       {
-        "title": "How to Install AutoHotkey | AutoHotkey v2",
-        "url": "https://www.bing.com/ck/a?!&&p=a49e89cadd2385b2c46694a4878bbdeaad5ba1893b6ace489d2f1bad791d88bbJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2551787c-5744-675e-1962-6f8056af6667&u=a1aHR0cHM6Ly93d3cuYXV0b2hvdGtleS5jb20vZG9jcy92Mi8vaG93dG8vSW5zdGFsbC5odG0&ntb=1",
-        "target_url": "https://www.autohotkey.com/docs/v2//howto/Install.htm"
+        "title": "Descend.gg: Новая эра приключенческих игр с элементами …",
+        "url": "https://www.bing.com/ck/a?!&&p=6427d0717869cb39c56318c91b231299c51c322a01fdd5ec500f476f2ddbbc48JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=07013cdc-a381-601f-2c55-2b20a2926175&u=a1aHR0cHM6Ly92ay5ydS93YWxsLTIwMTAyNTQyOV84NzE1&ntb=1",
+        "target_url": "https://vk.ru/wall-201025429_8715"
       },
       {
-        "title": "AutoHotkey - Wikipedia",
-        "url": "https://www.bing.com/ck/a?!&&p=eb138c17653426726eae90fa3ebed878dd502dbefe99177c6294a851c4047bb3JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2551787c-5744-675e-1962-6f8056af6667&u=a1aHR0cHM6Ly9lbi53aWtpcGVkaWEub3JnL3dpa2kvQXV0b0hvdGtleQ&ntb=1",
-        "target_url": "https://en.wikipedia.org/wiki/AutoHotkey"
+        "title": "Descend on Steam",
+        "url": "https://www.bing.com/ck/a?!&&p=8e5b90ef4a41515ff5e95072d9e2683e705377b46d0f6437085d1324db1e19e5JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=07013cdc-a381-601f-2c55-2b20a2926175&u=a1aHR0cHM6Ly9zdG9yZS5zdGVhbXBvd2VyZWQuY29tL2FwcC80NzE0MjkwL0Rlc2NlbmQv&ntb=1",
+        "target_url": "https://store.steampowered.com/app/4714290/Descend/"
       },
       {
-        "title": "AutoHotKey - Download",
-        "url": "https://www.bing.com/ck/a?!&&p=28bceb5017b123fe3ebfc2ebdc837324e0460ed401773f9e78fe935d0508233fJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2551787c-5744-675e-1962-6f8056af6667&u=a1aHR0cHM6Ly9hdXRvaG90a2V5LmVuLnNvZnRvbmljLmNvbS8&ntb=1",
-        "target_url": "https://autohotkey.en.softonic.com/"
+        "title": "The First Descendant Player Lookup, Builds, Guides, & Tools | Descendant.gg",
+        "url": "https://www.bing.com/ck/a?!&&p=46c85849012501e35b36438dd713be44974e89e99c2fbc9f95afc8d9c1cc96daJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=07013cdc-a381-601f-2c55-2b20a2926175&u=a1aHR0cHM6Ly9kZXNjZW5kYW50LmdnLw&ntb=1",
+        "target_url": "https://descendant.gg/"
       },
       {
-        "title": "Releases · AutoHotkey/Ahk2Exe - GitHub",
-        "url": "https://www.bing.com/ck/a?!&&p=1d628e8f9036cfab146654b820e92f628f2b136c22c915dae66cd9eb5c6fd72cJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2551787c-5744-675e-1962-6f8056af6667&u=a1aHR0cHM6Ly9naXRodWIuY29tL0F1dG9Ib3RrZXkvQWhrMkV4ZS9yZWxlYXNlcw&ntb=1",
-        "target_url": "https://github.com/AutoHotkey/Ahk2Exe/releases"
+        "title": "Descend 遊戲 | 暢玩並賺取 Descend | GAMES.GG",
+        "url": "https://www.bing.com/ck/a?!&&p=b7003f9e72f637039cc0486b28a64be8a2d148f299fd1c3c018b2c623cfae933JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=07013cdc-a381-601f-2c55-2b20a2926175&u=a1aHR0cHM6Ly9nYW1lcy5nZy96aC1IYW50L2Rlc2NlbmQv&ntb=1",
+        "target_url": "https://games.gg/zh-Hant/descend/"
       },
       {
-        "title": "Documentation - AutoHotkey",
-        "url": "https://www.bing.com/ck/a?!&&p=6654d271f914283f0b56589e1a8ee9d758ff43882324f7168fa0cd5b6c5319d2JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2551787c-5744-675e-1962-6f8056af6667&u=a1aHR0cHM6Ly93d3cuYXV0b2hvdGtleS5jb20vZG9jcy8&ntb=1",
-        "target_url": "https://www.autohotkey.com/docs/"
+        "title": "As We Descend - jestr.gg",
+        "url": "https://www.bing.com/ck/a?!&&p=6298b2f7f3954b977aee8dc44f9947356d1b233ff02a5c40055df0b3da872eb1JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=07013cdc-a381-601f-2c55-2b20a2926175&u=a1aHR0cHM6Ly93d3cuamVzdHIuZ2cvZ2FtZXMvYXMtd2UtZGVzY2VuZA&ntb=1",
+        "target_url": "https://www.jestr.gg/games/as-we-descend"
       },
       {
-        "title": "Quick Reference | AutoHotkey v2",
-        "url": "https://www.bing.com/ck/a?!&&p=044f20ea03867378cdf9b8d9fc5ddd0cbfe4130c212e9b96750f4bc9bf8570ceJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2551787c-5744-675e-1962-6f8056af6667&u=a1aHR0cHM6Ly93d3cuYXV0b2hvdGtleS5jb20vZG9jcy92Mi8&ntb=1",
-        "target_url": "https://www.autohotkey.com/docs/v2/"
+        "title": "Update 9 - As We Descend Wiki",
+        "url": "https://www.bing.com/ck/a?!&&p=af55ee9036c6bd0014e20bab3523419ebd6d3d3a61360ea2b308c044c4fa8569JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=07013cdc-a381-601f-2c55-2b20a2926175&u=a1aHR0cHM6Ly9hc3dlZGVzY2VuZC53aWtpLmdnL3dpa2kvVXBkYXRlXzk&ntb=1",
+        "target_url": "https://aswedescend.wiki.gg/wiki/Update_9"
       },
       {
-        "title": "Beginner Tutorial | AutoHotkey v2",
-        "url": "https://www.bing.com/ck/a?!&&p=a078fe0ca14343e3306200323d892433efeae42a590f1b32b54fb2ef53bb5bfbJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2551787c-5744-675e-1962-6f8056af6667&u=a1aHR0cHM6Ly93d3cuYXV0b2hvdGtleS5jb20vZG9jcy92Mi9UdXRvcmlhbC5odG0&ntb=1",
-        "target_url": "https://www.autohotkey.com/docs/v2/Tutorial.htm"
+        "title": "Descend.gg (2023) - Grouvee",
+        "url": "https://www.bing.com/ck/a?!&&p=75cca3e669147cc5ad57c6cd2cbc7b955adab3c12d778bd67cf527efdfa7bc43JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=07013cdc-a381-601f-2c55-2b20a2926175&u=a1aHR0cHM6Ly93d3cuZ3JvdXZlZS5jb20vZ2FtZXMvMzA5NDg4LWRlc2NlbmRnZy8&ntb=1",
+        "target_url": "https://www.grouvee.com/games/309488-descendgg/"
+      },
+      {
+        "title": "Descend Crypto Game: کھیلیں اور کمائیں | GAMES.GG",
+        "url": "https://www.bing.com/ck/a?!&&p=2ccc654b46b69a1f15c31935d1bcac797f4fac6d6713addbbb5183b98c3c860dJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=07013cdc-a381-601f-2c55-2b20a2926175&u=a1aHR0cHM6Ly9nYW1lcy5nZy91ci9kZXNjZW5kLw&ntb=1",
+        "target_url": "https://games.gg/ur/descend/"
+      },
+      {
+        "title": "As We Descend - player.gg",
+        "url": "https://www.bing.com/ck/a?!&&p=ee80eec4e75ac124b75b987ad3d30724e2024ab242d6fb78122c4e1e887b65c6JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=07013cdc-a381-601f-2c55-2b20a2926175&u=a1aHR0cHM6Ly9wbGF5ZXIuZ2cvZXhwbG9yZS9nYW1lcy8yOTQ1MDItYXMtd2UtZGVzY2VuZA&ntb=1",
+        "target_url": "https://player.gg/explore/games/294502-as-we-descend"
+      },
+      {
+        "title": "Descend.gg - Kotaku",
+        "url": "https://www.bing.com/ck/a?!&&p=cd70fa20f275119426f9810bcc171ca2be209df9140bd105545a8e1dc8c605bfJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=07013cdc-a381-601f-2c55-2b20a2926175&u=a1aHR0cHM6Ly9rb3Rha3UuY29tL2dhbWVzL2Rlc2NlbmQtZG90LWdnLS0x&ntb=1",
+        "target_url": "https://kotaku.com/games/descend-dot-gg--1"
+      },
+      {
+        "title": "Buy cheap As We Descend Steam Key ️ Best Price - GG.deals",
+        "url": "https://www.bing.com/ck/a?!&&p=4605ff059e5e688b22e003702010447c0f91a4c0a11fafb71feecc7f34a91176JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=07013cdc-a381-601f-2c55-2b20a2926175&u=a1aHR0cHM6Ly9nZy5kZWFscy9nYW1lL2FzLXdlLWRlc2NlbmQv&ntb=1",
+        "target_url": "https://gg.deals/game/as-we-descend/"
       }
     ],
     "repository_results": [],
@@ -79,11 +99,11 @@
   {
     "engine": "yandex",
     "query": "ahk for gos",
-    "requested_url": "https://yandex.ru/search/?text=ahk%20for%20gos",
-    "checked_at": "2026-10-24T12:21:22.359603+00:00",
+    "requested_url": "https://yandex.ru/search/?text=ahk+for+gos",
+    "checked_at": "2026-10-24T12:35:53.082250+00:00",
     "visible_result_count": 0,
     "status": 200,
-    "final_url": "https://yandex.ru/showcaptcha?cc=1&form-fb-hint=2.1&mt=71A28011DD5EE53AF51AC844BC6D429E10DE6023A2C2DD5FB94C659F7863BFEF7A4D22BD41729D6C8F4C857491A568FFC4BA6D0BDE825EAF928AF6D6399F5342273AE200E0EBD426DDDBFCD701F551934D45EAB0A90F46BF7DCEA642B84D6EAA3741A09305C46BB522EAE6E65C442F86DECDD9CEA890F7DB6FEEAD2F986140960B73B94CA7560501&retpath=aHR0cHM6Ly95YW5kZXgucnUvc2VhcmNoP3RleHQ9YWhrJTIwZm9yJTIwZ29z_536690548713a08a492bdeb3ae2b714e&t=2%252F1792844483%252F7d82c7d5fe84a1b0fc204fbd96158322&u=9635292147658526940&s=a430a25bf3c9bb785876b0fc2ba9ff11",
+    "final_url": "https://yandex.ru/showcaptcha?cc=1&form-fb-hint=2.1&mt=69F05431CD12D0AC0326B97F50B3CEE7168707E6C796ED49AA76259D6C84BDBE20899DCFC089F453F18DA178944FFCDAA73077E84CBA6EF582AFE58A0E4E7639921EEBE52B6AC2A9D7B81A0E2935B1834E627799DD87069B1BDDF77A2C02E3716AF5781E3554501678B4A5E3424CE7733A6409212C29DD4F26B6255E0B64FCAF914D63DC84BB748D84&retpath=aHR0cHM6Ly95YW5kZXgucnUvc2VhcmNoP3RleHQ9YWhrK2Zvcitnb3M%2C_e90fef0939d6211add1133017df5c51b&t=2%252F1792845353%252F8dc4dc897f89cb556bfe874bca9cdfca&u=9635350573038972783&s=bc3b27f264177cebdc28df4c29bdbf5f",
     "title": "Вы не робот?",
     "results": [],
     "repository_results": [],
@@ -93,7 +113,7 @@
     "engine": "duckduckgo",
     "query": "ahk for gos",
     "requested_url": "https://html.duckduckgo.com/html/?q=ahk+for+gos",
-    "checked_at": "2026-10-24T12:21:22.358134+00:00",
+    "checked_at": "2026-10-24T12:35:53.080036+00:00",
     "visible_result_count": 0,
     "status": 202,
     "final_url": "https://html.duckduckgo.com/html/?q=ahk+for+gos",
@@ -106,7 +126,7 @@
     "engine": "github",
     "query": "ahk for gos",
     "requested_url": "https://github.com/search?q=ahk+for+gos&type=repositories",
-    "checked_at": "2026-10-24T12:21:22.356839+00:00",
+    "checked_at": "2026-10-24T12:35:53.089772+00:00",
     "visible_result_count": 1,
     "status": 200,
     "final_url": "https://github.com/search?q=ahk+for+gos&type=repositories",

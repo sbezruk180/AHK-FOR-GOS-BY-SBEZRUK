@@ -1,0 +1,67 @@
+[
+  {
+    "engine": "google",
+    "query": "ахк для амазинга",
+    "requested_url": "https://www.google.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B0%D0%BC%D0%B0%D0%B7%D0%B8%D0%BD%D0%B3%D0%B0&hl=ru",
+    "checked_at": "2026-10-24T12:36:13.384866+00:00",
+    "visible_result_count": 0,
+    "status": 200,
+    "final_url": "https://www.google.com/sorry/index?continue=https://www.google.com/search%3Fq%3D%25D0%25B0%25D1%2585%25D0%25BA%2B%25D0%25B4%25D0%25BB%25D1%258F%2B%25D0%25B0%25D0%25BC%25D0%25B0%25D0%25B7%25D0%25B8%25D0%25BD%25D0%25B3%25D0%25B0%26hl%3Dru%26sei%3DPabcapa5JPfm5NoPm5-ACA&hl=ru&q=EgQUf9ajGL7M8tYGIjCkDUQXfjhQsvNOf1TUZVjvCuozUTdDBP93adb3fjVnrRb8q__h5UFEZ83JcHdvdIcyAVJaAUNg7ZaC2p6kttg6",
+    "title": "https://www.google.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B0%D0%BC%D0%B0%D0%B7%D0%B8%D0%BD%D0%B3%D0%B0&hl=ru&sei=Pabcapa5JPfm5NoPm5-ACA",
+    "results": [],
+    "repository_results": [],
+    "verdict": "blocked_or_challenged"
+  },
+  {
+    "engine": "bing",
+    "query": "ахк для амазинга",
+    "requested_url": "https://www.bing.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B0%D0%BC%D0%B0%D0%B7%D0%B8%D0%BD%D0%B3%D0%B0",
+    "checked_at": "2026-10-24T12:36:13.405444+00:00",
+    "visible_result_count": 0,
+    "status": 200,
+    "final_url": "https://www.bing.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B0%D0%BC%D0%B0%D0%B7%D0%B8%D0%BD%D0%B3%D0%B0&rdr=1&rdrig=DF3FD88161AE4B1681B2DA07886DFBCB",
+    "title": "ахк для амазинга - Поиск",
+    "results": [],
+    "repository_results": [],
+    "verdict": "no_results_extracted"
+  },
+  {
+    "engine": "yandex",
+    "query": "ахк для амазинга",
+    "requested_url": "https://yandex.ru/search/?text=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B0%D0%BC%D0%B0%D0%B7%D0%B8%D0%BD%D0%B3%D0%B0",
+    "checked_at": "2026-10-24T12:36:13.411827+00:00",
+    "visible_result_count": 0,
+    "status": 200,
+    "final_url": "https://yandex.ru/showcaptcha?cc=1&form-fb-hint=2.1&mt=072E7D7BA3DB883598A34C2B7E94D1AA9FE4AD60BE7C4853077C8C50C2227A1B51E4077900D1362D8F60D1A716E406F0B909E1855644F856DFC8FE696DA4BE95327875A78045B6F65132C88B9F658AF0F032E75BA82C6F67BD80027111FF79E8A3B60CD1F4E25E3B4BA2D661A6736CAFC32788A07792D5EF653C7EEDDB7C958B32AC25BA5A38736EB0&retpath=aHR0cHM6Ly95YW5kZXgucnUvc2VhcmNoP3RleHQ9JUQwJUIwJUQxJTg1JUQwJUJBKyVEMCVCNCVEMCVCQiVEMSU4RislRDAlQjAlRDAlQkMlRDAlQjAlRDAlQjclRDAlQjglRDAlQkQlRDAlQjMlRDAlQjA%2C_1f3b136b32b3574650f4afc1338709e9&t=2%252F1792845374%252Fbc6bb221b12fb2316f821b19d8eafdc5&u=9635351953266198566&s=c84f503066f92ccb15ca93d541361a8f",
+    "title": "Вы не робот?",
+    "results": [],
+    "repository_results": [],
+    "verdict": "blocked_or_challenged"
+  },
+  {
+    "engine": "duckduckgo",
+    "query": "ахк для амазинга",
+    "requested_url": "https://html.duckduckgo.com/html/?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B0%D0%BC%D0%B0%D0%B7%D0%B8%D0%BD%D0%B3%D0%B0",
+    "checked_at": "2026-10-24T12:36:13.441269+00:00",
+    "visible_result_count": 0,
+    "status": 202,
+    "final_url": "https://html.duckduckgo.com/html/?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B0%D0%BC%D0%B0%D0%B7%D0%B8%D0%BD%D0%B3%D0%B0",
+    "title": "DuckDuckGo",
+    "results": [],
+    "repository_results": [],
+    "verdict": "blocked_or_challenged"
+  },
+  {
+    "engine": "github",
+    "query": "ахк для амазинга",
+    "requested_url": "https://github.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B0%D0%BC%D0%B0%D0%B7%D0%B8%D0%BD%D0%B3%D0%B0&type=repositories",
+    "checked_at": "2026-10-24T12:36:13.544758+00:00",
+    "visible_result_count": 0,
+    "status": 200,
+    "final_url": "https://github.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B0%D0%BC%D0%B0%D0%B7%D0%B8%D0%BD%D0%B3%D0%B0&type=repositories",
+    "title": "Repository search results · GitHub",
+    "results": [],
+    "repository_results": [],
+    "verdict": "no_results_extracted"
+  }
+]

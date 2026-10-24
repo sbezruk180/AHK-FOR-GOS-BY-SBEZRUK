@@ -1,0 +1,67 @@
+[
+  {
+    "engine": "google",
+    "query": "ахк для гос",
+    "requested_url": "https://www.google.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81&hl=ru",
+    "checked_at": "2026-10-24T12:35:59.026835+00:00",
+    "visible_result_count": 0,
+    "status": 200,
+    "final_url": "https://www.google.com/sorry/index?continue=https://www.google.com/search%3Fq%3D%25D0%25B0%25D1%2585%25D0%25BA%2B%25D0%25B4%25D0%25BB%25D1%258F%2B%25D0%25B3%25D0%25BE%25D1%2581%26hl%3Dru%26sei%3DL6bcaqb4CIez5NoP4cr_4As&hl=ru&q=EgQUf9ajGK_M8tYGIjCjJ_QnwZE1uBkbuAFn03LYctA4exBluuZ_haUycNkQne1Z3j_GHs29Gf1kdvJ-yFgyAVJaAUNg3vjwn5yy1OrPAQ",
+    "title": "https://www.google.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81&hl=ru&sei=L6bcaqb4CIez5NoP4cr_4As",
+    "results": [],
+    "repository_results": [],
+    "verdict": "blocked_or_challenged"
+  },
+  {
+    "engine": "bing",
+    "query": "ахк для гос",
+    "requested_url": "https://www.bing.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81",
+    "checked_at": "2026-10-24T12:35:59.041950+00:00",
+    "visible_result_count": 0,
+    "status": 200,
+    "final_url": "https://www.bing.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81&rdr=1&rdrig=6B13BD8A4D1C4EE6B534DE44BB8E456E",
+    "title": "ахк для гос - Поиск",
+    "results": [],
+    "repository_results": [],
+    "verdict": "no_results_extracted"
+  },
+  {
+    "engine": "yandex",
+    "query": "ахк для гос",
+    "requested_url": "https://yandex.ru/search/?text=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81",
+    "checked_at": "2026-10-24T12:35:59.049781+00:00",
+    "visible_result_count": 0,
+    "status": 200,
+    "final_url": "https://yandex.ru/showcaptcha?cc=1&form-fb-hint=2.1&mt=A9C9E8EDEE0E1A62CAC3CD1F0C39797985EE159276CF0A08FC9E43D6F16218594D9832B34C96EEF2E8033FCFAF41916878AA749A733B98358BF13BF7CFA33169E5E1E6E62C9CBFD0E60E0855F71B8E94CB6B44D5C12F0891A1ADBCEC4D3ADF53E186E6DC853190843D67ED52460CC0D0967F65EBF9AD09AC8B089EA2612642259FB54C79B9025AC4AE&retpath=aHR0cHM6Ly95YW5kZXgucnUvc2VhcmNoP3RleHQ9JUQwJUIwJUQxJTg1JUQwJUJBKyVEMCVCNCVEMCVCQiVEMSU4RislRDAlQjMlRDAlQkUlRDElODE%2C_5289b4e9a7cd882d862932ab5ab0c090&t=2%252F1792845359%252F92dd53e0d2bc7fed2d3c5805d26e5196&u=9635350981664845736&s=23bd376a7700200604b67540d61c7033",
+    "title": "Вы не робот?",
+    "results": [],
+    "repository_results": [],
+    "verdict": "blocked_or_challenged"
+  },
+  {
+    "engine": "duckduckgo",
+    "query": "ахк для гос",
+    "requested_url": "https://html.duckduckgo.com/html/?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81",
+    "checked_at": "2026-10-24T12:35:59.075945+00:00",
+    "visible_result_count": 0,
+    "status": 202,
+    "final_url": "https://html.duckduckgo.com/html/?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81",
+    "title": "DuckDuckGo",
+    "results": [],
+    "repository_results": [],
+    "verdict": "blocked_or_challenged"
+  },
+  {
+    "engine": "github",
+    "query": "ахк для гос",
+    "requested_url": "https://github.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81&type=repositories",
+    "checked_at": "2026-10-24T12:35:59.090111+00:00",
+    "visible_result_count": 0,
+    "status": 200,
+    "final_url": "https://github.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81&type=repositories",
+    "title": "Repository search results · GitHub",
+    "results": [],
+    "repository_results": [],
+    "verdict": "no_results_extracted"
+  }
+]
