@@ -3,40 +3,123 @@
     "engine": "google",
     "query": "ahk for gos",
     "requested_url": "https://www.google.com/search?q=ahk+for+gos&hl=ru",
-    "checked_at": "2026-10-24T12:17:44.894482+00:00",
-    "verdict": "request_failed",
-    "error": "'async_generator' object is not iterable"
+    "checked_at": "2026-10-24T12:19:06.001126+00:00",
+    "status": 200,
+    "final_url": "https://www.google.com/sorry/index?continue=https://www.google.com/search%3Fq%3Dahk%2Bfor%2Bgos%26hl%3Dru%26sei%3DOqLcavOBBeHpkPIPl_vNWQ&hl=ru&q=EgQNQBmwGLvE8tYGIjAvPiwmGaMVx2-JFKLqPXltDhtvs0ciO3kK5JkKLPU9xJHA8GthRH_pBR334LPg1UQyAVJaAUNgxaWsv6HOto3qAQ",
+    "title": "https://www.google.com/search?q=ahk+for+gos&hl=ru&sei=OqLcavOBBeHpkPIPl_vNWQ",
+    "results": [],
+    "repository_results": [],
+    "verdict": "no_results_extracted"
   },
   {
     "engine": "bing",
     "query": "ahk for gos",
     "requested_url": "https://www.bing.com/search?q=ahk+for+gos",
-    "checked_at": "2026-10-24T12:17:44.908028+00:00",
-    "verdict": "request_failed",
-    "error": "'async_generator' object is not iterable"
+    "checked_at": "2026-10-24T12:19:06.002880+00:00",
+    "status": 200,
+    "final_url": "https://www.bing.com/search?q=ahk+for+gos",
+    "title": "ahk for gos - Поиск",
+    "results": [
+      {
+        "title": "",
+        "url": "https://www.bing.com/ck/a?!&&p=c229a01af292352e72a9ee12417265453f7583fee915dd8537efe828423babffJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=341f40fd-8de9-6793-12ae-57018c1c6672&u=a1aHR0cHM6Ly93d3cuYXV0b2hvdGtleS5jb20v&ntb=1",
+        "target_url": "https://www.autohotkey.com/"
+      },
+      {
+        "title": "",
+        "url": "https://www.bing.com/ck/a?!&&p=da802bb26ad362ad07ef67e6819634a473a03e16c08ee33babec1a9045c9f12cJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=341f40fd-8de9-6793-12ae-57018c1c6672&u=a1aHR0cHM6Ly9naXRodWIuY29tL0F1dG9Ib3RrZXkvQXV0b0hvdGtleS9yZWxlYXNlcw&ntb=1",
+        "target_url": "https://github.com/AutoHotkey/AutoHotkey/releases"
+      },
+      {
+        "title": "",
+        "url": "https://www.bing.com/ck/a?!&&p=57b696e8db1d175b6cdba99c8899cb9ff4e282c14d95c233aa9680fda71d5dbcJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=341f40fd-8de9-6793-12ae-57018c1c6672&u=a1aHR0cHM6Ly93d3cuYXV0b2hvdGtleS5jb20vc2VhcmNoLw&ntb=1",
+        "target_url": "https://www.autohotkey.com/search/"
+      },
+      {
+        "title": "",
+        "url": "https://www.bing.com/ck/a?!&&p=67fbf76068f599ded42db696a22fd6fdd3182739807a73cf5722eaeda1feca7cJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=341f40fd-8de9-6793-12ae-57018c1c6672&u=a1aHR0cHM6Ly93d3cuYWhrLmRlL2VuLw&ntb=1",
+        "target_url": "https://www.ahk.de/en/"
+      },
+      {
+        "title": "",
+        "url": "https://www.bing.com/ck/a?!&&p=85dc3dcc795fecb13d8f6de86428b7650a11d0acf1e7b0e3a8754058232aeb90JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=341f40fd-8de9-6793-12ae-57018c1c6672&u=a1aHR0cHM6Ly9lbi53aWtpcGVkaWEub3JnL3dpa2kvQXV0b0hvdGtleQ&ntb=1",
+        "target_url": "https://en.wikipedia.org/wiki/AutoHotkey"
+      },
+      {
+        "title": "",
+        "url": "https://www.bing.com/ck/a?!&&p=f7ea87cdca4c0c212a0c90b3da2cae548bd6157de1b94d3ec757072b1816fb86JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=341f40fd-8de9-6793-12ae-57018c1c6672&u=a1aHR0cHM6Ly9hdXRvaG90a2V5LmVuLnNvZnRvbmljLmNvbS8&ntb=1",
+        "target_url": "https://autohotkey.en.softonic.com/"
+      },
+      {
+        "title": "",
+        "url": "https://www.bing.com/ck/a?!&&p=ec4ca48801fdb60dce8c80931248dbb132d2722fe24541911ca4d20c9dc3b44dJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=341f40fd-8de9-6793-12ae-57018c1c6672&u=a1aHR0cHM6Ly9naXRodWIuY29tL0F1dG9Ib3RrZXkvQWhrMkV4ZS9yZWxlYXNlcw&ntb=1",
+        "target_url": "https://github.com/AutoHotkey/Ahk2Exe/releases"
+      },
+      {
+        "title": "",
+        "url": "https://www.bing.com/ck/a?!&&p=f26b6e08f459604897f3da8d0b4d0f0903d15a41ccb7e1f4b100378855817d4eJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=341f40fd-8de9-6793-12ae-57018c1c6672&u=a1aHR0cHM6Ly9hdXRvLWhvdGtleS5uZXQvY29tbXVuaXR5Lmh0bWw&ntb=1",
+        "target_url": "https://auto-hotkey.net/community.html"
+      },
+      {
+        "title": "",
+        "url": "https://www.bing.com/ck/a?!&&p=402f86240c705ccd58dae688247c985527a5c12522d83dc2199fb828e1b62b49JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=341f40fd-8de9-6793-12ae-57018c1c6672&u=a1aHR0cHM6Ly93d3cuYXV0b2hvdGtleS5jb20vZG9jcy92Mi8vaG93dG8vSW5zdGFsbC5odG0&ntb=1",
+        "target_url": "https://www.autohotkey.com/docs/v2//howto/Install.htm"
+      },
+      {
+        "title": "",
+        "url": "https://www.bing.com/ck/a?!&&p=1ef57e8781b0bd3d024296586e0a49c7df2309d38bfab00739b29b76b701e64dJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=341f40fd-8de9-6793-12ae-57018c1c6672&u=a1aHR0cHM6Ly93d3cuYXV0b2hvdGtleS5jb20vZG9jcy8&ntb=1",
+        "target_url": "https://www.autohotkey.com/docs/"
+      }
+    ],
+    "repository_results": [],
+    "verdict": "not_found_in_visible_results"
   },
   {
     "engine": "yandex",
     "query": "ahk for gos",
     "requested_url": "https://yandex.ru/search/?text=ahk%20for%20gos",
-    "checked_at": "2026-10-24T12:17:44.908961+00:00",
-    "verdict": "request_failed",
-    "error": "'async_generator' object is not iterable"
+    "checked_at": "2026-10-24T12:19:06.006508+00:00",
+    "status": 200,
+    "final_url": "https://yandex.ru/showcaptcha?cc=1&form-fb-hint=2.1&mt=8F6C02BE025664C1EC1517BFB96FCE5A4E9E4F560042092A5DEE8C0C2A9BB5D2345BD26364D46FCCEEABE4E1BB3BB641C65BA8ED0A515BE0438D6B6DA409DB617127D61883850C69ED28DD305B52C81797F91B58BF4CB5BF565F4995D62937DDF48D526412DB9A08D68FED3DB08F23D0866BEFA97FC73CB81A68090A1DCEC36E1C1876AAFCDABB&retpath=aHR0cHM6Ly95YW5kZXgucnUvc2VhcmNoP3RleHQ9YWhrJTIwZm9yJTIwZ29z_536690548713a08a492bdeb3ae2b714e&t=2%252F1792844346%252F14e96c49ef5ae9e45afa49f1e0560f1c&u=9635283002863061302&s=e3f39007fdca5ef9aca3d47b37363b9f",
+    "title": "Вы не робот?",
+    "results": [],
+    "repository_results": [],
+    "verdict": "blocked_or_challenged"
   },
   {
     "engine": "duckduckgo",
     "query": "ahk for gos",
     "requested_url": "https://html.duckduckgo.com/html/?q=ahk+for+gos",
-    "checked_at": "2026-10-24T12:17:44.892602+00:00",
-    "verdict": "request_failed",
-    "error": "'async_generator' object is not iterable"
+    "checked_at": "2026-10-24T12:19:06.005718+00:00",
+    "status": 202,
+    "final_url": "https://html.duckduckgo.com/html/?q=ahk+for+gos",
+    "title": "DuckDuckGo",
+    "results": [],
+    "repository_results": [],
+    "verdict": "no_results_extracted"
   },
   {
     "engine": "github",
     "query": "ahk for gos",
     "requested_url": "https://github.com/search?q=ahk+for+gos&type=repositories",
-    "checked_at": "2026-10-24T12:17:44.898525+00:00",
-    "verdict": "request_failed",
-    "error": "'async_generator' object is not iterable"
+    "checked_at": "2026-10-24T12:19:06.004058+00:00",
+    "status": 200,
+    "final_url": "https://github.com/search?q=ahk+for+gos&type=repositories",
+    "title": "Repository search results · GitHub",
+    "results": [
+      {
+        "title": "sbezruk180/AHK-FOR-GOS-BY-SBEZRUK",
+        "url": "https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK",
+        "target_url": "https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK"
+      }
+    ],
+    "repository_results": [
+      {
+        "title": "sbezruk180/AHK-FOR-GOS-BY-SBEZRUK",
+        "url": "https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK",
+        "target_url": "https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK"
+      }
+    ],
+    "verdict": "found"
   }
 ]
