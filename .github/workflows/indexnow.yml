@@ -1,0 +1,52 @@
+name: Submit published project URLs to IndexNow
+on:
+  workflow_run:
+    workflows: ['Verify full project and browser search visibility']
+    types: [completed]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: indexnow-main
+  cancel-in-progress: false
+jobs:
+  submit:
+    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify public ownership key and submit project pages
+        run: python tools/submit_indexnow.py --output docs/search/indexnow-submission.json --wait-seconds 240
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: indexnow-receipt
+          path: docs/search/indexnow-submission.json
+      - name: Save the actual receipt
+        if: always()
+        run: |
+          if [ ! -f docs/search/indexnow-submission.json ]; then exit 0; fi
+          expected=$(git rev-parse HEAD)
+          current=$(git ls-remote origin refs/heads/main | cut -f1)
+          if [ "$current" != "$expected" ]; then
+            echo '::warning::Main changed; receipt remains in the workflow artifact.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/search/indexnow-submission.json
+          python - <<'PY'
+          import hashlib,subprocess
+          from pathlib import Path
+          names=sorted(p for p in subprocess.check_output(['git','ls-files','-z']).decode().split('\0') if p and p!='CHECKSUMS.sha256')
+          Path('CHECKSUMS.sha256').write_text(''.join(hashlib.sha256(Path(p).read_bytes()).hexdigest()+'  '+p+'\n' for p in names))
+          PY
+          git add CHECKSUMS.sha256
+          git diff --cached --quiet || git commit -m 'Record real IndexNow submission receipt [skip ci]'
+          git push origin HEAD:refs/heads/main
