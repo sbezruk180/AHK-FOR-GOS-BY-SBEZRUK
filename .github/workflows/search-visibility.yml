@@ -1,0 +1,54 @@
+name: Publish exact project name and check browser search
+on:
+  push:
+    branches: [audit-fixes-obs-search-gui-20261009]
+    paths: ['.github/workflows/search-visibility.yml', 'tools/check_search_visibility.py']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  search:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Publish search description and prepared website
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),{owner,repo}=context.repo;
+            const info=await github.rest.repos.get({owner,repo});
+            const branch=info.data.default_branch;
+            const old=await github.rest.repos.getContent({owner,repo,path:'README.md',ref:branch});
+            await github.rest.repos.createOrUpdateFileContents({owner,repo,path:'README.md',branch,sha:old.data.sha,message:'Lead with AHK FOR GOS name and official bilingual description',content:Buffer.from(fs.readFileSync('docs/README_SEARCH_RU.md')).toString('base64')});
+            // Update the existing prepared site branch; this does not enable GitHub Pages.
+            const ref=await github.rest.git.getRef({owner,repo,ref:'heads/gh-pages'});
+            const parent=await github.rest.git.getCommit({owner,repo,commit_sha:ref.data.object.sha});
+            const names=['index.html','robots.txt','sitemap.xml'];
+            const tree=await github.rest.git.createTree({owner,repo,base_tree:parent.data.tree.sha,tree:names.map(path=>({path,mode:'100644',type:'blob',content:fs.readFileSync('docs/site/'+path,'utf8')}))});
+            const commit=await github.rest.git.createCommit({owner,repo,message:'Describe AHK FOR GOS and official downloads with structured data',tree:tree.data.sha,parents:[parent.data.sha]});
+            await github.rest.git.updateRef({owner,repo,ref:'heads/gh-pages',sha:commit.data.sha});
+            core.notice('README published; prepared site updated. Pages activation still requires repository administrator.');
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install playwright==1.56.0
+      - name: Check actual search pages in Chrome
+        run: python tools/check_search_visibility.py --output docs/search/latest
+      - uses: actions/upload-artifact@v4
+        with:
+          name: search-browser-evidence
+          path: docs/search/latest
+      - name: Save public search evidence
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/search/latest
+          python - <<'PY'
+          import hashlib,subprocess
+          from pathlib import Path
+          names=sorted(p for p in subprocess.check_output(['git','ls-files','-z']).decode().split('\0') if p and p!='CHECKSUMS.sha256')
+          Path('CHECKSUMS.sha256').write_text(''.join(hashlib.sha256(Path(p).read_bytes()).hexdigest()+'  '+p+'\n' for p in names))
+          PY
+          git add CHECKSUMS.sha256
+          git diff --cached --quiet || git commit -m 'Record actual browser search visibility and screenshots [skip ci]'
+          git push origin HEAD:audit-fixes-obs-search-gui-20261009

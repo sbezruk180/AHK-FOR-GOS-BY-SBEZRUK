@@ -1,4 +1,4 @@
-# AHK для Amazing Online — AHK FOR GOS 1.1
+# AHK FOR GOS — AHK для Amazing Online 1.1
 
 Открытый AHK-помощник для госструктур Amazing Online: бинды МВД/ГАИ, RP-сценарии, Auto ID, профили и поиск законодательства. Автор — sbezruk180.
 
