@@ -8358,8 +8358,8 @@
       "sha256": "700fc50913d22b75682b70be125c2afb08786dc77efb4faa96c7b94f5cb8d544",
       "new_file": "app/ui_overlays.ahk",
       "new_line": 677,
-      "current_sha256": "700fc50913d22b75682b70be125c2afb08786dc77efb4faa96c7b94f5cb8d544",
-      "body_unchanged": true
+      "current_sha256": "709fd7acad37ce4c1d79fe279e7143d50cab379caa7866cb84fe592c40d3e939",
+      "body_unchanged": false
     },
     {
       "name": "GetDynamicGlobalValue",
@@ -12818,7 +12818,7 @@
       "sha256": "25e49c885256fe31599b9a1346c62f6398c05008db36e88ff1269c0c3f74e594",
       "new_file": "ui_style.ahk",
       "new_line": 226,
-      "current_sha256": "6ee61d2bddfb9a891806d7a30f69791d79419697f6042ca24cc04215a1365e68",
+      "current_sha256": "d71d48eca07026452c9df595bbe226beb6ea40dcab1ec0f96b6f2af21f29a916",
       "body_unchanged": false
     },
     {
@@ -12827,7 +12827,7 @@
       "line": 187,
       "sha256": "fd28be67ef8f486353d49f4e22289b7c722b907caaa5e3ecb9c75420ece0242c",
       "new_file": "ui_style.ahk",
-      "new_line": 351,
+      "new_line": 371,
       "current_sha256": "045652e3398ecd5a39551f3fbde7caee3fdbadc7e132baeaedc81ce8662b338d",
       "body_unchanged": false
     },
@@ -12837,7 +12837,7 @@
       "line": 211,
       "sha256": "78bf3e57ec68e7a003a6600a67608d3fc6f2480b5d6c40b361696aad30e39e6a",
       "new_file": "ui_style.ahk",
-      "new_line": 375,
+      "new_line": 395,
       "current_sha256": "78bf3e57ec68e7a003a6600a67608d3fc6f2480b5d6c40b361696aad30e39e6a",
       "body_unchanged": true
     }
@@ -13037,8 +13037,8 @@
   ],
   "current_summary": {
     "original_functions": 1284,
-    "unchanged_bodies": 1141,
-    "adapted_bodies": 143,
+    "unchanged_bodies": 1140,
+    "adapted_bodies": 144,
     "retained_event_labels": 191
   }
 }
