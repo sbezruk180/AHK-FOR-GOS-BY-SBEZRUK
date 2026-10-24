@@ -1,11 +1,11 @@
 {
   "architecture": "ANSI_x86",
   "entry": "AHK_FOR_GOS_BY_SBEZRUK.ahk",
-  "exe_bytes": 5314560,
-  "exe_sha256": "fbe20a816569de2906d7260e0d6e6a1de728b3485ccb4a2ff80a9bc745e4a450",
+  "exe_bytes": 5319168,
+  "exe_sha256": "b25d263fd08df15da84e420bd02c8a11d1585ae471715d76605f87b9b1040afd",
   "product": "AHK FOR GOS",
   "resources": {
-    ">AUTOHOTKEY SCRIPT<": "337512c0057a2611650469b51979f22c76cef44c72b7bfd4e641df67842793c0",
+    ">AUTOHOTKEY SCRIPT<": "a83db26285ccca2f4c4c999b3e6f2e67704753771cca085353d01b7ee4a51a6c",
     "LAW_ARG": "1cb186776851afc9d03b0e5882cd4691b5dd920ab5e65557b45aabd8cf3b1b28",
     "LAW_DIGEST_ARG": "38b0e4b1e4c9ba6c540e1fa9159e1f10dff650cad67092963200395e38707cb9",
     "LAW_DIGEST_FP": "1194ab23fa0dadca931f470e090e45b4aa353f7d45da371a37f0d6a886d74fd6",
@@ -76,7 +76,7 @@
     "SOURCE_ID_CAPTURE.AHK": "0ab01614857161fc00f8b860dda475eb087997ebbd98702ea96db5bb5c047bd6",
     "SOURCE_ID_CAPTURE_REGRESSION.AHK": "6f5d7d7c9e6c45cd2060f9a31a66629942d857b18d7e170465ceb3f1b5ec1570",
     "SOURCE_LOGIC_AUDIT_REGRESSION.AHK": "34b39215321e9096ad3352720e5f155b6c5688f62f28d3bf18478ea7ff545283",
-    "SOURCE_MAIN": "1dbfd0949a70ca08b48abd8268e3be93ea982bb615491c14952e1e42ad407d7a",
+    "SOURCE_MAIN": "b2955956161cbb9c8c37084981d497acababd1dbe66cceba7c32dbaff8bb0a77",
     "SOURCE_MEMORY_COMPAT_REGRESSION.AHK": "71e0b9b779e0d877e72b00c80d4b237259e08fe9905a1673beed330dbd3dfb01",
     "SOURCE_NATIVE_DIALOG_REGRESSION.AHK": "76af83a945b830b96fd9c7790283d043913ababa948d8b7cb16c17dbd207fcf5",
     "SOURCE_PRIVATE_TEXT.AHK": "d9f2ca77750fc2e7056f20fe591ad0b453a13a2428a2d43fef725f176daf6f7d",
@@ -92,9 +92,9 @@
     "SOURCE_TEXT_COMMANDS_REGRESSION.AHK": "eb164362dcd3981534c45867ef42c1b2085e02880bdd23b65a822247f57719e1",
     "SOURCE_UDF.AHK": "1a4c4154a593aeb398cb4bcd88e3b0fcfa9827fbd94fa853b4d7f0839504a4e0",
     "SOURCE_UI_DOCUMENTS.AHK": "0a67daf3d1c648a6ffdd001dba7645884c2c71e27efbc8244656fea681b2e4ad",
-    "SOURCE_UI_OVERLAYS.AHK": "22937987aab4f69ab64b073c97961d9cfc2ea5ecb7da39b3bf48eadc7a636932",
+    "SOURCE_UI_OVERLAYS.AHK": "a61b169bfaa57da047fe158bae5c15903e486d33fc85353aadec830689169c62",
     "SOURCE_UI_SETTINGS.AHK": "e363ca21b70e9c5f95f0f3de56513dcf23dc19193c650858fddf859c2dceeecf",
-    "SOURCE_UI_STYLE.AHK": "720e0cae6280fd66f7036e2dfbad613079edc028c543678ff5d43ede071d95b5"
+    "SOURCE_UI_STYLE.AHK": "8b1d56bbf2215129b7032d94b9052b81e15e42b0276b33ad1cec7b79d5821641"
   },
   "runtime": "1.1.37.02",
   "source_files": [
@@ -145,7 +145,7 @@
     "app/custom_functions.ahk",
     "app/events.ahk"
   ],
-  "source_sha256": "337512c0057a2611650469b51979f22c76cef44c72b7bfd4e641df67842793c0",
+  "source_sha256": "a83db26285ccca2f4c4c999b3e6f2e67704753771cca085353d01b7ee4a51a6c",
   "sources": {
     "AHK_FOR_GOS_BY_SBEZRUK.ahk": "128817951eb237d43b54c062ef63c629b6d324512a76881c25f46e44b3772005",
     "UDF.ahk": "1a4c4154a593aeb398cb4bcd88e3b0fcfa9827fbd94fa853b4d7f0839504a4e0",
@@ -169,7 +169,7 @@
     "app/state.ahk": "0871aa87d38a87470f98512e514b2c0361da1e338b8dff3d8582cea61904e9c9",
     "app/text_commands.ahk": "6b2d14bfda7d402eedb32165700915c019dd9aef69ea93f7c58da8f5b70d5102",
     "app/ui_documents.ahk": "0a67daf3d1c648a6ffdd001dba7645884c2c71e27efbc8244656fea681b2e4ad",
-    "app/ui_overlays.ahk": "22937987aab4f69ab64b073c97961d9cfc2ea5ecb7da39b3bf48eadc7a636932",
+    "app/ui_overlays.ahk": "a61b169bfaa57da047fe158bae5c15903e486d33fc85353aadec830689169c62",
     "app/ui_settings.ahk": "e363ca21b70e9c5f95f0f3de56513dcf23dc19193c650858fddf859c2dceeecf",
     "chat_typing.ahk": "20426fd22703f2a095358fca6d319b4c8fe81c7d6eb8c341cd237bd90ccd741a",
     "common.ahk": "290314e7997d9ea2e0ce00a82d6270ecb16f81b08ddd8a074bcde0f67a5eea4e",
@@ -192,6 +192,6 @@
     "tests/service_flows_regression.ahk": "c0cb1e10d42a69db6dbf9fb1f5d46a4ae5e0dd8b3ff1428af9b75794589aecec",
     "tests/service_ui_regression.ahk": "e48b8eaabb5d6683c87b82ee7ce3d46e386e7ded80833839c85cc8a9ec35e9d2",
     "tests/text_commands_regression.ahk": "eb164362dcd3981534c45867ef42c1b2085e02880bdd23b65a822247f57719e1",
-    "ui_style.ahk": "720e0cae6280fd66f7036e2dfbad613079edc028c543678ff5d43ede071d95b5"
+    "ui_style.ahk": "8b1d56bbf2215129b7032d94b9052b81e15e42b0276b33ad1cec7b79d5821641"
   }
 }

@@ -235,7 +235,8 @@ UIStyle_DrawButton(wParam, lParam, message, hwnd) {
         p := UIStyle_GetPalette(hwnd, child)
         if !IsObject(p)
             return
-        dc := NumGet(lParam + 0, itemOffset + A_PtrSize, "Ptr")
+        targetDC := NumGet(lParam + 0, itemOffset + A_PtrSize, "Ptr")
+        dc := targetDC
         rect := lParam + itemOffset + A_PtrSize * 2
         state := NumGet(lParam + 0, 16, "UInt")
         selected := state & 1, disabled := state & 6, focused := state & 0x10
@@ -265,6 +266,17 @@ UIStyle_DrawButton(wParam, lParam, message, hwnd) {
         }
         if (disabled)
             fill := navigation ? p.Panel : p.Surface, outline := fill, textColor := p.Muted
+        ; Paint the complete button off-screen; do not expose background erase
+        ; and intermediate glyph/frame draws during focus and tab changes.
+        width := NumGet(rect + 0, 8, "Int") - NumGet(rect + 0, 0, "Int")
+        height := NumGet(rect + 0, 12, "Int") - NumGet(rect + 0, 4, "Int")
+        memoryDC := DllCall("CreateCompatibleDC", "Ptr", targetDC, "Ptr")
+        bitmap := memoryDC ? DllCall("CreateCompatibleBitmap", "Ptr", targetDC, "Int", width, "Int", height, "Ptr") : 0
+        oldBitmap := 0
+        if (memoryDC && bitmap) {
+            oldBitmap := DllCall("SelectObject", "Ptr", memoryDC, "Ptr", bitmap, "Ptr")
+            dc := memoryDC
+        }
         savedDC := DllCall("SaveDC", "Ptr", dc)
         try {
             ; Stock DC_PEN + cached brushes avoid per-paint GDI allocations.
@@ -311,6 +323,14 @@ UIStyle_DrawButton(wParam, lParam, message, hwnd) {
         } finally {
             if (savedDC)
                 DllCall("RestoreDC", "Ptr", dc, "Int", savedDC)
+            if (dc != targetDC) {
+                DllCall("BitBlt", "Ptr", targetDC, "Int", 0, "Int", 0, "Int", width, "Int", height, "Ptr", dc, "Int", 0, "Int", 0, "UInt", 0xCC0020)
+                DllCall("SelectObject", "Ptr", dc, "Ptr", oldBitmap)
+            }
+            if (bitmap)
+                DllCall("DeleteObject", "Ptr", bitmap)
+            if (memoryDC)
+                DllCall("DeleteDC", "Ptr", memoryDC)
         }
         return true
     } finally {
@@ -334,7 +354,7 @@ UIStyle_SetRole(hwnd, propertyName, role, roles) {
         return false
     if !DllCall("SetProp", "Ptr", hwnd, "Str", propertyName, "Ptr", roles[role])
         return false
-    DllCall("InvalidateRect", "Ptr", hwnd, "Ptr", 0, "Int", true)
+    DllCall("InvalidateRect", "Ptr", hwnd, "Ptr", 0, "Int", false)
     return true
 }
 
@@ -383,4 +403,12 @@ UIStyle_Shutdown() {
         if (brush)
             DllCall("DeleteObject", "Ptr", brush)
     UIStyleBrushes := {}, UIStyleWindows := {}, UIStyleInstalled := 0
+}
+
+UIStyle_SetTextIfChanged(guiName, controlName, text) {
+    GuiControlGet, previous, %guiName%:, %controlName%
+    if (previous == text)
+        return false
+    GuiControl, %guiName%:, %controlName%, %text%
+    return true
 }

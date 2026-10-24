@@ -1,3 +1,9 @@
+# AHK для Amazing Online — AHK FOR GOS 1.1
+
+Открытый AHK-помощник для госструктур Amazing Online: бинды МВД/ГАИ, RP-сценарии, Auto ID, профили и поиск законодательства. Автор — sbezruk180.
+
+[**Скачать релиз 1.1**](https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK/releases/tag/v1.1) · [Описание и загрузки](docs/README_SEARCH_RU.md)
+
 ## Графический установщик Windows
 
 [Скачать установщик EXE](release/AHK_FOR_GOS_Setup.exe) · [Отдельный унинсталлер](release/AHK_FOR_GOS_Uninstall.exe) · [Инструкция](installer/README_RU.md)
@@ -13,7 +19,7 @@
 
 # AHK FOR GOS BY SBEZRUK
 
-Самостоятельное Windows-приложение для биндов, RP-действий, Auto ID, докладов и законодательства в Amazing Online. Версия приложения 1.0, совместимая INI-схема 14.
+Самостоятельное Windows-приложение для биндов, RP-действий, Auto ID, докладов и законодательства в Amazing Online. Версия приложения 1.1, совместимая INI-схема 14.
 
 **Запуск:** `release\AHK_FOR_GOS.exe`. AutoHotkey, Python, .NET и исходные скрипты для запуска не нужны. Для новой установки настройки сохраняются в `%APPDATA%\AHK FOR GOS`; прежние INI рядом с EXE продолжают использоваться. Закройте старую AHK-копию перед запуском EXE.
 

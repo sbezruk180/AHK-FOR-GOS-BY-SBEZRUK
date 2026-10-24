@@ -115,15 +115,15 @@ def version_block(key, value=b'', children=(), text=False):
     return struct.pack('<H', len(result))+result[2:]
 
 def version_resource():
-    fields = {'CompanyName':'SBezruk180', 'FileDescription':'AHK FOR GOS', 'FileVersion':'1.0.0.0',
+    fields = {'CompanyName':'SBezruk180', 'FileDescription':'AHK FOR GOS', 'FileVersion':'1.1.0.0',
               'InternalName':'AHK_FOR_GOS', 'OriginalFilename':'AHK_FOR_GOS.exe',
-              'ProductName':'AHK FOR GOS', 'ProductVersion':'1.0.0.0',
+              'ProductName':'AHK FOR GOS', 'ProductVersion':'1.1.0.0',
               'LegalCopyright':'SBezruk180; AutoHotkey contributors (GPL-2.0-or-later)'}
     strings = [version_block(k, (v+'\0').encode('utf-16le'), text=True) for k,v in fields.items()]
     table = version_block('040904B0', children=strings, text=True)
     string_info = version_block('StringFileInfo', children=[table], text=True)
     var = version_block('VarFileInfo', children=[version_block('Translation', struct.pack('<HH', 0x409, 1200))], text=True)
-    fixed = struct.pack('<13I', 0xFEEF04BD,0x10000,0x10000,0,0x10000,0,0x3f,0,0x40004,1,0,0,0)
+    fixed = struct.pack('<13I', 0xFEEF04BD,0x10000,0x10001,0,0x10001,0,0x3f,0,0x40004,1,0,0,0)
     return version_block('VS_VERSION_INFO', fixed, [string_info,var])
 
 def build(args):

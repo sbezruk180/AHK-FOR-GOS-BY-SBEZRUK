@@ -695,14 +695,14 @@ UpdateHUD() {
         currentTarget := SubStr(currentTarget, 1, 26) . "..."
 
     if (HUDMode != "Профиль + ID")
-        GuiControl, 12:, HUDTimeText, %timeNow%
-    GuiControl, 12:, HUDProfileText, %CurrentProfile%
-    GuiControl, 12:, HUDIDText, %currentTarget%
+        UIStyle_SetTextIfChanged("12", "HUDTimeText", timeNow)
+    UIStyle_SetTextIfChanged("12", "HUDProfileText", CurrentProfile)
+    UIStyle_SetTextIfChanged("12", "HUDIDText", currentTarget)
 
     if (HUDMode = "Полный")
     {
-        GuiControl, 12:, HUDMenuText, %Bind_OpenSettings%
-        GuiControl, 12:, HUDBindListText, %Bind_ToggleBindList%
+        UIStyle_SetTextIfChanged("12", "HUDMenuText", Bind_OpenSettings)
+        UIStyle_SetTextIfChanged("12", "HUDBindListText", Bind_ToggleBindList)
     }
     UpdateAutomationSettingsStatus()
 }

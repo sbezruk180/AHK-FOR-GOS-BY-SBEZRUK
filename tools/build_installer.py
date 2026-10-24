@@ -73,8 +73,8 @@ def compile_program(args,work,allowed,uninstall,payload=None):
     resource+=f'105 RCDATA "{(work/"legacy-hashes.txt").as_posix()}"\n'
     if payload:resource+=f'101 RCDATA "{payload.as_posix()}"\n'
     resource+='''1 VERSIONINFO
-FILEVERSION 1,2,0,0
-PRODUCTVERSION 1,2,0,0
+FILEVERSION 1,1,0,0
+PRODUCTVERSION 1,1,0,0
 FILEOS 0x40004L
 FILETYPE 1
 BEGIN
@@ -85,7 +85,7 @@ BEGIN
    VALUE "CompanyName", "SBezruk180\\0"
    VALUE "ProductName", "AHK FOR GOS Setup\\0"
    VALUE "FileDescription", "AHK FOR GOS graphical setup and removal\\0"
-   VALUE "FileVersion", "1.2.0.0\\0"
+   VALUE "FileVersion", "1.1.0.0\\0"
   END
  END
  BLOCK "VarFileInfo"

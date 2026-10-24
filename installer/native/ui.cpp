@@ -515,7 +515,7 @@ static void Hero(Graphics &g) {
     Text(g, steps[i], 70, y + 1, 136, 25, 13, (int)i == active ? white : muted,
          (int)i == active);
   }
-  Text(g, L"v1.2  /  SBezruk180", 32, 665, 170, 22, 10,
+  Text(g, L"v1.1  /  SBezruk180", 32, 665, 170, 22, 10,
        Color(255, 111, 121, 149));
   Text(g, Removing ? L"AHK FOR GOS / UNINSTALL" : L"AHK FOR GOS / SETUP", 272,
        29, 500, 24, 10, muted, true);
