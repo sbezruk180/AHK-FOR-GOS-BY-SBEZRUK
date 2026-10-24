@@ -4,11 +4,11 @@
 
 | Поиск | Результат |
 | --- | --- |
-| [google](https://www.google.com/search?q=ahk+for+gos&hl=ru) | Сетевая ошибка; выдача не проверена |
-| [bing](https://www.bing.com/search?q=ahk+for+gos) | Сетевая ошибка; выдача не проверена |
-| [yandex](https://yandex.ru/search/?text=ahk%20for%20gos) | Сетевая ошибка; выдача не проверена |
-| [duckduckgo](https://html.duckduckgo.com/html/?q=ahk+for+gos) | Сетевая ошибка; выдача не проверена |
-| [github](https://github.com/search?q=ahk+for+gos&type=repositories) | Сетевая ошибка; выдача не проверена |
+| [google](https://www.google.com/search?q=ahk+for+gos&hl=ru) | Результаты не удалось извлечь; вывод об индексации не сделан |
+| [bing](https://www.bing.com/search?q=ahk+for+gos) | Среди извлечённых результатов ссылка не найдена |
+| [yandex](https://yandex.ru/search/?text=ahk%20for%20gos) | Проверка робота/блокировка; наличие в индексе не установлено |
+| [duckduckgo](https://html.duckduckgo.com/html/?q=ahk+for+gos) | Результаты не удалось извлечь; вывод об индексации не сделан |
+| [github](https://github.com/search?q=ahk+for+gos&type=repositories) | Ссылка на проект найдена |
 
 Детали и время проверки: [results.json](results.json). Снимки браузера и видимый текст сохранены рядом.
 
