@@ -4,7 +4,7 @@
 
 **AHK FOR GOS** is an open-source AutoHotkey assistant for government factions in Amazing Online. This is the official project repository, including all application modules, build tools, installer sources, documentation and Windows downloads.
 
-[**Скачать 1.1**](https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK/releases/tag/v1.1) · [**Все функции и бинды**](FEATURES.md) · [Сборка](docs/desktop/BUILD_AND_RUN_RU.md) · [Сообщить об ошибке](https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK/issues)
+[**Сайт проекта**](https://sbezruk180.github.io/AHK-FOR-GOS-BY-SBEZRUK/) · [**Скачать 1.1**](https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK/releases/tag/v1.1) · [**Все функции и бинды**](FEATURES.md) · [Сборка](docs/desktop/BUILD_AND_RUN_RU.md) · [Сообщить об ошибке](https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK/issues)
 
 ## Скачать AHK FOR GOS
 
