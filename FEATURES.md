@@ -1,0 +1,164 @@
+# Возможности AHK FOR GOS для Amazing Online
+
+AHK FOR GOS BY SBEZRUK — открытый АХК для госструктур Amazing Online: МВД, ГАИ и других государственных организаций. Эта страница описывает имеющуюся реализацию и ведёт непосредственно к коду.
+
+AHK FOR GOS is an open-source AutoHotkey assistant for government factions in Amazing Online. This catalog links each registered action to its source code.
+
+[Скачать версию 1.1](https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK/releases/tag/v1.1) · [Начало работы](README.md) · [Сборка](docs/desktop/BUILD_AND_RUN_RU.md)
+
+## Основные подсистемы
+
+| Возможность | Где реализована |
+| --- | --- |
+| Auto ID при наведении, предложение новой цели и F1/F2 | [Чтение игры](UDF.ahk), [ID и оверлеи](app/ui_overlays.ahk) |
+| Ввод ID вручную и перехват цифр с таймером | [Перехват ID](id_capture.ahk), [служебный ввод](service_ui.ahk) |
+| Горячие клавиши, TXT-команды, английские алиасы и смена раскладки | [Каталог и регистрация](app/bindings.ahk), [TXT](app/text_commands.ahk), [приватный ввод](app/private_text.ahk) |
+| Отправка в память, вставка, печать всего и фракционная печать | [Чат](app/chat.ahk), [посимвольная печать](chat_typing.ahk) |
+| Переменный темп печати и два способа отправки остального текста | [Настройка скорости](docs/desktop/FACTION_SPEED_RU.md) |
+| RP-действия, доклады, GPS, задержки и отмена | [Действия](app/actions.ahk), [автоматизации](app/automation.ahk), [очередь](common.ahk), [игровой ввод](app/game_input.ahk) |
+| Конструктор сценариев с проверкой, предпросмотром и копированием | [Конструктор](app/custom_functions.ahk) |
+| Профили, INI, импорт/экспорт и настройки | [Профили](app/profiles.ahk), [интерфейс настроек](app/ui_settings.ahk) |
+| 20 документов законодательства, поиск и текстовые памятки | [Laws](laws), [поиск и страницы](helper.ahk), [окна](app/ui_documents.ahk), [памятки](app/reference_guides.ahk) |
+| HUD, окна, единая тема и исключение из поддерживаемого захвата OBS | [Оверлеи](app/ui_overlays.ahk), [стили](ui_style.ahk), [служебный интерфейс](service_ui.ahk) |
+| Chatlog, распознавание событий и контекстные действия | [Обработка chatlog](app/chatlog.ahk) |
+| Диагностика, самостоятельный EXE и установщик/унинсталлер | [Диагностика](app/diagnostics.ahk), [сборка EXE](tools/build_exe.py), [исходники установки](installer/native) |
+
+## Все 93 действия из каталога
+
+Названия, исходные клавиши и TXT-триггеры извлечены из исходников. «—» означает отсутствие значения по умолчанию; свои назначения задаются в настройках. Здесь используются обозначения AutoHotkey: `!` — Alt, `^` — Ctrl, `+` — Shift, `#` — Win. Настройки существующего профиля могут отличаться. Ссылка «Код» ведёт к обработчику, а для действий с диспетчеризацией — к регистрации.
+
+### Системные
+
+| Действие | Клавиша | TXT | Реализация |
+| --- | --- | --- | --- |
+| Окно текстовых команд | `!t` | — | [Код](app/bindings.ahk#L1393) · `TextCommandInput` |
+| Открыть меню | `F10` | — | [Код](app/bindings.ahk#L1394) · `OpenSettings` |
+| Показать bind-list | `F11` | — | [Код](app/bindings.ahk#L1395) · `ToggleBindList` |
+| Последний закон | — | — | [Код](app/bindings.ahk#L1396) · `ToggleLastLawDoc` |
+| Скрыть окно закона | `Pause` | — | [Код](app/bindings.ahk#L1397) · `HideLawGui` |
+| Запустить поиск законов | `^+f` | — | [Код](app/bindings.ahk#L1398) · `LawSearchSubmit` |
+| Показать HUD | `F12` | — | [Код](app/bindings.ahk#L1399) · `ToggleHUD` |
+| ID-плашка | `F5` | — | [Код](app/bindings.ahk#L1400) · `IDOverlay` |
+| Принять найденный ID | `F1` | — | [Код](app/bindings.ahk#L1401) · `ConfirmID` |
+| Отклонить найденный ID | `F2` | — | [Код](app/bindings.ahk#L1402) · `RejectID` |
+| Ввести ID вручную | `!1` | — | [Код](app/bindings.ahk#L1403) · `EnterID` |
+| Сброс ID | `^Numpad0` | — | [Код](app/bindings.ahk#L1404) · `ResetID` |
+| Настройки биндов | — | `!бинды` | [Код](app/bindings.ahk#L1405) · `OpenBindsTab` |
+
+### Задержание и RP
+
+| Действие | Клавиша | TXT | Реализация |
+| --- | --- | --- | --- |
+| Представление | `!2` | — | [Код](app/bindings.ahk#L1407) · `Intro` |
+| SOS | `F9` | — | [Код](app/bindings.ahk#L1408) · `SOS` |
+| Chase с ID | `!3` | — | [Код](app/bindings.ahk#L1409) · `Chase` |
+| Chase без ID | `Insert` | — | [Код](app/bindings.ahk#L1410) · `ChaseNoID` |
+| Deject | `!4` | — | [Код](app/bindings.ahk#L1411) · `Deject` |
+| Cuff | `!5` | — | [Код](app/bindings.ahk#L1412) · `Cuff` |
+| InCar | `!6` | — | [Код](app/bindings.ahk#L1413) · `InCar` |
+| Остановка | `!7` | — | [Код](app/bindings.ahk#L1414) · `StopChase` |
+| Служебное удостоверение | `!8` | — | [Код](app/bindings.ahk#L1415) · `Doc` |
+| Досмотр | `!9` | — | [Код](app/bindings.ahk#L1416) · `Search` |
+| Личное дело | — | `!лд` | [Код](app/bindings.ahk#L1417) · `PersonalFile` |
+| Корректировка розыска | — | `!су` | [Код](app/bindings.ahk#L1418) · `Su` |
+| Снятие розыска | — | `!снятие` | [Код](app/bindings.ahk#L1451) · `WantedRemoval` |
+
+### Доклады
+
+| Действие | Клавиша | TXT | Реализация |
+| --- | --- | --- | --- |
+| Деп | — | `!деп` | [Код](app/bindings.ahk#L1420) · `Dep` |
+| Розыскиваемые | — | `!р` | [Код](app/bindings.ahk#L1421) · `WantedList` |
+| SOS выехал | — | `!сос` | [Код](app/bindings.ahk#L1422) · `SOSStart` |
+| SOS прибыл | — | `!сос1` | [Код](app/bindings.ahk#L1423) · `SOSArrive` |
+| Угон выехал | — | `!угон` | [Код](app/bindings.ahk#L1424) · `HijackStart` |
+| Угон прибыл | — | `!угон1` | [Код](app/bindings.ahk#L1425) · `HijackArrive` |
+| ДТП вызов принят | — | `!выз` | [Код](app/bindings.ahk#L1426) · `CallStart` |
+| ДТП прибыли | — | `!выз1` | [Код](app/bindings.ahk#L1427) · `CallArrive` |
+| ДТП оформление старт | — | — | [Код](app/bindings.ahk#L1428) · `CallWorkStart` |
+| ДТП оформление конец | — | — | [Код](app/bindings.ahk#L1429) · `CallWorkEnd` |
+| Гражданский вызов принят | — | — | [Код](app/bindings.ahk#L1430) · `CivilCallStart` |
+| Гражданский вызов: прибыл | — | — | [Код](app/bindings.ahk#L1431) · `CivilCallArrive` |
+| Маска и звонок | — | `!м` | [Код](app/bindings.ahk#L1432) · `MaskCall` |
+| Проверка записи | — | `!упр` | [Код](app/bindings.ahk#L1433) · `RecordCheck` |
+| Крушение поезда | — | `!поезд` | [Код](app/bindings.ahk#L1434) · `TrainCrash` |
+| Строй | — | `!строй` | [Код](app/bindings.ahk#L1458) · `MDSFormation` |
+
+### Транспорт / прочее
+
+| Действие | Клавиша | TXT | Реализация |
+| --- | --- | --- | --- |
+| Патруль старт | — | `!патруль` | [Код](app/bindings.ahk#L1436) · `PatrolStart` |
+| Патруль прод. | — | `!патруль1` | [Код](app/bindings.ahk#L1437) · `PatrolCont` |
+| Патруль конец | — | `!патруль2` | [Код](app/bindings.ahk#L1438) · `PatrolEnd` |
+| Пост старт | — | `!пост` | [Код](app/bindings.ahk#L1439) · `PostStart` |
+| Пост прод. | — | `!пост1` | [Код](app/bindings.ahk#L1440) · `PostCont` |
+| Пост конец | — | `!пост2` | [Код](app/bindings.ahk#L1441) · `PostEnd` |
+| Автопатруль · 10 мин | — | `!апатруль` | [Код](app/bindings.ahk#L1442) · `AutoPatrol` |
+| Автопост · 10 мин | — | `!апост` | [Код](app/bindings.ahk#L1443) · `AutoPost` |
+| Колонна старт | — | `!вк` | [Код](app/bindings.ahk#L1444) · `ConvoyStart` |
+| Колонна прод. | — | — | [Код](app/bindings.ahk#L1445) · `ConvoyCont` |
+| Колонна конец | — | `!вк1` | [Код](app/bindings.ahk#L1446) · `ConvoyEnd` |
+| Эвакуация старт | — | `!эв` | [Код](app/bindings.ahk#L1447) · `TowStart` |
+| Эвакуация конец | — | `!эв1` | [Код](app/bindings.ahk#L1448) · `TowEnd` |
+| Осмотр ТС | — | `!обтс` | [Код](app/bindings.ahk#L1449) · `CarSearch` |
+| Пробив номера ТС | — | `!поисктс` | [Код](app/bindings.ahk#L1450) · `VehicleLookup` |
+| Арест | — | `!ар` | [Код](app/bindings.ahk#L1452) · `Arrest` |
+| Штраф | — | `!ш` | [Код](app/bindings.ahk#L1453) · `Fine` |
+| Протокол | — | `!протокол` | [Код](app/bindings.ahk#L1454) · `Protocol` |
+| Права | — | `!права` | [Код](app/bindings.ahk#L1455) · `Rights` |
+| Визитка DS | — | `!визиткадс` | [Код](app/bindings.ahk#L1456) · `CardDS` |
+| Визитка VK | — | `!визиткавк` | [Код](app/bindings.ahk#L1457) · `CardVK` |
+| GPS Д | — | `!д` | [Код](app/bindings.ahk#L1465) · `GpsD` |
+| GPS ОС | — | `!ос` | [Код](app/bindings.ahk#L1466) · `GpsOS` |
+
+### Контекстный помощник
+
+| Действие | Клавиша | TXT | Реализация |
+| --- | --- | --- | --- |
+| Пробив ООП | — | `!ооп` | [Код](app/bindings.ahk#L1459) · `AssistOOP` |
+| Оглушение | — | `!оглуш` | [Код](app/bindings.ahk#L1460) · `AssistStun` |
+| Преследование | — | `!погоня` | [Код](app/bindings.ahk#L1461) · `AssistChase` |
+| Сигнализация дома | — | `!домgps` | [Код](app/bindings.ahk#L1462) · `AssistHouse` |
+| Наркотики рядом | — | `!наркоид` | [Код](app/bindings.ahk#L1463) · `AssistDrugs` |
+| Наручники после ПДП | — | `!пдпнаруч` | [Код](app/bindings.ahk#L1464) · `AssistPDPCuff` |
+
+### Документы
+
+| Действие | Клавиша | TXT | Реализация |
+| --- | --- | --- | --- |
+| Права — текстовое окно | — | `!правагуи` | [Код](app/bindings.ahk#L1467) · `GuideRights` |
+| Сигналы СО | — | `!сигналы` | [Код](app/bindings.ahk#L1468) · `GuideSignals` |
+| ВУ | — | `!вузакон` | [Код](app/bindings.ahk#L1469) · `VU` |
+| ФП | — | `!фп` | [Код](app/bindings.ahk#L1470) · `FP` |
+| Конст. | — | `!кон` | [Код](app/bindings.ahk#L1471) · `KON` |
+| ФЗОП | — | `!фзоп` | [Код](app/bindings.ahk#L1472) · `FZOP` |
+| Терр. | — | `!тер` | [Код](app/bindings.ahk#L1473) · `TER` |
+| ТК | — | `!тк` | [Код](app/bindings.ahk#L1474) · `TK` |
+| АРГ | — | `!арг` | [Код](app/bindings.ahk#L1475) · `ARG` |
+| УК | — | `!ук` | [Код](app/bindings.ahk#L1476) · `UK` |
+| Вертикаль | — | `!вв` | [Код](app/bindings.ahk#L1477) · `VV` |
+| КоАП | — | `!коап` | [Код](app/bindings.ahk#L1478) · `KOAP` |
+| ПДД | — | `!пдд` | [Код](app/bindings.ahk#L1479) · `PDD` |
+| Оружие | — | `!оруж` | [Код](app/bindings.ahk#L1480) · `ORUZH` |
+| УПК | — | `!упк` | [Код](app/bindings.ahk#L1481) · `UPK` |
+| КАС | — | `!кас` | [Код](app/bindings.ahk#L1482) · `KAS` |
+| ФЗ о ФСБ | — | `!фсб` | [Код](app/bindings.ahk#L1483) · `FSB` |
+| ФЗ о ФСИН | — | `!фсин` | [Код](app/bindings.ahk#L1484) · `FSIN` |
+| Военная служба | — | `!фзовс` | [Код](app/bindings.ahk#L1485) · `VS` |
+| Судебная система | — | `!суд` | [Код](app/bindings.ahk#L1486) · `SUD` |
+| ОРД | — | `!орд` | [Код](app/bindings.ahk#L1487) · `ORD` |
+| Гостайна | — | `!гостайна` | [Код](app/bindings.ahk#L1488) · `GT` |
+
+## Полный технический индекс
+
+В текущем включаемом коде: **1384 функций приложения**, **32 тестовые функции**, **195 именованных обработчиков** и **46 AHK-модулей**. Это показатели статического индекса, а не количество проверенных игровых сценариев.
+
+- [Каждая функция: файл, строки, назначение и вызовы](docs/desktop/FUNCTIONS_RU.txt).
+- [Машиночитаемый индекс функций](docs/desktop/FUNCTIONS_RU.json).
+- [Соответствие функций исходной и модульной версий](docs/desktop/FUNCTION_MAPPING.csv).
+- [Результаты проверок](docs/desktop/TEST_RESULTS_RU.md) и [что проверить в игре](docs/desktop/REAL_GAME_CHECKLIST_RU.txt).
+
+Совместимость памяти игры, Auto ID, GPS и OBS зависит от реального клиента и Windows. Наличие реализации и автоматических проверок не подтверждает работу на каждом сервере. Проект не объявляется лучше других без измеримых сравнений.
+
+Страница формируется командой `python tools/build_feature_catalog.py`. Технический индекс обновляется отдельно: `python tools/function_index.py --output docs/desktop/FUNCTIONS_RU.txt`.

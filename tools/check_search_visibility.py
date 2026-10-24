@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 import json
 from pathlib import Path
 import shutil
-from urllib.parse import parse_qs, urlsplit
+from urllib.parse import parse_qs, quote_plus, urlsplit
 
 ENGINES = {
     'google': ('https://www.google.com/search?q=ahk+for+gos&hl=ru', '#search a:has(h3)'),
@@ -35,15 +35,16 @@ def target_url(url):
     return url
 
 
-async def main(output, executable):
+async def main(output, executable, query_text):
     from playwright.async_api import async_playwright
     output.mkdir(parents=True, exist_ok=True)
     async with async_playwright() as p:
         browser = await p.chromium.launch(executable_path=executable, headless=True, args=['--no-sandbox'])
         async def inspect(name, query):
             url, selector = query
+            url = url.replace('ahk+for+gos', quote_plus(query_text)).replace('ahk%20for%20gos', quote_plus(query_text))
             page = await browser.new_page(viewport={'width':1440, 'height':1000}, locale='ru-RU')
-            result = {'engine':name, 'query':'ahk for gos', 'requested_url':url,
+            result = {'engine':name, 'query':query_text, 'requested_url':url,
                       'checked_at':datetime.now(timezone.utc).isoformat()}
             try:
                 response = await page.goto(url, wait_until='domcontentloaded', timeout=35000)
@@ -70,7 +71,8 @@ async def main(output, executable):
                               title=await page.title(), results=links, repository_results=matches,
                               verdict='found' if matches else 'blocked_or_challenged' if challenge else 'results_not_visible' if links and not visible_results else 'not_found_in_visible_results' if links else 'no_results_extracted')
                 (output / f'{name}.txt').write_text(text, encoding='utf-8')
-                await page.screenshot(path=str(output / f'{name}.png'), full_page=False)
+                await page.screenshot(path=str(output / f'{name}.jpg'), type='jpeg', quality=80, full_page=False)
+                (output / f'{name}.png').unlink(missing_ok=True)
             except Exception as exc:
                 result.update(verdict='request_failed', error=str(exc))
             finally:
@@ -80,7 +82,7 @@ async def main(output, executable):
         results = await asyncio.gather(*(inspect(name, query) for name, query in ENGINES.items()))
         await browser.close()
     (output / 'results.json').write_text(json.dumps(results, ensure_ascii=False, indent=2)+'\n', encoding='utf-8')
-    lines = ['# Проверка поиска AHK FOR GOS', '', 'Запрос: `ahk for gos`. Проверено Chromium через Playwright. Результат зависит от региона, времени и поисковой системы.', '', '| Поиск | Результат |', '| --- | --- |']
+    lines = ['# Проверка поиска AHK FOR GOS', '', f'Запрос: `{query_text}`. Проверено Chromium через Playwright. Результат зависит от региона, времени и поисковой системы.', '', '| Поиск | Результат |', '| --- | --- |']
     labels = {'found':'Ссылка на проект найдена', 'blocked_or_challenged':'Проверка робота/блокировка; наличие в индексе не установлено', 'not_found_in_visible_results':'Среди извлечённых результатов ссылка не найдена', 'no_results_extracted':'Результаты не удалось извлечь; вывод об индексации не сделан', 'request_failed':'Ошибка проверки; выдача не проверена', 'results_not_visible':'В DOM есть ссылки, но они не отображаются; выдача не подтверждена'}
     for item in results:
         lines.append(f"| [{item['engine']}]({item['requested_url']}) | {labels[item['verdict']]} |")
@@ -92,5 +94,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--browser', default=shutil.which('google-chrome') or shutil.which('chromium'))
+    parser.add_argument('--query', default='ahk for gos')
     args = parser.parse_args()
-    asyncio.run(main(args.output, args.browser))
+    asyncio.run(main(args.output, args.browser, args.query))
