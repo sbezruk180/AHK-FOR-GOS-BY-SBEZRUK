@@ -1,48 +1,76 @@
-name: Publish exact project name and check browser search
+name: Verify full project and browser search visibility
 on:
   push:
-    branches: [audit-fixes-obs-search-gui-20261009]
-    paths: ['.github/workflows/search-visibility.yml', 'tools/check_search_visibility.py']
+    branches: [main]
+    paths: ['README.md', 'FEATURES.md', 'docs/site/**', '.github/workflows/search-visibility.yml', 'tools/check_search_visibility.py']
   workflow_dispatch:
 permissions:
   contents: write
+  pages: read
+concurrency:
+  group: search-visibility-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   search:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Publish search description and prepared website
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify the complete published source package
+        run: python tools/validate_package.py
+      - name: Update prepared website and check Pages status
         uses: actions/github-script@v7
         with:
           script: |
             const fs=require('fs'),{owner,repo}=context.repo;
-            const info=await github.rest.repos.get({owner,repo});
-            const branch=info.data.default_branch;
-            const old=await github.rest.repos.getContent({owner,repo,path:'README.md',ref:branch});
-            await github.rest.repos.createOrUpdateFileContents({owner,repo,path:'README.md',branch,sha:old.data.sha,message:'Lead with AHK FOR GOS name and official bilingual description',content:Buffer.from(fs.readFileSync('docs/README_SEARCH_RU.md')).toString('base64')});
-            // Update the existing prepared site branch; this does not enable GitHub Pages.
             const ref=await github.rest.git.getRef({owner,repo,ref:'heads/gh-pages'});
             const parent=await github.rest.git.getCommit({owner,repo,commit_sha:ref.data.object.sha});
             const names=['index.html','robots.txt','sitemap.xml'];
             const tree=await github.rest.git.createTree({owner,repo,base_tree:parent.data.tree.sha,tree:names.map(path=>({path,mode:'100644',type:'blob',content:fs.readFileSync('docs/site/'+path,'utf8')}))});
-            const commit=await github.rest.git.createCommit({owner,repo,message:'Describe AHK FOR GOS and official downloads with structured data',tree:tree.data.sha,parents:[parent.data.sha]});
-            await github.rest.git.updateRef({owner,repo,ref:'heads/gh-pages',sha:commit.data.sha});
-            core.notice('README published; prepared site updated. Pages activation still requires repository administrator.');
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
+            if(tree.data.sha!==parent.data.tree.sha) {
+              const commit=await github.rest.git.createCommit({owner,repo,message:'Link complete AHK FOR GOS source and function catalog',tree:tree.data.sha,parents:[parent.data.sha]});
+              await github.rest.git.updateRef({owner,repo,ref:'heads/gh-pages',sha:commit.data.sha});
+            }
+            let status;
+            try {
+              const page=await github.rest.repos.getPages({owner,repo});
+              status={enabled:true,url:page.data.html_url,status:page.data.status,source:page.data.source};
+              if(page.data.html_url) {
+                try { const response=await fetch(page.data.html_url);status.http_status=response.status; }
+                catch(error) { status.http_error=error.message; }
+              }
+            } catch(error) {
+              if(error.status!==404 && error.status!==403) throw error;
+              status={enabled:null,api_status:error.status,error:error.message};
+            }
+            fs.mkdirSync('docs/search',{recursive:true});
+            fs.writeFileSync('docs/search/pages-status.json',JSON.stringify({...status,checked_at:new Date().toISOString()},null,2)+'\n');
+            core.notice('PAGES_STATUS '+JSON.stringify(status));
       - run: python -m pip install playwright==1.56.0
-      - name: Check actual search pages in Chrome
-        run: python tools/check_search_visibility.py --output docs/search/latest
+      - name: Check three actual search queries in Chrome
+        run: |
+          python tools/check_search_visibility.py --query 'ahk for gos' --output docs/search/latest
+          python tools/check_search_visibility.py --query 'ахк для гос' --output docs/search/ahk-dlya-gos
+          python tools/check_search_visibility.py --query 'ахк для амазинга' --output docs/search/ahk-dlya-amazinga
       - uses: actions/upload-artifact@v4
         with:
           name: search-browser-evidence
-          path: docs/search/latest
-      - name: Save public search evidence
+          path: docs/search
+      - name: Save public search evidence without overwriting newer changes
+        env:
+          CHECKED_REF: ${{ github.ref_name }}
         run: |
+          expected=$(git rev-parse HEAD)
+          current=$(git ls-remote origin "refs/heads/$CHECKED_REF" | cut -f1)
+          if [ "$current" != "$expected" ]; then
+            echo '::warning::Branch changed during search checks; evidence remains in the workflow artifact.'
+            exit 0
+          fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/search/latest
+          git add docs/search
           python - <<'PY'
           import hashlib,subprocess
           from pathlib import Path
@@ -50,5 +78,5 @@ jobs:
           Path('CHECKSUMS.sha256').write_text(''.join(hashlib.sha256(Path(p).read_bytes()).hexdigest()+'  '+p+'\n' for p in names))
           PY
           git add CHECKSUMS.sha256
-          git diff --cached --quiet || git commit -m 'Record actual browser search visibility and screenshots [skip ci]'
-          git push origin HEAD:audit-fixes-obs-search-gui-20261009
+          git diff --cached --quiet || git commit -m 'Record browser evidence for three AHK FOR GOS searches [skip ci]'
+          git push origin "HEAD:refs/heads/$CHECKED_REF"

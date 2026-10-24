@@ -7857,16 +7857,18 @@
       "name": "UIStyle_DrawButton",
       "file": "ui_style.ahk",
       "line": 226,
-      "end_line": 320,
+      "end_line": 340,
       "kind": "application",
       "subsystem": "единая тема и геометрия GUI",
       "purpose": null,
       "commands": [],
       "winapi": [
         "GetProp",
+        "CreateCompatibleDC",
+        "CreateCompatibleBitmap",
+        "SelectObject",
         "SaveDC",
         "FillRect",
-        "SelectObject",
         "GetStockObject",
         "SetDCPenColor",
         "RoundRect",
@@ -7879,10 +7881,13 @@
         "DrawTextW",
         "DrawFocusRect",
         "RestoreDC",
+        "BitBlt",
+        "DeleteObject",
+        "DeleteDC",
         "SetLastError"
       ],
       "first_statement": "savedError := ErrorLevel, nativeError := A_LastError / try {",
-      "sha256": "6ee61d2bddfb9a891806d7a30f69791d79419697f6042ca24cc04215a1365e68",
+      "sha256": "d71d48eca07026452c9df595bbe226beb6ea40dcab1ec0f96b6f2af21f29a916",
       "calls": [
         "UIStyle_GetPalette",
         "UIStyle_Brush",
@@ -7896,8 +7901,8 @@
     {
       "name": "UIStyle_SetButtonRole",
       "file": "ui_style.ahk",
-      "line": 322,
-      "end_line": 325,
+      "line": 342,
+      "end_line": 345,
       "kind": "application",
       "subsystem": "единая тема и геометрия GUI",
       "purpose": null,
@@ -7920,8 +7925,8 @@
     {
       "name": "UIStyle_SetTextRole",
       "file": "ui_style.ahk",
-      "line": 327,
-      "end_line": 330,
+      "line": 347,
+      "end_line": 350,
       "kind": "application",
       "subsystem": "единая тема и геометрия GUI",
       "purpose": null,
@@ -7949,8 +7954,8 @@
     {
       "name": "UIStyle_SetRole",
       "file": "ui_style.ahk",
-      "line": 332,
-      "end_line": 339,
+      "line": 352,
+      "end_line": 359,
       "kind": "application",
       "subsystem": "единая тема и геометрия GUI",
       "purpose": null,
@@ -7961,7 +7966,7 @@
         "InvalidateRect"
       ],
       "first_statement": "if (!hwnd || !DllCall(\"IsWindow\", \"Ptr\", hwnd) || !roles.HasKey(role)) / return false",
-      "sha256": "e412c10a46fa4da3d845407de01778f907f019b0bb8e95d37a8bbb413136bf93",
+      "sha256": "19952aabe1c199555c24db2818f94768526e8938d9e8a623d33b3a18af840c42",
       "calls": [],
       "callers": [
         "UIStyle_SetButtonRole",
@@ -7973,8 +7978,8 @@
     {
       "name": "UIStyle_BlendColors",
       "file": "ui_style.ahk",
-      "line": 341,
-      "end_line": 349,
+      "line": 361,
+      "end_line": 369,
       "kind": "application",
       "subsystem": "единая тема и геометрия GUI",
       "purpose": null,
@@ -7995,8 +8000,8 @@
     {
       "name": "UIStyle_Prune",
       "file": "ui_style.ahk",
-      "line": 351,
-      "end_line": 373,
+      "line": 371,
+      "end_line": 393,
       "kind": "application",
       "subsystem": "единая тема и геометрия GUI",
       "purpose": null,
@@ -8017,8 +8022,8 @@
     {
       "name": "UIStyle_Shutdown",
       "file": "ui_style.ahk",
-      "line": 375,
-      "end_line": 386,
+      "line": 395,
+      "end_line": 406,
       "kind": "application",
       "subsystem": "единая тема и геометрия GUI",
       "purpose": null,
@@ -8032,6 +8037,27 @@
       "callers": [],
       "coverage": {},
       "description": "единая тема и геометрия GUI: Shutdown; код: if (UIStyleInstalled) { / for _, message in [0x133, 0x134, 0x135, 0x136, 0x138]"
+    },
+    {
+      "name": "UIStyle_SetTextIfChanged",
+      "file": "ui_style.ahk",
+      "line": 408,
+      "end_line": 414,
+      "kind": "application",
+      "subsystem": "единая тема и геометрия GUI",
+      "purpose": null,
+      "commands": [
+        "GuiControl"
+      ],
+      "winapi": [],
+      "first_statement": "GuiControlGet, previous, %guiName%:, %controlName% / if (previous == text)",
+      "sha256": "ba02d6d6e02a93ea2545cc5921890746c5c132217370949335f924b1344cee3e",
+      "calls": [],
+      "callers": [
+        "UpdateHUD"
+      ],
+      "coverage": {},
+      "description": "единая тема и геометрия GUI: Установить текст If Changed; операции: GuiControl; код: GuiControlGet, previous, %guiName%:, %controlName% / if (previous == text)"
     },
     {
       "name": "RunChatTypingRegression",
@@ -24873,16 +24899,15 @@
       "kind": "application",
       "subsystem": "HUD и списки биндов",
       "purpose": null,
-      "commands": [
-        "GuiControl"
-      ],
+      "commands": [],
       "winapi": [
         "IsWindow"
       ],
       "first_statement": "if (!hHUDWnd || !DllCall(\"IsWindow\", \"Ptr\", hHUDWnd, \"Int\")) { / UpdateAutomationSettingsStatus()",
-      "sha256": "700fc50913d22b75682b70be125c2afb08786dc77efb4faa96c7b94f5cb8d544",
+      "sha256": "709fd7acad37ce4c1d79fe279e7143d50cab379caa7866cb84fe592c40d3e939",
       "calls": [
-        "UpdateAutomationSettingsStatus"
+        "UpdateAutomationSettingsStatus",
+        "UIStyle_SetTextIfChanged"
       ],
       "callers": [
         "DesktopSmoke_Run",
@@ -24903,7 +24928,7 @@
         "ChatQueue_Clear"
       ],
       "coverage": {},
-      "description": "HUD и списки биндов: Обновить HUD; операции: GuiControl; код: if (!hHUDWnd || !DllCall(\"IsWindow\", \"Ptr\", hHUDWnd, \"Int\")) { / UpdateAutomationSettingsStatus()"
+      "description": "HUD и списки биндов: Обновить HUD; код: if (!hHUDWnd || !DllCall(\"IsWindow\", \"Ptr\", hHUDWnd, \"Int\")) { / UpdateAutomationSettingsStatus()"
     },
     {
       "name": "BuildBindListRow",
@@ -35956,7 +35981,7 @@
     "app/text_commands.ahk": "6b2d14bfda7d402eedb32165700915c019dd9aef69ea93f7c58da8f5b70d5102",
     "app/private_text.ahk": "d9f2ca77750fc2e7056f20fe591ad0b453a13a2428a2d43fef725f176daf6f7d",
     "app/reference_guides.ahk": "e53b551e8bd9585d1121072fc40893cbbdcdcd3cc06008fd4e4e0eccd553364d",
-    "ui_style.ahk": "720e0cae6280fd66f7036e2dfbad613079edc028c543678ff5d43ede071d95b5",
+    "ui_style.ahk": "8b1d56bbf2215129b7032d94b9052b81e15e42b0276b33ad1cec7b79d5821641",
     "tests/chat_typing_regression.ahk": "2cd34cf551d878b079de2d76c926cef892cb50b49c9c49649847fe9dc88f8f63",
     "tests/chat_state_regression.ahk": "3840d90f1bcd2d7f431ed604a84374c66639e5e85eb5c5a0dedabaffa42d4c6c",
     "tests/autoid_source_regression.ahk": "20ef46fb6afda05c08171dc8ffaf393b46d8f5e315489090388888488feee468",
@@ -35980,7 +36005,7 @@
     "app/diagnostics.ahk": "084ff18f89ebd24d4768e2d070da591e626199a2912b40e78ca581fb925a3609",
     "app/profiles.ahk": "5ea5bf76614bbe8f2c0ba3d6f99bd9c7997d7699fe374dad3b956983d4420ce8",
     "app/ui_settings.ahk": "e363ca21b70e9c5f95f0f3de56513dcf23dc19193c650858fddf859c2dceeecf",
-    "app/ui_overlays.ahk": "22937987aab4f69ab64b073c97961d9cfc2ea5ecb7da39b3bf48eadc7a636932",
+    "app/ui_overlays.ahk": "a61b169bfaa57da047fe158bae5c15903e486d33fc85353aadec830689169c62",
     "app/game.ahk": "e52fc17923d97ef28acb1d322931f125f8e1b37c65ee8406d5d53a9c8513dc5b",
     "app/chatlog.ahk": "9959676db56f018888ab55c7be58c7bfc86e45bcebb47a1ed18798e702c1fc8b",
     "app/actions.ahk": "c3d95789b5dfe8016c6754445e8905274d19446dc57a24e9e26c6a4be97f9ae7",
