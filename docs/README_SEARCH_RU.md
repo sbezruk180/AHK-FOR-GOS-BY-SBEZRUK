@@ -1,8 +1,10 @@
-# AHK для Amazing Online — AHK FOR GOS 1.1
+# AHK FOR GOS — AHK для Amazing Online 1.1
 
 **AHK FOR GOS BY SBEZRUK** — бесплатный помощник для госструктур Amazing Online (GTA San Andreas Multiplayer): горячие клавиши, текстовые бинды, RP-сценарии, Auto ID и поиск по законодательству.
 
-Ищете «AHK для гос Amazing Online», «биндер для ГАИ Amazing», «AHK МВД Amazing Online» или «AHK SBezruk»? Это официальный открытый репозиторий AHK FOR GOS автора sbezruk180.
+**AHK FOR GOS** is an open-source AutoHotkey assistant for government factions in Amazing Online (GTA San Andreas Multiplayer), maintained by **sbezruk180**. Download the official Windows installer, standalone EXE or AHK source package below.
+
+Это официальный репозиторий проекта AHK FOR GOS BY SBEZRUK. Здесь публикуются исходники, новые версии и сообщения об ошибках.
 
 ## Скачать версию 1.1
 
