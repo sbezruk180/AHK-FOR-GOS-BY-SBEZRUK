@@ -281,21 +281,21 @@ int SelfTest(const fs::path &report, const fs::path &legacyFixture) {
         std::none_of(withExe.files.begin(), withExe.files.end(), [&](auto &f) {
           return f.path.filename() == L"unrelated.exe";
         }));
-    auto noSelection = RecycleSelected(scanned.files, cancel, notify);
+    auto noSelection = DeleteSelected(scanned.files, cancel, notify);
     check("no selection deletes nothing",
           noSelection.removed == 0 && fs::exists(scanRoot / L"one.ahk"));
     auto changedFile = std::find_if(scanned.files.begin(), scanned.files.end(),
                                     [](auto &f) { return !f.directory; });
     changedFile->selected = true;
     Write(changedFile->path, {'c', 'h', 'a', 'n', 'g', 'e', 'd'});
-    auto changed = RecycleSelected(scanned.files, cancel, notify);
-    check("changed file not recycled", changed.failed == 1 &&
-                                           changed.removed == 0 &&
-                                           fs::exists(changedFile->path));
+    auto changed = DeleteSelected(scanned.files, cancel, notify);
+    check("changed file not deleted", changed.failed == 1 &&
+                                          changed.removed == 0 &&
+                                          fs::exists(changedFile->path));
     auto folderOnly = withExe.files;
     for (auto &f : folderOnly)
       f.selected = f.directory;
-    auto folderChanged = RecycleSelected(folderOnly, cancel, notify);
+    auto folderChanged = DeleteSelected(folderOnly, cancel, notify);
     check("changed folder contents refuse whole-folder deletion",
           folderChanged.failed == 1 && fs::exists(scanRoot));
     auto shortcuts = base / L"shortcuts";
@@ -344,32 +344,144 @@ int SelfTest(const fs::path &report, const fs::path &legacyFixture) {
     auto wholeFolder = ScanAhk({scanRoot}, cancel, notify);
     for (auto &f : wholeFolder.files)
       f.selected = f.directory;
-    // Only this disposable test directory is being removed. Exercise Windows'
-    // extra permanent-delete prompt as well on volumes without a recycle bin.
-    std::atomic<bool> recycleDone(false);
-    std::thread confirmFixture([&] {
-      while (!recycleDone.load()) {
-        EnumWindows(
-            [](HWND h, LPARAM) -> BOOL {
-              DWORD pid = 0;
-              GetWindowThreadProcessId(h, &pid);
-              wchar_t cls[32]{};
-              GetClassNameW(h, cls, 32);
-              if (pid == GetCurrentProcessId() && !wcscmp(cls, L"#32770") &&
-                  GetDlgItem(h, IDYES))
-                PostMessageW(h, WM_COMMAND, IDYES, 0);
-              return TRUE;
-            },
-            0);
-        Sleep(50);
-      }
-    });
-    auto recycledFolder = RecycleSelected(wholeFolder.files, cancel, notify);
-    recycleDone = true;
-    confirmFixture.join();
+    auto recycledFolder = DeleteSelected(wholeFolder.files, cancel, notify);
     check("selected whole folder including non-AHK files is really removed",
           recycledFolder.ok && recycledFolder.removedFolders == 2 &&
               recycledFolder.removed == 4 && !fs::exists(scanRoot));
+    auto actualZip =
+        fs::current_path() / L"installer" / L"tests" / L"legacy-6b1a595.zip";
+    if (fs::exists(actualZip))
+      check("real GitHub archive recognised without extraction",
+            ZipContainsAhk(actualZip));
+    else
+      log += "SKIP | original ZIP fixture not in current working directory\r\n";
+    auto zipRoot = base / L"archives";
+    fs::create_directories(zipRoot);
+    // Minimal valid ZIP: one stored .AHK file, no extraction required.
+    std::vector<unsigned char> zip;
+    auto put16 = [&](unsigned value) {
+      zip.push_back(value & 255);
+      zip.push_back((value >> 8) & 255);
+    };
+    auto put32 = [&](unsigned value) {
+      put16(value & 65535);
+      put16(value >> 16);
+    };
+    std::string zipName = "github-project/script.AHK";
+    put32(0x04034b50);
+    put16(20);
+    put16(0);
+    put16(0);
+    put16(0);
+    put16(0);
+    put32(0);
+    put32(0);
+    put32(0);
+    put16((unsigned)zipName.size());
+    put16(0);
+    zip.insert(zip.end(), zipName.begin(), zipName.end());
+    unsigned centralAt = (unsigned)zip.size();
+    put32(0x02014b50);
+    put16(20);
+    put16(20);
+    put16(0);
+    put16(0);
+    put16(0);
+    put16(0);
+    put32(0);
+    put32(0);
+    put32(0);
+    put16((unsigned)zipName.size());
+    put16(0);
+    put16(0);
+    put16(0);
+    put16(0);
+    put32(0);
+    put32(0);
+    zip.insert(zip.end(), zipName.begin(), zipName.end());
+    unsigned centralSize = (unsigned)zip.size() - centralAt;
+    put32(0x06054b50);
+    put16(0);
+    put16(0);
+    put16(1);
+    put16(1);
+    put32(centralSize);
+    put32(centralAt);
+    put16(0);
+    auto zipFile = zipRoot / L"renamed archive (1).zip";
+    Write(zipFile, zip);
+    check("ZIP central directory detects nested uppercase AHK",
+          ZipContainsAhk(zipFile));
+    Write(zipRoot / L"broken.zip", {'P', 'K', 'b', 'a', 'd'});
+    check("malformed ZIP rejected", !ZipContainsAhk(zipRoot / L"broken.zip"));
+    auto plainZip = zip;
+    for (size_t at = 0; at + 4 <= plainZip.size(); ++at)
+      if (plainZip[at] == '.' && plainZip[at + 1] == 'A' &&
+          plainZip[at + 2] == 'H' && plainZip[at + 3] == 'K') {
+        plainZip[at + 1] = 't';
+        plainZip[at + 2] = 'x';
+        plainZip[at + 3] = 't';
+      }
+    Write(zipRoot / L"personal.zip", plainZip);
+    check("ZIP without AHK not selected",
+          !ZipContainsAhk(zipRoot / L"personal.zip"));
+    auto archiveScan = ScanAhk({zipRoot}, cancel, notify);
+    check("full scan includes renamed ZIP with AHK",
+          std::any_of(
+              archiveScan.files.begin(), archiveScan.files.end(),
+              [&](auto &f) { return f.path == zipFile && !f.directory; }));
+    for (auto &f : archiveScan.files)
+      f.selected = !f.directory && f.path == zipFile;
+    auto zipDeleted = DeleteSelected(archiveScan.files, cancel, notify);
+    check("full deletion removes ZIP directly and preserves unrelated ZIP",
+          zipDeleted.ok && zipDeleted.removed == 1 && !fs::exists(zipFile) &&
+              fs::exists(zipRoot / L"personal.zip"));
+    auto genericRoot = base / L"generic-exe";
+    auto genericExe = genericRoot / L"old helper renamed.exe";
+    Write(genericExe, exeEntry->bytes);
+    HANDLE update = BeginUpdateResourceW(genericExe.c_str(), FALSE);
+    bool genericCreated =
+        update && UpdateResourceW(update, RT_VERSION, MAKEINTRESOURCEW(1), 1033,
+                                  nullptr, 0);
+    if (update)
+      genericCreated =
+          EndUpdateResourceW(update, !genericCreated) && genericCreated;
+    check("create older-style AHK EXE without product metadata",
+          genericCreated);
+    auto genericScan = ScanAhk({genericRoot}, cancel, notify);
+    check("full scan recognises renamed generic AHK EXE by script",
+          std::any_of(
+              genericScan.files.begin(), genericScan.files.end(),
+              [&](auto &f) { return !f.directory && f.path == genericExe; }));
+    for (auto &f : genericScan.files)
+      f.selected = !f.directory;
+    auto genericDeleted = DeleteSelected(genericScan.files, cancel, notify);
+    check("full mode permanently deletes generic EXE",
+          genericDeleted.ok && genericDeleted.removed == 1 &&
+              !fs::exists(genericExe));
+    Options optional = o;
+    optional.root = base / L"optional-uninstaller";
+    optional.data = base / L"optional-data";
+    optional.mode = 2;
+    optional.uninstaller = false;
+    check("install AHK without optional uninstaller",
+          Install(optional, cancel, notify).ok &&
+              !fs::exists(optional.root / L"Uninstall.exe"));
+    auto optionalRecord = ReadRecord(optional.root);
+    check("ownership record omits disabled uninstaller",
+          std::none_of(optionalRecord.files.begin(), optionalRecord.files.end(),
+                       [](auto &e) { return e.first == L"Uninstall.exe"; }));
+    optional.uninstaller = true;
+    check("enable optional uninstaller on update",
+          Install(optional, cancel, notify).ok &&
+              fs::exists(optional.root / L"Uninstall.exe"));
+    optional.uninstaller = false;
+    check("disable optional uninstaller on update",
+          Install(optional, cancel, notify).ok &&
+              !fs::exists(optional.root / L"Uninstall.exe"));
+    check("standalone uninstaller removes install without bundled uninstaller",
+          Uninstall(optional, false, cancel, notify).ok &&
+              !fs::exists(optional.root));
     Options legacyOptions = o;
     legacyOptions.root = base / L"legacy-source";
     legacyOptions.data = base / L"legacy-profiles";

@@ -33,6 +33,7 @@ struct Options {
   int mode = 1;
   bool desktop = true, menu = true, integration = true;
   bool allScripts = false;
+  bool uninstaller = true;
   int failAfter = -1;
 };
 struct Progress {
@@ -84,10 +85,11 @@ std::vector<Entry> ParsePack(const unsigned char *, size_t);
 std::vector<fs::path> FixedRoots();
 ScanResult ScanAhk(const std::vector<fs::path> &, std::atomic<bool> &,
                    const Notify &);
-Result RecycleSelected(const std::vector<FoundFile> &, std::atomic<bool> &,
-                       const Notify &, bool shortcuts = false);
+Result DeleteSelected(const std::vector<FoundFile> &, std::atomic<bool> &,
+                      const Notify &, bool shortcuts = false);
 bool CanRecycleFolder(const fs::path &);
 bool SafeCloudTag(DWORD);
+bool ZipContainsAhk(const fs::path &);
 void RemoveMatchingShortcuts(const std::vector<fs::path> &locations,
                              const std::vector<fs::path> &targets, Result &);
 Result Install(const Options &, std::atomic<bool> &, const Notify &);

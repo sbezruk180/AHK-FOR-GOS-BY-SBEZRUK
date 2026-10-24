@@ -12,6 +12,7 @@
 #include <tlhelp32.h>
 #include <winver.h>
 namespace gos {
+static void UnregisterRemovedRoot(const fs::path &);
 static void Fail(const std::wstring &s) { throw std::runtime_error(Utf8(s)); }
 bool SafeCloudTag(DWORD tag) {
   // OneDrive placeholders do not redirect names. Junctions/symlinks do.
@@ -621,7 +622,7 @@ static void Link(const fs::path &where, const fs::path &target,
   l->SetArguments(args.c_str());
   l->SetWorkingDirectory(cwd.c_str());
   l->SetDescription(L"AHK FOR GOS BY SBEZRUK");
-  l->SetIconLocation((cwd / L"Uninstall.exe").c_str(), 0);
+  l->SetIconLocation(target.c_str(), 0);
   IPersistFile *f = nullptr;
   r = l->QueryInterface(IID_IPersistFile, (void **)&f);
   if (SUCCEEDED(r)) {
@@ -646,8 +647,11 @@ static void Shortcuts(const Options &o) {
     Link(Known(FOLDERID_Desktop) / L"AHK FOR GOS.lnk", target, args, o.root);
   if (o.menu) {
     Link(Menu() / L"AHK FOR GOS.lnk", target, args, o.root);
-    Link(Menu() / L"Удалить AHK FOR GOS.lnk", o.root / L"Uninstall.exe", L"",
-         o.root);
+    if (o.uninstaller)
+      Link(Menu() / L"Удалить AHK FOR GOS.lnk", o.root / L"Uninstall.exe", L"",
+           o.root);
+    else
+      DeleteFileW((Menu() / L"Удалить AHK FOR GOS.lnk").c_str());
   }
 }
 static void Register(const Options &o) {
@@ -665,7 +669,7 @@ static void Register(const Options &o) {
   };
   set(L"DisplayName", Product);
   set(L"Publisher", L"SBezruk180");
-  set(L"DisplayVersion", L"1.0");
+  set(L"DisplayVersion", L"1.2");
   set(L"InstallLocation", o.root.wstring());
   set(L"UninstallString",
       L"\"" + (o.root / L"Uninstall.exe").wstring() + L"\"");
@@ -733,8 +737,43 @@ static bool ProductExe(const fs::path &p) {
   for (auto c : product)
     if (iswalnum(c))
       normalized += towlower(c);
-  return normalized == L"ahkforgos" || normalized == L"ahkforgosbysbezruk" ||
-         normalized == L"ahkforgosbysbezruk180";
+  if (normalized == L"ahkforgos" || normalized == L"ahkforgosbysbezruk" ||
+      normalized == L"ahkforgosbysbezruk180")
+    return true;
+  // Older Ahk2Exe builds retain generic AutoHotkey metadata. Inspect the
+  // embedded script as data only, including after the EXE has been renamed.
+  if (!normalized.empty() &&
+      normalized.find(L"autohotkey") == normalized.npos &&
+      normalized.find(L"gos") == normalized.npos &&
+      normalized.find(L"sbezruk") == normalized.npos)
+    return false;
+  auto module =
+      LoadLibraryExW(p.c_str(), nullptr,
+                     LOAD_LIBRARY_AS_DATAFILE | LOAD_LIBRARY_AS_IMAGE_RESOURCE);
+  if (!module)
+    return false;
+  auto resource = FindResourceW(module, L">AUTOHOTKEY SCRIPT<", RT_RCDATA);
+  bool owned = false;
+  if (resource) {
+    DWORD n = SizeofResource(module, resource);
+    auto data = (const char *)LockResource(LoadResource(module, resource));
+    if (data && n && n <= 8 * 1024 * 1024) {
+      std::string script(data, data + n);
+      // ANSI and UTF-16 AHK compilations use the same ASCII identifiers.
+      script.erase(std::remove(script.begin(), script.end(), '\0'),
+                   script.end());
+      std::transform(script.begin(), script.end(), script.begin(),
+                     [](unsigned char c) {
+                       return c < 128 ? (char)std::tolower(c) : (char)c;
+                     });
+      owned = script.find("sbezruk") != script.npos &&
+              script.find("gta_sa.exe") != script.npos &&
+              (script.find("lawcorpus_sourceurl") != script.npos ||
+               script.find("azmp_max_players") != script.npos);
+    }
+  }
+  FreeLibrary(module);
+  return owned;
 }
 static bool UninstallerExe(const fs::path &p) {
   if (VersionProduct(p) != L"AHK FOR GOS Setup")
@@ -786,12 +825,12 @@ Result Install(const Options &o, std::atomic<bool> &cancel,
     fs::create_directories(stage / L"new");
     unsigned total = 0;
     for (auto &e : entries)
-      if (e.mask & o.mode)
+      if ((e.mask & o.mode) && (o.uninstaller || e.name != L"Uninstall.exe"))
         total++;
     unsigned done = 0;
     record.mode = o.mode;
     for (auto &e : entries) {
-      if (!(e.mask & o.mode))
+      if (!(e.mask & o.mode) || (!o.uninstaller && e.name == L"Uninstall.exe"))
         continue;
       CopyCancelled(cancel);
       notify({L"Подготовка: " + e.name, done, total * 2 + 1});
@@ -868,7 +907,10 @@ Result Install(const Options &o, std::atomic<bool> &cancel,
         result.warnings.push_back(Wide(e.what()));
       }
       try {
-        Register(o);
+        if (o.uninstaller)
+          Register(o);
+        else
+          UnregisterRemovedRoot(o.root);
       } catch (const std::exception &e) {
         result.warnings.push_back(Wide(e.what()));
       }
@@ -1295,8 +1337,9 @@ bool CanRecycleFolder(const fs::path &p) {
     return false;
   }
 }
-static FoundFile Identity(const fs::path &p) {
-  NoLinks(p);
+static FoundFile Identity(const fs::path &p, bool checkParents = true) {
+  if (checkParents)
+    NoLinks(p);
   HANDLE h = CreateFileW(
       p.c_str(), FILE_READ_ATTRIBUTES,
       FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, nullptr,
@@ -1346,7 +1389,7 @@ static FoundFile FolderSnapshot(const fs::path &root,
         if (!wcscmp(d.cFileName, L".") || !wcscmp(d.cFileName, L".."))
           continue;
         auto p = dir / d.cFileName;
-        auto item = Identity(p);
+        auto item = Identity(p, false);
         if (item.directory)
           stack.push_back(p);
         else
@@ -1418,10 +1461,12 @@ ScanResult ScanAhk(const std::vector<fs::path> &roots,
           stack.push_back(p);
         else if (_wcsicmp(p.extension().c_str(), L".ahk") == 0 ||
                  (_wcsicmp(p.extension().c_str(), L".exe") == 0 &&
-                  d.nFileSizeHigh == 0 && d.nFileSizeLow >= 1000000 &&
-                  d.nFileSizeLow <= 64000000 && ProductExe(p))) {
+                  d.nFileSizeHigh == 0 && d.nFileSizeLow <= 64000000 &&
+                  ProductExe(p)) ||
+                 (_wcsicmp(p.extension().c_str(), L".zip") == 0 &&
+                  ZipContainsAhk(p))) {
           try {
-            r.files.push_back(Identity(p));
+            r.files.push_back(Identity(p, false));
           } catch (...) {
             r.skipped++;
           }
@@ -1434,10 +1479,13 @@ ScanResult ScanAhk(const std::vector<fs::path> &roots,
       FindClose(h);
     }
   }
-  std::vector<fs::path> dirs;
+  std::set<fs::path> uniqueDirs;
   for (auto &file : r.files)
-    if (CanRecycleFolder(file.path.parent_path()))
-      dirs.push_back(file.path.parent_path());
+    uniqueDirs.insert(file.path.parent_path());
+  std::vector<fs::path> dirs;
+  for (auto &dir : uniqueDirs)
+    if (CanRecycleFolder(dir))
+      dirs.push_back(dir);
   std::sort(dirs.begin(), dirs.end(), [](auto &a, auto &b) {
     return a.native().size() < b.native().size();
   });
@@ -1463,9 +1511,9 @@ ScanResult ScanAhk(const std::vector<fs::path> &roots,
   r.cancelled = cancel.load();
   return r;
 }
-Result RecycleSelected(const std::vector<FoundFile> &files,
-                       std::atomic<bool> &cancel, const Notify &notify,
-                       bool shortcuts) {
+Result DeleteSelected(const std::vector<FoundFile> &files,
+                      std::atomic<bool> &cancel, const Notify &notify,
+                      bool shortcuts) {
   Result r;
   unsigned done = 0, total = 0;
   for (auto &f : files)
@@ -1507,25 +1555,47 @@ Result RecycleSelected(const std::vector<FoundFile> &files,
           Fail(L"Состав папки изменился после сканирования: " +
                f.path.wstring());
       }
-      std::wstring multi = f.path.wstring();
-      multi.push_back(0);
-      multi.push_back(0);
-      SHFILEOPSTRUCTW op{};
-      op.wFunc = FO_DELETE;
-      op.pFrom = multi.c_str();
-      op.fFlags = FOF_ALLOWUNDO | FOF_NOCONFIRMATION | FOF_NOERRORUI |
-                  FOF_SILENT | FOF_WANTNUKEWARNING;
-      int code = SHFileOperationW(&op);
-      if (code || op.fAnyOperationsAborted)
-        Fail(L"Не перемещён в корзину: " + f.path.wstring());
-      if (fs::exists(f.path))
-        Fail(L"Windows оставила объект на месте: " + f.path.wstring());
       if (f.directory) {
-        r.removedFolders++;
-        for (auto &child : f.contents)
-          child.directory ? ++r.removedFolders : ++r.removed;
-      } else
-        r.removed++;
+        // The snapshot was checked above. Delete only the listed objects;
+        // never recurse into a new directory introduced after confirmation.
+        for (auto &child : f.contents) {
+          CopyCancelled(cancel);
+          if (child.directory)
+            continue;
+          NoLinks(child.path);
+          if (!SameIdentity(child, Identity(child.path)))
+            Fail(L"Объект изменился: " + child.path.wstring());
+          if (!DeleteFileW(child.path.c_str()))
+            Fail(LastErrorText(L"Не удалён файл: " + child.path.wstring()));
+          ++r.removed;
+        }
+        auto dirs = f.contents;
+        std::sort(dirs.begin(), dirs.end(), [](auto &a, auto &b) {
+          return a.path.native().size() > b.path.native().size();
+        });
+        for (auto &child : dirs) {
+          CopyCancelled(cancel);
+          if (!child.directory)
+            continue;
+          NoLinks(child.path);
+          auto current = Identity(child.path);
+          if (current.volume != child.volume ||
+              current.indexHigh != child.indexHigh ||
+              current.indexLow != child.indexLow)
+            Fail(L"Папка заменена: " + child.path.wstring());
+          if (!RemoveDirectoryW(child.path.c_str()))
+            Fail(LastErrorText(L"Не удалена папка: " + child.path.wstring()));
+          ++r.removedFolders;
+        }
+        NoLinks(f.path);
+        if (!RemoveDirectoryW(f.path.c_str()))
+          Fail(LastErrorText(L"Не удалена папка: " + f.path.wstring()));
+        ++r.removedFolders;
+      } else {
+        if (!DeleteFileW(f.path.c_str()))
+          Fail(LastErrorText(L"Не удалён файл: " + f.path.wstring()));
+        ++r.removed;
+      }
       if (shortcuts)
         RemoveMatchingShortcuts(
             {Known(FOLDERID_Desktop), Known(FOLDERID_StartMenu)}, {f.path}, r);
@@ -1537,7 +1607,7 @@ Result RecycleSelected(const std::vector<FoundFile> &files,
       r.failed++;
       r.warnings.push_back(Wide(e.what()));
     }
-    notify({L"В корзину: " + f.path.wstring(), ++done, total});
+    notify({L"Удаление без корзины: " + f.path.wstring(), ++done, total});
   }
   r.ok = !r.failed && !r.cancelled;
   r.message = L"Выбранные файлы: удалено " + std::to_wstring(r.removed) +

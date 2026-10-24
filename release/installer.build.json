@@ -8,11 +8,12 @@
   "official_runtime_archive_sha256": "6f3663f7cdd25063c8c8728f5d9b07813ced8780522fd1f124ba539e2854215f",
   "installer_sources": {
     "installer/native/app.manifest": "4058551a1862d1ffe686358196b6e922ba4e514573cdb70aaac8a0aa19de656c",
-    "installer/native/core.cpp": "ff4cb84364d44054b9b60a937c848b10c3019b9bc525f02c753b1a8ba4b33049",
-    "installer/native/core.hpp": "734a731b8e4cc6905bccb4a49b34287d7dc1f3e13919c2374ab64f504c519130",
+    "installer/native/archive.cpp": "4290a4cd8f0bfe4440d9627d112bf7f284a9040afb67f3d5655790b2c5853d92",
+    "installer/native/core.cpp": "b061b2b7a9b1fcff1bf38f39c2ee61462409e952849af643fd14732e0b425fee",
+    "installer/native/core.hpp": "4b5d4d5c6d5d5853cacf977af112139b73d0ae698336bf4ae02f7473db74f960",
     "installer/native/main.cpp": "73b97e78d109be0e93a2074079fe88cc9d163a7ab6d87b29fb75036705436c5c",
-    "installer/native/selftest.cpp": "2fa987bf9f48224ef2029ff1320074e053dba92cfefe2584c08aeab6c7395b97",
-    "installer/native/ui.cpp": "922a65c8aac2770a8ddca94ed30eabb2df413a1375411ce1c144c7552d49aa1a"
+    "installer/native/selftest.cpp": "af7586a3ec036895b79e5cdb14cd40797d165fdaa8b57ea6ee7f0b288b3541ab",
+    "installer/native/ui.cpp": "bf9ac3e7feaf05b7a72f450e779cdc4e47c228c128ca65f1de70f64127b59e4b"
   },
   "entries": [
     {
@@ -36,8 +37,8 @@
     {
       "path": "Uninstall.exe",
       "modes": 3,
-      "bytes": 1595904,
-      "sha256": "7ea074f73b95f0c8aa47e73a877503ef759ee8d1203414471357163081340be4"
+      "bytes": 1622016,
+      "sha256": "0d561ce0878687cbb6856ebe5f4af3088dfd8bf0b76a914dbc8f6787b12ae3e6"
     },
     {
       "path": "app\\actions.ahk",
@@ -468,18 +469,18 @@
     {
       "path": "Инструкция.txt",
       "modes": 3,
-      "bytes": 4097,
-      "sha256": "008c2a203f16bc764fd0a75f5e54c5aa30c214d90d70f937df7bdd3e5ab3fc7b"
+      "bytes": 5257,
+      "sha256": "43c469cf945ed48b824396eaf8a3357ed41f43ee9fc09c0441d9ef3497b25777"
     }
   ],
   "artifacts": {
     "AHK_FOR_GOS_Setup.exe": {
-      "bytes": 13321216,
-      "sha256": "5fb55abf377c6ee4ad85542bf107316768c794d4fe8de1f6d89af381a35a93df"
+      "bytes": 13374464,
+      "sha256": "078f9c78d64a40b4faf8ebfb192aaf3dbe0e4b615937fec0077aba69c8eb2cb4"
     },
     "AHK_FOR_GOS_Uninstall.exe": {
-      "bytes": 1595904,
-      "sha256": "7ea074f73b95f0c8aa47e73a877503ef759ee8d1203414471357163081340be4"
+      "bytes": 1622016,
+      "sha256": "0d561ce0878687cbb6856ebe5f4af3088dfd8bf0b76a914dbc8f6787b12ae3e6"
     }
   }
 }

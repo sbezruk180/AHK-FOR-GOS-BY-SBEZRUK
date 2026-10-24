@@ -1,0 +1,41 @@
+{
+  "status": "PASS",
+  "platform": "Wine/Xvfb",
+  "artifacts": {
+    "AHK_FOR_GOS_Setup.exe": {
+      "bytes": 13374464,
+      "sha256": "078f9c78d64a40b4faf8ebfb192aaf3dbe0e4b615937fec0077aba69c8eb2cb4"
+    },
+    "AHK_FOR_GOS_Uninstall.exe": {
+      "bytes": 1622016,
+      "sha256": "0d561ce0878687cbb6856ebe5f4af3088dfd8bf0b76a914dbc8f6787b12ae3e6"
+    }
+  },
+  "application_sha256": "fbe20a816569de2906d7260e0d6e6a1de728b3485ccb4a2ff80a9bc745e4a450",
+  "results": [
+    {
+      "file": "wine-core.txt",
+      "checks": 107,
+      "failed": 0,
+      "skips": [
+        "SKIP | Wine64 environment has no 32-bit application runtime",
+        "SKIP | Wine64 environment cannot execute bundled A32",
+        "SKIP | symlink creation unavailable in this environment"
+      ]
+    },
+    {
+      "file": "wine-ui-setup.txt",
+      "checks": 34,
+      "failed": 0,
+      "skips": []
+    },
+    {
+      "file": "wine-ui-uninstall.txt",
+      "checks": 33,
+      "failed": 0,
+      "skips": []
+    }
+  ],
+  "real_onedrive": "NOT_TESTED",
+  "whole_computer_scan": "NOT_EXECUTED"
+}
