@@ -48,6 +48,11 @@ async def main(output, executable):
             try:
                 response = await page.goto(url, wait_until='domcontentloaded', timeout=35000)
                 await page.wait_for_timeout(2000)
+                if name == 'bing':
+                    try:
+                        await page.locator('#b_results li.b_algo').first.wait_for(state='visible', timeout=10000)
+                    except Exception:
+                        pass
                 text = await page.locator('body').inner_text(timeout=5000)
                 links = await page.locator(selector).evaluate_all('(items)=>items.map(x=>({title:x.innerText,url:x.href}))')
                 for link in links:
@@ -56,12 +61,14 @@ async def main(output, executable):
                 # A challenge is not evidence that the repository is absent from the index.
                 page_title = await page.title()
                 challenge_text = (page_title + '\n' + text[:3000]).lower()
-                challenge = any(x in challenge_text for x in (
+                challenge = '/sorry/' in page.url or any(x in challenge_text for x in (
                     'captcha', 'unusual traffic', 'подтвердите, что вы не робот',
-                    'проверка браузера', 'verify you are human', 'not a robot', 'anomaly.js'))
-                result.update(status=response.status if response else None, final_url=page.url,
+                    'проверка браузера', 'verify you are human', 'not a robot', 'anomaly.js',
+                    'подозрительный трафик', 'following challenge', 'вы не робот'))
+                visible_results = await page.locator(selector).evaluate_all('(items)=>items.filter(x=>x.getClientRects().length && getComputedStyle(x).visibility !== "hidden").length')
+                result.update(visible_result_count=visible_results, status=response.status if response else None, final_url=page.url,
                               title=await page.title(), results=links, repository_results=matches,
-                              verdict='found' if matches else 'blocked_or_challenged' if challenge else 'not_found_in_visible_results' if links else 'no_results_extracted')
+                              verdict='found' if matches else 'blocked_or_challenged' if challenge else 'results_not_visible' if links and not visible_results else 'not_found_in_visible_results' if links else 'no_results_extracted')
                 (output / f'{name}.txt').write_text(text, encoding='utf-8')
                 await page.screenshot(path=str(output / f'{name}.png'), full_page=False)
             except Exception as exc:
@@ -74,7 +81,7 @@ async def main(output, executable):
         await browser.close()
     (output / 'results.json').write_text(json.dumps(results, ensure_ascii=False, indent=2)+'\n', encoding='utf-8')
     lines = ['# Проверка поиска AHK FOR GOS', '', 'Запрос: `ahk for gos`. Проверено Chromium через Playwright. Результат зависит от региона, времени и поисковой системы.', '', '| Поиск | Результат |', '| --- | --- |']
-    labels = {'found':'Ссылка на проект найдена', 'blocked_or_challenged':'Проверка робота/блокировка; наличие в индексе не установлено', 'not_found_in_visible_results':'Среди извлечённых результатов ссылка не найдена', 'no_results_extracted':'Результаты не удалось извлечь; вывод об индексации не сделан', 'request_failed':'Сетевая ошибка; выдача не проверена'}
+    labels = {'found':'Ссылка на проект найдена', 'blocked_or_challenged':'Проверка робота/блокировка; наличие в индексе не установлено', 'not_found_in_visible_results':'Среди извлечённых результатов ссылка не найдена', 'no_results_extracted':'Результаты не удалось извлечь; вывод об индексации не сделан', 'request_failed':'Ошибка проверки; выдача не проверена', 'results_not_visible':'В DOM есть ссылки, но они не отображаются; выдача не подтверждена'}
     for item in results:
         lines.append(f"| [{item['engine']}]({item['requested_url']}) | {labels[item['verdict']]} |")
     lines += ['', 'Детали и время проверки: [results.json](results.json). Снимки браузера и видимый текст сохранены рядом.', '', 'Эта проверка не гарантирует позиции и не отправляет поисковикам запрос на индексацию.']
