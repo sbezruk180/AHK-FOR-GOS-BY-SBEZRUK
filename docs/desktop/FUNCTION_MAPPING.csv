@@ -834,7 +834,7 @@ RequestIndependentGuiState,AHK_FOR_GOS_BY_SBEZRUK.ahk:16275,app/ui_overlays.ahk:
 ResolveBackgroundImage,AHK_FOR_GOS_BY_SBEZRUK.ahk:16287,app/ui_overlays.ahk:559,Адаптирована,Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте
 SafePicture,AHK_FOR_GOS_BY_SBEZRUK.ahk:16307,app/ui_overlays.ahk:579,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 CreateHUD,AHK_FOR_GOS_BY_SBEZRUK.ahk:16317,app/ui_overlays.ahk:589,Адаптирована,Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте
-UpdateHUD,AHK_FOR_GOS_BY_SBEZRUK.ahk:16406,app/ui_overlays.ahk:677,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+UpdateHUD,AHK_FOR_GOS_BY_SBEZRUK.ahk:16406,app/ui_overlays.ahk:677,Адаптирована,Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте
 GetDynamicGlobalValue,AHK_FOR_GOS_BY_SBEZRUK.ahk:16439,app/core.ahk:548,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 IsBindFieldFilled,AHK_FOR_GOS_BY_SBEZRUK.ahk:16449,app/core.ahk:558,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 NormalizeCustomFunctionTrigger,AHK_FOR_GOS_BY_SBEZRUK.ahk:16454,app/custom_functions.ahk:3,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
@@ -1281,5 +1281,5 @@ UIStyle_Apply,ui_style.ahk:24,ui_style.ahk:24,Адаптирована,Обно�
 UIStyle_GetPalette,ui_style.ahk:82,ui_style.ahk:133,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 UIStyle_ControlColor,ui_style.ahk:95,ui_style.ahk:178,Адаптирована,Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте
 UIStyle_DrawButton,ui_style.ahk:131,ui_style.ahk:226,Адаптирована,Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте
-UIStyle_Prune,ui_style.ahk:187,ui_style.ahk:351,Адаптирована,Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте
-UIStyle_Shutdown,ui_style.ahk:211,ui_style.ahk:375,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+UIStyle_Prune,ui_style.ahk:187,ui_style.ahk:371,Адаптирована,Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте
+UIStyle_Shutdown,ui_style.ahk:211,ui_style.ahk:395,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
