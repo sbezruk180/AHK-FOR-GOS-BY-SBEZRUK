@@ -1,0 +1,21 @@
+name: Complete release 1.1 documentation
+on:
+  push:
+    branches: [audit-fixes-obs-search-gui-20261009]
+    paths: ['.github/workflows/release-description.yml']
+permissions:
+  contents: write
+  pages: read
+jobs:
+  documentation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),{owner,repo}=context.repo;
+            const release=await github.rest.repos.getReleaseByTag({owner,repo,tag:'v1.1'});
+            const sources='https://github.com/'+owner+'/'+repo+'/archive/c3d6a5b.zip';
+            await github.rest.repos.updateRelease({owner,repo,release_id:release.data.id,body:fs.readFileSync('RELEASE_NOTES_1_1_RU.md','utf8')+'\n\n[Полные исходники с актуальной таблицей переноса функций]('+sources+'). Код приложения совпадает со сборкой релиза; дополнена таблица контрольных отпечатков HUD.\n'});
+            try {const page=await github.rest.repos.getPages({owner,repo});core.notice('SITE_STATUS '+JSON.stringify({status:page.data.status,url:page.data.html_url}));} catch(e){core.warning('SITE_STATUS unavailable: '+e.message);}
