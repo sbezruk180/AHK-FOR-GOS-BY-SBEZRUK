@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://sbezruk180.github.io/AHK-FOR-GOS-BY-SBEZRUK/sitemap.xml

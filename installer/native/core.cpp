@@ -669,7 +669,7 @@ static void Register(const Options &o) {
   };
   set(L"DisplayName", Product);
   set(L"Publisher", L"SBezruk180");
-  set(L"DisplayVersion", L"1.2");
+  set(L"DisplayVersion", L"1.1");
   set(L"InstallLocation", o.root.wstring());
   set(L"UninstallString",
       L"\"" + (o.root / L"Uninstall.exe").wstring() + L"\"");

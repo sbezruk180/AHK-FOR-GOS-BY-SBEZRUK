@@ -1,0 +1,87 @@
+name: Publish AHK FOR GOS 1.1
+on:
+  push:
+    branches: [audit-fixes-obs-search-gui-20261009]
+    paths: ['.github/workflows/publish-v1-1.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+  pages: write
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify and test shipping programs
+        shell: pwsh
+        run: |
+          python tools/verify_exe.py release/AHK_FOR_GOS.exe
+          if ($LASTEXITCODE) { throw 'EXE mismatch' }
+          python tools/verify_installer.py
+          if ($LASTEXITCODE) { throw 'Installer mismatch' }
+          $fixture = Join-Path $env:RUNNER_TEMP 'legacy-release-fixture'
+          Expand-Archive installer/tests/legacy-6b1a595.zip $fixture
+          foreach ($test in @('core','Setup','Uninstall')) {
+            $file = if ($test -eq 'core') { 'Setup' } else { $test }
+            $report = Join-Path $env:RUNNER_TEMP "release-$test.txt"
+            $args = if ($test -eq 'core') { @('--self-test',"`"$report`"",'--legacy-fixture',"`"$fixture`"") } else { @('--ui-test',"`"$report`"") }
+            $p = Start-Process (Resolve-Path "release/AHK_FOR_GOS_$file.exe") -ArgumentList $args -PassThru
+            if (!$p.WaitForExit(120000)) { $p.Kill(); throw 'Test timeout' }
+            Get-Content $report
+            if ($p.ExitCode) { throw 'Shipping test failed' }
+          }
+          python tools/build_exe.py --test-u64
+          $data = Join-Path $env:RUNNER_TEMP 'release-gui'
+          New-Item -ItemType Directory -Force $data | Out-Null
+          foreach ($name in @('profiles.ini','themes.ini','custom_functions.ini')) { [IO.File]::WriteAllText((Join-Path $data $name), '; Unicode fixture', [Text.Encoding]::Unicode) }
+          $p = Start-Process (Resolve-Path 'dist/AHK_FOR_GOS_TEST_U64.exe') -ArgumentList @('--desktop-smoke','--data-dir',"`"$data`"") -PassThru
+          if (!$p.WaitForExit(120000)) { $p.Kill(); throw 'GUI timeout' }
+          Get-Content (Join-Path $data 'desktop_smoke_report.txt')
+          if ($p.ExitCode) { throw 'AHK GUI failed' }
+          python tools/package_release.py
+          if ($LASTEXITCODE) { throw 'Packaging failed' }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: release-1.1-tests
+          path: |
+            ${{ runner.temp }}/release-*.txt
+            ${{ runner.temp }}/release-gui/*report.txt
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const {owner,repo} = context.repo;
+            const release = await github.rest.repos.createRelease({owner,repo,tag_name:'v1.1',target_commitish:context.sha,name:'AHK FOR GOS 1.1 — AHK, EXE, установка и удаление',body:fs.readFileSync('RELEASE_NOTES_1_1_RU.md','utf8'),draft:false,prerelease:false,make_latest:'true'});
+            for (const name of fs.readdirSync('dist/publish')) await github.rest.repos.uploadReleaseAsset({owner,repo,release_id:release.data.id,name,data:fs.readFileSync('dist/publish/'+name)});
+      - name: Update search-facing README on default branch
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'), {owner,repo}=context.repo;
+            const info=await github.rest.repos.get({owner,repo});
+            const branch=info.data.default_branch;
+            const old=await github.rest.repos.getContent({owner,repo,path:'README.md',ref:branch});
+            await github.rest.repos.createOrUpdateFileContents({owner,repo,path:'README.md',branch,sha:old.data.sha,message:'Describe AHK for Amazing Online 1.1 and official downloads',content:Buffer.from(fs.readFileSync('docs/README_SEARCH_RU.md')).toString('base64')});
+      - name: Publish search landing page
+        continue-on-error: true
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'), {owner,repo}=context.repo, branch='gh-pages';
+            let exists=true; try { await github.rest.git.getRef({owner,repo,ref:'heads/'+branch}); } catch(e) { if(e.status!==404) throw e; exists=false; }
+            const names=['index.html','robots.txt','sitemap.xml'];
+            if(!exists) {
+              const tree=await github.rest.git.createTree({owner,repo,tree:names.map(path=>({path,mode:'100644',type:'blob',content:fs.readFileSync('docs/site/'+path,'utf8')}))});
+              const commit=await github.rest.git.createCommit({owner,repo,message:'Publish Amazing Online AHK download page',tree:tree.data.sha,parents:[]});
+              await github.rest.git.createRef({owner,repo,ref:'refs/heads/'+branch,sha:commit.data.sha});
+            } else for(const path of names) {
+              let sha; try {sha=(await github.rest.repos.getContent({owner,repo,path,ref:branch})).data.sha;} catch(e){if(e.status!==404)throw e;}
+              await github.rest.repos.createOrUpdateFileContents({owner,repo,path,branch,sha,message:'Update AHK FOR GOS search page',content:Buffer.from(fs.readFileSync('docs/site/'+path)).toString('base64')});
+            }
+            try {await github.rest.repos.getPages({owner,repo});} catch(e) {if(e.status!==404)throw e; await github.rest.repos.createPagesSite({owner,repo,source:{branch,path:'/'},build_type:'legacy'});}
+            const build=await github.request('POST /repos/{owner}/{repo}/pages/builds',{owner,repo});
+            core.notice('Search page build requested: '+JSON.stringify({status:build.data.status,url:build.data.url}));
