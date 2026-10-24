@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
-  pages: read
+  pages: write
 concurrency:
   group: search-visibility-${{ github.ref }}
   cancel-in-progress: true
@@ -37,6 +37,11 @@ jobs:
             try {
               const page=await github.rest.repos.getPages({owner,repo});
               status={enabled:true,url:page.data.html_url,status:page.data.status,source:page.data.source};
+              if(page.data.source?.branch === 'gh-pages' && page.data.build_type !== 'workflow') {
+                const build=await github.request('POST /repos/{owner}/{repo}/pages/builds',{owner,repo});
+                status.build_requested=true;
+                status.build_status=build.data.status;
+              }
               if(page.data.html_url) {
                 try { const response=await fetch(page.data.html_url);status.http_status=response.status; }
                 catch(error) { status.http_error=error.message; }
