@@ -3,72 +3,74 @@
     "engine": "google",
     "query": "ahk for gos",
     "requested_url": "https://www.google.com/search?q=ahk+for+gos&hl=ru",
-    "checked_at": "2026-10-24T12:19:06.001126+00:00",
+    "checked_at": "2026-10-24T12:21:22.360489+00:00",
+    "visible_result_count": 0,
     "status": 200,
-    "final_url": "https://www.google.com/sorry/index?continue=https://www.google.com/search%3Fq%3Dahk%2Bfor%2Bgos%26hl%3Dru%26sei%3DOqLcavOBBeHpkPIPl_vNWQ&hl=ru&q=EgQNQBmwGLvE8tYGIjAvPiwmGaMVx2-JFKLqPXltDhtvs0ciO3kK5JkKLPU9xJHA8GthRH_pBR334LPg1UQyAVJaAUNgxaWsv6HOto3qAQ",
-    "title": "https://www.google.com/search?q=ahk+for+gos&hl=ru&sei=OqLcavOBBeHpkPIPl_vNWQ",
+    "final_url": "https://www.google.com/sorry/index?continue=https://www.google.com/search%3Fq%3Dahk%2Bfor%2Bgos%26hl%3Dru%26sei%3DwqLcaqGnGtGkptQPo8OPwAM&hl=ru&q=EgSHd182GMPF8tYGIjAiT5mElZqhCu8ywjXeRGbKMVGoK2z3kkSC_DBGrNWi_MByHtKE1WTcvY607X4wzDMyAVJaAUNg0LS53ueV1fIn",
+    "title": "https://www.google.com/search?q=ahk+for+gos&hl=ru&sei=wqLcaqGnGtGkptQPo8OPwAM",
     "results": [],
     "repository_results": [],
-    "verdict": "no_results_extracted"
+    "verdict": "blocked_or_challenged"
   },
   {
     "engine": "bing",
     "query": "ahk for gos",
     "requested_url": "https://www.bing.com/search?q=ahk+for+gos",
-    "checked_at": "2026-10-24T12:19:06.002880+00:00",
+    "checked_at": "2026-10-24T12:21:22.361317+00:00",
+    "visible_result_count": 10,
     "status": 200,
-    "final_url": "https://www.bing.com/search?q=ahk+for+gos",
+    "final_url": "https://www.bing.com/search?q=ahk+for+gos&rdr=1&rdrig=87D45DBAC1CF4D449DD6F1634BEDD3CF",
     "title": "ahk for gos - Поиск",
     "results": [
       {
-        "title": "",
-        "url": "https://www.bing.com/ck/a?!&&p=c229a01af292352e72a9ee12417265453f7583fee915dd8537efe828423babffJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=341f40fd-8de9-6793-12ae-57018c1c6672&u=a1aHR0cHM6Ly93d3cuYXV0b2hvdGtleS5jb20v&ntb=1",
+        "title": "AutoHotkey",
+        "url": "https://www.bing.com/ck/a?!&&p=d99eee557b99c89b220038dc978026485131cf975d0d40030664e7ed42c58e69JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2551787c-5744-675e-1962-6f8056af6667&u=a1aHR0cHM6Ly93d3cuYXV0b2hvdGtleS5jb20v&ntb=1",
         "target_url": "https://www.autohotkey.com/"
       },
       {
-        "title": "",
-        "url": "https://www.bing.com/ck/a?!&&p=da802bb26ad362ad07ef67e6819634a473a03e16c08ee33babec1a9045c9f12cJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=341f40fd-8de9-6793-12ae-57018c1c6672&u=a1aHR0cHM6Ly9naXRodWIuY29tL0F1dG9Ib3RrZXkvQXV0b0hvdGtleS9yZWxlYXNlcw&ntb=1",
+        "title": "Releases: AutoHotkey/AutoHotkey - GitHub",
+        "url": "https://www.bing.com/ck/a?!&&p=a3c6c51bfc5e1713cd105616d8fce5f25fa4bda7da8d854c2a65bbf4594d1132JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2551787c-5744-675e-1962-6f8056af6667&u=a1aHR0cHM6Ly9naXRodWIuY29tL0F1dG9Ib3RrZXkvQXV0b0hvdGtleS9yZWxlYXNlcw&ntb=1",
         "target_url": "https://github.com/AutoHotkey/AutoHotkey/releases"
       },
       {
-        "title": "",
-        "url": "https://www.bing.com/ck/a?!&&p=57b696e8db1d175b6cdba99c8899cb9ff4e282c14d95c233aa9680fda71d5dbcJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=341f40fd-8de9-6793-12ae-57018c1c6672&u=a1aHR0cHM6Ly93d3cuYXV0b2hvdGtleS5jb20vc2VhcmNoLw&ntb=1",
-        "target_url": "https://www.autohotkey.com/search/"
-      },
-      {
-        "title": "",
-        "url": "https://www.bing.com/ck/a?!&&p=67fbf76068f599ded42db696a22fd6fdd3182739807a73cf5722eaeda1feca7cJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=341f40fd-8de9-6793-12ae-57018c1c6672&u=a1aHR0cHM6Ly93d3cuYWhrLmRlL2VuLw&ntb=1",
+        "title": "The German Chambers of Commerce Abroad - AHK",
+        "url": "https://www.bing.com/ck/a?!&&p=7ffaef78386ac4d642e8344bfed0ffd44b9354866932cb779482d7b5c647f043JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2551787c-5744-675e-1962-6f8056af6667&u=a1aHR0cHM6Ly93d3cuYWhrLmRlL2VuLw&ntb=1",
         "target_url": "https://www.ahk.de/en/"
       },
       {
-        "title": "",
-        "url": "https://www.bing.com/ck/a?!&&p=85dc3dcc795fecb13d8f6de86428b7650a11d0acf1e7b0e3a8754058232aeb90JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=341f40fd-8de9-6793-12ae-57018c1c6672&u=a1aHR0cHM6Ly9lbi53aWtpcGVkaWEub3JnL3dpa2kvQXV0b0hvdGtleQ&ntb=1",
-        "target_url": "https://en.wikipedia.org/wiki/AutoHotkey"
-      },
-      {
-        "title": "",
-        "url": "https://www.bing.com/ck/a?!&&p=f7ea87cdca4c0c212a0c90b3da2cae548bd6157de1b94d3ec757072b1816fb86JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=341f40fd-8de9-6793-12ae-57018c1c6672&u=a1aHR0cHM6Ly9hdXRvaG90a2V5LmVuLnNvZnRvbmljLmNvbS8&ntb=1",
-        "target_url": "https://autohotkey.en.softonic.com/"
-      },
-      {
-        "title": "",
-        "url": "https://www.bing.com/ck/a?!&&p=ec4ca48801fdb60dce8c80931248dbb132d2722fe24541911ca4d20c9dc3b44dJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=341f40fd-8de9-6793-12ae-57018c1c6672&u=a1aHR0cHM6Ly9naXRodWIuY29tL0F1dG9Ib3RrZXkvQWhrMkV4ZS9yZWxlYXNlcw&ntb=1",
-        "target_url": "https://github.com/AutoHotkey/Ahk2Exe/releases"
-      },
-      {
-        "title": "",
-        "url": "https://www.bing.com/ck/a?!&&p=f26b6e08f459604897f3da8d0b4d0f0903d15a41ccb7e1f4b100378855817d4eJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=341f40fd-8de9-6793-12ae-57018c1c6672&u=a1aHR0cHM6Ly9hdXRvLWhvdGtleS5uZXQvY29tbXVuaXR5Lmh0bWw&ntb=1",
-        "target_url": "https://auto-hotkey.net/community.html"
-      },
-      {
-        "title": "",
-        "url": "https://www.bing.com/ck/a?!&&p=402f86240c705ccd58dae688247c985527a5c12522d83dc2199fb828e1b62b49JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=341f40fd-8de9-6793-12ae-57018c1c6672&u=a1aHR0cHM6Ly93d3cuYXV0b2hvdGtleS5jb20vZG9jcy92Mi8vaG93dG8vSW5zdGFsbC5odG0&ntb=1",
+        "title": "How to Install AutoHotkey | AutoHotkey v2",
+        "url": "https://www.bing.com/ck/a?!&&p=a49e89cadd2385b2c46694a4878bbdeaad5ba1893b6ace489d2f1bad791d88bbJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2551787c-5744-675e-1962-6f8056af6667&u=a1aHR0cHM6Ly93d3cuYXV0b2hvdGtleS5jb20vZG9jcy92Mi8vaG93dG8vSW5zdGFsbC5odG0&ntb=1",
         "target_url": "https://www.autohotkey.com/docs/v2//howto/Install.htm"
       },
       {
-        "title": "",
-        "url": "https://www.bing.com/ck/a?!&&p=1ef57e8781b0bd3d024296586e0a49c7df2309d38bfab00739b29b76b701e64dJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=341f40fd-8de9-6793-12ae-57018c1c6672&u=a1aHR0cHM6Ly93d3cuYXV0b2hvdGtleS5jb20vZG9jcy8&ntb=1",
+        "title": "AutoHotkey - Wikipedia",
+        "url": "https://www.bing.com/ck/a?!&&p=eb138c17653426726eae90fa3ebed878dd502dbefe99177c6294a851c4047bb3JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2551787c-5744-675e-1962-6f8056af6667&u=a1aHR0cHM6Ly9lbi53aWtpcGVkaWEub3JnL3dpa2kvQXV0b0hvdGtleQ&ntb=1",
+        "target_url": "https://en.wikipedia.org/wiki/AutoHotkey"
+      },
+      {
+        "title": "AutoHotKey - Download",
+        "url": "https://www.bing.com/ck/a?!&&p=28bceb5017b123fe3ebfc2ebdc837324e0460ed401773f9e78fe935d0508233fJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2551787c-5744-675e-1962-6f8056af6667&u=a1aHR0cHM6Ly9hdXRvaG90a2V5LmVuLnNvZnRvbmljLmNvbS8&ntb=1",
+        "target_url": "https://autohotkey.en.softonic.com/"
+      },
+      {
+        "title": "Releases · AutoHotkey/Ahk2Exe - GitHub",
+        "url": "https://www.bing.com/ck/a?!&&p=1d628e8f9036cfab146654b820e92f628f2b136c22c915dae66cd9eb5c6fd72cJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2551787c-5744-675e-1962-6f8056af6667&u=a1aHR0cHM6Ly9naXRodWIuY29tL0F1dG9Ib3RrZXkvQWhrMkV4ZS9yZWxlYXNlcw&ntb=1",
+        "target_url": "https://github.com/AutoHotkey/Ahk2Exe/releases"
+      },
+      {
+        "title": "Documentation - AutoHotkey",
+        "url": "https://www.bing.com/ck/a?!&&p=6654d271f914283f0b56589e1a8ee9d758ff43882324f7168fa0cd5b6c5319d2JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2551787c-5744-675e-1962-6f8056af6667&u=a1aHR0cHM6Ly93d3cuYXV0b2hvdGtleS5jb20vZG9jcy8&ntb=1",
         "target_url": "https://www.autohotkey.com/docs/"
+      },
+      {
+        "title": "Quick Reference | AutoHotkey v2",
+        "url": "https://www.bing.com/ck/a?!&&p=044f20ea03867378cdf9b8d9fc5ddd0cbfe4130c212e9b96750f4bc9bf8570ceJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2551787c-5744-675e-1962-6f8056af6667&u=a1aHR0cHM6Ly93d3cuYXV0b2hvdGtleS5jb20vZG9jcy92Mi8&ntb=1",
+        "target_url": "https://www.autohotkey.com/docs/v2/"
+      },
+      {
+        "title": "Beginner Tutorial | AutoHotkey v2",
+        "url": "https://www.bing.com/ck/a?!&&p=a078fe0ca14343e3306200323d892433efeae42a590f1b32b54fb2ef53bb5bfbJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2551787c-5744-675e-1962-6f8056af6667&u=a1aHR0cHM6Ly93d3cuYXV0b2hvdGtleS5jb20vZG9jcy92Mi9UdXRvcmlhbC5odG0&ntb=1",
+        "target_url": "https://www.autohotkey.com/docs/v2/Tutorial.htm"
       }
     ],
     "repository_results": [],
@@ -78,9 +80,10 @@
     "engine": "yandex",
     "query": "ahk for gos",
     "requested_url": "https://yandex.ru/search/?text=ahk%20for%20gos",
-    "checked_at": "2026-10-24T12:19:06.006508+00:00",
+    "checked_at": "2026-10-24T12:21:22.359603+00:00",
+    "visible_result_count": 0,
     "status": 200,
-    "final_url": "https://yandex.ru/showcaptcha?cc=1&form-fb-hint=2.1&mt=8F6C02BE025664C1EC1517BFB96FCE5A4E9E4F560042092A5DEE8C0C2A9BB5D2345BD26364D46FCCEEABE4E1BB3BB641C65BA8ED0A515BE0438D6B6DA409DB617127D61883850C69ED28DD305B52C81797F91B58BF4CB5BF565F4995D62937DDF48D526412DB9A08D68FED3DB08F23D0866BEFA97FC73CB81A68090A1DCEC36E1C1876AAFCDABB&retpath=aHR0cHM6Ly95YW5kZXgucnUvc2VhcmNoP3RleHQ9YWhrJTIwZm9yJTIwZ29z_536690548713a08a492bdeb3ae2b714e&t=2%252F1792844346%252F14e96c49ef5ae9e45afa49f1e0560f1c&u=9635283002863061302&s=e3f39007fdca5ef9aca3d47b37363b9f",
+    "final_url": "https://yandex.ru/showcaptcha?cc=1&form-fb-hint=2.1&mt=71A28011DD5EE53AF51AC844BC6D429E10DE6023A2C2DD5FB94C659F7863BFEF7A4D22BD41729D6C8F4C857491A568FFC4BA6D0BDE825EAF928AF6D6399F5342273AE200E0EBD426DDDBFCD701F551934D45EAB0A90F46BF7DCEA642B84D6EAA3741A09305C46BB522EAE6E65C442F86DECDD9CEA890F7DB6FEEAD2F986140960B73B94CA7560501&retpath=aHR0cHM6Ly95YW5kZXgucnUvc2VhcmNoP3RleHQ9YWhrJTIwZm9yJTIwZ29z_536690548713a08a492bdeb3ae2b714e&t=2%252F1792844483%252F7d82c7d5fe84a1b0fc204fbd96158322&u=9635292147658526940&s=a430a25bf3c9bb785876b0fc2ba9ff11",
     "title": "Вы не робот?",
     "results": [],
     "repository_results": [],
@@ -90,19 +93,21 @@
     "engine": "duckduckgo",
     "query": "ahk for gos",
     "requested_url": "https://html.duckduckgo.com/html/?q=ahk+for+gos",
-    "checked_at": "2026-10-24T12:19:06.005718+00:00",
+    "checked_at": "2026-10-24T12:21:22.358134+00:00",
+    "visible_result_count": 0,
     "status": 202,
     "final_url": "https://html.duckduckgo.com/html/?q=ahk+for+gos",
     "title": "DuckDuckGo",
     "results": [],
     "repository_results": [],
-    "verdict": "no_results_extracted"
+    "verdict": "blocked_or_challenged"
   },
   {
     "engine": "github",
     "query": "ahk for gos",
     "requested_url": "https://github.com/search?q=ahk+for+gos&type=repositories",
-    "checked_at": "2026-10-24T12:19:06.004058+00:00",
+    "checked_at": "2026-10-24T12:21:22.356839+00:00",
+    "visible_result_count": 1,
     "status": 200,
     "final_url": "https://github.com/search?q=ahk+for+gos&type=repositories",
     "title": "Repository search results · GitHub",
