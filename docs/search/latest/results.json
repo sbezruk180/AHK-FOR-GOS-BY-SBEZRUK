@@ -1,0 +1,42 @@
+[
+  {
+    "engine": "google",
+    "query": "ahk for gos",
+    "requested_url": "https://www.google.com/search?q=ahk+for+gos&hl=ru",
+    "checked_at": "2026-10-24T12:17:44.894482+00:00",
+    "verdict": "request_failed",
+    "error": "'async_generator' object is not iterable"
+  },
+  {
+    "engine": "bing",
+    "query": "ahk for gos",
+    "requested_url": "https://www.bing.com/search?q=ahk+for+gos",
+    "checked_at": "2026-10-24T12:17:44.908028+00:00",
+    "verdict": "request_failed",
+    "error": "'async_generator' object is not iterable"
+  },
+  {
+    "engine": "yandex",
+    "query": "ahk for gos",
+    "requested_url": "https://yandex.ru/search/?text=ahk%20for%20gos",
+    "checked_at": "2026-10-24T12:17:44.908961+00:00",
+    "verdict": "request_failed",
+    "error": "'async_generator' object is not iterable"
+  },
+  {
+    "engine": "duckduckgo",
+    "query": "ahk for gos",
+    "requested_url": "https://html.duckduckgo.com/html/?q=ahk+for+gos",
+    "checked_at": "2026-10-24T12:17:44.892602+00:00",
+    "verdict": "request_failed",
+    "error": "'async_generator' object is not iterable"
+  },
+  {
+    "engine": "github",
+    "query": "ahk for gos",
+    "requested_url": "https://github.com/search?q=ahk+for+gos&type=repositories",
+    "checked_at": "2026-10-24T12:17:44.898525+00:00",
+    "verdict": "request_failed",
+    "error": "'async_generator' object is not iterable"
+  }
+]
