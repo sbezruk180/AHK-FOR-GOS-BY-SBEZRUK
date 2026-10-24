@@ -5,7 +5,7 @@
 Yandex SmartCaptcha
 Если у вас возникли проблемы, пожалуйста, воспользуйтесь формой обратной связи
 Если вам нужно автоматически задавать запросы к Поиску, используйте Yandex Search API v2
-9635292147658526940:1792844483
+9635350573038972783:1792845353
 Yandex uses cookies
 They ensure the smooth operation of all Yandex sites and services. For more information, please read our Cookie Policy
 Allow all
