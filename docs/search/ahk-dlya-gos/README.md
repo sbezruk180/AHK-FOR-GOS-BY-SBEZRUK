@@ -5,8 +5,8 @@
 | Поиск | Результат |
 | --- | --- |
 | [google](https://www.google.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81&hl=ru) | Проверка робота/блокировка; наличие в индексе не установлено |
-| [bing](https://www.bing.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81) | Результаты не удалось извлечь; вывод об индексации не сделан |
-| [yandex](https://yandex.ru/search/?text=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81) | Проверка робота/блокировка; наличие в индексе не установлено |
+| [bing](https://www.bing.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81) | Среди извлечённых результатов ссылка не найдена |
+| [yandex](https://yandex.ru/search/?text=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81) | Ошибка проверки; выдача не проверена |
 | [duckduckgo](https://html.duckduckgo.com/html/?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81) | Проверка робота/блокировка; наличие в индексе не установлено |
 | [github](https://github.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81&type=repositories) | Результаты не удалось извлечь; вывод об индексации не сделан |
 

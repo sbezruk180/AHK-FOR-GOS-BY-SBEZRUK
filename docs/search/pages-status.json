@@ -6,6 +6,8 @@
     "branch": "gh-pages",
     "path": "/"
   },
+  "build_requested": true,
+  "build_status": "queued",
   "http_status": 200,
-  "checked_at": "2026-10-24T12:35:31.209Z"
+  "checked_at": "2026-10-24T12:40:30.515Z"
 }
