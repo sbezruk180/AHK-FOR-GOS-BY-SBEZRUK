@@ -54,7 +54,9 @@ async def main(output, executable):
                     link['target_url'] = target_url(link['url'])
                 matches = [x for x in links if REPOSITORY in x['target_url'].lower()]
                 # A challenge is not evidence that the repository is absent from the index.
-                challenge = any(x in (await page.title() + '\n' + text[:3000]).lower() for x in (
+                page_title = await page.title()
+                challenge_text = (page_title + '\n' + text[:3000]).lower()
+                challenge = any(x in challenge_text for x in (
                     'captcha', 'unusual traffic', 'подтвердите, что вы не робот',
                     'проверка браузера', 'verify you are human', 'not a robot', 'anomaly.js'))
                 result.update(status=response.status if response else None, final_url=page.url,
