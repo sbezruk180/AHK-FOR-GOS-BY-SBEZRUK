@@ -3,11 +3,11 @@
     "engine": "google",
     "query": "ahk for gos",
     "requested_url": "https://www.google.com/search?q=ahk+for+gos&hl=ru",
-    "checked_at": "2026-10-24T12:35:53.086977+00:00",
+    "checked_at": "2026-10-24T12:40:35.587659+00:00",
     "visible_result_count": 0,
     "status": 200,
-    "final_url": "https://www.google.com/sorry/index?continue=https://www.google.com/search%3Fq%3Dahk%2Bfor%2Bgos%26hl%3Dru%26sei%3DKabcarqiD5uo5NoPobWT-AQ&hl=ru&q=EgQUf9ajGKrM8tYGIjCAiwHn8ZWuZ7VDnN6rNXYuURqI_XBHGQTNROTHpMJYKze2crrL-bFsOM0l-s1LHxcyAVJaAUNg6JCp8N6lgqly",
-    "title": "https://www.google.com/search?q=ahk+for+gos&hl=ru&sei=KabcarqiD5uo5NoPobWT-AQ",
+    "final_url": "https://www.google.com/sorry/index?continue=https://www.google.com/search%3Fq%3Dahk%2Bfor%2Bgos%26hl%3Dru%26sei%3DQ6fcasPsMqPY5NoPtafooA8&hl=ru&q=EgQUauckGMTO8tYGIjCv0rhNQSNzaU9X2zenQ15XRfDXaJyYUIM-YI6A7SZ_0i0zsOV-W8tgODjCpY_tth0yAVJaAUNgqvv3wKqihoUM",
+    "title": "https://www.google.com/search?q=ahk+for+gos&hl=ru&sei=Q6fcasPsMqPY5NoPtafooA8",
     "results": [],
     "repository_results": [],
     "verdict": "blocked_or_challenged"
@@ -16,81 +16,81 @@
     "engine": "bing",
     "query": "ahk for gos",
     "requested_url": "https://www.bing.com/search?q=ahk+for+gos",
-    "checked_at": "2026-10-24T12:35:53.083884+00:00",
+    "checked_at": "2026-10-24T12:40:35.606539+00:00",
     "visible_result_count": 14,
     "status": 200,
-    "final_url": "https://www.bing.com/search?q=ahk+for+gos&rdr=1&rdrig=812E8DC04B094A35AB2914EF94850523",
+    "final_url": "https://www.bing.com/search?q=ahk+for+gos&rdr=1&rdrig=5EBF34ABE9B9490897817311F9832C3C",
     "title": "ahk for gos - Поиск",
     "results": [
       {
-        "title": "Descend: Jogue e Ganhe Cripto | GAMES.GG",
-        "url": "https://www.bing.com/ck/a?!&&p=df6030453cc9e5eb4fea54c79a6d8cc928290eaf8f004d0f5c846b15e12cf72fJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=07013cdc-a381-601f-2c55-2b20a2926175&u=a1aHR0cHM6Ly9nYW1lcy5nZy9wdC1CUi9kZXNjZW5kLw&ntb=1",
-        "target_url": "https://games.gg/pt-BR/descend/"
+        "title": "Why the Trader Joe’s lawsuit against a similarly named ... - Fortune",
+        "url": "https://www.bing.com/ck/a?!&&p=3c88d52fd3c8581e4f584f67ec10eb2370df5daabf6a4038e8d49dff51f52cf5JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2ff46ae6-83eb-606f-3331-7d1a822e6104&u=a1aHR0cHM6Ly9mb3J0dW5lLmNvbS9jcnlwdG8vMjAyMy8xMC8xNC90cmFkZXItam9lcy1jcnlwdG8tZmlybS10cmFkZXItam9lLWxhd3N1aXQtaW50ZWxsZWN0dWFsLXByb3BlcnR5LXJpZ2h0cy8&ntb=1",
+        "target_url": "https://fortune.com/crypto/2023/10/14/trader-joes-crypto-firm-trader-joe-lawsuit-intellectual-property-rights/"
       },
       {
-        "title": "Descend.GG Domain Information & Lookup Data",
-        "url": "https://www.bing.com/ck/a?!&&p=c592505632d3444904511d8386b3286a94e673410056b34731c97f55de889f68JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=07013cdc-a381-601f-2c55-2b20a2926175&u=a1aHR0cHM6Ly93d3cuaXBhZGRyZXNzLmNvbS93ZWJzaXRlL2Rlc2NlbmQuZ2cv&ntb=1",
-        "target_url": "https://www.ipaddress.com/website/descend.gg/"
+        "title": "Sliced Seedy Multigrain Bread - Trader Joe's",
+        "url": "https://www.bing.com/ck/a?!&&p=34a4d437d7a213e46a5ff25faba13cfbc76bdff13298d3a3dcd631d4738c8fb0JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2ff46ae6-83eb-606f-3331-7d1a822e6104&u=a1aHR0cHM6Ly93d3cudHJhZGVyam9lcy5jb20vaG9tZS9wcm9kdWN0cy9wZHAvc2xpY2VkLXNlZWR5LW11bHRpZ3JhaW4tYnJlYWQtMDc3OTg3&ntb=1",
+        "target_url": "https://www.traderjoes.com/home/products/pdp/sliced-seedy-multigrain-bread-077987"
       },
       {
-        "title": "GG.deals - Find Video Games On Sale - Cheap Games",
-        "url": "https://www.bing.com/ck/a?!&&p=916be513e848cd9cc331650e33c75b3dc110c97dff169d67b8d0ea79b9786decJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=07013cdc-a381-601f-2c55-2b20a2926175&u=a1aHR0cHM6Ly9nZy5kZWFscy8&ntb=1",
-        "target_url": "https://gg.deals/"
+        "title": "LFJ price today, JOE to USD live price, marketcap and chart | CoinDesk",
+        "url": "https://www.bing.com/ck/a?!&&p=487c7e2179311eb1659a64d559766d1e5a2ae3894c4bc2b1e8467076f4b30db9JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2ff46ae6-83eb-606f-3331-7d1a822e6104&u=a1aHR0cHM6Ly93d3cuY29pbmRlc2suY29tL3ByaWNlL2pvZQ&ntb=1",
+        "target_url": "https://www.coindesk.com/price/joe"
       },
       {
-        "title": "Descend.gg: Новая эра приключенческих игр с элементами …",
-        "url": "https://www.bing.com/ck/a?!&&p=6427d0717869cb39c56318c91b231299c51c322a01fdd5ec500f476f2ddbbc48JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=07013cdc-a381-601f-2c55-2b20a2926175&u=a1aHR0cHM6Ly92ay5ydS93YWxsLTIwMTAyNTQyOV84NzE1&ntb=1",
-        "target_url": "https://vk.ru/wall-201025429_8715"
+        "title": "Trader Joe Crypto: What it is and How does it work?",
+        "url": "https://www.bing.com/ck/a?!&&p=ac9fe9461d0483c309fe6e16611a0bfac660650883e79965de3fbf1f3bea30bcJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2ff46ae6-83eb-606f-3331-7d1a822e6104&u=a1aHR0cHM6Ly9kYXBwZ2FtYmwuY29tL2NyeXB0by1leGNoYW5nZXMvdHJhZGVyLWpvZS1jcnlwdG8v&ntb=1",
+        "target_url": "https://dappgambl.com/crypto-exchanges/trader-joe-crypto/"
       },
       {
-        "title": "Descend on Steam",
-        "url": "https://www.bing.com/ck/a?!&&p=8e5b90ef4a41515ff5e95072d9e2683e705377b46d0f6437085d1324db1e19e5JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=07013cdc-a381-601f-2c55-2b20a2926175&u=a1aHR0cHM6Ly9zdG9yZS5zdGVhbXBvd2VyZWQuY29tL2FwcC80NzE0MjkwL0Rlc2NlbmQv&ntb=1",
-        "target_url": "https://store.steampowered.com/app/4714290/Descend/"
+        "title": "Careers - Trader Joe's",
+        "url": "https://www.bing.com/ck/a?!&&p=c7d349020bf46d5310fa2c2c7f7c0dfa19e95766cf828e8dee3013ce6bca0827JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2ff46ae6-83eb-606f-3331-7d1a822e6104&u=a1aHR0cHM6Ly93d3cudHJhZGVyam9lcy5jb20vaG9tZS9jYXJlZXJzLmh0bWw&ntb=1",
+        "target_url": "https://www.traderjoes.com/home/careers.html"
       },
       {
-        "title": "The First Descendant Player Lookup, Builds, Guides, & Tools | Descendant.gg",
-        "url": "https://www.bing.com/ck/a?!&&p=46c85849012501e35b36438dd713be44974e89e99c2fbc9f95afc8d9c1cc96daJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=07013cdc-a381-601f-2c55-2b20a2926175&u=a1aHR0cHM6Ly9kZXNjZW5kYW50LmdnLw&ntb=1",
-        "target_url": "https://descendant.gg/"
+        "title": "Trader Joe JOE Live Price, Charts, Ratings & News | TokenInsight",
+        "url": "https://www.bing.com/ck/a?!&&p=c34f1a8c60d8efc34d502c4afb1bb950fd328efe67d7379297b8214a2393fbfeJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2ff46ae6-83eb-606f-3331-7d1a822e6104&u=a1aHR0cHM6Ly90b2tlbmluc2lnaHQuY29tL2VuL2NvaW5zL2pvZS9vdmVydmlldw&ntb=1",
+        "target_url": "https://tokeninsight.com/en/coins/joe/overview"
       },
       {
-        "title": "Descend 遊戲 | 暢玩並賺取 Descend | GAMES.GG",
-        "url": "https://www.bing.com/ck/a?!&&p=b7003f9e72f637039cc0486b28a64be8a2d148f299fd1c3c018b2c623cfae933JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=07013cdc-a381-601f-2c55-2b20a2926175&u=a1aHR0cHM6Ly9nYW1lcy5nZy96aC1IYW50L2Rlc2NlbmQv&ntb=1",
-        "target_url": "https://games.gg/zh-Hant/descend/"
+        "title": "What Is Trader Joe (JOE)? Liquidity Book DEX - CoinMarketCap",
+        "url": "https://www.bing.com/ck/a?!&&p=803156d15a0199991a7f3249cd0080d58e53348c8b38f6c8049f5056ca36617fJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2ff46ae6-83eb-606f-3331-7d1a822e6104&u=a1aHR0cHM6Ly9jb2lubWFya2V0Y2FwLmNvbS9hY2FkZW15L2FydGljbGUvd2hhdC1pcy10cmFkZXItam9lLWxpcXVpZGl0eS1ib29rLWRleA&ntb=1",
+        "target_url": "https://coinmarketcap.com/academy/article/what-is-trader-joe-liquidity-book-dex"
       },
       {
-        "title": "As We Descend - jestr.gg",
-        "url": "https://www.bing.com/ck/a?!&&p=6298b2f7f3954b977aee8dc44f9947356d1b233ff02a5c40055df0b3da872eb1JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=07013cdc-a381-601f-2c55-2b20a2926175&u=a1aHR0cHM6Ly93d3cuamVzdHIuZ2cvZ2FtZXMvYXMtd2UtZGVzY2VuZA&ntb=1",
-        "target_url": "https://www.jestr.gg/games/as-we-descend"
+        "title": "18 Things To Know Before Shopping at Trader Joe’s | Kiplinger",
+        "url": "https://www.bing.com/ck/a?!&&p=233d7da36591a87184c1e841f0b8fd10eb1aec68010b70dce4754f3863687888JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2ff46ae6-83eb-606f-3331-7d1a822e6104&u=a1aHR0cHM6Ly93d3cua2lwbGluZ2VyLmNvbS9wZXJzb25hbC1maW5hbmNlL2hvdy10by1zYXZlLW1vbmV5L2ZhbWlseS1zYXZpbmdzLzYwMTM0Ni93aGF0LXlvdS1zaG91bGQta25vdy1iZWZvcmUtc2hvcHBpbmctYXQtdHJhZGVyLWpvZXM&ntb=1",
+        "target_url": "https://www.kiplinger.com/personal-finance/how-to-save-money/family-savings/601346/what-you-should-know-before-shopping-at-trader-joes"
       },
       {
-        "title": "Update 9 - As We Descend Wiki",
-        "url": "https://www.bing.com/ck/a?!&&p=af55ee9036c6bd0014e20bab3523419ebd6d3d3a61360ea2b308c044c4fa8569JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=07013cdc-a381-601f-2c55-2b20a2926175&u=a1aHR0cHM6Ly9hc3dlZGVzY2VuZC53aWtpLmdnL3dpa2kvVXBkYXRlXzk&ntb=1",
-        "target_url": "https://aswedescend.wiki.gg/wiki/Update_9"
+        "title": "Trader Joe Lend community | AlphaGrowth",
+        "url": "https://www.bing.com/ck/a?!&&p=05a93200c33493969bcd58b4546aad388a2d2a7bca4f4091a085a095ae47ee6dJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2ff46ae6-83eb-606f-3331-7d1a822e6104&u=a1aHR0cHM6Ly9hbHBoYWdyb3d0aC5pby90cmFkZXItam9lLWxlbmQvY29tbXVuaXR5&ntb=1",
+        "target_url": "https://alphagrowth.io/trader-joe-lend/community"
       },
       {
-        "title": "Descend.gg (2023) - Grouvee",
-        "url": "https://www.bing.com/ck/a?!&&p=75cca3e669147cc5ad57c6cd2cbc7b955adab3c12d778bd67cf527efdfa7bc43JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=07013cdc-a381-601f-2c55-2b20a2926175&u=a1aHR0cHM6Ly93d3cuZ3JvdXZlZS5jb20vZ2FtZXMvMzA5NDg4LWRlc2NlbmRnZy8&ntb=1",
-        "target_url": "https://www.grouvee.com/games/309488-descendgg/"
+        "title": "TOP 10 BEST Trader Joe Lend in Houston, TX, United States - Yelp",
+        "url": "https://www.bing.com/ck/a?!&&p=787c6f9bd46702a234e60a127657b8a360128d87d004be7bb23d08316184c3d9JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2ff46ae6-83eb-606f-3331-7d1a822e6104&u=a1aHR0cHM6Ly93d3cueWVscC5jYS9zZWFyY2g_ZmluZF9kZXNjPVRyYWRlcitKb2UrTGVuZCZmaW5kX2xvYz1Ib3VzdG9uJTJDK1RY&ntb=1",
+        "target_url": "https://www.yelp.ca/search?find_desc=Trader+Joe+Lend&find_loc=Houston%2C+TX"
       },
       {
-        "title": "Descend Crypto Game: کھیلیں اور کمائیں | GAMES.GG",
-        "url": "https://www.bing.com/ck/a?!&&p=2ccc654b46b69a1f15c31935d1bcac797f4fac6d6713addbbb5183b98c3c860dJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=07013cdc-a381-601f-2c55-2b20a2926175&u=a1aHR0cHM6Ly9nYW1lcy5nZy91ci9kZXNjZW5kLw&ntb=1",
-        "target_url": "https://games.gg/ur/descend/"
+        "title": "Detailed Trader Joe Crypto app Review by DeFi Teller",
+        "url": "https://www.bing.com/ck/a?!&&p=4a0feb8488ca16d18fe146fb3f80b852f49c1983e100e3aac17f21db440c7183JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2ff46ae6-83eb-606f-3331-7d1a822e6104&u=a1aHR0cHM6Ly9kZWZpdGVsbGVyLmNvbS90cmFkZXItam9l&ntb=1",
+        "target_url": "https://defiteller.com/trader-joe"
       },
       {
-        "title": "As We Descend - player.gg",
-        "url": "https://www.bing.com/ck/a?!&&p=ee80eec4e75ac124b75b987ad3d30724e2024ab242d6fb78122c4e1e887b65c6JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=07013cdc-a381-601f-2c55-2b20a2926175&u=a1aHR0cHM6Ly9wbGF5ZXIuZ2cvZXhwbG9yZS9nYW1lcy8yOTQ1MDItYXMtd2UtZGVzY2VuZA&ntb=1",
-        "target_url": "https://player.gg/explore/games/294502-as-we-descend"
+        "title": "Trader Joe, Avalanche’s first DEX: A Complete guide - Medium",
+        "url": "https://www.bing.com/ck/a?!&&p=47897176255dc4304e53e07cb8abdaed3cff516b7ce5387a0126563493a57e07JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2ff46ae6-83eb-606f-3331-7d1a822e6104&u=a1aHR0cHM6Ly9tZWRpdW0uY29tL2NvaW5tb25rcy90cmFkZXItam9lLWd1aWRlLTIzYTYyZThlMzRmOQ&ntb=1",
+        "target_url": "https://medium.com/coinmonks/trader-joe-guide-23a62e8e34f9"
       },
       {
-        "title": "Descend.gg - Kotaku",
-        "url": "https://www.bing.com/ck/a?!&&p=cd70fa20f275119426f9810bcc171ca2be209df9140bd105545a8e1dc8c605bfJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=07013cdc-a381-601f-2c55-2b20a2926175&u=a1aHR0cHM6Ly9rb3Rha3UuY29tL2dhbWVzL2Rlc2NlbmQtZG90LWdnLS0x&ntb=1",
-        "target_url": "https://kotaku.com/games/descend-dot-gg--1"
+        "title": "FAQs - Trader Joe's",
+        "url": "https://www.bing.com/ck/a?!&&p=b2b773f39805607228b398e021402581632584c1b099f7dbe35b9720f3a56f1aJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2ff46ae6-83eb-606f-3331-7d1a822e6104&u=a1aHR0cHM6Ly93d3cudHJhZGVyam9lcy5jb20vaG9tZS9GQVEuaHRtbA&ntb=1",
+        "target_url": "https://www.traderjoes.com/home/FAQ.html"
       },
       {
-        "title": "Buy cheap As We Descend Steam Key ️ Best Price - GG.deals",
-        "url": "https://www.bing.com/ck/a?!&&p=4605ff059e5e688b22e003702010447c0f91a4c0a11fafb71feecc7f34a91176JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=07013cdc-a381-601f-2c55-2b20a2926175&u=a1aHR0cHM6Ly9nZy5kZWFscy9nYW1lL2FzLXdlLWRlc2NlbmQv&ntb=1",
-        "target_url": "https://gg.deals/game/as-we-descend/"
+        "title": "0 Trader Joe Lend jobs in United States - LinkedIn",
+        "url": "https://www.bing.com/ck/a?!&&p=26ebd80c506647dcb9caac9ecd226d0f19d1b72ee374be6e3d36cde939fd048cJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2ff46ae6-83eb-606f-3331-7d1a822e6104&u=a1aHR0cHM6Ly93d3cubGlua2VkaW4uY29tL2pvYnMvdHJhZGVyLWpvZS1sZW5kLWpvYnM&ntb=1",
+        "target_url": "https://www.linkedin.com/jobs/trader-joe-lend-jobs"
       }
     ],
     "repository_results": [],
@@ -100,10 +100,10 @@
     "engine": "yandex",
     "query": "ahk for gos",
     "requested_url": "https://yandex.ru/search/?text=ahk+for+gos",
-    "checked_at": "2026-10-24T12:35:53.082250+00:00",
+    "checked_at": "2026-10-24T12:40:35.608354+00:00",
     "visible_result_count": 0,
     "status": 200,
-    "final_url": "https://yandex.ru/showcaptcha?cc=1&form-fb-hint=2.1&mt=69F05431CD12D0AC0326B97F50B3CEE7168707E6C796ED49AA76259D6C84BDBE20899DCFC089F453F18DA178944FFCDAA73077E84CBA6EF582AFE58A0E4E7639921EEBE52B6AC2A9D7B81A0E2935B1834E627799DD87069B1BDDF77A2C02E3716AF5781E3554501678B4A5E3424CE7733A6409212C29DD4F26B6255E0B64FCAF914D63DC84BB748D84&retpath=aHR0cHM6Ly95YW5kZXgucnUvc2VhcmNoP3RleHQ9YWhrK2Zvcitnb3M%2C_e90fef0939d6211add1133017df5c51b&t=2%252F1792845353%252F8dc4dc897f89cb556bfe874bca9cdfca&u=9635350573038972783&s=bc3b27f264177cebdc28df4c29bdbf5f",
+    "final_url": "https://yandex.ru/showcaptcha?cc=1&form-fb-hint=2.1&mt=125E9D262A0B49E25CFADD6BD4A5D0BA0AC887D59497446138B6198CF42E1E17242E9F5C239F0C22F8FE77E8BE9E8C7C3E059B49A7AD45BF6FC7616B82818EEF1569E2D46D5DAC6EA5469704516AD89A7B64DB9812DDA36BB86813126A4634579E7B992F614A99FA4F11EB4830DAB467AA3D1E9D1324EAC8A611DAFDF0CFAA0F949E35FC7DB4F5B9&retpath=aHR0cHM6Ly95YW5kZXgucnUvc2VhcmNoP3RleHQ9YWhrK2Zvcitnb3M%2C_e90fef0939d6211add1133017df5c51b&t=2%252F1792845636%252F5fe7a833c2d284914bbbbcd0bb7616ff&u=9635369545179017081&s=17907eedef3c941f7c35305fba693f4b",
     "title": "Вы не робот?",
     "results": [],
     "repository_results": [],
@@ -113,7 +113,7 @@
     "engine": "duckduckgo",
     "query": "ahk for gos",
     "requested_url": "https://html.duckduckgo.com/html/?q=ahk+for+gos",
-    "checked_at": "2026-10-24T12:35:53.080036+00:00",
+    "checked_at": "2026-10-24T12:40:35.625483+00:00",
     "visible_result_count": 0,
     "status": 202,
     "final_url": "https://html.duckduckgo.com/html/?q=ahk+for+gos",
@@ -126,7 +126,7 @@
     "engine": "github",
     "query": "ahk for gos",
     "requested_url": "https://github.com/search?q=ahk+for+gos&type=repositories",
-    "checked_at": "2026-10-24T12:35:53.089772+00:00",
+    "checked_at": "2026-10-24T12:40:35.681928+00:00",
     "visible_result_count": 1,
     "status": 200,
     "final_url": "https://github.com/search?q=ahk+for+gos&type=repositories",

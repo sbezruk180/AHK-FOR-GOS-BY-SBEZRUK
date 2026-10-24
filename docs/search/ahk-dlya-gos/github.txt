@@ -52,7 +52,7 @@ Public
 Private
 Advanced search
 1 result
- (78 ms)
+ (70 ms)
 1 result
 Sort by: Best match
 xantarose/ahk-for-amazing

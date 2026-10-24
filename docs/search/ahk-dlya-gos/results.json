@@ -3,11 +3,11 @@
     "engine": "google",
     "query": "ахк для гос",
     "requested_url": "https://www.google.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81&hl=ru",
-    "checked_at": "2026-10-24T12:35:59.026835+00:00",
+    "checked_at": "2026-10-24T12:40:41.510863+00:00",
     "visible_result_count": 0,
     "status": 200,
-    "final_url": "https://www.google.com/sorry/index?continue=https://www.google.com/search%3Fq%3D%25D0%25B0%25D1%2585%25D0%25BA%2B%25D0%25B4%25D0%25BB%25D1%258F%2B%25D0%25B3%25D0%25BE%25D1%2581%26hl%3Dru%26sei%3DL6bcaqb4CIez5NoP4cr_4As&hl=ru&q=EgQUf9ajGK_M8tYGIjCjJ_QnwZE1uBkbuAFn03LYctA4exBluuZ_haUycNkQne1Z3j_GHs29Gf1kdvJ-yFgyAVJaAUNg3vjwn5yy1OrPAQ",
-    "title": "https://www.google.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81&hl=ru&sei=L6bcaqb4CIez5NoP4cr_4As",
+    "final_url": "https://www.google.com/sorry/index?continue=https://www.google.com/search%3Fq%3D%25D0%25B0%25D1%2585%25D0%25BA%2B%25D0%25B4%25D0%25BB%25D1%258F%2B%25D0%25B3%25D0%25BE%25D1%2581%26hl%3Dru%26sei%3DSafcaui6Ldij5NoP0Oq88As&hl=ru&q=EgQUauckGMrO8tYGIjCBGMfAkZQnxKVivrMwdqIM4Lv1U6rQEPjQPh_tHaQBRzXZybDSOzEleY7TPoTa-sMyAVJaAUNglfbXrZrivtUp",
+    "title": "https://www.google.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81&hl=ru&sei=Safcaui6Ldij5NoP0Oq88As",
     "results": [],
     "repository_results": [],
     "verdict": "blocked_or_challenged"
@@ -16,33 +16,99 @@
     "engine": "bing",
     "query": "ахк для гос",
     "requested_url": "https://www.bing.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81",
-    "checked_at": "2026-10-24T12:35:59.041950+00:00",
-    "visible_result_count": 0,
+    "checked_at": "2026-10-24T12:40:41.522550+00:00",
+    "visible_result_count": 14,
     "status": 200,
-    "final_url": "https://www.bing.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81&rdr=1&rdrig=6B13BD8A4D1C4EE6B534DE44BB8E456E",
+    "final_url": "https://www.bing.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81&rdr=1&rdrig=DF98776B9C1649DBB6CF73AA1A1B7A72",
     "title": "ахк для гос - Поиск",
-    "results": [],
+    "results": [
+      {
+        "title": "What is StakeDAO? Definition, How it Works, SDT Token & Future",
+        "url": "https://www.bing.com/ck/a?!&&p=e314a3b3260eed8e3db86c22d913bb273984a7bf1dbf4a222a04ae866da579f8JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=18e3d1f3-cc04-6250-3a1f-c60fcd996341&u=a1aHR0cHM6Ly93d3cudGVjaG9wZWRpYS5jb20vZGVmaW5pdGlvbi9zdGFrZWRhby1zdGQ&ntb=1",
+        "target_url": "https://www.techopedia.com/definition/stakedao-std"
+      },
+      {
+        "title": "Stake DAO (SDT) Price Today, News & Live Chart - Forbes",
+        "url": "https://www.bing.com/ck/a?!&&p=445950c54f469fc23aa6c1a54094e77a21839952368eb428920fc6fa5eaa20e1JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=18e3d1f3-cc04-6250-3a1f-c60fcd996341&u=a1aHR0cHM6Ly93d3cuZm9yYmVzLmNvbS9kaWdpdGFsLWFzc2V0cy9hc3NldHMvc3Rha2UtZGFvLXNkdC8&ntb=1",
+        "target_url": "https://www.forbes.com/digital-assets/assets/stake-dao-sdt/"
+      },
+      {
+        "title": "JustLend DAO - Supply, Borrow, and Stake on TRON",
+        "url": "https://www.bing.com/ck/a?!&&p=faedca0340a49043ae4043c0d733aa2e541bc6f6de1e692a09c0f1ded49cafa9JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=18e3d1f3-cc04-6250-3a1f-c60fcd996341&u=a1aHR0cHM6Ly93d3cuanVzdGxlbmQubmV0Lw&ntb=1",
+        "target_url": "https://www.justlend.net/"
+      },
+      {
+        "title": "Stake DAO Price, SDT to USD, Research, News & Fundraising",
+        "url": "https://www.bing.com/ck/a?!&&p=b2e8b44b452701275f776599bb4ccd84ce60fe21398b9b22d77e3dc8cdf2336aJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=18e3d1f3-cc04-6250-3a1f-c60fcd996341&u=a1aHR0cHM6Ly9tZXNzYXJpLmlvL3Byb2plY3Qvc3Rha2UtZGFv&ntb=1",
+        "target_url": "https://messari.io/project/stake-dao"
+      },
+      {
+        "title": "Stake DAO (SDT) Live Tokenomics, Charts, Ratings & News",
+        "url": "https://www.bing.com/ck/a?!&&p=a6b2c562c3161a831ddb518b62f055bef060c1a1d69e84f1919e4c6035937bb9JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=18e3d1f3-cc04-6250-3a1f-c60fcd996341&u=a1aHR0cHM6Ly90b2tlbmluc2lnaHQuY29tL2VuL2NvaW5zL3N0YWtlZGFvL3Rva2Vub21pY3M&ntb=1",
+        "target_url": "https://tokeninsight.com/en/coins/stakedao/tokenomics"
+      },
+      {
+        "title": "Stake DAO Yield Protocol TVL, Revenue, & Fees - DefiLlama",
+        "url": "https://www.bing.com/ck/a?!&&p=eb7cd28d686c4db8630587b929f26e02a6cab23b19b470ccf4a85ba29d9c4bb1JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=18e3d1f3-cc04-6250-3a1f-c60fcd996341&u=a1aHR0cHM6Ly9kZWZpbGxhbWEuY29tL3Byb3RvY29sL3N0YWtlLWRhby15aWVsZA&ntb=1",
+        "target_url": "https://defillama.com/protocol/stake-dao-yield"
+      },
+      {
+        "title": "Курс Stake DAO: График курса SDT/USD ... - CoinGecko",
+        "url": "https://www.bing.com/ck/a?!&&p=d2aa93648e451b2af836f691b3bd21d2d8e29612af842973ce2aac959e152ee9JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=18e3d1f3-cc04-6250-3a1f-c60fcd996341&u=a1aHR0cHM6Ly93d3cuY29pbmdlY2tvLmNvbS9ydS8lRDAlOUElRDElODAlRDAlQjglRDAlQkYlRDElODIlRDAlQkUlRDAlQjIlRDAlQjAlRDAlQkIlRDElOEUlRDElODIlRDElOEIvc3Rha2UtZGFv&ntb=1",
+        "target_url": "https://www.coingecko.com/ru/%D0%9A%D1%80%D0%B8%D0%BF%D1%82%D0%BE%D0%B2%D0%B0%D0%BB%D1%8E%D1%82%D1%8B/stake-dao"
+      },
+      {
+        "title": "Stake DAO | Bounty manager",
+        "url": "https://www.bing.com/ck/a?!&&p=7b3787ace907656654fd7292a00ca570a94083d14082d5651e0bf49f4767a64aJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=18e3d1f3-cc04-6250-3a1f-c60fcd996341&u=a1aHR0cHM6Ly9ib3VudHktbWFuYWdlci5zdGFrZWRhby5vcmcv&ntb=1",
+        "target_url": "https://bounty-manager.stakedao.org/"
+      },
+      {
+        "title": "Stake DAO [SDT] Live Prices & Chart - BitScreener",
+        "url": "https://www.bing.com/ck/a?!&&p=3dc877a7a53fd272647c88f2e78b42304dc7a267ab8c80255e61ea5555f73613JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=18e3d1f3-cc04-6250-3a1f-c60fcd996341&u=a1aHR0cHM6Ly9iaXRzY3JlZW5lci5jb20vY29pbnMvc3Rha2UtZGFv&ntb=1",
+        "target_url": "https://bitscreener.com/coins/stake-dao"
+      },
+      {
+        "title": "Stake me DAO (@StakeDao) / Posts / X",
+        "url": "https://www.bing.com/ck/a?!&&p=f45c9eea6524787c1f8aa338e8856bc4beeeec0e5de8533249aef1ff8743765eJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=18e3d1f3-cc04-6250-3a1f-c60fcd996341&u=a1aHR0cHM6Ly94LmNvbS9TdGFrZURBTw&ntb=1",
+        "target_url": "https://x.com/StakeDAO"
+      },
+      {
+        "title": "Stake with Lido | Lido",
+        "url": "https://www.bing.com/ck/a?!&&p=430fe9bfb4cf4ec06f17c0905216542835591544c52087c9fe23998c2f8b571fJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=18e3d1f3-cc04-6250-3a1f-c60fcd996341&u=a1aHR0cHM6Ly9zdGFrZS5saWRvLmZpLw&ntb=1",
+        "target_url": "https://stake.lido.fi/"
+      },
+      {
+        "title": "Arbitrum-based StakeDAO contract hit by 5.4T vsdCRV exploit",
+        "url": "https://www.bing.com/ck/a?!&&p=0b58b1081f9b816cc094af22b51b0e9119f2181308a903af755149e58a8d8101JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=18e3d1f3-cc04-6250-3a1f-c60fcd996341&u=a1aHR0cHM6Ly9pbnZlenouY29tL25ld3MvMjAyNi8wNS8yNy9hcmJpdHJ1bS1iYXNlZC1zdGFrZWRhby1jb250cmFjdC1oaXQtYnktNS00dC12c2RjcnYtZXhwbG9pdC8&ntb=1",
+        "target_url": "https://invezz.com/news/2026/05/27/arbitrum-based-stakedao-contract-hit-by-5-4t-vsdcrv-exploit/"
+      },
+      {
+        "title": "Stake: Online Casino & Sports Betting - Play & Bet Online",
+        "url": "https://www.bing.com/ck/a?!&&p=eaa48dbbd9861fe1be88cadcfdb550a7de6affda81f5c8a44b10ba52d005c692JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=18e3d1f3-cc04-6250-3a1f-c60fcd996341&u=a1aHR0cHM6Ly9zdGFrZS5jb20v&ntb=1",
+        "target_url": "https://stake.com/"
+      },
+      {
+        "title": "stakedao (sdt.html) live coin price, charts, markets & liquidity",
+        "url": "https://www.bing.com/ck/a?!&&p=8a49f2acad7ae9a262b98c53df4ed1c7124c81a4a1a257913a2d59946770551bJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=18e3d1f3-cc04-6250-3a1f-c60fcd996341&u=a1aHR0cHM6Ly93d3cubGl2ZWNvaW53YXRjaC5jb20vcHJpY2Uvc3Rha2VkYW8tc2R0Lmh0bWw&ntb=1",
+        "target_url": "https://www.livecoinwatch.com/price/stakedao-sdt.html"
+      }
+    ],
     "repository_results": [],
-    "verdict": "no_results_extracted"
+    "verdict": "not_found_in_visible_results"
   },
   {
     "engine": "yandex",
     "query": "ахк для гос",
     "requested_url": "https://yandex.ru/search/?text=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81",
-    "checked_at": "2026-10-24T12:35:59.049781+00:00",
-    "visible_result_count": 0,
-    "status": 200,
-    "final_url": "https://yandex.ru/showcaptcha?cc=1&form-fb-hint=2.1&mt=A9C9E8EDEE0E1A62CAC3CD1F0C39797985EE159276CF0A08FC9E43D6F16218594D9832B34C96EEF2E8033FCFAF41916878AA749A733B98358BF13BF7CFA33169E5E1E6E62C9CBFD0E60E0855F71B8E94CB6B44D5C12F0891A1ADBCEC4D3ADF53E186E6DC853190843D67ED52460CC0D0967F65EBF9AD09AC8B089EA2612642259FB54C79B9025AC4AE&retpath=aHR0cHM6Ly95YW5kZXgucnUvc2VhcmNoP3RleHQ9JUQwJUIwJUQxJTg1JUQwJUJBKyVEMCVCNCVEMCVCQiVEMSU4RislRDAlQjMlRDAlQkUlRDElODE%2C_5289b4e9a7cd882d862932ab5ab0c090&t=2%252F1792845359%252F92dd53e0d2bc7fed2d3c5805d26e5196&u=9635350981664845736&s=23bd376a7700200604b67540d61c7033",
-    "title": "Вы не робот?",
-    "results": [],
-    "repository_results": [],
-    "verdict": "blocked_or_challenged"
+    "checked_at": "2026-10-24T12:40:41.538860+00:00",
+    "verdict": "request_failed",
+    "error": "Page.goto: Timeout 35000ms exceeded.\nCall log:\n  - navigating to \"https://yandex.ru/search/?text=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81\", waiting until \"domcontentloaded\"\n"
   },
   {
     "engine": "duckduckgo",
     "query": "ахк для гос",
     "requested_url": "https://html.duckduckgo.com/html/?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81",
-    "checked_at": "2026-10-24T12:35:59.075945+00:00",
+    "checked_at": "2026-10-24T12:40:41.571629+00:00",
     "visible_result_count": 0,
     "status": 202,
     "final_url": "https://html.duckduckgo.com/html/?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81",
@@ -55,7 +121,7 @@
     "engine": "github",
     "query": "ахк для гос",
     "requested_url": "https://github.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81&type=repositories",
-    "checked_at": "2026-10-24T12:35:59.090111+00:00",
+    "checked_at": "2026-10-24T12:40:41.617883+00:00",
     "visible_result_count": 0,
     "status": 200,
     "final_url": "https://github.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81&type=repositories",
