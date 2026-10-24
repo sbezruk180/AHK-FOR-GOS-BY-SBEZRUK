@@ -16,14 +16,9 @@ LOCK=json.loads((ROOT/'tools/build/toolchain.lock.json').read_text())
 def digest(b):return hashlib.sha256(b).hexdigest()
 def icon(path):
     images=[]
-    points=[(.50,.16),(.57,.41),(.84,.50),(.57,.59),(.50,.84),(.43,.59),(.16,.50),(.43,.41)]
     def inside(x,y):
-        yes=False;j=len(points)-1
-        for i,(xi,yi) in enumerate(points):
-            xj,yj=points[j]
-            if (yi>y)!=(yj>y) and x<(xj-xi)*(y-yi)/(yj-yi)+xi:yes=not yes
-            j=i
-        return yes
+        # A restrained G monogram, consistent with the GUI badge.
+        return (.26<=x<=.37 and .26<=y<=.74) or (.26<=x<=.72 and (.26<=y<=.37 or .63<=y<=.74)) or (.61<=x<=.73 and .49<=y<=.74) or (.49<=x<=.73 and .47<=y<=.57)
     for n in [16,32,48,64,128]:
         pixels=bytearray()
         for y in range(n-1,-1,-1):
@@ -78,8 +73,8 @@ def compile_program(args,work,allowed,uninstall,payload=None):
     resource+=f'105 RCDATA "{(work/"legacy-hashes.txt").as_posix()}"\n'
     if payload:resource+=f'101 RCDATA "{payload.as_posix()}"\n'
     resource+='''1 VERSIONINFO
-FILEVERSION 1,1,0,0
-PRODUCTVERSION 1,1,0,0
+FILEVERSION 1,2,0,0
+PRODUCTVERSION 1,2,0,0
 FILEOS 0x40004L
 FILETYPE 1
 BEGIN
@@ -90,7 +85,7 @@ BEGIN
    VALUE "CompanyName", "SBezruk180\\0"
    VALUE "ProductName", "AHK FOR GOS Setup\\0"
    VALUE "FileDescription", "AHK FOR GOS graphical setup and removal\\0"
-   VALUE "FileVersion", "1.1.0.0\\0"
+   VALUE "FileVersion", "1.2.0.0\\0"
   END
  END
  BLOCK "VarFileInfo"
@@ -100,7 +95,7 @@ BEGIN
 END
 '''
     rc.write_text(resource,encoding="utf-8")
-    sources=[ROOT/'installer/native'/n for n in ['main.cpp','core.cpp','ui.cpp','selftest.cpp']]
+    sources=[ROOT/'installer/native'/n for n in ['main.cpp','core.cpp','archive.cpp','ui.cpp','selftest.cpp']]
     output=Path(args.output).resolve()/('AHK_FOR_GOS_Uninstall.exe' if uninstall else 'AHK_FOR_GOS_Setup.exe')
     if args.cxx:
         subprocess.run([args.windres or 'x86_64-w64-mingw32-windres','--input-format=rc',str(rc),str(obj)],check=True)

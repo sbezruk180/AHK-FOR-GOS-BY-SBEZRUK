@@ -20,9 +20,9 @@ static HWND window = nullptr, pathEdit = nullptr, confirmEdit = nullptr,
             fileList = nullptr;
 static float scale = 1;
 static ULONG_PTR graphicsToken;
-static int page = 0, returnPage = 0, choice = Removing ? 3 : 1;
+static int page = 0, returnPage = 0, choice = Removing ? 3 : 2;
 static bool desktopLink = true, menuLink = true, readGuide = false, ack = false,
-            bulk = false, preview = false;
+            bulk = false, preview = false, installUninstaller = true;
 static std::wstring rootText, statusText, reportFile;
 static std::atomic<bool> cancelled(false), working(false);
 static std::thread worker;
@@ -53,6 +53,7 @@ struct Button {
   int kind = 0;
   bool selected = false;
   float hover = 0;
+  unsigned paints = 0;
 };
 static std::vector<std::unique_ptr<Button>> buttons;
 static int S(float v) { return (int)std::lround(v * scale); }
@@ -162,7 +163,7 @@ static void PaintButton(Button &b, DRAWITEMSTRUCT *d) {
     Text(g, b.detail, 48, w < 400 ? 72.f : 48.f, w - 70,
          h - (w < 400 ? 76.f : 56.f), 13.5f, muted);
     if (!b.tag.empty())
-      Text(g, b.tag, w - 112, w < 400 ? 14.f : 19.f, 90, 20, 10,
+      Text(g, b.tag, w - 142, w < 400 ? 14.f : 19.f, 120, 20, 10,
            b.selected ? purple : muted, true, StringAlignmentFar);
   } else if (b.kind == 3) {
     SolidBrush fill(Mix(panel, card, b.hover));
@@ -197,6 +198,93 @@ static Button *FindButton(int id) {
   return nullptr;
 }
 static void Animate() { SetTimer(window, 1, 16, nullptr); }
+static LRESULT CALLBACK ButtonProc(HWND h, UINT message, WPARAM w, LPARAM l) {
+  auto button = (Button *)GetWindowLongPtrW(h, GWLP_USERDATA);
+  if (message == WM_NCCREATE) {
+    button = (Button *)((CREATESTRUCTW *)l)->lpCreateParams;
+    SetWindowLongPtrW(h, GWLP_USERDATA, (LONG_PTR)button);
+  }
+  if (!button)
+    return DefWindowProcW(h, message, w, l);
+  auto activate = [&] {
+    if (IsWindowEnabled(h))
+      SendMessageW(GetParent(h), WM_COMMAND, MAKEWPARAM(button->id, BN_CLICKED),
+                   (LPARAM)h);
+  };
+  switch (message) {
+  case WM_ERASEBKGND:
+    return 1;
+  case WM_PAINT: {
+    PAINTSTRUCT ps;
+    HDC dc = BeginPaint(h, &ps);
+    RECT rect;
+    GetClientRect(h, &rect);
+    HDC mem = CreateCompatibleDC(dc);
+    HBITMAP bitmap = CreateCompatibleBitmap(dc, rect.right, rect.bottom);
+    auto old = SelectObject(mem, bitmap);
+    HBRUSH background = CreateSolidBrush(RGB(13, 15, 24));
+    FillRect(mem, &rect, background);
+    DeleteObject(background);
+    DRAWITEMSTRUCT item{};
+    item.hDC = mem;
+    item.itemState = GetFocus() == h ? ODS_FOCUS : 0;
+    PaintButton(*button, &item);
+    ++button->paints;
+    BitBlt(dc, 0, 0, rect.right, rect.bottom, mem, 0, 0, SRCCOPY);
+    SelectObject(mem, old);
+    DeleteObject(bitmap);
+    DeleteDC(mem);
+    EndPaint(h, &ps);
+    return 0;
+  }
+  case WM_MOUSEMOVE: {
+    TRACKMOUSEEVENT track{sizeof(track), TME_LEAVE, h, 0};
+    TrackMouseEvent(&track);
+    Animate();
+    return 0;
+  }
+  case WM_MOUSELEAVE:
+    Animate();
+    return 0;
+  case WM_LBUTTONDOWN:
+    if (IsWindowEnabled(h)) {
+      SetFocus(h);
+      SetCapture(h);
+      InvalidateRect(h, nullptr, FALSE);
+    }
+    return 0;
+  case WM_LBUTTONUP: {
+    bool captured = GetCapture() == h;
+    if (captured)
+      ReleaseCapture();
+    POINT point{GET_X_LPARAM(l), GET_Y_LPARAM(l)};
+    RECT rect;
+    GetClientRect(h, &rect);
+    if (captured && PtInRect(&rect, point))
+      activate();
+    return 0;
+  }
+  case WM_GETDLGCODE:
+    return DLGC_BUTTON |
+           ((w == VK_SPACE || w == VK_RETURN) ? DLGC_WANTMESSAGE : 0);
+  case WM_KEYDOWN:
+    if ((w == VK_SPACE || w == VK_RETURN) && !(l & (1L << 30)))
+      activate();
+    return 0;
+  case BM_CLICK:
+    activate();
+    return 0;
+  case WM_SETCURSOR:
+    SetCursor(LoadCursorW(nullptr, IsWindowEnabled(h) ? IDC_HAND : IDC_ARROW));
+    return TRUE;
+  case WM_SETFOCUS:
+  case WM_KILLFOCUS:
+  case WM_ENABLE:
+    InvalidateRect(h, nullptr, FALSE);
+    return 0;
+  }
+  return DefWindowProcW(h, message, w, l);
+}
 static void AddButton(int id, float x, float y, float w, float h,
                       const std::wstring &title, int kind = 0,
                       const std::wstring &detail = L"", bool selected = false,
@@ -209,11 +297,14 @@ static void AddButton(int id, float x, float y, float w, float h,
   b->tag = tag;
   b->selected = selected;
   b->kind = kind;
-  b->h = CreateWindowExW(0, L"BUTTON", title.c_str(),
-                         WS_CHILD | WS_VISIBLE | WS_TABSTOP | BS_OWNERDRAW,
-                         S(x), S(y), S(w), S(h), window, (HMENU)(INT_PTR)id,
-                         GetModuleHandleW(nullptr), nullptr);
+  b->h =
+      CreateWindowExW(0, L"AHKGOS.Button", title.c_str(), WS_CHILD | WS_TABSTOP,
+                      S(x), S(y), S(w), S(h), window, (HMENU)(INT_PTR)id,
+                      GetModuleHandleW(nullptr), b.get());
+  HWND handle = b->h;
   buttons.push_back(std::move(b));
+  ShowWindow(handle, SW_SHOW);
+  InvalidateRect(handle, nullptr, FALSE);
 }
 static std::wstring EditText(HWND h) {
   int n = GetWindowTextLengthW(h);
@@ -271,14 +362,14 @@ static void BuildPage(int next) {
   if (page == 0 && !Removing) {
     AddButton(101, 272, 315, 344, 126, L"Самостоятельный EXE", 2,
               L"Готов к запуску.\nAutoHotkey не требуется.", choice == 1,
-              L"РЕКОМЕНДУЕМ");
+              L"EXE");
     AddButton(102, 632, 315, 344, 126, L"Исходники AHK", 2,
-              L"AutoHotkey включён.\nМожно редактировать код.", choice == 2,
-              L"ДЛЯ НАСТРОЙКИ");
+              L"Рекомендуем этот вариант.\nAutoHotkey уже включён.",
+              choice == 2, L"РЕКОМЕНДУЕМ");
     AddButton(10, 746, 624, 230, 46, L"Продолжить  →", 1);
   } else if (page == 0 && Removing) {
     AddButton(101, 272, 198, 704, 96, L"Все AHK на компьютере", 2,
-              L"Файлы .ahk и папки с ними целиком, включая содержимое.\n"
+              L"AHK, EXE проекта, ZIP с AHK и папки со всем содержимым.\n"
               L"Просмотр списка и ручной выбор перед удалением.",
               choice == 1, L"ПРОВЕРКА");
     AddButton(102, 272, 308, 704, 96, L"Только AHK FOR GOS — полностью", 2,
@@ -300,13 +391,15 @@ static void BuildPage(int next) {
                 menuLink);
       AddButton(42, 272, 429, 704, 42, L"Показать инструкцию после установки",
                 3, L"", readGuide);
+      AddButton(44, 272, 481, 704, 42, L"Установить унинсталлер", 3, L"",
+                installUninstaller);
       AddButton(10, 746, 624, 230, 46, L"Установить  →", 1);
     } else {
       CreateEdit(pathEdit, 201, 272, 234, 572, 40, rootText);
       AddButton(30, 858, 234, 118, 40, L"Изменить…");
-      AddButton(10, 716, 624, 260, 46,
-                choice == 1 ? L"Найти файлы .ahk  →" : L"Удалить приложение",
-                1);
+      AddButton(
+          10, 716, 624, 260, 46,
+          choice == 1 ? L"Найти AHK / EXE / ZIP  →" : L"Удалить приложение", 1);
     }
     AddButton(11, 272, 624, 110, 46, L"Назад");
   } else if (page == 2) {
@@ -325,7 +418,7 @@ static void BuildPage(int next) {
     AddButton(50, 272, 190, 160, 36, L"Выбрать все");
     AddButton(51, 444, 190, 160, 36, L"Снять выбор");
     fileList = CreateWindowExW(
-        WS_EX_CLIENTEDGE, WC_LISTVIEWW, L"Найденные AHK и EXE проекта",
+        WS_EX_CLIENTEDGE, WC_LISTVIEWW, L"Найденные AHK, EXE, ZIP и папки",
         WS_CHILD | WS_VISIBLE | WS_TABSTOP | LVS_REPORT | LVS_SHOWSELALWAYS,
         S(272), S(238), S(704), S(242), window, (HMENU)202,
         GetModuleHandleW(nullptr), nullptr);
@@ -346,8 +439,13 @@ static void BuildPage(int next) {
     bulk = true;
     SendMessageW(fileList, WM_SETREDRAW, FALSE, 0);
     for (size_t i = 0; i < scan.files.size(); i++) {
-      auto path = (scan.files[i].directory ? L"[ПАПКА ЦЕЛИКОМ] " : L"[ФАЙЛ] ") +
-                  scan.files[i].path.wstring();
+      auto path =
+          (scan.files[i].directory
+               ? L"[ПАПКА ЦЕЛИКОМ] "
+               : (_wcsicmp(scan.files[i].path.extension().c_str(), L".zip") == 0
+                      ? L"[ZIP С AHK] "
+                      : L"[ФАЙЛ] ")) +
+          scan.files[i].path.wstring();
       LVITEMW item{};
       item.mask = LVIF_TEXT;
       item.iItem = (int)i;
@@ -360,8 +458,8 @@ static void BuildPage(int next) {
     SendMessageW(fileList, WM_SETREDRAW, TRUE, 0);
     bulk = false;
     CreateEdit(confirmEdit, 203, 272, 529, 220, 37, L"");
-    AddButton(43, 510, 522, 466, 48, L"Папки целиком, включая все файлы внутри",
-              3, L"", ack);
+    AddButton(43, 510, 522, 466, 48,
+              L"Удалить без корзины, папки — со всем содержимым", 3, L"", ack);
     AddButton(11, 272, 624, 110, 46, L"Назад");
     AddButton(10, 700, 624, 276, 46, L"Удалить выбранное", 1);
     EnableWindow(FindButton(10)->h, FALSE);
@@ -387,22 +485,13 @@ static void Hero(Graphics &g) {
   Text(g, L"AHK FOR GOS", 77, 43, 130, 22, 14, white, true);
   Text(g, Removing ? L"УДАЛЕНИЕ" : L"DESKTOP EDITION", 32, 103, 174, 22, 10,
        muted, true);
-  // A vector emblem: crisp at any DPI, no downloaded art or web view.
-  GraphicsPath star;
-  PointF points[8]{{114, 171}, {126, 216}, {172, 229}, {126, 242},
-                   {114, 287}, {101, 242}, {56, 229},  {101, 216}};
-  star.AddPolygon(points, 8);
-  PathGradientBrush glow(&star);
-  glow.SetCenterColor(Color(255, 192, 171, 255));
-  Color edge[] = {Color(255, 103, 72, 225)};
-  int count = 1;
-  glow.SetSurroundColors(edge, &count);
-  g.FillPath(&glow, &star);
-  Pen ring(Color(255, 46, 39, 76), 1);
-  g.DrawEllipse(&ring, 47, 162, 134, 134);
-  g.DrawEllipse(&ring, 34, 149, 160, 160);
-  SolidBrush orb(purple);
-  g.FillEllipse(&orb, 175, 191, 6, 6);
+  // Quiet typographic badge instead of a decorative star.
+  SolidBrush badge(Color(255, 28, 27, 46));
+  Pen border(Color(255, 67, 56, 105), 1.4f);
+  Round(g, RectF(40, 166, 148, 126), 24, badge, &border);
+  Text(g, L"GOS", 48, 190, 132, 56, 39, white, true, StringAlignmentCenter);
+  Text(g, L"GAME ASSISTANT", 48, 252, 132, 22, 10, purple, true,
+       StringAlignmentCenter);
   std::vector<std::wstring> steps =
       Removing ? std::vector<std::wstring>{L"Режим удаления",
                                            L"Проверка файлов", L"Готово"}
@@ -426,7 +515,7 @@ static void Hero(Graphics &g) {
     Text(g, steps[i], 70, y + 1, 136, 25, 13, (int)i == active ? white : muted,
          (int)i == active);
   }
-  Text(g, L"v1.1  /  SBezruk180", 32, 665, 170, 22, 10,
+  Text(g, L"v1.2  /  SBezruk180", 32, 665, 170, 22, 10,
        Color(255, 111, 121, 149));
   Text(g, Removing ? L"AHK FOR GOS / UNINSTALL" : L"AHK FOR GOS / SETUP", 272,
        29, 500, 24, 10, muted, true);
@@ -462,10 +551,10 @@ static void Body(Graphics &g) {
   } else if (page == 0 && Removing) {
     Pill(g, L"ВАШИ ФАЙЛЫ — ВАШ ВЫБОР", 272, 86, 256);
     Text(g, L"Как будем удалять?", 270, 132, 710, 60, 35, white, true);
-    Text(g, L"Чужие EXE и установленный отдельно AutoHotkey не удаляются.", 272,
-         543, 704, 36, 13, muted);
+    Text(g, L"Выбранная папка удаляется со всеми файлами внутри.", 272, 543,
+         704, 36, 13, muted);
     Text(g,
-         L"В первом режиме .ahk удаляются только после просмотра\nнайденных "
+         L"Без корзины. Удаление только после просмотра\nнайденных "
          L"файлов и отдельного подтверждения.",
          272, 575, 704, 38, 12, muted);
   } else if (page == 1) {
@@ -486,8 +575,8 @@ static void Body(Graphics &g) {
       Text(g,
            L"Существующие профили и бинды будут сохранены.\nАссоциации чужих "
            L"AHK и системные настройки не меняются.",
-           272, 494, 704, 46, 13, muted);
-      Text(g, L"Профили: " + DefaultData().wstring(), 272, 558, 704, 40, 11,
+           272, 531, 704, 34, 12, muted);
+      Text(g, L"Профили: " + DefaultData().wstring(), 272, 576, 704, 24, 11,
            muted);
     } else {
       SolidBrush fill(panel);
@@ -511,7 +600,8 @@ static void Body(Graphics &g) {
                        L"пользовательские скрипты не затрагиваются."
                      : L"Сканирование ничего не удаляет. Следующий экран "
                        L"покажет\nточные пути; по умолчанию ни один файл не "
-                       L"выбран.\n\nПо возможности используется корзина. "
+                       L"выбран.\n\nУдаление без корзины, восстановление не "
+                       L"предусмотрено. "
                        L"Недоступные папки\nи ссылки пропускаются и отражаются "
                        L"в результате.");
       Text(g, text, 296, 384, 650, 144, 14, muted);
@@ -601,7 +691,7 @@ static void Body(Graphics &g) {
     Round(g, RectF(272, 529, 220, 37), 9, inputFill, &inputBorder);
     Pill(g, L"НИЧЕГО НЕ ВЫБРАНО АВТОМАТИЧЕСКИ", 272, 86, 330,
          Color(255, 227, 190, 118));
-    Text(g, L"Папка — со всем содержимым.", 270, 132, 704, 60, 30, white, true);
+    Text(g, L"Удаление без корзины.", 270, 132, 704, 60, 30, white, true);
     Text(g, L"Для подтверждения введите УДАЛИТЬ", 272, 496, 704, 24, 13, muted);
     Text(g,
          L"Файлов и папок: " + std::to_wstring(scan.files.size()) +
@@ -652,6 +742,7 @@ static Options CurrentOptions() {
   }
   o.mode = Removing ? 1 : choice;
   o.allScripts = Removing && choice == 1;
+  o.uninstaller = installUninstaller;
   o.desktop = desktopLink;
   o.menu = menuLink;
   return o;
@@ -745,7 +836,7 @@ static void Work(int task) {
           if (task == 4 && !wholeRoot && CanManage(options.root))
             PrepareRemoval(options.root);
           if (task == 4)
-            external = RecycleSelected(scan.files, cancelled, notify, true);
+            external = DeleteSelected(scan.files, cancelled, notify, true);
           if (!cancelled.load()) {
             r = Uninstall(options, choice == 3, cancelled, notify);
             r.removed += external.removed;
@@ -881,10 +972,13 @@ static void Command(int id) {
       }
     return;
   }
-  if (id == 40 || id == 41 || id == 42 || id == 43) {
-    bool *value = id == 40
-                      ? &desktopLink
-                      : (id == 41 ? &menuLink : (id == 42 ? &readGuide : &ack));
+  if (id == 40 || id == 41 || id == 42 || id == 43 || id == 44) {
+    bool *value =
+        id == 40
+            ? &desktopLink
+            : (id == 41 ? &menuLink
+                        : (id == 42 ? &readGuide
+                                    : (id == 44 ? &installUninstaller : &ack)));
     *value = !*value;
     auto b = FindButton(id);
     b->selected = *value;
@@ -1010,6 +1104,13 @@ static void Snapshot(const wchar_t *name) {
     UiCheck("visible primary button survives parent repaint",
             GetBValue(pixel) > 150 && GetRValue(pixel) > 70);
   }
+  if (auto primary = FindButton(10)) {
+    COLORREF corner = GetPixel(screen, origin.x + S(primary->rect.X + 1),
+                               origin.y + S(primary->rect.Y + 1));
+    UiCheck("button corner stays dark and rounded without hover",
+            GetRValue(corner) < 80 && GetGValue(corner) < 80 &&
+                GetBValue(corner) < 100);
+  }
   ReleaseDC(nullptr, screen);
   BITMAPINFO info{};
   info.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
@@ -1077,9 +1178,21 @@ static void UiStep() {
     switch (step++) {
     case 0:
       UiLayout();
+      UiCheck("all buttons painted before mouse hover",
+              std::all_of(buttons.begin(), buttons.end(),
+                          [](auto &b) { return b->paints > 0; }));
+      {
+        wchar_t buttonType[64]{};
+        GetClassNameW(FindButton(10)->h, buttonType, 64);
+        UiCheck("buttons own initial paint without native themed frame",
+                !wcscmp(buttonType, L"AHKGOS.Button"));
+      }
+      if (!Removing)
+        UiCheck("AHK recommended and selected by default", choice == 2);
       Snapshot(L"home");
       UiCheck("mode cards exist", FindButton(101) && FindButton(102));
-      Command(102);
+      SendMessageW(FindButton(101)->h, BM_CLICK, 0, 0);
+      SendMessageW(FindButton(102)->h, WM_KEYDOWN, VK_SPACE, 0);
       UiCheck("mode selection changes", choice == 2);
       Command(10);
       UiCheck("next opens settings", page == 1 && IsWindow(pathEdit));
@@ -1094,6 +1207,12 @@ static void UiStep() {
         Command(40);
         UiCheck("shortcut switch works", desktopLink != was);
         Command(40);
+        bool before = installUninstaller;
+        SendMessageW(FindButton(44)->h, BM_CLICK, 0, 0);
+        UiCheck("optional uninstaller checkbox changes install options",
+                installUninstaller != before &&
+                    CurrentOptions().uninstaller == installUninstaller);
+        Command(44);
       }
       Command(80);
       UiCheck("optional guide opens", page == 4);
@@ -1309,17 +1428,6 @@ static LRESULT CALLBACK WindowProc(HWND h, UINT m, WPARAM w, LPARAM l) {
   }
   return DefWindowProcW(h, m, w, l);
 }
-static LRESULT CALLBACK ButtonHook(HWND h, UINT m, WPARAM w, LPARAM l, UINT_PTR,
-                                   DWORD_PTR) {
-  if (m == WM_MOUSEMOVE || m == WM_MOUSELEAVE) {
-    Animate();
-    if (m == WM_MOUSEMOVE) {
-      TRACKMOUSEEVENT t{sizeof(t), TME_LEAVE, h, 0};
-      TrackMouseEvent(&t);
-    }
-  }
-  return DefSubclassProc(h, m, w, l);
-}
 
 int RunUI(bool demo, const fs::path &report, bool removalFixture) {
   uiReport = report;
@@ -1371,6 +1479,12 @@ int RunUI(bool demo, const fs::path &report, bool removalFixture) {
   cls.hCursor = LoadCursorW(nullptr, IDC_ARROW);
   cls.hIcon = LoadIconW(cls.hInstance, MAKEINTRESOURCEW(1));
   RegisterClassW(&cls);
+  WNDCLASSW buttonClass{};
+  buttonClass.hInstance = cls.hInstance;
+  buttonClass.lpfnWndProc = ButtonProc;
+  buttonClass.lpszClassName = L"AHKGOS.Button";
+  buttonClass.hCursor = LoadCursorW(nullptr, IDC_HAND);
+  RegisterClassW(&buttonClass);
   HWND h = CreateWindowExW(
       WS_EX_APPWINDOW, cls.lpszClassName,
       Removing ? L"AHK FOR GOS — удаление" : L"AHK FOR GOS — установка",
@@ -1384,6 +1498,8 @@ int RunUI(bool demo, const fs::path &report, bool removalFixture) {
   int round = 2;
   DwmSetWindowAttribute(h, 33, &round, sizeof(round));
   BuildPage(0);
+  if (!uiReport.empty())
+    SetCursorPos(work.left + 2, work.top + 2);
   ShowWindow(h, SW_SHOW);
   SetForegroundWindow(h);
   UpdateWindow(h);
@@ -1391,8 +1507,6 @@ int RunUI(bool demo, const fs::path &report, bool removalFixture) {
     SetTimer(h, 2, 320, nullptr);
   MSG msg;
   while (GetMessageW(&msg, nullptr, 0, 0) > 0) {
-    for (auto &b : buttons)
-      SetWindowSubclass(b->h, ButtonHook, 1, 0);
     if (msg.message == WM_KEYDOWN && msg.wParam == VK_ESCAPE) {
       if (page == 4)
         BuildPage(returnPage);
