@@ -75,6 +75,9 @@ PrivateText_ResolveExact(text) {
         if (trigger != "" && trigger = text)
             return {Kind: "custom", Index: index}
     }
+    tools := {"!карточка": "IncidentCard_Open", "!incident": "IncidentCard_Open", "!результат": "ActionTrace_Open", "!trace": "ActionTrace_Open", "!конструктор": "OpenCustomFunctionBuilder", "!builder": "OpenCustomFunctionBuilder", "!тренировка": "Training_Open", "!training": "Training_Open", "!gpsconfig": "GPS_OpenCalibration"}
+    if tools.HasKey(text)
+        return {Kind: "tool", Function: tools[text]}
     modes := PrivateText_SearchModes()
     if (modes.HasKey(text) || text = "!пнайти")
         return {Kind: "search", Mode: modes.HasKey(text) ? modes[text] : ""}
@@ -82,6 +85,10 @@ PrivateText_ResolveExact(text) {
 }
 
 PrivateText_Open() {
+    return CommandPalette_Open()
+}
+
+PrivateText_OpenLegacy() {
     global PrivateTextInputBusy, BindMenuEditMode, Trig_GpsD, Trig_GpsOS
     if (PrivateTextInputBusy || PhysicalInputBusy || IsObject(IDCaptureState) || ServiceUI_IsInputActive())
         return PrivateText_ReportBlocked("Ввод занят другой операцией. Завершите её или отмените и повторите Alt+T.")
@@ -127,6 +134,8 @@ PrivateText_Open() {
 PrivateText_Dispatch(action, epoch) {
     if (epoch != AutomationEpoch || !IsObject(action))
         return false
+    if (action.Kind = "tool" && IsFunc(action.Function))
+        return Func(action.Function).Call()
     if (action.Kind = "gps") {
         number := action.Number
         if (number = "" && !ServiceUI_Request("GPS", "Введите номер дома / организации и нажмите Enter.", number, 5, 45, "", false, true))
@@ -149,12 +158,12 @@ PrivateText_Dispatch(action, epoch) {
         return true
     }
     if (action.Kind = "token") {
-        ExecuteBindToken(action.Token)
+        ExecuteBindToken(action.Token, true)
         return true
     }
     if (action.Kind = "label" && IsLabel(action.Label)) {
         label := action.Label
-        SetTimer, %label%, -1
+        Gosub, %label%
         return true
     }
     return false

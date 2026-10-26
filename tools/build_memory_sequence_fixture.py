@@ -16,7 +16,7 @@ from ahk_symbols import functions
 
 NAMES = {
     'app/actions.ahk': ['Action_DoRights'],
-    'app/chat.ahk': ['SendConfigSequence', 'ChatTransport_Send'],
+    'app/chat.ahk': ['SendConfigSequence', 'ChatTransport_SendCore'],
     'app/automation.ahk': ['ChatQueue_Tick', 'ChatQueue_EnqueueSequence'],
     'runtime_support.ahk': ['ChatQueue_EnqueueBatch', 'ChatQueue_CompleteItem', 'QueueBatch_Prune', 'QueueItem_IsCurrent'],
     'chat_typing.ahk': ['ChatTyping_ModeFromLabel'],
@@ -239,6 +239,26 @@ LogError(args*) {
 SafeWarn(args*) {
     return false
 }
+
+Training_IsActive(args*) {
+    return false
+}
+ActionTrace_RegisterBatch(args*) {
+    return 0
+}
+ActionTrace_RegisterItem(args*) {
+    return 0
+}
+ActionTrace_QueueAttempt(args*) {
+}
+ActionTrace_QueueRetryPending(args*) {
+}
+ActionTrace_QueueTransportResult(args*) {
+}
+ActionTrace_QueueComplete(args*) {
+}
+ActionTrace_CancelBatch(args*) {
+}
 '''
 
 
@@ -264,7 +284,7 @@ def main():
                 start = body.index('    ; The game API return value')
                 end = body.index('    NumPut(0xC2, injectData', start)
                 body = body[:start] + body[end:]
-            pieces.append(body)
+            pieces.append(body.replace('ChatTransport_SendCore(', 'ChatTransport_Send(', 1) if name == 'ChatTransport_SendCore' else body)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text('\n\n'.join(pieces), encoding='utf-8-sig')
     if args.extract_a32_runtime:

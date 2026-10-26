@@ -431,8 +431,10 @@ ChatQueue_RemoveBySource(source) {
     Loop % ChatQueueItems.Length()
     {
         item := ChatQueueItems[A_Index]
-        if (IsObject(item) && item.HasKey("Source") && item.Source = source)
+        if (IsObject(item) && item.HasKey("Source") && item.Source = source) {
+            ActionTrace_QueueComplete(item, "cancelled")
             removed += 1
+        }
         else
             kept.Push(item)
     }
@@ -469,7 +471,9 @@ ChatQueue_Enqueue(text, source := "ChatQueue", forceMock := 0, delayAfter := "",
     }
     if (delayAfter != "")
         NormalizeNumberRange(delayAfter, 700, 0, 30000)
-    ChatQueueItems.Push({Text: text, Source: source, Tries: 0, ForceMock: forceMock ? 1 : 0, DelayAfter: delayAfter, Epoch: AutomationEpoch, Batch: 0})
+    item := {Text: text, Source: source, Tries: 0, ForceMock: forceMock ? 1 : 0, DelayAfter: delayAfter, Epoch: AutomationEpoch, Batch: 0}
+    ActionTrace_RegisterItem(item)
+    ChatQueueItems.Push(item)
     LogError(source, "Queued chat line: " . text, "INFO")
     UpdateHUD()
     return true
@@ -499,6 +503,7 @@ ChatQueue_Tick() {
             ChatQueue_CompleteItem(item, "cancelled")
             return
         }
+        ActionTrace_QueueAttempt(item)
         if (item.HasKey("Kind") && item.Kind = "Menu") {
             result := QueueMenu_Run(item) ? 1 : -1
         } else if (item.HasKey("ForceMock") && item.ForceMock) {
@@ -506,6 +511,11 @@ ChatQueue_Tick() {
             result := 1
         } else
             result := AuditTestMode ? AuditTransportResult : ChatTransport_Send(item.Text, item.Source, item.HasKey("Role") ? item.Role : "", Func("QueueItem_IsCurrent").Bind(item))
+        ActionTrace_QueueTransportResult(item, result)
+        ; -1 is the transport contract for a call that never launched. A
+        ; partial keyboard/menu action or launched remote call is non-replayable.
+        item.TraceKnownUnsent := result = -1 && !item.HasKey("Kind") && !IsObject(g_RemoteOperation)
+        item.TraceReason := item.HasKey("Kind") ? "Шаг меню не завершён; часть нажатий могла выполниться." : ChatTransportStatus
         if (!QueueItem_IsCurrent(item)) {
             ChatQueue_CompleteItem(item, "cancelled")
             return
@@ -513,13 +523,14 @@ ChatQueue_Tick() {
         if (result = 1) {
             if (item.Source = "AutoReport")
                 AutoReportSentCount++
-            if (!AuditTestMode && !item.HasKey("Kind"))
+            if (!AuditTestMode && !Training_IsActive() && !item.HasKey("Kind"))
                 Evidence_MaybeCaptureReportText(item.Text)
             ChatQueueLastSendTick := TickNow()
             ChatQueueNextSendTick := TickNow() + (item.DelayAfter = "" ? ChatQueueMinDelay : item.DelayAfter)
             ChatQueue_CompleteItem(item, "sent")
         } else if (result != -2 && !item.HasKey("Kind") && !IsObject(g_RemoteOperation) && item.Tries < ChatQueueMaxRetries) {
             item.Tries++
+            ActionTrace_QueueRetryPending(item)
             ChatQueueItems.InsertAt(1, item)
             ChatQueueNextSendTick := TickNow() + 1000
         } else {
@@ -534,7 +545,9 @@ ChatQueue_Tick() {
         }
     } catch e {
         QueueFailureGeneration++
-        ChatQueue_CompleteItem(item, "failed")
+        item.TraceKnownUnsent := false
+        item.TraceReason := "Исключение: " . e.Message . ". Вызов мог начаться; повтор запрещён."
+        ChatQueue_CompleteItem(item, "unknown")
         LogError("ChatQueue", e.Message, "ERROR")
     } finally {
         ChatQueueBusy := 0
@@ -571,6 +584,7 @@ ChatQueue_EnqueueMockDemo() {
 }
 
 CancelAllAutomation(showStatus := 1) {
+    GPS_CancelTrial()
     LastCuffActionTick := 0, LastDejectActionTick := 0
     LastCuffActionTarget := "", LastDejectActionTarget := ""
     LastCuffActionEpoch := 0, LastDejectActionEpoch := 0
@@ -681,6 +695,8 @@ ToggleMDSFormationCountdown() {
 
 ChatQueue_Clear(showStatus := 1) {
     global ChatQueueItems, ChatQueueBusy, ChatQueueNextSendTick, ChatQueueLastSendTick
+    for _, item in ChatQueueItems
+        ActionTrace_QueueComplete(item, "cancelled")
     ChatQueueItems := []
     AutomationEpoch++
     ChatQueue_CancelBatches()

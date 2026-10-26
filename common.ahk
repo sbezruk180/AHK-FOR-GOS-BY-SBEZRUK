@@ -803,6 +803,8 @@ refreshGTA() {
 }
 
 checkHandles() {
+    if (IsFunc("Training_IsActive") && Func("Training_IsActive").Call())
+        return false
     global iRefreshHandles, g_LastCheckHandlesResult, g_LastSampValidationTick
     global hGTA, dwGTAPID
 

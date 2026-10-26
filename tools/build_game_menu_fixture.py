@@ -16,7 +16,8 @@ from ahk_symbols import functions
 NAMES = {
     'app/actions.ahk': ['RunGpsDialogAction', 'CanRunAction', 'InputAction_DoSOS', 'VehicleLookup_Execute', 'VehicleLookup_GetRegionListPosition'],
     'app/game_input.ahk': None,
-    'app/chat.ahk': ['SendChat', 'ChatTransport_Send', 'PasteOnly', 'SendRadialNumberTwice', 'SendListSelection', 'EnsureEnglishLayout', 'EnsureRussianLayout'],
+    'app/gps_calibration.ahk': ['GPS_Defaults', 'GPS_FieldCatalog', 'GPS_GetSettings', 'GPS_ResolveDownCount', 'GPS_BuildPlan', 'GPS_Run'],
+    'app/chat.ahk': ['SendChat', 'ChatTransport_Send', 'ChatTransport_SendCore', 'PasteOnly', 'SendRadialNumberTwice', 'SendListSelection', 'EnsureEnglishLayout', 'EnsureRussianLayout'],
     'runtime_support.ahk': ['SafeSend', 'SafeLayout', 'SendChatForEpoch', 'AutomationEpoch_IsCurrent', 'PasteOnlyForEpoch'],
     'chat_typing.ahk': ['ChatTyping_IsReady', 'ChatTyping_ModeFromLabel'],
 }
@@ -297,6 +298,28 @@ MemoryGetShortError(args*) {
 }
 MemoryGetStatusText(args*) {
     return "fixture"
+}
+
+Training_IsActive(args*) {
+    return false
+}
+Training_CanRunAction(args*) {
+    return false
+}
+ActionTrace_Begin(args*) {
+    return 0
+}
+ActionTrace_Add(args*) {
+    return 0
+}
+ActionTrace_Update(args*) {
+}
+ActionTrace_Finish(args*) {
+}
+ActionTrace_RecordTransport(args*) {
+}
+ActionTrace_Rejected(args*) {
+    return false
 }
 '''
 

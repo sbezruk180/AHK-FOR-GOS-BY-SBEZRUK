@@ -193,14 +193,14 @@ ServiceUI_ContextIsCurrent(state) {
     global AutomationEpoch, CurrentProfile
     return IsObject(state) && state.Epoch = AutomationEpoch && state.Profile = CurrentProfile
         && state.OwnerHwnd && state.OwnerHwnd = DllCall("GetForegroundWindow", "Ptr")
-        && GameLocator_IsActive()
+        && (state.AllowDesktop || GameLocator_IsActive())
 }
 
 ServiceUI_CreateInputGui(state) {
     global ServiceUIInputValue, ServiceUIInputCountdown, UIRoundness
     bg := "", panel := "", fg := "", accent := "", muted := ""
     GetThemeColors(bg, panel, fg, accent, muted)
-    width := 540, height := 232
+    width := 540, height := IsObject(state.Observer) ? 480 : 232
     Gui, ServiceInput:New, +HwndinputHwnd +AlwaysOnTop -Caption +ToolWindow +E0x08000020 +DPIScale
     state.GuiHwnd := inputHwnd
     Gui, ServiceInput:Color, %panel%
@@ -215,8 +215,15 @@ ServiceUI_CreateInputGui(state) {
     Gui, ServiceInput:Font, s13 Norm c%fg%, Segoe UI
     Gui, ServiceInput:Add, Text, x28 y122 w484 h48 +0x80 +Wrap BackgroundTrans vServiceUIInputValue, % state.Value
     Gui, ServiceInput:Font, s8 Norm c%muted%, Segoe UI
-    hint := (state.ConfirmOnSpace ? "ѕробел / Enter" : "Enter") . " Ч подтвердить Ј Backspace Ч стереть Ј Esc Ч отменить"
-    Gui, ServiceInput:Add, Text, x20 y198 w500 h20 BackgroundTrans, %hint%
+    if IsObject(state.Observer) {
+        Gui, ServiceInput:Font, s9 Norm c%fg%, Segoe UI
+        Gui, ServiceInput:Add, Text, x20 y192 w500 h130 +0x80 +Wrap BackgroundTrans vCommandPaletteResults,
+        Gui, ServiceInput:Font, s8 Norm c%muted%, Segoe UI
+        Gui, ServiceInput:Add, Text, x20 y326 w500 h110 +0x80 +Wrap BackgroundTrans vCommandPalettePreview,
+    }
+    hintY := IsObject(state.Observer) ? 446 : 198
+    hint := IsObject(state.Observer) ? "—трелки Ч выбрать Ј Enter Ч запуск Ј ѕробел Ч точный !бинд Ј Esc Ч отмена" : (state.ConfirmOnSpace ? "ѕробел / Enter" : "Enter") . " Ч подтвердить Ј Backspace Ч стереть Ј Esc Ч отменить"
+    Gui, ServiceInput:Add, Text, x20 y%hintY% w500 h22 +Wrap BackgroundTrans, %hint%
     scale := A_ScreenDPI / 96.0
     pixelW := Round(width * scale), pixelH := Round(height * scale)
     ServiceUI_Position(pixelW, pixelH, showX, showY)
@@ -230,6 +237,10 @@ ServiceUI_CreateInputGui(state) {
     Gui, ServiceInput:Show, % "x" . showX . " y" . showY . " w" . pixelW . " h" . pixelH . " NoActivate", AHK service input
     Gui, ServiceInput:+DPIScale
     ApplyRoundedCorners(inputHwnd, UIRoundness)
+    if IsObject(state.Observer) {
+        callback := state.Observer.Update
+        callback.Call(state)
+    }
     return !!inputHwnd && ServiceUI_ContextIsCurrent(state)
 }
 
@@ -246,6 +257,11 @@ ServiceUI_InputKeyDown(state, hook, vk, sc) {
         hook.Stop()
         return
     }
+    if IsObject(state.Observer) {
+        callback := state.Observer.KeyDown
+        if callback.Call(state, hook, vk)
+            return
+    }
     if (vk = 8)
         state.Value := SubStr(state.Value, 1, Max(0, StrLen(state.Value) - 1))
 }
@@ -257,6 +273,10 @@ ServiceUI_InputChar(state, hook, chars) {
         return
     }
     state.Value .= chars
+    if IsObject(state.Observer) {
+        callback := state.Observer.Char
+        callback.Call(state, hook, chars)
+    }
     if (StrLen(state.Value) > state.MaxLen) {
         state.Pending := "limit"
         hook.Stop()
@@ -277,6 +297,10 @@ ServiceUI_InputTick(state) {
         displayValue := StrLen(state.Value) > 130 ? "Е" . SubStr(state.Value, -126) : state.Value
         GuiControl, ServiceInput:, ServiceUIInputValue, % state.Value = "" ? "Е" : displayValue
         state.LastValue := state.Value
+        if IsObject(state.Observer) {
+            callback := state.Observer.Update
+            callback.Call(state)
+        }
     }
     seconds := Ceil((state.Deadline - TickNow()) / 1000.0)
     if (state.LastSeconds != seconds) {
@@ -301,6 +325,8 @@ ServiceUI_CreateInputHook(state, timeoutSeconds := 45) {
     hook.MinSendLevel := 1
     hook.KeyOpt("{All}", "N")
     hook.KeyOpt("{Enter}{Escape}{Backspace}" . (state.ConfirmOnSpace ? "{Space}" : ""), "S")
+    if IsObject(state.Observer)
+        hook.KeyOpt("{Up}{Down}{Tab}", "S")
     hook.OnKeyDown := Func("ServiceUI_InputKeyDown").Bind(state)
     hook.OnChar := Func("ServiceUI_InputChar").Bind(state)
     state.Hook := hook
@@ -324,12 +350,14 @@ ServiceUI_ReleaseInputCapture(state) {
     }
 }
 
-ServiceUI_Request(title, prompt, ByRef value, maxLen := 180, timeoutSeconds := 45, seed := "", confirmOnSpace := false, forcePrivacy := false, preparedState := "", prepareContext := "") {
+ServiceUI_Request(title, prompt, ByRef value, maxLen := 180, timeoutSeconds := 45, seed := "", confirmOnSpace := false, forcePrivacy := false, preparedState := "", prepareContext := "", observer := "") {
     global ServiceUIInputState, ServiceUIAuditInputs, PhysicalInputBusy, IDCaptureState, AutomationEpoch, CurrentProfile
     ServiceUILastInputError := ""
     if (ServiceUI_IsInputActive() || PhysicalInputBusy || IsObject(IDCaptureState))
         return false
-    if ServiceUI_IsTest() {
+    if (Training_IsActive() && !AuditTestMode && !IsObject(observer))
+        return Training_Request(title, prompt, value, maxLen, timeoutSeconds, seed, confirmOnSpace)
+    if (ServiceUI_IsTest() && !(IsObject(observer) && Training_IsActive() && !AuditTestMode)) {
         if (!IsObject(ServiceUIAuditInputs) || !ServiceUIAuditInputs.Length())
             return false
         scripted := ServiceUIAuditInputs.RemoveAt(1)
@@ -338,7 +366,8 @@ ServiceUI_Request(title, prompt, ByRef value, maxLen := 180, timeoutSeconds := 4
         value := scripted.Value . ""
         return true
     }
-    if !GameLocator_IsActive()
+    allowDesktop := IsObject(observer) && observer.AllowDesktop
+    if (!allowDesktop && !GameLocator_IsActive())
         return false
     previousCritical := A_IsCritical
     Critical, On
@@ -355,6 +384,8 @@ ServiceUI_Request(title, prompt, ByRef value, maxLen := 180, timeoutSeconds := 4
     } else
         state := ServiceUI_NewInputState(title, prompt, maxLen, timeoutSeconds, seed, confirmOnSpace
             , AutomationEpoch, DllCall("GetForegroundWindow", "Ptr"), CurrentProfile, TickNow())
+    state.Observer := observer
+    state.AllowDesktop := allowDesktop
     state.ForcePrivacy := !!forcePrivacy
     ServiceUIInputState := state
     PhysicalInputBusy := 1
@@ -401,8 +432,8 @@ ServiceUI_Request(title, prompt, ByRef value, maxLen := 180, timeoutSeconds := 4
         result := state.Value
         endKey := hook.EndKey
         StringLower, endKey, endKey
-        if (state.Pending != "" || !ServiceUI_ContextIsCurrent(state) || hook.EndReason != "EndKey"
-            || !(endKey = "enter" || (state.ConfirmOnSpace && endKey = "space"))
+        if (state.Pending != "" || !ServiceUI_ContextIsCurrent(state) || (!state.ObserverConfirmed && (hook.EndReason != "EndKey"
+            || !(endKey = "enter" || (state.ConfirmOnSpace && endKey = "space"))))
             || StrLen(result) > state.MaxLen)
             return false
         value := result
@@ -455,6 +486,8 @@ ServiceUI_Confirm(title, text) {
     global AutomationEpoch, CurrentProfile
     if (ServiceUI_IsInputActive() || PhysicalInputBusy || IsObject(IDCaptureState))
         return false
+    if (Training_IsActive() && !AuditTestMode)
+        return Training_Confirm(title, text)
     if ServiceUI_IsTest() {
         if (!IsObject(ServiceUIAuditConfirmations) || !ServiceUIAuditConfirmations.Length())
             return false

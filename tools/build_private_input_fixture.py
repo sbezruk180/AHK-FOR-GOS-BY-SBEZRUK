@@ -14,6 +14,7 @@ from ahk_symbols import functions
 NAMES={
  'service_ui.ahk':['ServiceUI_IsInputActive','ServiceUI_IsTest','ServiceUI_NewInputState','ServiceUI_ContextIsCurrent','ServiceUI_CreateInputGui','ServiceUI_InputKeyDown','ServiceUI_InputChar','ServiceUI_InputTick','ServiceUI_ModifierHeld','ServiceUI_CreateInputHook','ServiceUI_ReleaseInputCapture','ServiceUI_Request'],
  'app/private_text.ahk':['PrivateText_Open','PrivateText_ReportBlocked','PrivateText_PrepareChat','PrivateText_Resolve','PrivateText_ResolveExact','PrivateText_Dispatch','PrivateText_SearchModes'],
+ 'app/command_palette.ahk':[name for name,_,_,_ in functions((ROOT/'app/command_palette.ahk').read_text(encoding='cp1251'))],
  'app/bindings.ahk':['NormalizeTextTrigger'],
  'app/text_commands.ahk':['TextCommands_IsOpener','TextCommands_OpenerTriggers','TextCommands_LayoutVariant','TextCommands_ResolveAlias','TextCommands_GetAliasRoutes','TextCommands_EnglishTrigger'],
  'app/actions.ahk':['MatchGpsEnterCommand','RunGpsInputTrigger','ReadGpsInputNumber'],
@@ -34,6 +35,8 @@ global Trig_GpsD := "", Trig_GpsOS := "", FixtureTrigger := "!тест", UIRound
 global ChatTypingSpeedMode := "Fixed", ChatTypingMinCPS := 20, ChatTypingMaxCPS := 40
 global FixtureLayoutFallback := 0, GameMenuStarting := "", ChatQueueBusy := 0
 global FixtureStatesCreated := 0, FixtureStatesDeleted := 0, CapturedGps := "", GpsBurst := "55"
+global OBSHideWindows := "On", CommandPaletteRows := [], CommandPaletteSelection := 1, CommandPaletteLastQuery := "", CommandPaletteSession := ""
+global CommandPaletteResults := "", CommandPalettePreview := ""
 global PrivacyAllowed := 1, ServiceUILastInputError := "", FixtureChatOpen := 0, ChatTypingDelayMs := 0
 global Count := 0, Leaked := "", KeyDownTick := 0, KeyDuration := 0, Checks := 0, Failures := 0, Report := "Private input native fixture`r`nGame predicate, action sink and decoration are seams; no game/OBS test.`r`n"
 global MainWindow := 0, MainText := 0, OtherWindow := 0, DriverCase := "", PrivateRequested := 0
@@ -241,7 +244,7 @@ TickNow() {
     return A_TickCount
 }
 GetBindCatalog() {
-    return [{Token: "Fixture", TriggerVar: "FixtureTrigger"}]
+    return [{Token: "Fixture", Label: "Проверка", Category: "Тест", TriggerVar: "FixtureTrigger"}]
 }
 BindCatalog_IsRegistrable(meta) {
     return true
@@ -250,7 +253,7 @@ GetDynamicGlobalValue(name) {
     global FixtureTrigger
     return FixtureTrigger
 }
-ExecuteBindToken(token) {
+ExecuteBindToken(token, synchronous := false) {
     global Count
     Count++
 }
@@ -318,6 +321,29 @@ RunCustomFunction(args*) {
 MockPreview_Append(args*) {
 }
 LogError(args*) {
+}
+
+Training_IsActive(args*) {
+    return false
+}
+Training_Request(args*) {
+    return false
+}
+Training_Open(args*) {
+}
+IncidentCard_Open(args*) {
+}
+ActionTrace_Open(args*) {
+}
+GPS_OpenCalibration(args*) {
+}
+OpenCustomFunctionBuilder(args*) {
+}
+HasCurrentID(args*) {
+    return false
+}
+ApplyActionTemplate(value) {
+    return value
 }
 '''
 def main():

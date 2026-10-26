@@ -1304,7 +1304,7 @@ GetBoundLabelByToken(token) {
     return ""
 }
 
-ExecuteBindToken(token) {
+ExecuteBindToken(token, synchronous := false) {
     global HUDVisible, BindListVisible, SettingsVisible, SettingsTargetTab
 
     if RegExMatch(token, "^CustomFunction:(\d+)$", customMatch)
@@ -1330,8 +1330,12 @@ ExecuteBindToken(token) {
     }
 
     labelName := GetBoundLabelByToken(token)
-    if (labelName != "")
-        SetTimer, %labelName%, -1
+    if (labelName != "") {
+        if (synchronous)
+            Gosub, %labelName%
+        else
+            SetTimer, %labelName%, -1
+    }
 }
 
 HandleBoundHotkey(hotkeyName) {

@@ -27,6 +27,8 @@ Evidence_EventLabel(eventCode) {
 }
 
 Evidence_Arm(eventCode, timeoutMs := 45000) {
+    if Training_IsActive()
+        return false
     global EvidenceScreenshotMode, EvidencePendingEvents
     if (EvidenceScreenshotMode != "On" || !Evidence_IsAllowedEvent(eventCode))
         return false
@@ -344,6 +346,8 @@ Evidence_DetectChatEvent(line) {
 }
 
 Evidence_RequestScreenshot(eventCode, delayMs := 700) {
+    if Training_IsActive()
+        return false
     global EvidenceScreenshotMode, EvidenceScreenshotQueue, EvidenceScreenshotMethod
     if (EvidenceScreenshotMode != "On" || !Evidence_IsAllowedEvent(eventCode))
         return false
@@ -975,6 +979,7 @@ ChatLogReader_HandleLookupLine(line) {
 }
 
 ChatLogReader_ProcessLine(line) {
+    IncidentCard_OnChatLine(line)
     global ChatLogPlayerNickname, ChatLogRescuePending
     line := Trim(line, " `t`r`n")
     if (line = "")

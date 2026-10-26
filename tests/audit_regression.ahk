@@ -223,6 +223,12 @@ RunAuditSelfTest() {
     Guide_RunRegression()
     CustomBuilder_RunRegression()
     TextCommands_RunRegression()
+    CommandPalette_RunRegression()
+    GPS_RunRegression()
+    ActionTrace_RunRegression()
+    IncidentCard_RunRegression()
+    Training_RunRegression()
+    BlockBuilder_RunRegression()
     AuditAssert("F10 reader never truncates chatlog", !ChatLogReader_MaybeCleanup(file) && FileExist(file))
 
     LawSearchCorpusSignature := "", SearchInitialized := 0

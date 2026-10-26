@@ -570,6 +570,11 @@ SetupTrayMenu() {
     Menu, Tray, Add
     Menu, Tray, Add, Выход из AHK FOR GOS BY SBEZRUK, ExitScriptLabel
     Menu, Tray, Default, Открыть настройки
+    Menu, Tray, Add, Палитра команд, Tools_OpenPalette
+    Menu, Tray, Add, Карточка происшествия, Tools_OpenIncident
+    Menu, Tray, Add, Результат действия, Tools_OpenTrace
+    Menu, Tray, Add, Учебный режим, Tools_OpenTraining
+    Menu, Tray, Add, Настроить GPS, Tools_OpenGPS
 }
 
 NormalizeSettingsPage(ByRef pageId) {

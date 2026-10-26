@@ -40,6 +40,8 @@ ShowHotkeyValue(val) {
 
 MockPreview_Append(text) {
     global ChatQueuePreviewText, ChatQueuePreviewLineCount, ChatQueuePreviewKnownLength
+    if Training_IsActive()
+        Training_RecordOutput(text)
     MockPreview_LineCount()
     FormatTime, stamp,, HH:mm:ss
     if (ChatQueuePreviewText != "")
@@ -61,7 +63,7 @@ MockPreview_Append(text) {
         ChatQueuePreviewLineCount := MockPreview_CountLines(ChatQueuePreviewText)
     }
     ChatQueuePreviewKnownLength := StrLen(ChatQueuePreviewText)
-    if (!AuditTestMode)
+    if (!AuditTestMode && !Training_IsActive())
         MockPreview_Show()
 }
 
@@ -1542,6 +1544,7 @@ ShowIDGui(idValue, nickname := "", isMask := 0) {
     ActiveID := 1
     UpdateHUD()
     UpdateIDOverlay()
+    IncidentCard_OnTargetChanged()
 }
 
 ResetCurrentID() {
@@ -1554,6 +1557,7 @@ ResetCurrentID() {
     UpdateHUD()
     UpdateIDOverlay()
     Notify("info")
+    IncidentCard_OnTargetChanged()
 }
 
 WM_EXITSIZEMOVE(wParam, lParam, msg, hwnd) {

@@ -1657,6 +1657,12 @@ CloseCustomFunctionBuilder(0)
 return
 
 HandleAppExit:
+Training_Shutdown()
+IncidentCard_Shutdown()
+GPS_CalibrationClose()
+ActionTrace_Close()
+CustomBlocks_Close(false)
+CancelAllAutomation(0)
 ServiceUI_Shutdown()
 Capture_ShutdownDialogHook()
 IDCapture_Shutdown()
@@ -2769,4 +2775,9 @@ return
 
 DoPrivateTextInput:
 PrivateText_Open()
+return
+
+ActionTraceGuiClose:
+ActionTraceGuiEscape:
+ActionTrace_Close()
 return
