@@ -3,11 +3,11 @@
     "engine": "google",
     "query": "ahk for gos",
     "requested_url": "https://www.google.com/search?q=ahk+for+gos&hl=ru",
-    "checked_at": "2026-10-24T12:40:35.587659+00:00",
+    "checked_at": "2026-10-26T10:59:37.283945+00:00",
     "visible_result_count": 0,
     "status": 200,
-    "final_url": "https://www.google.com/sorry/index?continue=https://www.google.com/search%3Fq%3Dahk%2Bfor%2Bgos%26hl%3Dru%26sei%3DQ6fcasPsMqPY5NoPtafooA8&hl=ru&q=EgQUauckGMTO8tYGIjCv0rhNQSNzaU9X2zenQ15XRfDXaJyYUIM-YI6A7SZ_0i0zsOV-W8tgODjCpY_tth0yAVJaAUNgqvv3wKqihoUM",
-    "title": "https://www.google.com/search?q=ahk+for+gos&hl=ru&sei=Q6fcasPsMqPY5NoPtafooA8",
+    "final_url": "https://www.google.com/sorry/index?continue=https://www.google.com/search%3Fq%3Dahk%2Bfor%2Bgos%26hl%3Dru%26sei%3DmTLfao6JINDekPIPmriH0AQ&hl=ru&q=EgSAGKLUGJrl_NYGIjAqqVB-8KIYGbKUl1patv7bcXvyzmzvs8au_rram7GRLZq6inQOJRYdR-iGVNLanNYyAVJaAUNg_fiV6ZOQ95GJAQ",
+    "title": "https://www.google.com/search?q=ahk+for+gos&hl=ru&sei=mTLfao6JINDekPIPmriH0AQ",
     "results": [],
     "repository_results": [],
     "verdict": "blocked_or_challenged"
@@ -16,81 +16,61 @@
     "engine": "bing",
     "query": "ahk for gos",
     "requested_url": "https://www.bing.com/search?q=ahk+for+gos",
-    "checked_at": "2026-10-24T12:40:35.606539+00:00",
-    "visible_result_count": 14,
+    "checked_at": "2026-10-26T10:59:37.274567+00:00",
+    "visible_result_count": 10,
     "status": 200,
-    "final_url": "https://www.bing.com/search?q=ahk+for+gos&rdr=1&rdrig=5EBF34ABE9B9490897817311F9832C3C",
+    "final_url": "https://www.bing.com/search?q=ahk+for+gos&rdr=1&rdrig=F2FB2D9E672C4098A58CAB916742412E",
     "title": "ahk for gos - Поиск",
     "results": [
       {
-        "title": "Why the Trader Joe’s lawsuit against a similarly named ... - Fortune",
-        "url": "https://www.bing.com/ck/a?!&&p=3c88d52fd3c8581e4f584f67ec10eb2370df5daabf6a4038e8d49dff51f52cf5JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2ff46ae6-83eb-606f-3331-7d1a822e6104&u=a1aHR0cHM6Ly9mb3J0dW5lLmNvbS9jcnlwdG8vMjAyMy8xMC8xNC90cmFkZXItam9lcy1jcnlwdG8tZmlybS10cmFkZXItam9lLWxhd3N1aXQtaW50ZWxsZWN0dWFsLXByb3BlcnR5LXJpZ2h0cy8&ntb=1",
-        "target_url": "https://fortune.com/crypto/2023/10/14/trader-joes-crypto-firm-trader-joe-lawsuit-intellectual-property-rights/"
+        "title": "AutoHotkey",
+        "url": "https://www.bing.com/ck/a?!&&p=139ed49489a2375edebd7e43c791903cce157d44b4b17a274f583f0dc91b0df7JmltdHM9MTc5Mjk3MjgwMA&ptn=3&ver=2&hsh=4&fclid=3f32b0ff-faf4-6e0d-0fe8-a701fb036fac&u=a1aHR0cHM6Ly93d3cuYXV0b2hvdGtleS5jb20v&ntb=1",
+        "target_url": "https://www.autohotkey.com/"
       },
       {
-        "title": "Sliced Seedy Multigrain Bread - Trader Joe's",
-        "url": "https://www.bing.com/ck/a?!&&p=34a4d437d7a213e46a5ff25faba13cfbc76bdff13298d3a3dcd631d4738c8fb0JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2ff46ae6-83eb-606f-3331-7d1a822e6104&u=a1aHR0cHM6Ly93d3cudHJhZGVyam9lcy5jb20vaG9tZS9wcm9kdWN0cy9wZHAvc2xpY2VkLXNlZWR5LW11bHRpZ3JhaW4tYnJlYWQtMDc3OTg3&ntb=1",
-        "target_url": "https://www.traderjoes.com/home/products/pdp/sliced-seedy-multigrain-bread-077987"
+        "title": "Releases: AutoHotkey/AutoHotkey - GitHub",
+        "url": "https://www.bing.com/ck/a?!&&p=2b87ecf048083d303be1365dc2e1ad95b2448319a732c3d22e138bae8176be82JmltdHM9MTc5Mjk3MjgwMA&ptn=3&ver=2&hsh=4&fclid=3f32b0ff-faf4-6e0d-0fe8-a701fb036fac&u=a1aHR0cHM6Ly9naXRodWIuY29tL0F1dG9Ib3RrZXkvQXV0b0hvdGtleS9yZWxlYXNlcw&ntb=1",
+        "target_url": "https://github.com/AutoHotkey/AutoHotkey/releases"
       },
       {
-        "title": "LFJ price today, JOE to USD live price, marketcap and chart | CoinDesk",
-        "url": "https://www.bing.com/ck/a?!&&p=487c7e2179311eb1659a64d559766d1e5a2ae3894c4bc2b1e8467076f4b30db9JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2ff46ae6-83eb-606f-3331-7d1a822e6104&u=a1aHR0cHM6Ly93d3cuY29pbmRlc2suY29tL3ByaWNlL2pvZQ&ntb=1",
-        "target_url": "https://www.coindesk.com/price/joe"
+        "title": "How to Install AutoHotkey | AutoHotkey v2",
+        "url": "https://www.bing.com/ck/a?!&&p=63b199526dbd3fcf3ee0110da7babd18589efaa1b221b53e700c0c502215d04aJmltdHM9MTc5Mjk3MjgwMA&ptn=3&ver=2&hsh=4&fclid=3f32b0ff-faf4-6e0d-0fe8-a701fb036fac&u=a1aHR0cHM6Ly93d3cuYXV0b2hvdGtleS5jb20vZG9jcy92Mi8vaG93dG8vSW5zdGFsbC5odG0&ntb=1",
+        "target_url": "https://www.autohotkey.com/docs/v2//howto/Install.htm"
       },
       {
-        "title": "Trader Joe Crypto: What it is and How does it work?",
-        "url": "https://www.bing.com/ck/a?!&&p=ac9fe9461d0483c309fe6e16611a0bfac660650883e79965de3fbf1f3bea30bcJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2ff46ae6-83eb-606f-3331-7d1a822e6104&u=a1aHR0cHM6Ly9kYXBwZ2FtYmwuY29tL2NyeXB0by1leGNoYW5nZXMvdHJhZGVyLWpvZS1jcnlwdG8v&ntb=1",
-        "target_url": "https://dappgambl.com/crypto-exchanges/trader-joe-crypto/"
+        "title": "AutoHotkey - Wikipedia",
+        "url": "https://www.bing.com/ck/a?!&&p=aea8bce3c468020370495b51a7298b9cbfb7c7caf86c8622d87158198357300dJmltdHM9MTc5Mjk3MjgwMA&ptn=3&ver=2&hsh=4&fclid=3f32b0ff-faf4-6e0d-0fe8-a701fb036fac&u=a1aHR0cHM6Ly9lbi53aWtpcGVkaWEub3JnL3dpa2kvQXV0b0hvdGtleQ&ntb=1",
+        "target_url": "https://en.wikipedia.org/wiki/AutoHotkey"
       },
       {
-        "title": "Careers - Trader Joe's",
-        "url": "https://www.bing.com/ck/a?!&&p=c7d349020bf46d5310fa2c2c7f7c0dfa19e95766cf828e8dee3013ce6bca0827JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2ff46ae6-83eb-606f-3331-7d1a822e6104&u=a1aHR0cHM6Ly93d3cudHJhZGVyam9lcy5jb20vaG9tZS9jYXJlZXJzLmh0bWw&ntb=1",
-        "target_url": "https://www.traderjoes.com/home/careers.html"
+        "title": "AutoHotKey - Download",
+        "url": "https://www.bing.com/ck/a?!&&p=d679f9c5754cecc53e93ab99dc9de166eab474bc4654e558f586840df0d75961JmltdHM9MTc5Mjk3MjgwMA&ptn=3&ver=2&hsh=4&fclid=3f32b0ff-faf4-6e0d-0fe8-a701fb036fac&u=a1aHR0cHM6Ly9hdXRvaG90a2V5LmVuLnNvZnRvbmljLmNvbS8&ntb=1",
+        "target_url": "https://autohotkey.en.softonic.com/"
       },
       {
-        "title": "Trader Joe JOE Live Price, Charts, Ratings & News | TokenInsight",
-        "url": "https://www.bing.com/ck/a?!&&p=c34f1a8c60d8efc34d502c4afb1bb950fd328efe67d7379297b8214a2393fbfeJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2ff46ae6-83eb-606f-3331-7d1a822e6104&u=a1aHR0cHM6Ly90b2tlbmluc2lnaHQuY29tL2VuL2NvaW5zL2pvZS9vdmVydmlldw&ntb=1",
-        "target_url": "https://tokeninsight.com/en/coins/joe/overview"
+        "title": "The German Chambers of Commerce Abroad - AHK",
+        "url": "https://www.bing.com/ck/a?!&&p=728ed0b530d5589bcab9477dc35e1247f76bf932f31b0277e370648e3f5092a1JmltdHM9MTc5Mjk3MjgwMA&ptn=3&ver=2&hsh=4&fclid=3f32b0ff-faf4-6e0d-0fe8-a701fb036fac&u=a1aHR0cHM6Ly93d3cuYWhrLmRlL2VuLw&ntb=1",
+        "target_url": "https://www.ahk.de/en/"
       },
       {
-        "title": "What Is Trader Joe (JOE)? Liquidity Book DEX - CoinMarketCap",
-        "url": "https://www.bing.com/ck/a?!&&p=803156d15a0199991a7f3249cd0080d58e53348c8b38f6c8049f5056ca36617fJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2ff46ae6-83eb-606f-3331-7d1a822e6104&u=a1aHR0cHM6Ly9jb2lubWFya2V0Y2FwLmNvbS9hY2FkZW15L2FydGljbGUvd2hhdC1pcy10cmFkZXItam9lLWxpcXVpZGl0eS1ib29rLWRleA&ntb=1",
-        "target_url": "https://coinmarketcap.com/academy/article/what-is-trader-joe-liquidity-book-dex"
+        "title": "AutoHotkey v2 Store Edition - Free download and install on Windows ...",
+        "url": "https://www.bing.com/ck/a?!&&p=a9752c8f012c262fdaacbf2286aa36d1e28d3498de2e6d16fdfeb6710528877eJmltdHM9MTc5Mjk3MjgwMA&ptn=3&ver=2&hsh=4&fclid=3f32b0ff-faf4-6e0d-0fe8-a701fb036fac&u=a1aHR0cHM6Ly9hcHBzLm1pY3Jvc29mdC5jb20vZGV0YWlsLzlwbHFmZGc4aGg5ZA&ntb=1",
+        "target_url": "https://apps.microsoft.com/detail/9plqfdg8hh9d"
       },
       {
-        "title": "18 Things To Know Before Shopping at Trader Joe’s | Kiplinger",
-        "url": "https://www.bing.com/ck/a?!&&p=233d7da36591a87184c1e841f0b8fd10eb1aec68010b70dce4754f3863687888JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2ff46ae6-83eb-606f-3331-7d1a822e6104&u=a1aHR0cHM6Ly93d3cua2lwbGluZ2VyLmNvbS9wZXJzb25hbC1maW5hbmNlL2hvdy10by1zYXZlLW1vbmV5L2ZhbWlseS1zYXZpbmdzLzYwMTM0Ni93aGF0LXlvdS1zaG91bGQta25vdy1iZWZvcmUtc2hvcHBpbmctYXQtdHJhZGVyLWpvZXM&ntb=1",
-        "target_url": "https://www.kiplinger.com/personal-finance/how-to-save-money/family-savings/601346/what-you-should-know-before-shopping-at-trader-joes"
+        "title": "Documentation - AutoHotkey",
+        "url": "https://www.bing.com/ck/a?!&&p=fa2bfde55af067a7a1dea0d5addf33831bfc31b6aa0b1d1d6dee6307a10f7d85JmltdHM9MTc5Mjk3MjgwMA&ptn=3&ver=2&hsh=4&fclid=3f32b0ff-faf4-6e0d-0fe8-a701fb036fac&u=a1aHR0cHM6Ly93d3cuYXV0b2hvdGtleS5jb20vZG9jcy8&ntb=1",
+        "target_url": "https://www.autohotkey.com/docs/"
       },
       {
-        "title": "Trader Joe Lend community | AlphaGrowth",
-        "url": "https://www.bing.com/ck/a?!&&p=05a93200c33493969bcd58b4546aad388a2d2a7bca4f4091a085a095ae47ee6dJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2ff46ae6-83eb-606f-3331-7d1a822e6104&u=a1aHR0cHM6Ly9hbHBoYWdyb3d0aC5pby90cmFkZXItam9lLWxlbmQvY29tbXVuaXR5&ntb=1",
-        "target_url": "https://alphagrowth.io/trader-joe-lend/community"
+        "title": "Quick Reference | AutoHotkey v2",
+        "url": "https://www.bing.com/ck/a?!&&p=9e3782005532017541b0ee4539d43f45a17410eb4f3ebf30d26a35780fd647f2JmltdHM9MTc5Mjk3MjgwMA&ptn=3&ver=2&hsh=4&fclid=3f32b0ff-faf4-6e0d-0fe8-a701fb036fac&u=a1aHR0cHM6Ly93d3cuYXV0b2hvdGtleS5jb20vZG9jcy92Mi8&ntb=1",
+        "target_url": "https://www.autohotkey.com/docs/v2/"
       },
       {
-        "title": "TOP 10 BEST Trader Joe Lend in Houston, TX, United States - Yelp",
-        "url": "https://www.bing.com/ck/a?!&&p=787c6f9bd46702a234e60a127657b8a360128d87d004be7bb23d08316184c3d9JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2ff46ae6-83eb-606f-3331-7d1a822e6104&u=a1aHR0cHM6Ly93d3cueWVscC5jYS9zZWFyY2g_ZmluZF9kZXNjPVRyYWRlcitKb2UrTGVuZCZmaW5kX2xvYz1Ib3VzdG9uJTJDK1RY&ntb=1",
-        "target_url": "https://www.yelp.ca/search?find_desc=Trader+Joe+Lend&find_loc=Houston%2C+TX"
-      },
-      {
-        "title": "Detailed Trader Joe Crypto app Review by DeFi Teller",
-        "url": "https://www.bing.com/ck/a?!&&p=4a0feb8488ca16d18fe146fb3f80b852f49c1983e100e3aac17f21db440c7183JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2ff46ae6-83eb-606f-3331-7d1a822e6104&u=a1aHR0cHM6Ly9kZWZpdGVsbGVyLmNvbS90cmFkZXItam9l&ntb=1",
-        "target_url": "https://defiteller.com/trader-joe"
-      },
-      {
-        "title": "Trader Joe, Avalanche’s first DEX: A Complete guide - Medium",
-        "url": "https://www.bing.com/ck/a?!&&p=47897176255dc4304e53e07cb8abdaed3cff516b7ce5387a0126563493a57e07JmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2ff46ae6-83eb-606f-3331-7d1a822e6104&u=a1aHR0cHM6Ly9tZWRpdW0uY29tL2NvaW5tb25rcy90cmFkZXItam9lLWd1aWRlLTIzYTYyZThlMzRmOQ&ntb=1",
-        "target_url": "https://medium.com/coinmonks/trader-joe-guide-23a62e8e34f9"
-      },
-      {
-        "title": "FAQs - Trader Joe's",
-        "url": "https://www.bing.com/ck/a?!&&p=b2b773f39805607228b398e021402581632584c1b099f7dbe35b9720f3a56f1aJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2ff46ae6-83eb-606f-3331-7d1a822e6104&u=a1aHR0cHM6Ly93d3cudHJhZGVyam9lcy5jb20vaG9tZS9GQVEuaHRtbA&ntb=1",
-        "target_url": "https://www.traderjoes.com/home/FAQ.html"
-      },
-      {
-        "title": "0 Trader Joe Lend jobs in United States - LinkedIn",
-        "url": "https://www.bing.com/ck/a?!&&p=26ebd80c506647dcb9caac9ecd226d0f19d1b72ee374be6e3d36cde939fd048cJmltdHM9MTc5MjgwMDAwMA&ptn=3&ver=2&hsh=4&fclid=2ff46ae6-83eb-606f-3331-7d1a822e6104&u=a1aHR0cHM6Ly93d3cubGlua2VkaW4uY29tL2pvYnMvdHJhZGVyLWpvZS1sZW5kLWpvYnM&ntb=1",
-        "target_url": "https://www.linkedin.com/jobs/trader-joe-lend-jobs"
+        "title": "Beginner Tutorial | AutoHotkey v2",
+        "url": "https://www.bing.com/ck/a?!&&p=987a50388da25293566d1f73c2f141bff212b526f25502e2661ef6e860767d43JmltdHM9MTc5Mjk3MjgwMA&ptn=3&ver=2&hsh=4&fclid=3f32b0ff-faf4-6e0d-0fe8-a701fb036fac&u=a1aHR0cHM6Ly93d3cuYXV0b2hvdGtleS5jb20vZG9jcy92Mi9UdXRvcmlhbC5odG0&ntb=1",
+        "target_url": "https://www.autohotkey.com/docs/v2/Tutorial.htm"
       }
     ],
     "repository_results": [],
@@ -100,10 +80,10 @@
     "engine": "yandex",
     "query": "ahk for gos",
     "requested_url": "https://yandex.ru/search/?text=ahk+for+gos",
-    "checked_at": "2026-10-24T12:40:35.608354+00:00",
+    "checked_at": "2026-10-26T10:59:37.280888+00:00",
     "visible_result_count": 0,
     "status": 200,
-    "final_url": "https://yandex.ru/showcaptcha?cc=1&form-fb-hint=2.1&mt=125E9D262A0B49E25CFADD6BD4A5D0BA0AC887D59497446138B6198CF42E1E17242E9F5C239F0C22F8FE77E8BE9E8C7C3E059B49A7AD45BF6FC7616B82818EEF1569E2D46D5DAC6EA5469704516AD89A7B64DB9812DDA36BB86813126A4634579E7B992F614A99FA4F11EB4830DAB467AA3D1E9D1324EAC8A611DAFDF0CFAA0F949E35FC7DB4F5B9&retpath=aHR0cHM6Ly95YW5kZXgucnUvc2VhcmNoP3RleHQ9YWhrK2Zvcitnb3M%2C_e90fef0939d6211add1133017df5c51b&t=2%252F1792845636%252F5fe7a833c2d284914bbbbcd0bb7616ff&u=9635369545179017081&s=17907eedef3c941f7c35305fba693f4b",
+    "final_url": "https://yandex.ru/showcaptcha?cc=1&form-fb-hint=2.1&mt=4DB5FC6180018F10F7A04447065836788375F2C72E7D3DD72E62219F81356601343C8686C228588B1B8C1524F3769804FC5068A1DC64091075BA598B7B6B5D6375F7B2023B1529093D30C5333C122282098499A78394D81674B55F6850485BE5CF9CAE6CFDA385EB1AC741776038203CDCBBBC62305D46C80719137277048818EF239429513E4BE42F&retpath=aHR0cHM6Ly95YW5kZXgucnUvc2VhcmNoP3RleHQ9YWhrK2Zvcitnb3M%2C_e90fef0939d6211add1133017df5c51b&t=2%252F1793012378%252F44dd8d53a7331ed927d55515820b3829&u=9646559430109042719&s=7a6971934f42a7ef4e143206425050f4",
     "title": "Вы не робот?",
     "results": [],
     "repository_results": [],
@@ -113,7 +93,7 @@
     "engine": "duckduckgo",
     "query": "ahk for gos",
     "requested_url": "https://html.duckduckgo.com/html/?q=ahk+for+gos",
-    "checked_at": "2026-10-24T12:40:35.625483+00:00",
+    "checked_at": "2026-10-26T10:59:37.287573+00:00",
     "visible_result_count": 0,
     "status": 202,
     "final_url": "https://html.duckduckgo.com/html/?q=ahk+for+gos",
@@ -126,7 +106,7 @@
     "engine": "github",
     "query": "ahk for gos",
     "requested_url": "https://github.com/search?q=ahk+for+gos&type=repositories",
-    "checked_at": "2026-10-24T12:40:35.681928+00:00",
+    "checked_at": "2026-10-26T10:59:37.359265+00:00",
     "visible_result_count": 1,
     "status": 200,
     "final_url": "https://github.com/search?q=ahk+for+gos&type=repositories",
