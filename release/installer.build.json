@@ -4,7 +4,7 @@
   "offline": true,
   "framework_runtime_required": false,
   "app_runtime": "AHK 1.1.37.02 ANSI x86",
-  "app_sha256": "a0f80dd96cfffbed26c5ed686f2e74fabcdb8c0f23c4f8e4ce5114727ab868c5",
+  "app_sha256": "774d7c70768c5d57f0d643890178b2c9fbe9b3cba8ac982dd681af05217a5d2f",
   "official_runtime_archive_sha256": "6f3663f7cdd25063c8c8728f5d9b07813ced8780522fd1f124ba539e2854215f",
   "installer_sources": {
     "installer/native/app.manifest": "4058551a1862d1ffe686358196b6e922ba4e514573cdb70aaac8a0aa19de656c",
@@ -19,8 +19,8 @@
     {
       "path": "AHK_FOR_GOS.exe",
       "modes": 1,
-      "bytes": 5379072,
-      "sha256": "a0f80dd96cfffbed26c5ed686f2e74fabcdb8c0f23c4f8e4ce5114727ab868c5"
+      "bytes": 5381120,
+      "sha256": "774d7c70768c5d57f0d643890178b2c9fbe9b3cba8ac982dd681af05217a5d2f"
     },
     {
       "path": "AHK_FOR_GOS_BY_SBEZRUK.ahk",
@@ -38,7 +38,7 @@
       "path": "Uninstall.exe",
       "modes": 3,
       "bytes": 1622016,
-      "sha256": "6db2bb22b08fff9b4c4fc77ca4769cf66bbdabaa5ca5af9e0d790b3004386714"
+      "sha256": "f43a2d283d1d806f9020465c91bc4f1735e55b5aabea8980ad2945a55fa91121"
     },
     {
       "path": "app\\actions.ahk",
@@ -169,8 +169,8 @@
     {
       "path": "app\\ui_settings.ahk",
       "modes": 2,
-      "bytes": 67338,
-      "sha256": "74a3bd85fec64af84da0dfe8a9b7e6b9574fec154727c38abe5508eefe4403d4"
+      "bytes": 67325,
+      "sha256": "3b50f7f82b4c447ffc4231b8eaa89e5432897e6cc05ef5ba088d9dfc29b369b9"
     },
     {
       "path": "assets\\defaults\\profiles.default.ini",
@@ -415,8 +415,8 @@
     {
       "path": "tests\\desktop_smoke.ahk",
       "modes": 2,
-      "bytes": 21577,
-      "sha256": "6f53758c0d7ae1d0378559c62bf9b75ffe11c4d973ce0c1516fc8d749d39a132"
+      "bytes": 22161,
+      "sha256": "4fcab3e538c3bb0b869c0f799fd7b393a8c3f8d189deb89da00c9b37ab737b13"
     },
     {
       "path": "tests\\id_capture_regression.ahk",
@@ -481,12 +481,12 @@
   ],
   "artifacts": {
     "AHK_FOR_GOS_Setup.exe": {
-      "bytes": 13486592,
-      "sha256": "4ddb0ab87b4780751a1a4b17b76ceb00baf7bfa200dbe8b3e98b771fa34cb9a7"
+      "bytes": 13489152,
+      "sha256": "bb2d37edae04ac1263a67e59ec821c54616073d132526c9973ec8dfee38c259b"
     },
     "AHK_FOR_GOS_Uninstall.exe": {
       "bytes": 1622016,
-      "sha256": "6db2bb22b08fff9b4c4fc77ca4769cf66bbdabaa5ca5af9e0d790b3004386714"
+      "sha256": "f43a2d283d1d806f9020465c91bc4f1735e55b5aabea8980ad2945a55fa91121"
     }
   }
 }

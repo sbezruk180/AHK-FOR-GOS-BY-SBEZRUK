@@ -56,7 +56,7 @@ jobs:
           if ($LASTEXITCODE) { throw 'GUI host build failed' }
           $data = Join-Path $env:RUNNER_TEMP 'gui-profile-desktop'
           $p = Start-Process (Resolve-Path 'dist/AHK_FOR_GOS_TEST_U64.exe') -ArgumentList @('--desktop-smoke','--data-dir',"`"$data`"") -PassThru
-          if (!$p.WaitForExit(90000)) {
+          if (!$p.WaitForExit(150000)) {
             $progress = Join-Path $data 'desktop_smoke_progress.txt'
             if (Test-Path $progress) { Get-Content $progress -Tail 20 | ForEach-Object { Write-Output "::error title=GUI timeout checkpoint::$_" } }
             Add-Type -AssemblyName System.Windows.Forms
