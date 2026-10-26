@@ -223,7 +223,7 @@ ServiceUI_CreateInputGui(state) {
     Gui, ServiceInput:-DPIScale
     UIStyle_SetTextRole(countdownHwnd, "accent")
     protected := Capture_BeforeShow("ServiceInput", state.ForcePrivacy)
-    if (state.ForcePrivacy && !protected) {
+    if (state.ForcePrivacy && OBSHideWindows = "On" && !protected) {
         ServiceUILastInputError := "Windows не подтвердила защиту окна от захвата. Ввод не открыт."
         return false
     }

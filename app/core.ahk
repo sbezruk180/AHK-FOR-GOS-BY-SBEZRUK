@@ -505,11 +505,11 @@ UpdateAutomationSettingsStatus() {
     safeText := "SafeMode: " . SafeModeEnabled . "   |   MockMode: " . MockMode . "   |   ×àò: " . ChatTransport_GetDisplayStatus()
     try
     {
-        GuiControl, 2:, CFG_AutomationQueueStatus, %queueText%
-        GuiControl, 2:, CFG_AutomationTaskStatus, %taskText%
-        GuiControl, 2:, CFG_AutomationSafeStatus, %safeText%
+        UIStyle_SetTextIfChanged("2", "CFG_AutomationQueueStatus", queueText)
+        UIStyle_SetTextIfChanged("2", "CFG_AutomationTaskStatus", taskText)
+        UIStyle_SetTextIfChanged("2", "CFG_AutomationSafeStatus", safeText)
         CFG_AutoReportStatus := AutoReport_GetStatusText()
-        GuiControl, 2:, CFG_AutoReportStatus, %CFG_AutoReportStatus%
+        UIStyle_SetTextIfChanged("2", "CFG_AutoReportStatus", CFG_AutoReportStatus)
     }
     catch e
         SettingsGuiReady := 0

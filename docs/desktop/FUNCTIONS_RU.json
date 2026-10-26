@@ -26,10 +26,44 @@
       "description": "Определить режим запуска и безопасную папку пользовательских данных."
     },
     {
-      "name": "AppHost_ArgumentValue",
+      "name": "AppHost_SeedDefaultProfile",
       "file": "app/host.ahk",
       "line": 47,
-      "end_line": 57,
+      "end_line": 101,
+      "kind": "application",
+      "subsystem": "EXE, пути данных, встроенные ресурсы",
+      "purpose": null,
+      "commands": [
+        "FileCopy",
+        "FileMove",
+        "FileDelete"
+      ],
+      "winapi": [
+        "GetCurrentProcessId",
+        "GetModuleHandle",
+        "FindResourceW",
+        "SizeofResource",
+        "LoadResource",
+        "LockResource"
+      ],
+      "first_statement": "if FileExist(target) / return true",
+      "sha256": "0984922288390285f710d16dd949a0e925f9be281aba17d49478c066842ad002",
+      "calls": [
+        "AppHost_ResourceText",
+        "LogError"
+      ],
+      "callers": [
+        "DesktopSmoke_Run",
+        "InitProfiles"
+      ],
+      "coverage": {},
+      "description": "EXE, пути данных, встроенные ресурсы: SeedDefaultProfile; операции: FileCopy, FileMove, FileDelete; код: if FileExist(target) / return true"
+    },
+    {
+      "name": "AppHost_ArgumentValue",
+      "file": "app/host.ahk",
+      "line": 103,
+      "end_line": 113,
       "kind": "application",
       "subsystem": "EXE, пути данных, встроенные ресурсы",
       "purpose": null,
@@ -47,8 +81,8 @@
     {
       "name": "AppHost_IsAbsolutePath",
       "file": "app/host.ahk",
-      "line": 59,
-      "end_line": 61,
+      "line": 115,
+      "end_line": 117,
       "kind": "application",
       "subsystem": "EXE, пути данных, встроенные ресурсы",
       "purpose": null,
@@ -68,8 +102,8 @@
     {
       "name": "AppHost_CanWrite",
       "file": "app/host.ahk",
-      "line": 63,
-      "end_line": 72,
+      "line": 119,
+      "end_line": 128,
       "kind": "application",
       "subsystem": "EXE, пути данных, встроенные ресурсы",
       "purpose": null,
@@ -92,8 +126,8 @@
     {
       "name": "AppHost_ImportLegacy",
       "file": "app/host.ahk",
-      "line": 74,
-      "end_line": 90,
+      "line": 130,
+      "end_line": 146,
       "kind": "application",
       "subsystem": "EXE, пути данных, встроенные ресурсы",
       "purpose": null,
@@ -115,8 +149,8 @@
     {
       "name": "AppHost_DataDir",
       "file": "app/host.ahk",
-      "line": 92,
-      "end_line": 95,
+      "line": 148,
+      "end_line": 151,
       "kind": "application",
       "subsystem": "EXE, пути данных, встроенные ресурсы",
       "purpose": null,
@@ -158,8 +192,8 @@
     {
       "name": "AppHost_ResourceText",
       "file": "app/host.ahk",
-      "line": 97,
-      "end_line": 106,
+      "line": 153,
+      "end_line": 162,
       "kind": "application",
       "subsystem": "EXE, пути данных, встроенные ресурсы",
       "purpose": null,
@@ -175,6 +209,7 @@
       "sha256": "fc9599200e4d83c2c7663687c6cdbcfeab4f4f624f253afab09d72320b631e84",
       "calls": [],
       "callers": [
+        "AppHost_SeedDefaultProfile",
         "AppHost_ReadLaw",
         "AppHost_SourceText",
         "AppHost_SourceFile",
@@ -189,8 +224,8 @@
     {
       "name": "AppHost_LawPath",
       "file": "app/host.ahk",
-      "line": 108,
-      "end_line": 113,
+      "line": 164,
+      "end_line": 169,
       "kind": "application",
       "subsystem": "EXE, пути данных, встроенные ресурсы",
       "purpose": null,
@@ -212,8 +247,8 @@
     {
       "name": "AppHost_ReadLaw",
       "file": "app/host.ahk",
-      "line": 115,
-      "end_line": 125,
+      "line": 171,
+      "end_line": 181,
       "kind": "application",
       "subsystem": "EXE, пути данных, встроенные ресурсы",
       "purpose": null,
@@ -240,8 +275,8 @@
     {
       "name": "AppHost_UseUpdatedBundledLaw",
       "file": "app/host.ahk",
-      "line": 129,
-      "end_line": 133,
+      "line": 185,
+      "end_line": 189,
       "kind": "application",
       "subsystem": "EXE, пути данных, встроенные ресурсы",
       "purpose": null,
@@ -263,8 +298,8 @@
     {
       "name": "AppHost_IsPreviousLawDigest",
       "file": "app/host.ahk",
-      "line": 135,
-      "end_line": 138,
+      "line": 191,
+      "end_line": 194,
       "kind": "application",
       "subsystem": "EXE, пути данных, встроенные ресурсы",
       "purpose": null,
@@ -285,8 +320,8 @@
     {
       "name": "AppHost_PreviousLawDigest",
       "file": "app/host.ahk",
-      "line": 140,
-      "end_line": 153,
+      "line": 196,
+      "end_line": 209,
       "kind": "application",
       "subsystem": "EXE, пути данных, встроенные ресурсы",
       "purpose": null,
@@ -305,8 +340,8 @@
     {
       "name": "AppHost_AssetPath",
       "file": "app/host.ahk",
-      "line": 155,
-      "end_line": 161,
+      "line": 211,
+      "end_line": 217,
       "kind": "application",
       "subsystem": "EXE, пути данных, встроенные ресурсы",
       "purpose": null,
@@ -328,8 +363,8 @@
     {
       "name": "AppHost_SourceText",
       "file": "app/host.ahk",
-      "line": 163,
-      "end_line": 168,
+      "line": 219,
+      "end_line": 224,
       "kind": "application",
       "subsystem": "EXE, пути данных, встроенные ресурсы",
       "purpose": null,
@@ -353,8 +388,8 @@
     {
       "name": "AppHost_ExpandSource",
       "file": "app/host.ahk",
-      "line": 170,
-      "end_line": 191,
+      "line": 226,
+      "end_line": 247,
       "kind": "application",
       "subsystem": "EXE, пути данных, встроенные ресурсы",
       "purpose": null,
@@ -378,8 +413,8 @@
     {
       "name": "AppHost_SourceFile",
       "file": "app/host.ahk",
-      "line": 193,
-      "end_line": 204,
+      "line": 249,
+      "end_line": 260,
       "kind": "application",
       "subsystem": "EXE, пути данных, встроенные ресурсы",
       "purpose": null,
@@ -408,8 +443,8 @@
     {
       "name": "AppHost_Shutdown",
       "file": "app/host.ahk",
-      "line": 206,
-      "end_line": 222,
+      "line": 262,
+      "end_line": 278,
       "kind": "application",
       "subsystem": "EXE, пути данных, встроенные ресурсы",
       "purpose": null,
@@ -431,8 +466,8 @@
     {
       "name": "AppHost_RuntimeInfo",
       "file": "app/host.ahk",
-      "line": 224,
-      "end_line": 246,
+      "line": 280,
+      "end_line": 302,
       "kind": "application",
       "subsystem": "EXE, пути данных, встроенные ресурсы",
       "purpose": "Экспортировать сведения о фактическом runtime и ресурсах.",
@@ -458,8 +493,8 @@
     {
       "name": "AppHost_ExportLicenses",
       "file": "app/host.ahk",
-      "line": 248,
-      "end_line": 262,
+      "line": 304,
+      "end_line": 318,
       "kind": "application",
       "subsystem": "EXE, пути данных, встроенные ресурсы",
       "purpose": null,
@@ -481,8 +516,8 @@
     {
       "name": "AppHost_SpawnDiagnostic",
       "file": "app/host.ahk",
-      "line": 264,
-      "end_line": 285,
+      "line": 320,
+      "end_line": 341,
       "kind": "application",
       "subsystem": "EXE, пути данных, встроенные ресурсы",
       "purpose": null,
@@ -503,8 +538,8 @@
     {
       "name": "AppHost_ShowReport",
       "file": "app/host.ahk",
-      "line": 288,
-      "end_line": 301,
+      "line": 344,
+      "end_line": 357,
       "kind": "application",
       "subsystem": "EXE, пути данных, встроенные ресурсы",
       "purpose": null,
@@ -2120,6 +2155,7 @@
         "MemoryExpectedBuildMatches",
         "LawSearch_CorpusFingerprint",
         "Audit_MemoryCompatNative",
+        "DesktopSmoke_Run",
         "RunAuditSelfTest",
         "GetAzmpModuleInfo"
       ],
@@ -3944,7 +3980,8 @@
       "calls": [],
       "callers": [
         "Capture_ApplyWindow",
-        "Capture_RefreshWindows"
+        "Capture_RefreshWindows",
+        "DesktopSmoke_Run"
       ],
       "coverage": {},
       "description": "безопасный ввод, очереди, файлы, совместимость: Прочитать Affinity; код: affinity := 0 / lastError := 0"
@@ -3994,16 +4031,18 @@
       "name": "Capture_BeforeShow",
       "file": "runtime_support.ahk",
       "line": 636,
-      "end_line": 648,
+      "end_line": 651,
       "kind": "application",
       "subsystem": "безопасный ввод, очереди, файлы, совместимость",
       "purpose": null,
       "commands": [
         "Gui"
       ],
-      "winapi": [],
+      "winapi": [
+        "GetProp"
+      ],
       "first_statement": "if (guiName = \"\") / return false",
-      "sha256": "83b8d47188500f80595b7747dd35d07048660eca9a5bb4ba1ed21a537d8f2266",
+      "sha256": "2f8894b6aabacefd84f711544233a239cf0951cfbb3c8731554b47365b6db9d1",
       "calls": [
         "UI_PrepareWindow",
         "UIStyle_Apply",
@@ -4039,8 +4078,8 @@
     {
       "name": "Capture_ApplyWindow",
       "file": "runtime_support.ahk",
-      "line": 650,
-      "end_line": 695,
+      "line": 653,
+      "end_line": 698,
       "kind": "application",
       "subsystem": "безопасный ввод, очереди, файлы, совместимость",
       "purpose": null,
@@ -4050,7 +4089,7 @@
         "user32\\SetWindowDisplayAffinity"
       ],
       "first_statement": "if (!Capture_IsOwnGui(hwnd)) / return false",
-      "sha256": "caa8dbbd2ce2b0aafab1eab12917ad3d67a56813fec3f917cf50998499912b86",
+      "sha256": "277749e82d0c5d2f541cc97deadb8b82a9497706819651242fb9a45a5764ccf7",
       "calls": [
         "Capture_IsOwnGui",
         "TickNow",
@@ -4068,21 +4107,43 @@
       "description": "безопасный ввод, очереди, файлы, совместимость: Применить окно; код: if (!Capture_IsOwnGui(hwnd)) / return false"
     },
     {
-      "name": "Capture_RefreshWindows",
+      "name": "Capture_ModeChanged",
       "file": "runtime_support.ahk",
-      "line": 697,
-      "end_line": 779,
+      "line": 700,
+      "end_line": 711,
       "kind": "application",
       "subsystem": "безопасный ввод, очереди, файлы, совместимость",
       "purpose": null,
-      "commands": [
-        "GuiControl"
+      "commands": [],
+      "winapi": [],
+      "first_statement": "if !SettingsGui_CanUpdate() / return false",
+      "sha256": "8067eaa5b9fa75970cead232b47abb0992c59d5f7b2593a6b8c722b97606f4ec",
+      "calls": [
+        "SettingsGui_CanUpdate",
+        "NormalizeOnOff",
+        "Capture_RefreshWindows",
+        "SaveUISettings"
       ],
+      "callers": [
+        "DesktopSmoke_Run"
+      ],
+      "coverage": {},
+      "description": "безопасный ввод, очереди, файлы, совместимость: ModeChanged; код: if !SettingsGui_CanUpdate() / return false"
+    },
+    {
+      "name": "Capture_RefreshWindows",
+      "file": "runtime_support.ahk",
+      "line": 713,
+      "end_line": 795,
+      "kind": "application",
+      "subsystem": "безопасный ввод, очереди, файлы, совместимость",
+      "purpose": null,
+      "commands": [],
       "winapi": [
         "kernel32\\GetCurrentProcessId"
       ],
       "first_statement": "if (CaptureRefreshBusy) / return",
-      "sha256": "c12624c430a19d859fdc6f6b58af7b914080c1329f7e82b18c17589550b3362d",
+      "sha256": "534d1ab075a13aba3020f09a05d62abedbe7a688e8fa11ab7327e26346d1bafa",
       "calls": [
         "Capture_GetEnvironment",
         "TickNow",
@@ -4091,19 +4152,22 @@
         "Capture_AffinityMatches",
         "Capture_ShouldRetry",
         "Capture_ApplyWindow",
-        "SettingsGui_CanUpdate"
+        "SettingsGui_CanUpdate",
+        "UIStyle_SetTextIfChanged"
       ],
       "callers": [
+        "Capture_ModeChanged",
+        "DesktopSmoke_Run",
         "ApplyCfgUiValuesToGlobals"
       ],
       "coverage": {},
-      "description": "безопасный ввод, очереди, файлы, совместимость: Обновить Windows; операции: GuiControl; код: if (CaptureRefreshBusy) / return"
+      "description": "безопасный ввод, очереди, файлы, совместимость: Обновить Windows; код: if (CaptureRefreshBusy) / return"
     },
     {
       "name": "Capture_GetDiagnosticsText",
       "file": "runtime_support.ahk",
-      "line": 781,
-      "end_line": 792,
+      "line": 797,
+      "end_line": 808,
       "kind": "application",
       "subsystem": "безопасный ввод, очереди, файлы, совместимость",
       "purpose": null,
@@ -4121,8 +4185,8 @@
     {
       "name": "Settings_NormalizeViewport",
       "file": "runtime_support.ahk",
-      "line": 794,
-      "end_line": 811,
+      "line": 810,
+      "end_line": 827,
       "kind": "application",
       "subsystem": "безопасный ввод, очереди, файлы, совместимость",
       "purpose": null,
@@ -4143,8 +4207,8 @@
     {
       "name": "Settings_UpdateScrollbars",
       "file": "runtime_support.ahk",
-      "line": 813,
-      "end_line": 833,
+      "line": 829,
+      "end_line": 849,
       "kind": "application",
       "subsystem": "безопасный ввод, очереди, файлы, совместимость",
       "purpose": null,
@@ -4169,8 +4233,8 @@
     {
       "name": "Settings_ScrollMessage",
       "file": "runtime_support.ahk",
-      "line": 835,
-      "end_line": 865,
+      "line": 851,
+      "end_line": 881,
       "kind": "application",
       "subsystem": "безопасный ввод, очереди, файлы, совместимость",
       "purpose": null,
@@ -4193,8 +4257,8 @@
     {
       "name": "Settings_MouseWheel",
       "file": "runtime_support.ahk",
-      "line": 867,
-      "end_line": 881,
+      "line": 883,
+      "end_line": 897,
       "kind": "application",
       "subsystem": "безопасный ввод, очереди, файлы, совместимость",
       "purpose": null,
@@ -4214,8 +4278,8 @@
     {
       "name": "IsBindCatalogEntryEditable",
       "file": "runtime_support.ahk",
-      "line": 883,
-      "end_line": 885,
+      "line": 899,
+      "end_line": 901,
       "kind": "application",
       "subsystem": "безопасный ввод, очереди, файлы, совместимость",
       "purpose": null,
@@ -4235,8 +4299,8 @@
     {
       "name": "LawSearch_CorpusFingerprint",
       "file": "runtime_support.ahk",
-      "line": 889,
-      "end_line": 905,
+      "line": 905,
+      "end_line": 921,
       "kind": "application",
       "subsystem": "безопасный ввод, очереди, файлы, совместимость",
       "purpose": null,
@@ -4260,8 +4324,8 @@
     {
       "name": "LawSearch_QueryFilters",
       "file": "runtime_support.ahk",
-      "line": 907,
-      "end_line": 930,
+      "line": 923,
+      "end_line": 946,
       "kind": "application",
       "subsystem": "безопасный ввод, очереди, файлы, совместимость",
       "purpose": null,
@@ -4282,8 +4346,8 @@
     {
       "name": "Hotstring_AdmitPattern",
       "file": "runtime_support.ahk",
-      "line": 932,
-      "end_line": 940,
+      "line": 948,
+      "end_line": 956,
       "kind": "application",
       "subsystem": "безопасный ввод, очереди, файлы, совместимость",
       "purpose": null,
@@ -4302,8 +4366,8 @@
     {
       "name": "JoinStrings",
       "file": "runtime_support.ahk",
-      "line": 943,
-      "end_line": 948,
+      "line": 959,
+      "end_line": 964,
       "kind": "application",
       "subsystem": "безопасный ввод, очереди, файлы, совместимость",
       "purpose": null,
@@ -4322,8 +4386,8 @@
     {
       "name": "ChatQueue_CancelBatch",
       "file": "runtime_support.ahk",
-      "line": 950,
-      "end_line": 962,
+      "line": 966,
+      "end_line": 978,
       "kind": "application",
       "subsystem": "безопасный ввод, очереди, файлы, совместимость",
       "purpose": null,
@@ -4342,8 +4406,8 @@
     {
       "name": "ImageDimensionsBounded",
       "file": "runtime_support.ahk",
-      "line": 964,
-      "end_line": 983,
+      "line": 980,
+      "end_line": 999,
       "kind": "application",
       "subsystem": "безопасный ввод, очереди, файлы, совместимость",
       "purpose": null,
@@ -4368,8 +4432,8 @@
     {
       "name": "QueueMenu_Run",
       "file": "runtime_support.ahk",
-      "line": 985,
-      "end_line": 1012,
+      "line": 1001,
+      "end_line": 1028,
       "kind": "application",
       "subsystem": "безопасный ввод, очереди, файлы, совместимость",
       "purpose": null,
@@ -4393,8 +4457,8 @@
     {
       "name": "LawSearchVocabulary_Build",
       "file": "runtime_support.ahk",
-      "line": 1014,
-      "end_line": 1025,
+      "line": 1030,
+      "end_line": 1041,
       "kind": "application",
       "subsystem": "безопасный ввод, очереди, файлы, совместимость",
       "purpose": null,
@@ -4415,8 +4479,8 @@
     {
       "name": "LawSearchVocabulary_Add",
       "file": "runtime_support.ahk",
-      "line": 1027,
-      "end_line": 1031,
+      "line": 1043,
+      "end_line": 1047,
       "kind": "application",
       "subsystem": "безопасный ввод, очереди, файлы, совместимость",
       "purpose": null,
@@ -4434,8 +4498,8 @@
     {
       "name": "LawSearch_CorrectToken",
       "file": "runtime_support.ahk",
-      "line": 1033,
-      "end_line": 1049,
+      "line": 1049,
+      "end_line": 1065,
       "kind": "application",
       "subsystem": "безопасный ввод, очереди, файлы, совместимость",
       "purpose": null,
@@ -4455,8 +4519,8 @@
     {
       "name": "SendChatForEpoch",
       "file": "runtime_support.ahk",
-      "line": 1051,
-      "end_line": 1055,
+      "line": 1067,
+      "end_line": 1071,
       "kind": "application",
       "subsystem": "безопасный ввод, очереди, файлы, совместимость",
       "purpose": null,
@@ -4480,8 +4544,8 @@
     {
       "name": "PasteOnlyForEpoch",
       "file": "runtime_support.ahk",
-      "line": 1057,
-      "end_line": 1061,
+      "line": 1073,
+      "end_line": 1077,
       "kind": "application",
       "subsystem": "безопасный ввод, очереди, файлы, совместимость",
       "purpose": null,
@@ -4501,8 +4565,8 @@
     {
       "name": "TypeChatForEpoch",
       "file": "runtime_support.ahk",
-      "line": 1063,
-      "end_line": 1075,
+      "line": 1079,
+      "end_line": 1091,
       "kind": "application",
       "subsystem": "безопасный ввод, очереди, файлы, совместимость",
       "purpose": null,
@@ -4527,8 +4591,8 @@
     {
       "name": "ChatLogReader_CursorSignature",
       "file": "runtime_support.ahk",
-      "line": 1078,
-      "end_line": 1095,
+      "line": 1094,
+      "end_line": 1111,
       "kind": "application",
       "subsystem": "безопасный ввод, очереди, файлы, совместимость",
       "purpose": null,
@@ -4546,8 +4610,8 @@
     {
       "name": "Settings_RecordExtent",
       "file": "runtime_support.ahk",
-      "line": 1097,
-      "end_line": 1102,
+      "line": 1113,
+      "end_line": 1118,
       "kind": "application",
       "subsystem": "безопасный ввод, очереди, файлы, совместимость",
       "purpose": null,
@@ -4568,8 +4632,8 @@
     {
       "name": "Settings_ResetScroll",
       "file": "runtime_support.ahk",
-      "line": 1104,
-      "end_line": 1109,
+      "line": 1120,
+      "end_line": 1125,
       "kind": "application",
       "subsystem": "безопасный ввод, очереди, файлы, совместимость",
       "purpose": null,
@@ -4589,8 +4653,8 @@
     {
       "name": "Settings_ActivateLayout",
       "file": "runtime_support.ahk",
-      "line": 1111,
-      "end_line": 1129,
+      "line": 1127,
+      "end_line": 1145,
       "kind": "application",
       "subsystem": "безопасный ввод, очереди, файлы, совместимость",
       "purpose": null,
@@ -4613,8 +4677,8 @@
     {
       "name": "UI_MeasureTextHeight",
       "file": "runtime_support.ahk",
-      "line": 1131,
-      "end_line": 1153,
+      "line": 1147,
+      "end_line": 1169,
       "kind": "application",
       "subsystem": "безопасный ввод, очереди, файлы, совместимость",
       "purpose": null,
@@ -4639,8 +4703,8 @@
     {
       "name": "UI_PrepareWindow",
       "file": "runtime_support.ahk",
-      "line": 1155,
-      "end_line": 1191,
+      "line": 1171,
+      "end_line": 1207,
       "kind": "application",
       "subsystem": "безопасный ввод, очереди, файлы, совместимость",
       "purpose": null,
@@ -4665,8 +4729,8 @@
     {
       "name": "PasteChatForEpoch",
       "file": "runtime_support.ahk",
-      "line": 1194,
-      "end_line": 1232,
+      "line": 1210,
+      "end_line": 1248,
       "kind": "application",
       "subsystem": "безопасный ввод, очереди, файлы, совместимость",
       "purpose": null,
@@ -4692,8 +4756,8 @@
     {
       "name": "ChatTransport_TypingDelayOverride",
       "file": "runtime_support.ahk",
-      "line": 1235,
-      "end_line": 1239,
+      "line": 1251,
+      "end_line": 1255,
       "kind": "application",
       "subsystem": "безопасный ввод, очереди, файлы, совместимость",
       "purpose": null,
@@ -4712,8 +4776,8 @@
     {
       "name": "AutomationEpoch_IsCurrent",
       "file": "runtime_support.ahk",
-      "line": 1241,
-      "end_line": 1243,
+      "line": 1257,
+      "end_line": 1259,
       "kind": "application",
       "subsystem": "безопасный ввод, очереди, файлы, совместимость",
       "purpose": null,
@@ -4729,8 +4793,8 @@
     {
       "name": "QueueItem_IsCurrent",
       "file": "runtime_support.ahk",
-      "line": 1245,
-      "end_line": 1249,
+      "line": 1261,
+      "end_line": 1265,
       "kind": "application",
       "subsystem": "безопасный ввод, очереди, файлы, совместимость",
       "purpose": "Проверить поколение действия и актуальность пакета.",
@@ -4748,8 +4812,8 @@
     {
       "name": "QueueBatch_Wait",
       "file": "runtime_support.ahk",
-      "line": 1251,
-      "end_line": 1264,
+      "line": 1267,
+      "end_line": 1280,
       "kind": "application",
       "subsystem": "безопасный ввод, очереди, файлы, совместимость",
       "purpose": null,
@@ -6262,7 +6326,7 @@
       ],
       "winapi": [],
       "first_statement": "bg := \"\", panel := \"\", fg := \"\", accent := \"\", muted := \"\" / GetThemeColors(bg, panel, fg, accent, muted)",
-      "sha256": "28694aaea32fe7133eea3d394ff6dc61a016357b19d6d9906e77471aa81db98a",
+      "sha256": "d3d6896d70b1719c4b0331d62d47705e8a332c90a980156b8a5e4b6b8a60dd69",
       "calls": [
         "GetThemeColors",
         "GetControlSurfaceColors",
@@ -7000,7 +7064,8 @@
       "callers": [
         "TextCommands_OpenerTriggers",
         "TextCommands_GetAliasRoutes",
-        "TextCommands_RunRegression"
+        "TextCommands_RunRegression",
+        "NormalizeHotkeyValue"
       ],
       "coverage": {},
       "description": "разбор и алиасы TXT-команд: LayoutVariant; код: StringLower, text, text / russian := RegExMatch(text, \"[а-яё]\")"
@@ -7712,7 +7777,7 @@
       "name": "UIStyle_Apply",
       "file": "ui_style.ahk",
       "line": 24,
-      "end_line": 118,
+      "end_line": 119,
       "kind": "application",
       "subsystem": "единая тема и геометрия GUI",
       "purpose": null,
@@ -7732,7 +7797,7 @@
         "RedrawWindow"
       ],
       "first_statement": "if (!hwnd || !DllCall(\"IsWindow\", \"Ptr\", hwnd)) / return false",
-      "sha256": "76c3388f6f5a1636b85adf749db50657a18298292f1dff5af2009153a2f2a3cf",
+      "sha256": "804cfcb9e256747e9701d624f321c2c1391c83928c884ca8c0b5c0dd914f8989",
       "calls": [
         "UIStyle_Install",
         "UIStyle_Prune",
@@ -7756,8 +7821,8 @@
     {
       "name": "UIStyle_FlattenControl",
       "file": "ui_style.ahk",
-      "line": 120,
-      "end_line": 131,
+      "line": 121,
+      "end_line": 132,
       "kind": "application",
       "subsystem": "единая тема и геометрия GUI",
       "purpose": null,
@@ -7779,8 +7844,8 @@
     {
       "name": "UIStyle_GetPalette",
       "file": "ui_style.ahk",
-      "line": 133,
-      "end_line": 144,
+      "line": 134,
+      "end_line": 145,
       "kind": "application",
       "subsystem": "единая тема и геометрия GUI",
       "purpose": null,
@@ -7801,8 +7866,8 @@
     {
       "name": "UIStyle_ControlBackground",
       "file": "ui_style.ahk",
-      "line": 146,
-      "end_line": 176,
+      "line": 147,
+      "end_line": 177,
       "kind": "application",
       "subsystem": "единая тема и геометрия GUI",
       "purpose": null,
@@ -7825,8 +7890,8 @@
     {
       "name": "UIStyle_ControlColor",
       "file": "ui_style.ahk",
-      "line": 178,
-      "end_line": 224,
+      "line": 179,
+      "end_line": 225,
       "kind": "application",
       "subsystem": "единая тема и геометрия GUI",
       "purpose": null,
@@ -7856,8 +7921,8 @@
     {
       "name": "UIStyle_DrawButton",
       "file": "ui_style.ahk",
-      "line": 226,
-      "end_line": 340,
+      "line": 227,
+      "end_line": 341,
       "kind": "application",
       "subsystem": "единая тема и геометрия GUI",
       "purpose": null,
@@ -7901,8 +7966,8 @@
     {
       "name": "UIStyle_SetButtonRole",
       "file": "ui_style.ahk",
-      "line": 342,
-      "end_line": 345,
+      "line": 343,
+      "end_line": 346,
       "kind": "application",
       "subsystem": "единая тема и геометрия GUI",
       "purpose": null,
@@ -7916,6 +7981,7 @@
       "callers": [
         "ServiceUI_ShowDetails",
         "ServiceUI_Confirm",
+        "DesktopSmoke_Run",
         "Settings_SwitchPage",
         "BuildSettingsGui"
       ],
@@ -7925,8 +7991,8 @@
     {
       "name": "UIStyle_SetTextRole",
       "file": "ui_style.ahk",
-      "line": 347,
-      "end_line": 350,
+      "line": 348,
+      "end_line": 351,
       "kind": "application",
       "subsystem": "единая тема и геометрия GUI",
       "purpose": null,
@@ -7954,19 +8020,20 @@
     {
       "name": "UIStyle_SetRole",
       "file": "ui_style.ahk",
-      "line": 352,
-      "end_line": 359,
+      "line": 353,
+      "end_line": 362,
       "kind": "application",
       "subsystem": "единая тема и геометрия GUI",
       "purpose": null,
       "commands": [],
       "winapi": [
         "IsWindow",
+        "GetProp",
         "SetProp",
         "InvalidateRect"
       ],
       "first_statement": "if (!hwnd || !DllCall(\"IsWindow\", \"Ptr\", hwnd) || !roles.HasKey(role)) / return false",
-      "sha256": "19952aabe1c199555c24db2818f94768526e8938d9e8a623d33b3a18af840c42",
+      "sha256": "79bcff1589e7e5447e67fe9f51f0970f7ae989fe57abaa5f4a34e4625b885933",
       "calls": [],
       "callers": [
         "UIStyle_SetButtonRole",
@@ -7978,8 +8045,8 @@
     {
       "name": "UIStyle_BlendColors",
       "file": "ui_style.ahk",
-      "line": 361,
-      "end_line": 369,
+      "line": 364,
+      "end_line": 372,
       "kind": "application",
       "subsystem": "единая тема и геометрия GUI",
       "purpose": null,
@@ -8000,8 +8067,8 @@
     {
       "name": "UIStyle_Prune",
       "file": "ui_style.ahk",
-      "line": 371,
-      "end_line": 393,
+      "line": 374,
+      "end_line": 396,
       "kind": "application",
       "subsystem": "единая тема и геометрия GUI",
       "purpose": null,
@@ -8022,8 +8089,8 @@
     {
       "name": "UIStyle_Shutdown",
       "file": "ui_style.ahk",
-      "line": 395,
-      "end_line": 406,
+      "line": 398,
+      "end_line": 409,
       "kind": "application",
       "subsystem": "единая тема и геометрия GUI",
       "purpose": null,
@@ -8041,8 +8108,8 @@
     {
       "name": "UIStyle_SetTextIfChanged",
       "file": "ui_style.ahk",
-      "line": 408,
-      "end_line": 414,
+      "line": 411,
+      "end_line": 417,
       "kind": "application",
       "subsystem": "единая тема и геометрия GUI",
       "purpose": null,
@@ -8054,6 +8121,8 @@
       "sha256": "ba02d6d6e02a93ea2545cc5921890746c5c132217370949335f924b1344cee3e",
       "calls": [],
       "callers": [
+        "Capture_RefreshWindows",
+        "UpdateAutomationSettingsStatus",
         "UpdateHUD"
       ],
       "coverage": {},
@@ -8456,17 +8525,17 @@
       "name": "DesktopSmoke_Run",
       "file": "tests/desktop_smoke.ahk",
       "line": 3,
-      "end_line": 214,
+      "end_line": 259,
       "kind": "test",
       "subsystem": "тесты",
       "purpose": null,
       "commands": [
         "IniRead",
+        "FileDelete",
         "Gui",
         "WinActivate",
         "GuiControl",
         "FileCopy",
-        "FileDelete",
         "FileAppend",
         "ExitApp"
       ],
@@ -8474,25 +8543,33 @@
         "CreateMutex",
         "CloseHandle",
         "GetForegroundWindow",
+        "GetWindowLong",
         "IsWindow",
         "IsWindowVisible",
         "GetClientRect",
         "MapWindowPoints",
         "GetWindowRect",
-        "GetWindowLong"
+        "ValidateRect",
+        "GetUpdateRect"
       ],
       "first_statement": "DesktopSmokeReport := \"Desktop integration probe`r`nRuntime=\" . A_AhkVersion . \" | Unicode=\" . A_IsUnicode . \" | PtrSize=\" . A_PtrSize . \"`r`n\" / DesktopSmokeReport .= \"Compiled=\" . A_IsCompiled . \" |",
-      "sha256": "20ac3256bbf4a207f1305f0f46fbd0cba1d1b30883f4ea03c24aa17f6f0a2a44",
+      "sha256": "a925b337dea0d5af6ea950c420331ae1530b092244e0225007802095afc1fbe6",
       "calls": [
         "AppHost_DataDir",
         "DesktopSmoke_Memory",
         "DesktopSmoke_Assert",
         "AcquireAppInstance",
+        "AppHost_SeedDefaultProfile",
+        "IniReadText",
+        "CheckedIniWrite",
+        "FileSHA256",
+        "NormalizeHotkeyValue",
         "ApplyAllBinds",
         "GetBindCatalog",
         "V1_CheckCatalog",
         "UIStyle_BlendColors",
         "OpenSettings",
+        "UIStyle_SetButtonRole",
         "GetSettingsPageCatalog",
         "Settings_SwitchPage",
         "Settings_NavClick",
@@ -8510,7 +8587,9 @@
         "ServiceUI_NewInputState",
         "TickNow",
         "ServiceUI_CreateInputGui",
-        "CheckedIniWrite",
+        "Capture_ModeChanged",
+        "Capture_ReadAffinity",
+        "Capture_RefreshWindows",
         "SaveProfile",
         "LoadProfile",
         "ChatQueue_Enqueue",
@@ -8542,13 +8621,13 @@
       ],
       "callers": [],
       "coverage": {},
-      "description": "тесты: Выполнить ; операции: IniRead, Gui, WinActivate, GuiControl, FileCopy, FileDelete, FileAppend, ExitApp; код: DesktopSmokeReport := \"Desktop integration probe`r`nRuntime=\" . A_AhkVersion . \" | Unicode=\" . A_IsU"
+      "description": "тесты: Выполнить ; операции: IniRead, FileDelete, Gui, WinActivate, GuiControl, FileCopy, FileAppend, ExitApp; код: DesktopSmokeReport := \"Desktop integration probe`r`nRuntime=\" . A_AhkVersion . \" | Unicode=\" . A_IsU"
     },
     {
       "name": "DesktopSmoke_Assert",
       "file": "tests/desktop_smoke.ahk",
-      "line": 216,
-      "end_line": 222,
+      "line": 261,
+      "end_line": 267,
       "kind": "test",
       "subsystem": "тесты",
       "purpose": null,
@@ -8568,8 +8647,8 @@
     {
       "name": "DesktopSmoke_Memory",
       "file": "tests/desktop_smoke.ahk",
-      "line": 225,
-      "end_line": 235,
+      "line": 270,
+      "end_line": 280,
       "kind": "test",
       "subsystem": "тесты",
       "purpose": null,
@@ -8590,8 +8669,8 @@
     {
       "name": "DesktopSmoke_NoInputOverlap",
       "file": "tests/desktop_smoke.ahk",
-      "line": 239,
-      "end_line": 261,
+      "line": 284,
+      "end_line": 306,
       "kind": "test",
       "subsystem": "тесты",
       "purpose": null,
@@ -18842,6 +18921,7 @@
         "RotateOwnedLog"
       ],
       "callers": [
+        "AppHost_SeedDefaultProfile",
         "ConfigCommit",
         "ChatQueue_CompleteItem",
         "GameMenu_Run",
@@ -19020,6 +19100,7 @@
       "sha256": "6cbe876edb5905b87cddb57376a1d98d888f43205cd90538082c4ef869803d14",
       "calls": [],
       "callers": [
+        "Capture_ModeChanged",
         "LoadUIAppearanceFromIni",
         "NormalizeLoadedUISettings",
         "LoadContextAssistantProfileFromIni",
@@ -19737,17 +19818,16 @@
       "kind": "application",
       "subsystem": "ядро и служебные операции",
       "purpose": null,
-      "commands": [
-        "GuiControl"
-      ],
+      "commands": [],
       "winapi": [],
       "first_statement": "if !SettingsGui_CanUpdate() / return",
-      "sha256": "3bd04fee2e851875eb216316b0e21764e33be38b84a5d71d1926f0d829a846b1",
+      "sha256": "0047ab566dec44ab17388dfbee0a958fe9428175a55cbcb0ac6869308f49b41d",
       "calls": [
         "SettingsGui_CanUpdate",
         "ChatQueue_StatusText",
         "TaskScheduler_StatusText",
         "ChatTransport_GetDisplayStatus",
+        "UIStyle_SetTextIfChanged",
         "AutoReport_GetStatusText"
       ],
       "callers": [
@@ -19761,7 +19841,7 @@
         "ChatQueue_Clear"
       ],
       "coverage": {},
-      "description": "ядро и служебные операции: Обновить Automation настройки состояние; операции: GuiControl; код: if !SettingsGui_CanUpdate() / return"
+      "description": "ядро и служебные операции: Обновить Automation настройки состояние; код: if !SettingsGui_CanUpdate() / return"
     },
     {
       "name": "RunBackgroundTool",
@@ -21273,6 +21353,7 @@
         "DecodeIniText"
       ],
       "callers": [
+        "DesktopSmoke_Run",
         "RunAuditSelfTest",
         "V1_RunMigrationTest",
         "LoadUIAppearanceFromIni",
@@ -21524,6 +21605,7 @@
         "ConfigCommit"
       ],
       "callers": [
+        "Capture_ModeChanged",
         "DesktopSmoke_Run",
         "SaveGuiToGlobals",
         "InitProfiles",
@@ -22251,7 +22333,7 @@
       "name": "InitProfiles",
       "file": "app/profiles.ahk",
       "line": 1260,
-      "end_line": 1281,
+      "end_line": 1283,
       "kind": "application",
       "subsystem": "профили, INI, миграции",
       "purpose": null,
@@ -22260,9 +22342,10 @@
       ],
       "winapi": [],
       "first_statement": "if !EnsureConfigFilePath(\"InitProfiles\") / return",
-      "sha256": "7f410d77d1709b04235ae423ae075b77eb20f9626b4167407e94d765b14d7fe2",
+      "sha256": "1d4959e1fa5f182e2430a36e123af36aab7313fa9dae6a9daefacc723dde2190",
       "calls": [
         "EnsureConfigFilePath",
+        "AppHost_SeedDefaultProfile",
         "SaveProfile",
         "CheckedIniWrite",
         "SaveUISettings",
@@ -22275,8 +22358,8 @@
     {
       "name": "ProfileExists",
       "file": "app/profiles.ahk",
-      "line": 1283,
-      "end_line": 1291,
+      "line": 1285,
+      "end_line": 1293,
       "kind": "application",
       "subsystem": "профили, INI, миграции",
       "purpose": null,
@@ -22300,8 +22383,8 @@
     {
       "name": "GetProfilesString",
       "file": "app/profiles.ahk",
-      "line": 1293,
-      "end_line": 1299,
+      "line": 1295,
+      "end_line": 1301,
       "kind": "application",
       "subsystem": "профили, INI, миграции",
       "purpose": null,
@@ -22327,8 +22410,8 @@
     {
       "name": "GetFirstProfileName",
       "file": "app/profiles.ahk",
-      "line": 1301,
-      "end_line": 1309,
+      "line": 1303,
+      "end_line": 1311,
       "kind": "application",
       "subsystem": "профили, INI, миграции",
       "purpose": null,
@@ -22348,8 +22431,8 @@
     {
       "name": "AddProfileToList",
       "file": "app/profiles.ahk",
-      "line": 1311,
-      "end_line": 1333,
+      "line": 1313,
+      "end_line": 1335,
       "kind": "application",
       "subsystem": "профили, INI, миграции",
       "purpose": null,
@@ -22370,8 +22453,8 @@
     {
       "name": "RemoveProfileFromList",
       "file": "app/profiles.ahk",
-      "line": 1335,
-      "end_line": 1355,
+      "line": 1337,
+      "end_line": 1357,
       "kind": "application",
       "subsystem": "профили, INI, миграции",
       "purpose": null,
@@ -22392,8 +22475,8 @@
     {
       "name": "LoadLastProfile",
       "file": "app/profiles.ahk",
-      "line": 1357,
-      "end_line": 1361,
+      "line": 1359,
+      "end_line": 1363,
       "kind": "application",
       "subsystem": "профили, INI, миграции",
       "purpose": null,
@@ -22413,8 +22496,8 @@
     {
       "name": "WriteCurrentThemeToFile",
       "file": "app/profiles.ahk",
-      "line": 1363,
-      "end_line": 1387,
+      "line": 1365,
+      "end_line": 1389,
       "kind": "application",
       "subsystem": "профили, INI, миграции",
       "purpose": null,
@@ -22436,8 +22519,8 @@
     {
       "name": "LoadThemeFromFile",
       "file": "app/profiles.ahk",
-      "line": 1389,
-      "end_line": 1427,
+      "line": 1391,
+      "end_line": 1429,
       "kind": "application",
       "subsystem": "профили, INI, миграции",
       "purpose": null,
@@ -22465,8 +22548,8 @@
     {
       "name": "ExportProfilesPack",
       "file": "app/profiles.ahk",
-      "line": 1429,
-      "end_line": 1449,
+      "line": 1431,
+      "end_line": 1451,
       "kind": "application",
       "subsystem": "профили, INI, миграции",
       "purpose": null,
@@ -22489,8 +22572,8 @@
     {
       "name": "ValidateProfilesImportFile",
       "file": "app/profiles.ahk",
-      "line": 1451,
-      "end_line": 1507,
+      "line": 1453,
+      "end_line": 1509,
       "kind": "application",
       "subsystem": "профили, INI, миграции",
       "purpose": null,
@@ -22512,8 +22595,8 @@
     {
       "name": "ImportProfilesPack",
       "file": "app/profiles.ahk",
-      "line": 1509,
-      "end_line": 1537,
+      "line": 1511,
+      "end_line": 1539,
       "kind": "application",
       "subsystem": "профили, INI, миграции",
       "purpose": null,
@@ -22537,8 +22620,8 @@
     {
       "name": "ExportThemeToFile",
       "file": "app/profiles.ahk",
-      "line": 1539,
-      "end_line": 1551,
+      "line": 1541,
+      "end_line": 1553,
       "kind": "application",
       "subsystem": "профили, INI, миграции",
       "purpose": null,
@@ -22559,8 +22642,8 @@
     {
       "name": "ImportThemeFromExternalFile",
       "file": "app/profiles.ahk",
-      "line": 1553,
-      "end_line": 1571,
+      "line": 1555,
+      "end_line": 1573,
       "kind": "application",
       "subsystem": "профили, INI, миграции",
       "purpose": null,
@@ -22581,8 +22664,8 @@
     {
       "name": "LoadProfileIdentityFromIni",
       "file": "app/profiles.ahk",
-      "line": 1573,
-      "end_line": 1590,
+      "line": 1575,
+      "end_line": 1592,
       "kind": "application",
       "subsystem": "профили, INI, миграции",
       "purpose": null,
@@ -22602,8 +22685,8 @@
     {
       "name": "LoadProfileTemplateTextsFromIni",
       "file": "app/profiles.ahk",
-      "line": 1592,
-      "end_line": 1619,
+      "line": 1594,
+      "end_line": 1621,
       "kind": "application",
       "subsystem": "профили, INI, миграции",
       "purpose": null,
@@ -22623,8 +22706,8 @@
     {
       "name": "LoadProfileRpTextsFromIni",
       "file": "app/profiles.ahk",
-      "line": 1621,
-      "end_line": 1643,
+      "line": 1623,
+      "end_line": 1645,
       "kind": "application",
       "subsystem": "профили, INI, миграции",
       "purpose": null,
@@ -22645,8 +22728,8 @@
     {
       "name": "LoadProfileV9FieldsFromIni",
       "file": "app/profiles.ahk",
-      "line": 1645,
-      "end_line": 1673,
+      "line": 1647,
+      "end_line": 1675,
       "kind": "application",
       "subsystem": "профили, INI, миграции",
       "purpose": null,
@@ -22671,8 +22754,8 @@
     {
       "name": "WriteProfileV9FieldsToIni",
       "file": "app/profiles.ahk",
-      "line": 1675,
-      "end_line": 1734,
+      "line": 1677,
+      "end_line": 1736,
       "kind": "application",
       "subsystem": "профили, INI, миграции",
       "purpose": null,
@@ -22694,8 +22777,8 @@
     {
       "name": "LoadContextAssistantProfileFromIni",
       "file": "app/profiles.ahk",
-      "line": 1736,
-      "end_line": 1766,
+      "line": 1738,
+      "end_line": 1768,
       "kind": "application",
       "subsystem": "профили, INI, миграции",
       "purpose": null,
@@ -22718,8 +22801,8 @@
     {
       "name": "WriteContextAssistantProfileToIni",
       "file": "app/profiles.ahk",
-      "line": 1768,
-      "end_line": 1785,
+      "line": 1770,
+      "end_line": 1787,
       "kind": "application",
       "subsystem": "профили, INI, миграции",
       "purpose": null,
@@ -22740,8 +22823,8 @@
     {
       "name": "NormalizeCatalogHotkeyGlobals",
       "file": "app/profiles.ahk",
-      "line": 1787,
-      "end_line": 1800,
+      "line": 1789,
+      "end_line": 1802,
       "kind": "application",
       "subsystem": "профили, INI, миграции",
       "purpose": null,
@@ -22764,8 +22847,8 @@
     {
       "name": "WriteCatalogHotkeysToIni",
       "file": "app/profiles.ahk",
-      "line": 1802,
-      "end_line": 1815,
+      "line": 1804,
+      "end_line": 1817,
       "kind": "application",
       "subsystem": "профили, INI, миграции",
       "purpose": null,
@@ -22787,8 +22870,8 @@
     {
       "name": "WriteCatalogTriggersToIni",
       "file": "app/profiles.ahk",
-      "line": 1817,
-      "end_line": 1830,
+      "line": 1819,
+      "end_line": 1832,
       "kind": "application",
       "subsystem": "профили, INI, миграции",
       "purpose": null,
@@ -22810,8 +22893,8 @@
     {
       "name": "FinalizeLoadedProfileState",
       "file": "app/profiles.ahk",
-      "line": 1832,
-      "end_line": 1840,
+      "line": 1834,
+      "end_line": 1842,
       "kind": "application",
       "subsystem": "профили, INI, миграции",
       "purpose": null,
@@ -22835,8 +22918,8 @@
     {
       "name": "GetReplacementProfileAfterDelete",
       "file": "app/profiles.ahk",
-      "line": 1842,
-      "end_line": 1848,
+      "line": 1844,
+      "end_line": 1850,
       "kind": "application",
       "subsystem": "профили, INI, миграции",
       "purpose": null,
@@ -22855,8 +22938,8 @@
     {
       "name": "LoadProfile",
       "file": "app/profiles.ahk",
-      "line": 1850,
-      "end_line": 2045,
+      "line": 1852,
+      "end_line": 2047,
       "kind": "application",
       "subsystem": "профили, INI, миграции",
       "purpose": null,
@@ -22899,8 +22982,8 @@
     {
       "name": "WriteProfileIdentityToIni",
       "file": "app/profiles.ahk",
-      "line": 2047,
-      "end_line": 2065,
+      "line": 2049,
+      "end_line": 2067,
       "kind": "application",
       "subsystem": "профили, INI, миграции",
       "purpose": null,
@@ -22920,8 +23003,8 @@
     {
       "name": "WriteProfileTemplateTextsToIni",
       "file": "app/profiles.ahk",
-      "line": 2067,
-      "end_line": 2095,
+      "line": 2069,
+      "end_line": 2097,
       "kind": "application",
       "subsystem": "профили, INI, миграции",
       "purpose": null,
@@ -22941,8 +23024,8 @@
     {
       "name": "WriteProfileRpTextsToIni",
       "file": "app/profiles.ahk",
-      "line": 2097,
-      "end_line": 2119,
+      "line": 2099,
+      "end_line": 2121,
       "kind": "application",
       "subsystem": "профили, INI, миграции",
       "purpose": null,
@@ -22962,8 +23045,8 @@
     {
       "name": "SaveProfile",
       "file": "app/profiles.ahk",
-      "line": 2121,
-      "end_line": 2179,
+      "line": 2123,
+      "end_line": 2181,
       "kind": "application",
       "subsystem": "профили, INI, миграции",
       "purpose": null,
@@ -23006,8 +23089,8 @@
     {
       "name": "DeleteProfile",
       "file": "app/profiles.ahk",
-      "line": 2181,
-      "end_line": 2224,
+      "line": 2183,
+      "end_line": 2226,
       "kind": "application",
       "subsystem": "профили, INI, миграции",
       "purpose": null,
@@ -23034,8 +23117,8 @@
     {
       "name": "MigrateConfigIfNeeded",
       "file": "app/profiles.ahk",
-      "line": 2226,
-      "end_line": 2253,
+      "line": 2228,
+      "end_line": 2255,
       "kind": "application",
       "subsystem": "профили, INI, миграции",
       "purpose": null,
@@ -23293,7 +23376,7 @@
       "name": "ShowSettingsWindow",
       "file": "app/ui_settings.ahk",
       "line": 222,
-      "end_line": 238,
+      "end_line": 239,
       "kind": "application",
       "subsystem": "страницы настроек",
       "purpose": null,
@@ -23301,9 +23384,11 @@
         "Gui",
         "WinActivate"
       ],
-      "winapi": [],
+      "winapi": [
+        "GetWindowLong"
+      ],
       "first_statement": "Settings_NormalizeViewport() / Gui, 2:-DPIScale",
-      "sha256": "b50cf7d0485e6af6a41a302648f094be3ee459a271cf799b26fa93fe494bd2c7",
+      "sha256": "6aa1b09ea7dd3adbe523782780a36571c640b79fe501ebd7e58635e7d1c38bdd",
       "calls": [
         "Settings_NormalizeViewport",
         "Capture_BeforeShow",
@@ -23323,8 +23408,8 @@
     {
       "name": "ApplyRoundedCorners",
       "file": "app/ui_settings.ahk",
-      "line": 240,
-      "end_line": 253,
+      "line": 241,
+      "end_line": 254,
       "kind": "application",
       "subsystem": "страницы настроек",
       "purpose": null,
@@ -23346,7 +23431,6 @@
         "TerritoryMap_ShowCatalog",
         "ShowSettingsWindow",
         "ApplyRoundedPanelsForGui",
-        "OpenSettings",
         "ShowChatBindMenu",
         "CreateHUD",
         "ResizeBindListGui",
@@ -23364,8 +23448,8 @@
     {
       "name": "ApplyRoundedPanelsForGui",
       "file": "app/ui_settings.ahk",
-      "line": 255,
-      "end_line": 278,
+      "line": 256,
+      "end_line": 279,
       "kind": "application",
       "subsystem": "страницы настроек",
       "purpose": null,
@@ -23380,7 +23464,6 @@
       ],
       "callers": [
         "ShowSettingsWindow",
-        "OpenSettings",
         "ShowChatBindMenu",
         "CreateHUD",
         "ResizeBindListGui",
@@ -23393,8 +23476,8 @@
     {
       "name": "SetSettingsBindsStatus",
       "file": "app/ui_settings.ahk",
-      "line": 280,
-      "end_line": 285,
+      "line": 281,
+      "end_line": 286,
       "kind": "application",
       "subsystem": "страницы настроек",
       "purpose": null,
@@ -23414,8 +23497,8 @@
     {
       "name": "SettingsGui_CanUpdate",
       "file": "app/ui_settings.ahk",
-      "line": 287,
-      "end_line": 290,
+      "line": 288,
+      "end_line": 291,
       "kind": "application",
       "subsystem": "страницы настроек",
       "purpose": null,
@@ -23427,6 +23510,7 @@
       "sha256": "909f760b8292a40105e503cfde37a46cb25918b3c5cd7f8b2bf3465d859439fb",
       "calls": [],
       "callers": [
+        "Capture_ModeChanged",
         "Capture_RefreshWindows",
         "UpdateAutomationSettingsStatus",
         "AutoReport_UpdateStatus"
@@ -23437,8 +23521,8 @@
     {
       "name": "SetSettingsWindowState",
       "file": "app/ui_settings.ahk",
-      "line": 292,
-      "end_line": 310,
+      "line": 293,
+      "end_line": 311,
       "kind": "application",
       "subsystem": "страницы настроек",
       "purpose": null,
@@ -23463,8 +23547,8 @@
     {
       "name": "ResetStyleDefaults",
       "file": "app/ui_settings.ahk",
-      "line": 312,
-      "end_line": 336,
+      "line": 313,
+      "end_line": 337,
       "kind": "application",
       "subsystem": "страницы настроек",
       "purpose": null,
@@ -23482,24 +23566,21 @@
     {
       "name": "OpenSettings",
       "file": "app/ui_settings.ahk",
-      "line": 338,
-      "end_line": 361,
+      "line": 339,
+      "end_line": 357,
       "kind": "application",
       "subsystem": "страницы настроек",
       "purpose": "Создать или открыть настройки со страницами профиля.",
       "commands": [],
       "winapi": [],
       "first_statement": "if RegExMatch(tabIndex . \"\", \"^\\d+$\") / pages := GetSettingsPageCatalog()",
-      "sha256": "711ecbd614b9e5dfa8fb9fd10684326432604976e415b47bac9cb1ea4634e264",
+      "sha256": "fac3688773f6faebecc6717c756731bb13a5682563eb790cc146ece70d977d86",
       "calls": [
         "GetSettingsPageCatalog",
         "NormalizeSettingsPage",
         "SettingsPageIndex",
         "BuildSettingsGui",
         "ShowSettingsWindow",
-        "PromoteOverlayWindow",
-        "ApplyRoundedCorners",
-        "ApplyRoundedPanelsForGui",
         "RefreshSettingsTabs",
         "SaveSettingsWindowState",
         "ResolveCfgHotkeyConflicts",
@@ -23518,8 +23599,8 @@
     {
       "name": "ApplyPersistentAlwaysOnTop",
       "file": "app/ui_settings.ahk",
-      "line": 363,
-      "end_line": 377,
+      "line": 359,
+      "end_line": 373,
       "kind": "application",
       "subsystem": "страницы настроек",
       "purpose": null,
@@ -23548,8 +23629,8 @@
     {
       "name": "ApplyGuiSettingsAuto",
       "file": "app/ui_settings.ahk",
-      "line": 379,
-      "end_line": 405,
+      "line": 375,
+      "end_line": 401,
       "kind": "application",
       "subsystem": "страницы настроек",
       "purpose": null,
@@ -23577,8 +23658,8 @@
     {
       "name": "CloseSettings",
       "file": "app/ui_settings.ahk",
-      "line": 407,
-      "end_line": 428,
+      "line": 403,
+      "end_line": 424,
       "kind": "application",
       "subsystem": "страницы настроек",
       "purpose": null,
@@ -23606,8 +23687,8 @@
     {
       "name": "SetSettingsStatus",
       "file": "app/ui_settings.ahk",
-      "line": 430,
-      "end_line": 435,
+      "line": 426,
+      "end_line": 431,
       "kind": "application",
       "subsystem": "страницы настроек",
       "purpose": null,
@@ -23628,8 +23709,8 @@
     {
       "name": "SettingsActionAllowed",
       "file": "app/ui_settings.ahk",
-      "line": 437,
-      "end_line": 448,
+      "line": 433,
+      "end_line": 444,
       "kind": "application",
       "subsystem": "страницы настроек",
       "purpose": null,
@@ -23648,8 +23729,8 @@
     {
       "name": "ToggleSettings",
       "file": "app/ui_settings.ahk",
-      "line": 450,
-      "end_line": 456,
+      "line": 446,
+      "end_line": 452,
       "kind": "application",
       "subsystem": "страницы настроек",
       "purpose": null,
@@ -23668,8 +23749,8 @@
     {
       "name": "RefreshSettingsTabs",
       "file": "app/ui_settings.ahk",
-      "line": 458,
-      "end_line": 462,
+      "line": 454,
+      "end_line": 458,
       "kind": "application",
       "subsystem": "страницы настроек",
       "purpose": null,
@@ -23693,8 +23774,8 @@
     {
       "name": "Settings_SwitchPage",
       "file": "app/ui_settings.ahk",
-      "line": 464,
-      "end_line": 490,
+      "line": 460,
+      "end_line": 486,
       "kind": "application",
       "subsystem": "страницы настроек",
       "purpose": null,
@@ -23725,8 +23806,8 @@
     {
       "name": "Settings_NavClick",
       "file": "app/ui_settings.ahk",
-      "line": 492,
-      "end_line": 498,
+      "line": 488,
+      "end_line": 494,
       "kind": "application",
       "subsystem": "страницы настроек",
       "purpose": null,
@@ -23746,8 +23827,8 @@
     {
       "name": "GetSettingsPageCatalog",
       "file": "app/ui_settings.ahk",
-      "line": 500,
-      "end_line": 516,
+      "line": 496,
+      "end_line": 512,
       "kind": "application",
       "subsystem": "страницы настроек",
       "purpose": null,
@@ -23772,8 +23853,8 @@
     {
       "name": "SettingsPageIndex",
       "file": "app/ui_settings.ahk",
-      "line": 518,
-      "end_line": 524,
+      "line": 514,
+      "end_line": 520,
       "kind": "application",
       "subsystem": "страницы настроек",
       "purpose": null,
@@ -23796,8 +23877,8 @@
     {
       "name": "SettingsPageIdFromLegacyTab",
       "file": "app/ui_settings.ahk",
-      "line": 526,
-      "end_line": 535,
+      "line": 522,
+      "end_line": 531,
       "kind": "application",
       "subsystem": "страницы настроек",
       "purpose": null,
@@ -23819,8 +23900,8 @@
     {
       "name": "Settings_AddControl",
       "file": "app/ui_settings.ahk",
-      "line": 537,
-      "end_line": 554,
+      "line": 533,
+      "end_line": 550,
       "kind": "application",
       "subsystem": "страницы настроек",
       "purpose": null,
@@ -23843,8 +23924,8 @@
     {
       "name": "Settings_AddGrid",
       "file": "app/ui_settings.ahk",
-      "line": 556,
-      "end_line": 582,
+      "line": 552,
+      "end_line": 578,
       "kind": "application",
       "subsystem": "страницы настроек",
       "purpose": null,
@@ -23866,8 +23947,8 @@
     {
       "name": "Settings_GetCatalogItems",
       "file": "app/ui_settings.ahk",
-      "line": 584,
-      "end_line": 620,
+      "line": 580,
+      "end_line": 616,
       "kind": "application",
       "subsystem": "страницы настроек",
       "purpose": null,
@@ -23889,8 +23970,8 @@
     {
       "name": "Settings_AddAssistantCard",
       "file": "app/ui_settings.ahk",
-      "line": 622,
-      "end_line": 641,
+      "line": 618,
+      "end_line": 637,
       "kind": "application",
       "subsystem": "страницы настроек",
       "purpose": null,
@@ -23908,8 +23989,8 @@
     {
       "name": "Settings_AddPageFrame",
       "file": "app/ui_settings.ahk",
-      "line": 643,
-      "end_line": 650,
+      "line": 639,
+      "end_line": 646,
       "kind": "application",
       "subsystem": "страницы настроек",
       "purpose": null,
@@ -23932,8 +24013,8 @@
     {
       "name": "BuildSettingsGui",
       "file": "app/ui_settings.ahk",
-      "line": 652,
-      "end_line": 1045,
+      "line": 648,
+      "end_line": 1042,
       "kind": "application",
       "subsystem": "страницы настроек",
       "purpose": null,
@@ -23943,7 +24024,7 @@
       ],
       "winapi": [],
       "first_statement": "SettingsGuiReady := 0 / SettingsPageExtents := {}",
-      "sha256": "a944b250e64e1dfa0a6ca6b3a19f3f4cd9e1b5b33cf271645bee10f8c743b567",
+      "sha256": "ddf0e58bba61102ec4495cf0a2a93e12840e597a0df4537441d15798c5344be9",
       "calls": [
         "SyncConfigOnlyProfileFieldsToCfg",
         "GetThemeColors",
@@ -23981,8 +24062,8 @@
     {
       "name": "SyncConfigOnlyProfileFieldsToCfg",
       "file": "app/ui_settings.ahk",
-      "line": 1047,
-      "end_line": 1079,
+      "line": 1044,
+      "end_line": 1076,
       "kind": "application",
       "subsystem": "страницы настроек",
       "purpose": null,
@@ -24008,8 +24089,8 @@
     {
       "name": "ApplyCfgConfigOnlyProfileFieldsToGlobals",
       "file": "app/ui_settings.ahk",
-      "line": 1081,
-      "end_line": 1104,
+      "line": 1078,
+      "end_line": 1101,
       "kind": "application",
       "subsystem": "страницы настроек",
       "purpose": null,
@@ -24032,8 +24113,8 @@
     {
       "name": "ApplyCfgCatalogValuesToGlobals",
       "file": "app/ui_settings.ahk",
-      "line": 1106,
-      "end_line": 1123,
+      "line": 1103,
+      "end_line": 1120,
       "kind": "application",
       "subsystem": "страницы настроек",
       "purpose": null,
@@ -24055,8 +24136,8 @@
     {
       "name": "ApplyCfgUiValuesToGlobals",
       "file": "app/ui_settings.ahk",
-      "line": 1125,
-      "end_line": 1294,
+      "line": 1122,
+      "end_line": 1291,
       "kind": "application",
       "subsystem": "страницы настроек",
       "purpose": null,
@@ -24097,8 +24178,8 @@
     {
       "name": "ApplyCfgProfileIdentityValuesToGlobals",
       "file": "app/ui_settings.ahk",
-      "line": 1296,
-      "end_line": 1310,
+      "line": 1293,
+      "end_line": 1307,
       "kind": "application",
       "subsystem": "страницы настроек",
       "purpose": null,
@@ -24116,8 +24197,8 @@
     {
       "name": "ApplyCfgTemplateAndRpTextsToGlobals",
       "file": "app/ui_settings.ahk",
-      "line": 1312,
-      "end_line": 1350,
+      "line": 1309,
+      "end_line": 1347,
       "kind": "application",
       "subsystem": "страницы настроек",
       "purpose": null,
@@ -24135,8 +24216,8 @@
     {
       "name": "PrivateText_RestoreDefaultKey",
       "file": "app/ui_settings.ahk",
-      "line": 1352,
-      "end_line": 1359,
+      "line": 1349,
+      "end_line": 1356,
       "kind": "application",
       "subsystem": "страницы настроек",
       "purpose": null,
@@ -24176,7 +24257,6 @@
       "calls": [],
       "callers": [
         "ShowSettingsWindow",
-        "OpenSettings",
         "ApplyPersistentAlwaysOnTop",
         "ShowChatBindMenu",
         "CreateHUD",
@@ -29269,17 +29349,21 @@
       "name": "NormalizeHotkeyValue",
       "file": "app/bindings.ahk",
       "line": 191,
-      "end_line": 195,
+      "end_line": 199,
       "kind": "application",
       "subsystem": "регистрация клавиш и TXT-команд",
       "purpose": null,
       "commands": [],
       "winapi": [],
       "first_statement": "val := Trim(val) / if (val = \"ERROR\")",
-      "sha256": "be186f14ee4e82d68e15ec4c9af08c6a559b500db8a3db13a23cfc1d0ded73ca",
-      "calls": [],
+      "sha256": "c999eaef3fea89378e3a49146e8faa98de6abbe811a6b96d7f616c01c17fd15a",
+      "calls": [
+        "TextCommands_LayoutVariant"
+      ],
       "callers": [
-        "ResolveCfgHotkeyConflicts"
+        "DesktopSmoke_Run",
+        "ResolveCfgHotkeyConflicts",
+        "NormalizeBindValue"
       ],
       "coverage": {},
       "description": "регистрация клавиш и TXT-команд: Нормализовать горячую клавишу значение; код: val := Trim(val) / if (val = \"ERROR\")"
@@ -29287,8 +29371,8 @@
     {
       "name": "GetCfgHotkeyOrder",
       "file": "app/bindings.ahk",
-      "line": 197,
-      "end_line": 213,
+      "line": 201,
+      "end_line": 217,
       "kind": "application",
       "subsystem": "регистрация клавиш и TXT-команд",
       "purpose": null,
@@ -29309,8 +29393,8 @@
     {
       "name": "GetCfgHotkeyMetaMap",
       "file": "app/bindings.ahk",
-      "line": 215,
-      "end_line": 231,
+      "line": 219,
+      "end_line": 235,
       "kind": "application",
       "subsystem": "регистрация клавиш и TXT-команд",
       "purpose": null,
@@ -29331,8 +29415,8 @@
     {
       "name": "BuildHotkeyConflictStatus",
       "file": "app/bindings.ahk",
-      "line": 233,
-      "end_line": 243,
+      "line": 237,
+      "end_line": 247,
       "kind": "application",
       "subsystem": "регистрация клавиш и TXT-команд",
       "purpose": null,
@@ -29350,8 +29434,8 @@
     {
       "name": "ResolveCfgHotkeyConflicts",
       "file": "app/bindings.ahk",
-      "line": 245,
-      "end_line": 309,
+      "line": 249,
+      "end_line": 313,
       "kind": "application",
       "subsystem": "регистрация клавиш и TXT-команд",
       "purpose": null,
@@ -29382,8 +29466,8 @@
     {
       "name": "ResetRegisteredGameTextHotstrings",
       "file": "app/bindings.ahk",
-      "line": 311,
-      "end_line": 328,
+      "line": 315,
+      "end_line": 332,
       "kind": "application",
       "subsystem": "регистрация клавиш и TXT-команд",
       "purpose": null,
@@ -29404,8 +29488,8 @@
     {
       "name": "TrackRegisteredGameTextHotstring",
       "file": "app/bindings.ahk",
-      "line": 330,
-      "end_line": 337,
+      "line": 334,
+      "end_line": 341,
       "kind": "application",
       "subsystem": "регистрация клавиш и TXT-команд",
       "purpose": null,
@@ -29427,8 +29511,8 @@
     {
       "name": "SuspendGameTextTriggersForBindMenu",
       "file": "app/bindings.ahk",
-      "line": 339,
-      "end_line": 359,
+      "line": 343,
+      "end_line": 363,
       "kind": "application",
       "subsystem": "регистрация клавиш и TXT-команд",
       "purpose": null,
@@ -29451,8 +29535,8 @@
     {
       "name": "ResumeGameTextTriggersAfterBindMenu",
       "file": "app/bindings.ahk",
-      "line": 361,
-      "end_line": 370,
+      "line": 365,
+      "end_line": 374,
       "kind": "application",
       "subsystem": "регистрация клавиш и TXT-команд",
       "purpose": null,
@@ -29472,8 +29556,8 @@
     {
       "name": "GameTextTriggerAllowed",
       "file": "app/bindings.ahk",
-      "line": 372,
-      "end_line": 383,
+      "line": 376,
+      "end_line": 387,
       "kind": "application",
       "subsystem": "регистрация клавиш и TXT-команд",
       "purpose": null,
@@ -29491,8 +29575,8 @@
     {
       "name": "RegisterTextTrigger",
       "file": "app/bindings.ahk",
-      "line": 385,
-      "end_line": 432,
+      "line": 389,
+      "end_line": 436,
       "kind": "application",
       "subsystem": "регистрация клавиш и TXT-команд",
       "purpose": null,
@@ -29515,8 +29599,8 @@
     {
       "name": "RegisterSearchModeTrigger",
       "file": "app/bindings.ahk",
-      "line": 434,
-      "end_line": 472,
+      "line": 438,
+      "end_line": 476,
       "kind": "application",
       "subsystem": "регистрация клавиш и TXT-команд",
       "purpose": null,
@@ -29539,8 +29623,8 @@
     {
       "name": "RegisterGpsInputTextTrigger",
       "file": "app/bindings.ahk",
-      "line": 474,
-      "end_line": 534,
+      "line": 478,
+      "end_line": 538,
       "kind": "application",
       "subsystem": "регистрация клавиш и TXT-команд",
       "purpose": null,
@@ -29565,8 +29649,8 @@
     {
       "name": "NormalizeBindMenuHotkeyText",
       "file": "app/bindings.ahk",
-      "line": 536,
-      "end_line": 575,
+      "line": 540,
+      "end_line": 579,
       "kind": "application",
       "subsystem": "регистрация клавиш и TXT-команд",
       "purpose": null,
@@ -29584,8 +29668,8 @@
     {
       "name": "NormalizeBindMenuAliasText",
       "file": "app/bindings.ahk",
-      "line": 577,
-      "end_line": 586,
+      "line": 581,
+      "end_line": 590,
       "kind": "application",
       "subsystem": "регистрация клавиш и TXT-команд",
       "purpose": null,
@@ -29603,8 +29687,8 @@
     {
       "name": "NormalizeBindMenuFixedName",
       "file": "app/bindings.ahk",
-      "line": 588,
-      "end_line": 595,
+      "line": 592,
+      "end_line": 599,
       "kind": "application",
       "subsystem": "регистрация клавиш и TXT-команд",
       "purpose": null,
@@ -29623,8 +29707,8 @@
     {
       "name": "GetBindMenuFixedName",
       "file": "app/bindings.ahk",
-      "line": 597,
-      "end_line": 660,
+      "line": 601,
+      "end_line": 664,
       "kind": "application",
       "subsystem": "регистрация клавиш и TXT-команд",
       "purpose": null,
@@ -29644,8 +29728,8 @@
     {
       "name": "GetBindMenuMetaByFixedName",
       "file": "app/bindings.ahk",
-      "line": 662,
-      "end_line": 687,
+      "line": 666,
+      "end_line": 691,
       "kind": "application",
       "subsystem": "регистрация клавиш и TXT-команд",
       "purpose": null,
@@ -29669,8 +29753,8 @@
     {
       "name": "GetActiveTextTriggerSet",
       "file": "app/bindings.ahk",
-      "line": 689,
-      "end_line": 717,
+      "line": 693,
+      "end_line": 721,
       "kind": "application",
       "subsystem": "регистрация клавиш и TXT-команд",
       "purpose": null,
@@ -29695,8 +29779,8 @@
     {
       "name": "GetBindMenuTriggerOwnerLabel",
       "file": "app/bindings.ahk",
-      "line": 719,
-      "end_line": 761,
+      "line": 723,
+      "end_line": 765,
       "kind": "application",
       "subsystem": "регистрация клавиш и TXT-команд",
       "purpose": null,
@@ -29716,8 +29800,8 @@
     {
       "name": "GetBindMenuDisplayCommand",
       "file": "app/bindings.ahk",
-      "line": 763,
-      "end_line": 773,
+      "line": 767,
+      "end_line": 777,
       "kind": "application",
       "subsystem": "регистрация клавиш и TXT-команд",
       "purpose": null,
@@ -29737,8 +29821,8 @@
     {
       "name": "ValidateBindMenuHotkey",
       "file": "app/bindings.ahk",
-      "line": 775,
-      "end_line": 808,
+      "line": 779,
+      "end_line": 812,
       "kind": "application",
       "subsystem": "регистрация клавиш и TXT-команд",
       "purpose": null,
@@ -29762,8 +29846,8 @@
     {
       "name": "NormalizeBindMenuTriggerText",
       "file": "app/bindings.ahk",
-      "line": 810,
-      "end_line": 818,
+      "line": 814,
+      "end_line": 822,
       "kind": "application",
       "subsystem": "регистрация клавиш и TXT-команд",
       "purpose": null,
@@ -29781,8 +29865,8 @@
     {
       "name": "ValidateBindMenuTrigger",
       "file": "app/bindings.ahk",
-      "line": 820,
-      "end_line": 847,
+      "line": 824,
+      "end_line": 851,
       "kind": "application",
       "subsystem": "регистрация клавиш и TXT-команд",
       "purpose": null,
@@ -29804,8 +29888,8 @@
     {
       "name": "ApplyBindMenuTrigger",
       "file": "app/bindings.ahk",
-      "line": 849,
-      "end_line": 883,
+      "line": 853,
+      "end_line": 887,
       "kind": "application",
       "subsystem": "регистрация клавиш и TXT-команд",
       "purpose": null,
@@ -29838,8 +29922,8 @@
     {
       "name": "GetBindMenuCommandMode",
       "file": "app/bindings.ahk",
-      "line": 885,
-      "end_line": 905,
+      "line": 889,
+      "end_line": 909,
       "kind": "application",
       "subsystem": "регистрация клавиш и TXT-команд",
       "purpose": null,
@@ -29857,8 +29941,8 @@
     {
       "name": "ApplyBindMenuHotkey",
       "file": "app/bindings.ahk",
-      "line": 907,
-      "end_line": 941,
+      "line": 911,
+      "end_line": 945,
       "kind": "application",
       "subsystem": "регистрация клавиш и TXT-команд",
       "purpose": null,
@@ -29892,8 +29976,8 @@
     {
       "name": "TryHandleBindMenuLine",
       "file": "app/bindings.ahk",
-      "line": 943,
-      "end_line": 1007,
+      "line": 947,
+      "end_line": 1011,
       "kind": "application",
       "subsystem": "регистрация клавиш и TXT-команд",
       "purpose": null,
@@ -29924,8 +30008,8 @@
     {
       "name": "RunSearchModeTrigger",
       "file": "app/bindings.ahk",
-      "line": 1009,
-      "end_line": 1018,
+      "line": 1013,
+      "end_line": 1022,
       "kind": "application",
       "subsystem": "регистрация клавиш и TXT-команд",
       "purpose": null,
@@ -29944,8 +30028,8 @@
     {
       "name": "RunTriggerLabel",
       "file": "app/bindings.ahk",
-      "line": 1020,
-      "end_line": 1034,
+      "line": 1024,
+      "end_line": 1038,
       "kind": "application",
       "subsystem": "регистрация клавиш и TXT-команд",
       "purpose": null,
@@ -29966,8 +30050,8 @@
     {
       "name": "ApplyTextTriggers",
       "file": "app/bindings.ahk",
-      "line": 1036,
-      "end_line": 1118,
+      "line": 1040,
+      "end_line": 1122,
       "kind": "application",
       "subsystem": "регистрация клавиш и TXT-команд",
       "purpose": null,
@@ -30002,8 +30086,8 @@
     {
       "name": "NormalizeHotkeyId",
       "file": "app/bindings.ahk",
-      "line": 1120,
-      "end_line": 1127,
+      "line": 1124,
+      "end_line": 1131,
       "kind": "application",
       "subsystem": "регистрация клавиш и TXT-команд",
       "purpose": null,
@@ -30026,29 +30110,31 @@
     {
       "name": "NormalizeBindValue",
       "file": "app/bindings.ahk",
-      "line": 1129,
-      "end_line": 1132,
+      "line": 1133,
+      "end_line": 1135,
       "kind": "application",
       "subsystem": "регистрация клавиш и TXT-команд",
       "purpose": null,
       "commands": [],
       "winapi": [],
-      "first_statement": "if (val = \"ERROR\") / val := \"\"",
-      "sha256": "03b8e1fee8b0eeeff5f8ba08099217e70186f4a49e6385f1f6c120f2354fcb6d",
-      "calls": [],
+      "first_statement": "NormalizeHotkeyValue(val)",
+      "sha256": "948ea1f80c62c72d96631866aa4c5a797fcb227956f96370060283f042788497",
+      "calls": [
+        "NormalizeHotkeyValue"
+      ],
       "callers": [
         "NormalizeCatalogHotkeyGlobals",
         "ValidateBindMenuHotkey",
         "ApplyAllBinds"
       ],
       "coverage": {},
-      "description": "регистрация клавиш и TXT-команд: Нормализовать бинд значение; код: if (val = \"ERROR\") / val := \"\""
+      "description": "регистрация клавиш и TXT-команд: Нормализовать бинд значение; код: NormalizeHotkeyValue(val)"
     },
     {
       "name": "ClearRegisteredBindHotkeys",
       "file": "app/bindings.ahk",
-      "line": 1134,
-      "end_line": 1164,
+      "line": 1137,
+      "end_line": 1167,
       "kind": "application",
       "subsystem": "регистрация клавиш и TXT-команд",
       "purpose": null,
@@ -30068,8 +30154,8 @@
     {
       "name": "RegisterBoundHotkey",
       "file": "app/bindings.ahk",
-      "line": 1166,
-      "end_line": 1201,
+      "line": 1169,
+      "end_line": 1204,
       "kind": "application",
       "subsystem": "регистрация клавиш и TXT-команд",
       "purpose": null,
@@ -30091,8 +30177,8 @@
     {
       "name": "GetBoundLabelByToken",
       "file": "app/bindings.ahk",
-      "line": 1203,
-      "end_line": 1302,
+      "line": 1206,
+      "end_line": 1305,
       "kind": "application",
       "subsystem": "регистрация клавиш и TXT-команд",
       "purpose": null,
@@ -30118,8 +30204,8 @@
     {
       "name": "ExecuteBindToken",
       "file": "app/bindings.ahk",
-      "line": 1304,
-      "end_line": 1332,
+      "line": 1307,
+      "end_line": 1335,
       "kind": "application",
       "subsystem": "регистрация клавиш и TXT-команд",
       "purpose": null,
@@ -30144,8 +30230,8 @@
     {
       "name": "HandleBoundHotkey",
       "file": "app/bindings.ahk",
-      "line": 1334,
-      "end_line": 1349,
+      "line": 1337,
+      "end_line": 1352,
       "kind": "application",
       "subsystem": "регистрация клавиш и TXT-команд",
       "purpose": null,
@@ -30167,8 +30253,8 @@
     {
       "name": "ApplyAllBinds",
       "file": "app/bindings.ahk",
-      "line": 1351,
-      "end_line": 1385,
+      "line": 1354,
+      "end_line": 1388,
       "kind": "application",
       "subsystem": "регистрация клавиш и TXT-команд",
       "purpose": null,
@@ -30207,8 +30293,8 @@
     {
       "name": "GetBindCatalog",
       "file": "app/bindings.ahk",
-      "line": 1387,
-      "end_line": 1512,
+      "line": 1390,
+      "end_line": 1515,
       "kind": "application",
       "subsystem": "регистрация клавиш и TXT-команд",
       "purpose": null,
@@ -30251,8 +30337,8 @@
     {
       "name": "BindCatalog_IsRegistrable",
       "file": "app/bindings.ahk",
-      "line": 1514,
-      "end_line": 1516,
+      "line": 1517,
+      "end_line": 1519,
       "kind": "application",
       "subsystem": "регистрация клавиш и TXT-команд",
       "purpose": null,
@@ -30278,8 +30364,8 @@
     {
       "name": "BindCatalog_IsUserVisible",
       "file": "app/bindings.ahk",
-      "line": 1518,
-      "end_line": 1520,
+      "line": 1521,
+      "end_line": 1523,
       "kind": "application",
       "subsystem": "регистрация клавиш и TXT-команд",
       "purpose": null,
@@ -30308,8 +30394,8 @@
     {
       "name": "GetBindCatalogMap",
       "file": "app/bindings.ahk",
-      "line": 1522,
-      "end_line": 1535,
+      "line": 1525,
+      "end_line": 1538,
       "kind": "application",
       "subsystem": "регистрация клавиш и TXT-команд",
       "purpose": null,
@@ -34840,7 +34926,7 @@
       "TriggerVar": "",
       "Hint": "Личный ввод TXT без игрового чата",
       "file": "app/bindings.ahk",
-      "line": 1393,
+      "line": 1396,
       "handler": "DoPrivateTextInput",
       "default_hotkey": "!t",
       "default_trigger": ""
@@ -34852,7 +34938,7 @@
       "HotkeyVar": "Bind_OpenSettings",
       "TriggerVar": "",
       "file": "app/bindings.ahk",
-      "line": 1394,
+      "line": 1397,
       "handler": "",
       "default_hotkey": "F10",
       "default_trigger": ""
@@ -34864,7 +34950,7 @@
       "HotkeyVar": "Bind_ToggleBindList",
       "TriggerVar": "",
       "file": "app/bindings.ahk",
-      "line": 1395,
+      "line": 1398,
       "handler": "",
       "default_hotkey": "F11",
       "default_trigger": ""
@@ -34876,7 +34962,7 @@
       "HotkeyVar": "Bind_ToggleLastLawDoc",
       "TriggerVar": "",
       "file": "app/bindings.ahk",
-      "line": 1396,
+      "line": 1399,
       "handler": "DoToggleLastLawDoc",
       "default_hotkey": "",
       "default_trigger": ""
@@ -34888,7 +34974,7 @@
       "HotkeyVar": "Bind_HideLawGui",
       "TriggerVar": "",
       "file": "app/bindings.ahk",
-      "line": 1397,
+      "line": 1400,
       "handler": "DoHideLawGui",
       "default_hotkey": "Pause",
       "default_trigger": ""
@@ -34900,7 +34986,7 @@
       "HotkeyVar": "Bind_LawSearchSubmit",
       "TriggerVar": "",
       "file": "app/bindings.ahk",
-      "line": 1398,
+      "line": 1401,
       "handler": "DoLawSearchClipboard",
       "default_hotkey": "^+f",
       "default_trigger": ""
@@ -34912,7 +34998,7 @@
       "HotkeyVar": "Bind_ToggleHUD",
       "TriggerVar": "",
       "file": "app/bindings.ahk",
-      "line": 1399,
+      "line": 1402,
       "handler": "",
       "default_hotkey": "F12",
       "default_trigger": ""
@@ -34924,7 +35010,7 @@
       "HotkeyVar": "Bind_IDOverlay",
       "TriggerVar": "",
       "file": "app/bindings.ahk",
-      "line": 1400,
+      "line": 1403,
       "handler": "DoToggleIDOverlay",
       "default_hotkey": "F5",
       "default_trigger": ""
@@ -34936,7 +35022,7 @@
       "HotkeyVar": "Bind_ConfirmID",
       "TriggerVar": "",
       "file": "app/bindings.ahk",
-      "line": 1401,
+      "line": 1404,
       "handler": "DoConfirmID",
       "default_hotkey": "F1",
       "default_trigger": ""
@@ -34948,7 +35034,7 @@
       "HotkeyVar": "Bind_RejectID",
       "TriggerVar": "",
       "file": "app/bindings.ahk",
-      "line": 1402,
+      "line": 1405,
       "handler": "DoRejectID",
       "default_hotkey": "F2",
       "default_trigger": ""
@@ -34960,7 +35046,7 @@
       "HotkeyVar": "Bind_EnterID",
       "TriggerVar": "Trig_EnterID",
       "file": "app/bindings.ahk",
-      "line": 1403,
+      "line": 1406,
       "handler": "DoEnterID",
       "default_hotkey": "!1",
       "default_trigger": ""
@@ -34972,7 +35058,7 @@
       "HotkeyVar": "Bind_ResetID",
       "TriggerVar": "Trig_ResetID",
       "file": "app/bindings.ahk",
-      "line": 1404,
+      "line": 1407,
       "handler": "DoResetID",
       "default_hotkey": "^Numpad0",
       "default_trigger": ""
@@ -34985,7 +35071,7 @@
       "TriggerVar": "Trig_OpenBindsTab",
       "Hint": "Открыть страницу основных клавиш",
       "file": "app/bindings.ahk",
-      "line": 1405,
+      "line": 1408,
       "handler": "DoOpenBindsTab",
       "default_hotkey": "",
       "default_trigger": "!бинды"
@@ -34997,7 +35083,7 @@
       "HotkeyVar": "Bind_Intro",
       "TriggerVar": "Trig_Intro",
       "file": "app/bindings.ahk",
-      "line": 1407,
+      "line": 1410,
       "handler": "DoIntro",
       "default_hotkey": "!2",
       "default_trigger": ""
@@ -35009,7 +35095,7 @@
       "HotkeyVar": "Bind_SOS",
       "TriggerVar": "Trig_SOS",
       "file": "app/bindings.ahk",
-      "line": 1408,
+      "line": 1411,
       "handler": "DoSOS",
       "default_hotkey": "F9",
       "default_trigger": ""
@@ -35021,7 +35107,7 @@
       "HotkeyVar": "Bind_Chase",
       "TriggerVar": "Trig_Chase",
       "file": "app/bindings.ahk",
-      "line": 1409,
+      "line": 1412,
       "handler": "DoChase",
       "default_hotkey": "!3",
       "default_trigger": ""
@@ -35033,7 +35119,7 @@
       "HotkeyVar": "Bind_ChaseNoID",
       "TriggerVar": "Trig_ChaseNoID",
       "file": "app/bindings.ahk",
-      "line": 1410,
+      "line": 1413,
       "handler": "DoChaseNoID",
       "default_hotkey": "Insert",
       "default_trigger": ""
@@ -35045,7 +35131,7 @@
       "HotkeyVar": "Bind_Deject",
       "TriggerVar": "Trig_Deject",
       "file": "app/bindings.ahk",
-      "line": 1411,
+      "line": 1414,
       "handler": "DoDeject",
       "default_hotkey": "!4",
       "default_trigger": ""
@@ -35057,7 +35143,7 @@
       "HotkeyVar": "Bind_Cuff",
       "TriggerVar": "Trig_Cuff",
       "file": "app/bindings.ahk",
-      "line": 1412,
+      "line": 1415,
       "handler": "DoCuff",
       "default_hotkey": "!5",
       "default_trigger": ""
@@ -35069,7 +35155,7 @@
       "HotkeyVar": "Bind_InCar",
       "TriggerVar": "Trig_InCar",
       "file": "app/bindings.ahk",
-      "line": 1413,
+      "line": 1416,
       "handler": "DoInCar",
       "default_hotkey": "!6",
       "default_trigger": ""
@@ -35081,7 +35167,7 @@
       "HotkeyVar": "Bind_StopChase",
       "TriggerVar": "Trig_StopChase",
       "file": "app/bindings.ahk",
-      "line": 1414,
+      "line": 1417,
       "handler": "DoStopChase",
       "default_hotkey": "!7",
       "default_trigger": ""
@@ -35093,7 +35179,7 @@
       "HotkeyVar": "Bind_Doc",
       "TriggerVar": "Trig_Doc",
       "file": "app/bindings.ahk",
-      "line": 1415,
+      "line": 1418,
       "handler": "DoDoc",
       "default_hotkey": "!8",
       "default_trigger": ""
@@ -35105,7 +35191,7 @@
       "HotkeyVar": "Bind_Search",
       "TriggerVar": "Trig_Search",
       "file": "app/bindings.ahk",
-      "line": 1416,
+      "line": 1419,
       "handler": "DoSearch",
       "default_hotkey": "!9",
       "default_trigger": ""
@@ -35117,7 +35203,7 @@
       "HotkeyVar": "Bind_PersonalFile",
       "TriggerVar": "Trig_PersonalFile",
       "file": "app/bindings.ahk",
-      "line": 1417,
+      "line": 1420,
       "handler": "DoPersonalFile",
       "default_hotkey": "",
       "default_trigger": "!лд"
@@ -35130,7 +35216,7 @@
       "TriggerVar": "Trig_Su",
       "Hint": "Команда /su и RP-последовательность",
       "file": "app/bindings.ahk",
-      "line": 1418,
+      "line": 1421,
       "handler": "DoSu",
       "default_hotkey": "",
       "default_trigger": "!су"
@@ -35142,7 +35228,7 @@
       "HotkeyVar": "Bind_Dep",
       "TriggerVar": "Trig_Dep",
       "file": "app/bindings.ahk",
-      "line": 1420,
+      "line": 1423,
       "handler": "DoDep",
       "default_hotkey": "",
       "default_trigger": "!деп"
@@ -35154,7 +35240,7 @@
       "HotkeyVar": "Bind_WantedList",
       "TriggerVar": "Trig_WantedList",
       "file": "app/bindings.ahk",
-      "line": 1421,
+      "line": 1424,
       "handler": "DoWantedList",
       "default_hotkey": "",
       "default_trigger": "!р"
@@ -35166,7 +35252,7 @@
       "HotkeyVar": "Bind_SOSStart",
       "TriggerVar": "Trig_SOSStart",
       "file": "app/bindings.ahk",
-      "line": 1422,
+      "line": 1425,
       "handler": "DoSOSStart",
       "default_hotkey": "",
       "default_trigger": "!сос"
@@ -35178,7 +35264,7 @@
       "HotkeyVar": "Bind_SOSArrive",
       "TriggerVar": "Trig_SOSArrive",
       "file": "app/bindings.ahk",
-      "line": 1423,
+      "line": 1426,
       "handler": "DoSOSArrive",
       "default_hotkey": "",
       "default_trigger": "!сос1"
@@ -35190,7 +35276,7 @@
       "HotkeyVar": "Bind_HijackStart",
       "TriggerVar": "Trig_HijackStart",
       "file": "app/bindings.ahk",
-      "line": 1424,
+      "line": 1427,
       "handler": "DoHijackStart",
       "default_hotkey": "",
       "default_trigger": "!угон"
@@ -35202,7 +35288,7 @@
       "HotkeyVar": "Bind_HijackArrive",
       "TriggerVar": "Trig_HijackArrive",
       "file": "app/bindings.ahk",
-      "line": 1425,
+      "line": 1428,
       "handler": "DoHijackArrive",
       "default_hotkey": "",
       "default_trigger": "!угон1"
@@ -35214,7 +35300,7 @@
       "HotkeyVar": "Bind_CallStart",
       "TriggerVar": "Trig_CallStart",
       "file": "app/bindings.ahk",
-      "line": 1426,
+      "line": 1429,
       "handler": "DoCallStart",
       "default_hotkey": "",
       "default_trigger": "!выз"
@@ -35226,7 +35312,7 @@
       "HotkeyVar": "Bind_CallArrive",
       "TriggerVar": "Trig_CallArrive",
       "file": "app/bindings.ahk",
-      "line": 1427,
+      "line": 1430,
       "handler": "DoCallArrive",
       "default_hotkey": "",
       "default_trigger": "!выз1"
@@ -35238,7 +35324,7 @@
       "HotkeyVar": "Bind_CallWorkStart",
       "TriggerVar": "Trig_CallWorkStart",
       "file": "app/bindings.ahk",
-      "line": 1428,
+      "line": 1431,
       "handler": "DoCallWorkStart",
       "default_hotkey": "",
       "default_trigger": ""
@@ -35250,7 +35336,7 @@
       "HotkeyVar": "Bind_CallWorkEnd",
       "TriggerVar": "Trig_CallWorkEnd",
       "file": "app/bindings.ahk",
-      "line": 1429,
+      "line": 1432,
       "handler": "DoCallWorkEnd",
       "default_hotkey": "",
       "default_trigger": ""
@@ -35262,7 +35348,7 @@
       "HotkeyVar": "Bind_CivilCallStart",
       "TriggerVar": "Trig_CivilCallStart",
       "file": "app/bindings.ahk",
-      "line": 1430,
+      "line": 1433,
       "handler": "DoCivilCallStart",
       "default_hotkey": "",
       "default_trigger": ""
@@ -35274,7 +35360,7 @@
       "HotkeyVar": "Bind_CivilCallArrive",
       "TriggerVar": "Trig_CivilCallArrive",
       "file": "app/bindings.ahk",
-      "line": 1431,
+      "line": 1434,
       "handler": "DoCivilCallArrive",
       "default_hotkey": "",
       "default_trigger": ""
@@ -35286,7 +35372,7 @@
       "HotkeyVar": "Bind_MaskCall",
       "TriggerVar": "Trig_MaskCall",
       "file": "app/bindings.ahk",
-      "line": 1432,
+      "line": 1435,
       "handler": "DoMaskCall",
       "default_hotkey": "",
       "default_trigger": "!м"
@@ -35298,7 +35384,7 @@
       "HotkeyVar": "Bind_RecordCheck",
       "TriggerVar": "Trig_RecordCheck",
       "file": "app/bindings.ahk",
-      "line": 1433,
+      "line": 1436,
       "handler": "DoRecordCheck",
       "default_hotkey": "",
       "default_trigger": "!упр"
@@ -35310,7 +35396,7 @@
       "HotkeyVar": "Bind_TrainCrash",
       "TriggerVar": "Trig_TrainCrash",
       "file": "app/bindings.ahk",
-      "line": 1434,
+      "line": 1437,
       "handler": "DoTrainCrash",
       "default_hotkey": "",
       "default_trigger": "!поезд"
@@ -35322,7 +35408,7 @@
       "HotkeyVar": "Bind_PatrolStart",
       "TriggerVar": "Trig_PatrolStart",
       "file": "app/bindings.ahk",
-      "line": 1436,
+      "line": 1439,
       "handler": "DoPatrolStart",
       "default_hotkey": "",
       "default_trigger": "!патруль"
@@ -35334,7 +35420,7 @@
       "HotkeyVar": "Bind_PatrolCont",
       "TriggerVar": "Trig_PatrolCont",
       "file": "app/bindings.ahk",
-      "line": 1437,
+      "line": 1440,
       "handler": "DoPatrolCont",
       "default_hotkey": "",
       "default_trigger": "!патруль1"
@@ -35346,7 +35432,7 @@
       "HotkeyVar": "Bind_PatrolEnd",
       "TriggerVar": "Trig_PatrolEnd",
       "file": "app/bindings.ahk",
-      "line": 1438,
+      "line": 1441,
       "handler": "DoPatrolEnd",
       "default_hotkey": "",
       "default_trigger": "!патруль2"
@@ -35358,7 +35444,7 @@
       "HotkeyVar": "Bind_PostStart",
       "TriggerVar": "Trig_PostStart",
       "file": "app/bindings.ahk",
-      "line": 1439,
+      "line": 1442,
       "handler": "DoPostStart",
       "default_hotkey": "",
       "default_trigger": "!пост"
@@ -35370,7 +35456,7 @@
       "HotkeyVar": "Bind_PostCont",
       "TriggerVar": "Trig_PostCont",
       "file": "app/bindings.ahk",
-      "line": 1440,
+      "line": 1443,
       "handler": "DoPostCont",
       "default_hotkey": "",
       "default_trigger": "!пост1"
@@ -35382,7 +35468,7 @@
       "HotkeyVar": "Bind_PostEnd",
       "TriggerVar": "Trig_PostEnd",
       "file": "app/bindings.ahk",
-      "line": 1441,
+      "line": 1444,
       "handler": "DoPostEnd",
       "default_hotkey": "",
       "default_trigger": "!пост2"
@@ -35395,7 +35481,7 @@
       "TriggerVar": "Trig_AutoPatrol",
       "Hint": "Запрашивает длительность и отправляет доклад каждые 10 минут",
       "file": "app/bindings.ahk",
-      "line": 1442,
+      "line": 1445,
       "handler": "DoAutoPatrolToggle",
       "default_hotkey": "",
       "default_trigger": "!апатруль"
@@ -35408,7 +35494,7 @@
       "TriggerVar": "Trig_AutoPost",
       "Hint": "Запрашивает длительность и отправляет доклад каждые 10 минут",
       "file": "app/bindings.ahk",
-      "line": 1443,
+      "line": 1446,
       "handler": "DoAutoPostToggle",
       "default_hotkey": "",
       "default_trigger": "!апост"
@@ -35420,7 +35506,7 @@
       "HotkeyVar": "Bind_ConvoyStart",
       "TriggerVar": "Trig_ConvoyStart",
       "file": "app/bindings.ahk",
-      "line": 1444,
+      "line": 1447,
       "handler": "DoConvoyStart",
       "default_hotkey": "",
       "default_trigger": "!вк"
@@ -35432,7 +35518,7 @@
       "HotkeyVar": "Bind_ConvoyCont",
       "TriggerVar": "Trig_ConvoyCont",
       "file": "app/bindings.ahk",
-      "line": 1445,
+      "line": 1448,
       "handler": "DoConvoyCont",
       "default_hotkey": "",
       "default_trigger": ""
@@ -35444,7 +35530,7 @@
       "HotkeyVar": "Bind_ConvoyEnd",
       "TriggerVar": "Trig_ConvoyEnd",
       "file": "app/bindings.ahk",
-      "line": 1446,
+      "line": 1449,
       "handler": "DoConvoyEnd",
       "default_hotkey": "",
       "default_trigger": "!вк1"
@@ -35456,7 +35542,7 @@
       "HotkeyVar": "Bind_TowStart",
       "TriggerVar": "Trig_TowStart",
       "file": "app/bindings.ahk",
-      "line": 1447,
+      "line": 1450,
       "handler": "DoTowStart",
       "default_hotkey": "",
       "default_trigger": "!эв"
@@ -35468,7 +35554,7 @@
       "HotkeyVar": "Bind_TowEnd",
       "TriggerVar": "Trig_TowEnd",
       "file": "app/bindings.ahk",
-      "line": 1448,
+      "line": 1451,
       "handler": "DoTowEnd",
       "default_hotkey": "",
       "default_trigger": "!эв1"
@@ -35480,7 +35566,7 @@
       "HotkeyVar": "Bind_CarSearch",
       "TriggerVar": "Trig_CarSearch",
       "file": "app/bindings.ahk",
-      "line": 1449,
+      "line": 1452,
       "handler": "DoCarSearch",
       "default_hotkey": "",
       "default_trigger": "!обтс"
@@ -35492,7 +35578,7 @@
       "HotkeyVar": "Bind_VehicleLookup",
       "TriggerVar": "Trig_VehicleLookup",
       "file": "app/bindings.ahk",
-      "line": 1450,
+      "line": 1453,
       "handler": "DoVehicleLookup",
       "default_hotkey": "",
       "default_trigger": "!поисктс"
@@ -35504,7 +35590,7 @@
       "HotkeyVar": "Bind_WantedRemoval",
       "TriggerVar": "Trig_WantedRemoval",
       "file": "app/bindings.ahk",
-      "line": 1451,
+      "line": 1454,
       "handler": "DoWantedRemoval",
       "default_hotkey": "",
       "default_trigger": "!снятие"
@@ -35516,7 +35602,7 @@
       "HotkeyVar": "Bind_Arrest",
       "TriggerVar": "Trig_Arrest",
       "file": "app/bindings.ahk",
-      "line": 1452,
+      "line": 1455,
       "handler": "DoArrest",
       "default_hotkey": "",
       "default_trigger": "!ар"
@@ -35528,7 +35614,7 @@
       "HotkeyVar": "Bind_Fine",
       "TriggerVar": "Trig_Fine",
       "file": "app/bindings.ahk",
-      "line": 1453,
+      "line": 1456,
       "handler": "DoFine",
       "default_hotkey": "",
       "default_trigger": "!ш"
@@ -35540,7 +35626,7 @@
       "HotkeyVar": "Bind_Protocol",
       "TriggerVar": "Trig_Protocol",
       "file": "app/bindings.ahk",
-      "line": 1454,
+      "line": 1457,
       "handler": "DoProtocol",
       "default_hotkey": "",
       "default_trigger": "!протокол"
@@ -35552,7 +35638,7 @@
       "HotkeyVar": "Bind_Rights",
       "TriggerVar": "Trig_Rights",
       "file": "app/bindings.ahk",
-      "line": 1455,
+      "line": 1458,
       "handler": "DoRights",
       "default_hotkey": "",
       "default_trigger": "!права"
@@ -35564,7 +35650,7 @@
       "HotkeyVar": "Bind_CardDS",
       "TriggerVar": "Trig_CardDS",
       "file": "app/bindings.ahk",
-      "line": 1456,
+      "line": 1459,
       "handler": "DoCardDS",
       "default_hotkey": "",
       "default_trigger": "!визиткадс"
@@ -35576,7 +35662,7 @@
       "HotkeyVar": "Bind_CardVK",
       "TriggerVar": "Trig_CardVK",
       "file": "app/bindings.ahk",
-      "line": 1457,
+      "line": 1460,
       "handler": "DoCardVK",
       "default_hotkey": "",
       "default_trigger": "!визиткавк"
@@ -35588,7 +35674,7 @@
       "HotkeyVar": "Bind_MDSFormation",
       "TriggerVar": "Trig_MDSFormation",
       "file": "app/bindings.ahk",
-      "line": 1458,
+      "line": 1461,
       "handler": "DoMDSFormation",
       "default_hotkey": "",
       "default_trigger": "!строй"
@@ -35602,7 +35688,7 @@
       "Hint": "Запрос ID и поиск местоположения",
       "Safe": "On",
       "file": "app/bindings.ahk",
-      "line": 1459,
+      "line": 1462,
       "handler": "DoAssistOOP",
       "default_hotkey": "",
       "default_trigger": "!ооп"
@@ -35616,7 +35702,7 @@
       "Hint": "Запрос ID и выбор тазера или дубинки",
       "Safe": "On",
       "file": "app/bindings.ahk",
-      "line": 1460,
+      "line": 1463,
       "handler": "DoAssistStun",
       "default_hotkey": "",
       "default_trigger": "!оглуш"
@@ -35630,7 +35716,7 @@
       "Hint": "Запрос ID и автоматический /chase",
       "Safe": "On",
       "file": "app/bindings.ahk",
-      "line": 1461,
+      "line": 1464,
       "handler": "DoAssistChase",
       "default_hotkey": "",
       "default_trigger": "!погоня"
@@ -35644,7 +35730,7 @@
       "Hint": "Предложение отметить дом в GPS",
       "Safe": "On",
       "file": "app/bindings.ahk",
-      "line": 1462,
+      "line": 1465,
       "handler": "DoAssistHouse",
       "default_hotkey": "",
       "default_trigger": "!домgps"
@@ -35658,7 +35744,7 @@
       "Hint": "Предложение сохранить ID нарушителя",
       "Safe": "On",
       "file": "app/bindings.ahk",
-      "line": 1463,
+      "line": 1466,
       "handler": "DoAssistDrugs",
       "default_hotkey": "",
       "default_trigger": "!наркоид"
@@ -35672,7 +35758,7 @@
       "Hint": "Подтверждение наручников после помощи",
       "Safe": "On",
       "file": "app/bindings.ahk",
-      "line": 1464,
+      "line": 1467,
       "handler": "DoAssistPDPCuff",
       "default_hotkey": "",
       "default_trigger": "!пдпнаруч"
@@ -35684,7 +35770,7 @@
       "HotkeyVar": "",
       "TriggerVar": "Trig_GpsD",
       "file": "app/bindings.ahk",
-      "line": 1465,
+      "line": 1468,
       "handler": "",
       "default_hotkey": "",
       "default_trigger": "!д"
@@ -35696,7 +35782,7 @@
       "HotkeyVar": "",
       "TriggerVar": "Trig_GpsOS",
       "file": "app/bindings.ahk",
-      "line": 1466,
+      "line": 1469,
       "handler": "",
       "default_hotkey": "",
       "default_trigger": "!ос"
@@ -35709,7 +35795,7 @@
       "TriggerVar": "Trig_GuideRights",
       "Hint": "Текст прав текущего профиля; PgUp / PgDn — листать",
       "file": "app/bindings.ahk",
-      "line": 1467,
+      "line": 1470,
       "handler": "DoGuideRights",
       "default_hotkey": "",
       "default_trigger": "!правагуи"
@@ -35722,7 +35808,7 @@
       "TriggerVar": "Trig_GuideSignals",
       "Hint": "Справочное окно; PgUp / PgDn — листать",
       "file": "app/bindings.ahk",
-      "line": 1468,
+      "line": 1471,
       "handler": "DoGuideSignals",
       "default_hotkey": "",
       "default_trigger": "!сигналы"
@@ -35734,7 +35820,7 @@
       "HotkeyVar": "",
       "TriggerVar": "Trig_VU",
       "file": "app/bindings.ahk",
-      "line": 1469,
+      "line": 1472,
       "handler": "DoToggleVU",
       "default_hotkey": "",
       "default_trigger": "!вузакон"
@@ -35746,7 +35832,7 @@
       "HotkeyVar": "",
       "TriggerVar": "Trig_FP",
       "file": "app/bindings.ahk",
-      "line": 1470,
+      "line": 1473,
       "handler": "DoToggleFP",
       "default_hotkey": "",
       "default_trigger": "!фп"
@@ -35758,7 +35844,7 @@
       "HotkeyVar": "",
       "TriggerVar": "Trig_KON",
       "file": "app/bindings.ahk",
-      "line": 1471,
+      "line": 1474,
       "handler": "DoToggleKON",
       "default_hotkey": "",
       "default_trigger": "!кон"
@@ -35770,7 +35856,7 @@
       "HotkeyVar": "",
       "TriggerVar": "Trig_FZOP",
       "file": "app/bindings.ahk",
-      "line": 1472,
+      "line": 1475,
       "handler": "DoToggleFZOP",
       "default_hotkey": "",
       "default_trigger": "!фзоп"
@@ -35782,7 +35868,7 @@
       "HotkeyVar": "",
       "TriggerVar": "Trig_TER",
       "file": "app/bindings.ahk",
-      "line": 1473,
+      "line": 1476,
       "handler": "DoToggleTER",
       "default_hotkey": "",
       "default_trigger": "!тер"
@@ -35794,7 +35880,7 @@
       "HotkeyVar": "",
       "TriggerVar": "Trig_TK",
       "file": "app/bindings.ahk",
-      "line": 1474,
+      "line": 1477,
       "handler": "DoToggleTK",
       "default_hotkey": "",
       "default_trigger": "!тк"
@@ -35806,7 +35892,7 @@
       "HotkeyVar": "",
       "TriggerVar": "Trig_ARG",
       "file": "app/bindings.ahk",
-      "line": 1475,
+      "line": 1478,
       "handler": "DoToggleARG",
       "default_hotkey": "",
       "default_trigger": "!арг"
@@ -35818,7 +35904,7 @@
       "HotkeyVar": "",
       "TriggerVar": "Trig_UK",
       "file": "app/bindings.ahk",
-      "line": 1476,
+      "line": 1479,
       "handler": "DoToggleUK",
       "default_hotkey": "",
       "default_trigger": "!ук"
@@ -35830,7 +35916,7 @@
       "HotkeyVar": "",
       "TriggerVar": "Trig_VV",
       "file": "app/bindings.ahk",
-      "line": 1477,
+      "line": 1480,
       "handler": "DoToggleVV",
       "default_hotkey": "",
       "default_trigger": "!вв"
@@ -35842,7 +35928,7 @@
       "HotkeyVar": "",
       "TriggerVar": "Trig_KOAP",
       "file": "app/bindings.ahk",
-      "line": 1478,
+      "line": 1481,
       "handler": "DoToggleKOAP",
       "default_hotkey": "",
       "default_trigger": "!коап"
@@ -35854,7 +35940,7 @@
       "HotkeyVar": "",
       "TriggerVar": "Trig_PDD",
       "file": "app/bindings.ahk",
-      "line": 1479,
+      "line": 1482,
       "handler": "DoTogglePDD",
       "default_hotkey": "",
       "default_trigger": "!пдд"
@@ -35866,7 +35952,7 @@
       "HotkeyVar": "",
       "TriggerVar": "Trig_ORUZH",
       "file": "app/bindings.ahk",
-      "line": 1480,
+      "line": 1483,
       "handler": "DoToggleORUZH",
       "default_hotkey": "",
       "default_trigger": "!оруж"
@@ -35878,7 +35964,7 @@
       "HotkeyVar": "",
       "TriggerVar": "Trig_UPK",
       "file": "app/bindings.ahk",
-      "line": 1481,
+      "line": 1484,
       "handler": "DoToggleUPK",
       "default_hotkey": "",
       "default_trigger": "!упк"
@@ -35890,7 +35976,7 @@
       "HotkeyVar": "",
       "TriggerVar": "Trig_KAS",
       "file": "app/bindings.ahk",
-      "line": 1482,
+      "line": 1485,
       "handler": "DoToggleKAS",
       "default_hotkey": "",
       "default_trigger": "!кас"
@@ -35902,7 +35988,7 @@
       "HotkeyVar": "",
       "TriggerVar": "Trig_FSB",
       "file": "app/bindings.ahk",
-      "line": 1483,
+      "line": 1486,
       "handler": "DoToggleFSB",
       "default_hotkey": "",
       "default_trigger": "!фсб"
@@ -35914,7 +36000,7 @@
       "HotkeyVar": "",
       "TriggerVar": "Trig_FSIN",
       "file": "app/bindings.ahk",
-      "line": 1484,
+      "line": 1487,
       "handler": "DoToggleFSIN",
       "default_hotkey": "",
       "default_trigger": "!фсин"
@@ -35926,7 +36012,7 @@
       "HotkeyVar": "",
       "TriggerVar": "Trig_VS",
       "file": "app/bindings.ahk",
-      "line": 1485,
+      "line": 1488,
       "handler": "DoToggleVS",
       "default_hotkey": "",
       "default_trigger": "!фзовс"
@@ -35938,7 +36024,7 @@
       "HotkeyVar": "",
       "TriggerVar": "Trig_SUD",
       "file": "app/bindings.ahk",
-      "line": 1486,
+      "line": 1489,
       "handler": "DoToggleSUD",
       "default_hotkey": "",
       "default_trigger": "!суд"
@@ -35950,7 +36036,7 @@
       "HotkeyVar": "",
       "TriggerVar": "Trig_ORD",
       "file": "app/bindings.ahk",
-      "line": 1487,
+      "line": 1490,
       "handler": "DoToggleORD",
       "default_hotkey": "",
       "default_trigger": "!орд"
@@ -35962,7 +36048,7 @@
       "HotkeyVar": "",
       "TriggerVar": "Trig_GT",
       "file": "app/bindings.ahk",
-      "line": 1488,
+      "line": 1491,
       "handler": "DoToggleGT",
       "default_hotkey": "",
       "default_trigger": "!гостайна"
@@ -35970,18 +36056,18 @@
   ],
   "source_sha256": {
     "AHK_FOR_GOS_BY_SBEZRUK.ahk": "128817951eb237d43b54c062ef63c629b6d324512a76881c25f46e44b3772005",
-    "app/host.ahk": "b7fac81aee13d8eb092ce357dde0fc06774acd1c82aa391d360daf249649c2b0",
+    "app/host.ahk": "33f5000ab818e2c2509112ac55710c0059429c5842fbc0b346155a44cfab0e30",
     "UDF.ahk": "1a4c4154a593aeb398cb4bcd88e3b0fcfa9827fbd94fa853b4d7f0839504a4e0",
     "common.ahk": "290314e7997d9ea2e0ce00a82d6270ecb16f81b08ddd8a074bcde0f67a5eea4e",
-    "runtime_support.ahk": "1f5f95c42933508bc9e8dfe5a6f07e52567034fbc6847a4ad939d656b43aa5d6",
+    "runtime_support.ahk": "3713a7136cbade4683df08f78969b77d217fe984afcdd1a34f1ef3f1bed457b5",
     "chat_typing.ahk": "20426fd22703f2a095358fca6d319b4c8fe81c7d6eb8c341cd237bd90ccd741a",
     "id_capture.ahk": "0ab01614857161fc00f8b860dda475eb087997ebbd98702ea96db5bb5c047bd6",
-    "service_ui.ahk": "34236f80d12688883226f0125343df8627f2ea674ecf427f80262c15f78a3094",
+    "service_ui.ahk": "d29e60a84717370adb56c7ed24af9d31257e041f5e572bfebc3f9d781b361a9f",
     "app/game_input.ahk": "477d2e1da30bb0f0016efd479b3d5c48a8139b9b8e5fa43f20798cfaf22e7916",
     "app/text_commands.ahk": "6b2d14bfda7d402eedb32165700915c019dd9aef69ea93f7c58da8f5b70d5102",
     "app/private_text.ahk": "d9f2ca77750fc2e7056f20fe591ad0b453a13a2428a2d43fef725f176daf6f7d",
     "app/reference_guides.ahk": "e53b551e8bd9585d1121072fc40893cbbdcdcd3cc06008fd4e4e0eccd553364d",
-    "ui_style.ahk": "8b1d56bbf2215129b7032d94b9052b81e15e42b0276b33ad1cec7b79d5821641",
+    "ui_style.ahk": "2caf3596199bfdf5f62a0d042a4fe2c8355724d5aab45ec63d2ca9546b8e003f",
     "tests/chat_typing_regression.ahk": "2cd34cf551d878b079de2d76c926cef892cb50b49c9c49649847fe9dc88f8f63",
     "tests/chat_state_regression.ahk": "3840d90f1bcd2d7f431ed604a84374c66639e5e85eb5c5a0dedabaffa42d4c6c",
     "tests/autoid_source_regression.ahk": "20ef46fb6afda05c08171dc8ffaf393b46d8f5e315489090388888488feee468",
@@ -35991,7 +36077,7 @@
     "tests/memory_compat_regression.ahk": "71e0b9b779e0d877e72b00c80d4b237259e08fe9905a1673beed330dbd3dfb01",
     "tests/native_dialog_regression.ahk": "76af83a945b830b96fd9c7790283d043913ababa948d8b7cb16c17dbd207fcf5",
     "tests/desktop_host_regression.ahk": "4f149b9ccd329311a120b332ecfb1fee8bb5f9a1c2a1b31ab42fafee4cb43cde",
-    "tests/desktop_smoke.ahk": "4513d4f4e382a151464c48b757fe3c8c5f540cb4927c805cfc6a0d37c7b70f72",
+    "tests/desktop_smoke.ahk": "6f53758c0d7ae1d0378559c62bf9b75ffe11c4d973ce0c1516fc8d749d39a132",
     "tests/logic_audit_regression.ahk": "34b39215321e9096ad3352720e5f155b6c5688f62f28d3bf18478ea7ff545283",
     "tests/reference_guides_regression.ahk": "eee7f84b219ae25991266cd826ccb35890bac8aba0e3caa959988d1b4effa7e4",
     "tests/text_commands_regression.ahk": "eb164362dcd3981534c45867ef42c1b2085e02880bdd23b65a822247f57719e1",
@@ -36001,15 +36087,15 @@
     "app/cli.ahk": "4158bcae340d5cafa75f1377d103fb5daf5367aa9d82d939d77b2f8d71ccf936",
     "app/state.ahk": "0871aa87d38a87470f98512e514b2c0361da1e338b8dff3d8582cea61904e9c9",
     "app/bootstrap.ahk": "a240ddbcb171031a65bcf9542cb6402aa0ddaabd050ff2798e22eaf079bac015",
-    "app/core.ahk": "9ba1ef1646777b48c5aad90e26af2ed461843b2c5ae043139ecb298bdace4b9e",
+    "app/core.ahk": "74b770d44128b836bf47a402c714d1fd974b9a23b43685e179633e5c1499db50",
     "app/diagnostics.ahk": "084ff18f89ebd24d4768e2d070da591e626199a2912b40e78ca581fb925a3609",
-    "app/profiles.ahk": "5ea5bf76614bbe8f2c0ba3d6f99bd9c7997d7699fe374dad3b956983d4420ce8",
-    "app/ui_settings.ahk": "e363ca21b70e9c5f95f0f3de56513dcf23dc19193c650858fddf859c2dceeecf",
+    "app/profiles.ahk": "d6f32a65f7eb42719cb5d66c083242212b21d68505fabf695bfe822282ce4aa4",
+    "app/ui_settings.ahk": "74a3bd85fec64af84da0dfe8a9b7e6b9574fec154727c38abe5508eefe4403d4",
     "app/ui_overlays.ahk": "a61b169bfaa57da047fe158bae5c15903e486d33fc85353aadec830689169c62",
     "app/game.ahk": "e52fc17923d97ef28acb1d322931f125f8e1b37c65ee8406d5d53a9c8513dc5b",
     "app/chatlog.ahk": "9959676db56f018888ab55c7be58c7bfc86e45bcebb47a1ed18798e702c1fc8b",
     "app/actions.ahk": "c3d95789b5dfe8016c6754445e8905274d19446dc57a24e9e26c6a4be97f9ae7",
-    "app/bindings.ahk": "6558dda3c51cb65dbbfb773c7d5ed5f4a74e772e7abb63415765a0bb6a8d3a64",
+    "app/bindings.ahk": "da116f1a566329241af7f7e565aef35fa3246b4ba8f1e11bcd3d49b453c32ddd",
     "app/automation.ahk": "470f9fb82188784eed74b6f6b0433ec4896eb2a0994dc50988851322a45dd9a8",
     "app/ui_documents.ahk": "0a67daf3d1c648a6ffdd001dba7645884c2c71e27efbc8244656fea681b2e4ad",
     "app/chat.ahk": "c0f5cd3aee96f7e20a413fcf6753680fda78244a24b110a74c79a3609fa63a97",

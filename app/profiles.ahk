@@ -1263,6 +1263,8 @@ InitProfiles() {
         return
     if !FileExist(ConfigFile)
     {
+        if AppHost_SeedDefaultProfile(ConfigFile)
+            return
         if !SaveProfile("Основной")
             return
         CheckedIniWrite("Основной", ConfigFile, "Profiles", "Names")

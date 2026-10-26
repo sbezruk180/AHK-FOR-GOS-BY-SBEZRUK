@@ -642,15 +642,18 @@ Capture_BeforeShow(guiName, forceHide := false) {
         CapturePrivateWindows[captureHwnd] := true
     else
         CapturePrivateWindows.Delete(captureHwnd)
-    UI_PrepareWindow(captureHwnd)
-    UIStyle_Apply(guiName, captureHwnd)
+    ; Style immutable controls once per HWND, before their first visible frame.
+    if !DllCall("GetProp", "Ptr", captureHwnd, "Str", "AHK.UI.Styled", "Ptr") {
+        UI_PrepareWindow(captureHwnd)
+        UIStyle_Apply(guiName, captureHwnd)
+    }
     return Capture_ApplyWindow(captureHwnd)
 }
 
 Capture_ApplyWindow(hwnd, environment := "") {
     if (!Capture_IsOwnGui(hwnd))
         return false
-    enabled := OBSHideWindows = "On" || CapturePrivateWindows.HasKey(hwnd)
+    enabled := OBSHideWindows = "On"
     now := TickNow()
     state := {Enabled: enabled, Verified: false, Affinity: 0, Error: 0, Reason: "", LastChecked: now, NextRetry: now + 2000}
     if (enabled) {
@@ -694,13 +697,26 @@ Capture_ApplyWindow(hwnd, environment := "") {
     return state.Verified
 }
 
+Capture_ModeChanged(controlHwnd := 0, guiEvent := "", eventInfo := "", eventError := "") {
+    global OBSHideWindows, CFG_OBSHideWindows
+    if !SettingsGui_CanUpdate()
+        return false
+    GuiControlGet, requested, 2:, CFG_OBSHideWindows
+    NormalizeOnOff(requested, "Off")
+    OBSHideWindows := requested
+    CFG_OBSHideWindows := requested
+    Capture_RefreshWindows()
+    SaveUISettings()
+    return true
+}
+
 Capture_RefreshWindows() {
     if (CaptureRefreshBusy)
         return
     CaptureRefreshBusy := 1
     previous := A_DetectHiddenWindows
     enabled := OBSHideWindows = "On"
-    environment := (enabled || CapturePrivateWindows.Count()) ? Capture_GetEnvironment() : {Supported: true, Composition: true, Version: "", Error: 0, Reason: ""}
+    environment := enabled ? Capture_GetEnvironment() : {Supported: true, Composition: true, Version: "", Error: 0, Reason: ""}
     total := 0, confirmed := 0, failed := 0, lastError := 0, lastReason := ""
     now := TickNow()
     try {
@@ -721,7 +737,7 @@ Capture_RefreshWindows() {
             hwnd := windows%A_Index%
             if (!Capture_IsOwnGui(hwnd))
                 continue
-            enabled := OBSHideWindows = "On" || CapturePrivateWindows.HasKey(hwnd)
+            enabled := OBSHideWindows = "On"
             total++
             state := CaptureWindowStates.HasKey(hwnd) ? CaptureWindowStates[hwnd] : ""
             if (enabled && (!environment.Supported || !environment.Composition)) {
@@ -771,7 +787,7 @@ Capture_RefreshWindows() {
         else
             CaptureStatus := "Защита захвата выключена"
         if (SettingsGui_CanUpdate())
-            GuiControl, 2:, CaptureStatusText, %CaptureStatus%
+            UIStyle_SetTextIfChanged("2", "CaptureStatusText", CaptureStatus)
     } finally {
         DetectHiddenWindows, %previous%
         CaptureRefreshBusy := 0

@@ -230,9 +230,10 @@ ShowSettingsWindow() {
     Settings_UpdateScrollbars()
     if !GameUi_ShouldShowPassive()
         WinActivate, ahk_id %hSettingsWnd%
-    settingsAlpha := 255
     PromoteOverlayWindow(hSettingsWnd)
-    WinSet, Transparent, %settingsAlpha%, ahk_id %hSettingsWnd%
+    ; The settings canvas is opaque: avoid an unnecessary layered window.
+    if (DllCall("GetWindowLong", "Ptr", hSettingsWnd, "Int", -20, "UInt") & 0x80000)
+        WinSet, Transparent, Off, ahk_id %hSettingsWnd%
     ApplyRoundedCorners(hSettingsWnd, UIRoundness)
     ApplyRoundedPanelsForGui(hSettingsWnd, InnerRoundness)
 }
@@ -348,11 +349,6 @@ OpenSettings(tabIndex := 1) {
     SettingsTargetTab := SettingsPageIndex(SettingsPage)
     BuildSettingsGui()
     ShowSettingsWindow()
-    settingsAlpha := 255
-    PromoteOverlayWindow(hSettingsWnd)
-    WinSet, Transparent, %settingsAlpha%, ahk_id %hSettingsWnd%
-    ApplyRoundedCorners(hSettingsWnd, UIRoundness)
-    ApplyRoundedPanelsForGui(hSettingsWnd, InnerRoundness)
     RefreshSettingsTabs()
     SettingsVisible := 1
     SaveSettingsWindowState()
@@ -679,7 +675,7 @@ BuildSettingsGui() {
         pageLabels .= (pageLabels = "" ? "" : "|") . pages[A_Index].Label
 
     Gui, 2:Destroy
-    Gui, 2:+HwndhSettingsWnd +AlwaysOnTop -Caption +ToolWindow +Resize +0x300000 +DPIScale
+    Gui, 2:+HwndhSettingsWnd +AlwaysOnTop -Caption +ToolWindow +Resize +0x300000 +E0x02000000 +DPIScale
     Gui, 2:Color, %bg%, %controlBg%
     Gui, 2:Font, Norm s10 c%text%, Segoe UI
     buildW := 1180, buildH := 800
@@ -865,6 +861,7 @@ BuildSettingsGui() {
     Gui, 2:Add, Button, x858 y354 w130 h28 gLoadThemePresetLabel, Применить тему
     Settings_AddControl("Локальный фон (PNG / JPG / BMP, до 5 МиБ)", "CFG_BackgroundImageURL", BackgroundImageURL, 240, 404, 660, "Edit", "", text, inputText)
     Settings_AddControl("Скрывать окна из захвата", "CFG_OBSHideWindows", OBSHideWindows, 256, 500, 270, "DropDown", "Off|On", text, inputText)
+    GuiControl, 2:+gCapture_ModeChanged, CFG_OBSHideWindows
     Gui, 2:Font, s9 Norm c%text%, Segoe UI
     Gui, 2:Add, Text, x548 y502 w574 h56 vCaptureStatusText BackgroundTrans +Wrap, %CaptureStatus%
     Gui, 2:Font, s8 Norm c%muted%, Segoe UI

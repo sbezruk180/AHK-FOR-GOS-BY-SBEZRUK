@@ -192,6 +192,10 @@ NormalizeHotkeyValue(ByRef val) {
     val := Trim(val)
     if (val = "ERROR")
         val := ""
+    ; Exported Hotkey controls can contain the current Russian layout letter.
+    ; Register its physical Latin key while keeping all modifier/up semantics.
+    if RegExMatch(val, "i)^([!^+#<>*~$]*)([à-ÿ¸])(\s+up)?$", parts)
+        val := parts1 . TextCommands_LayoutVariant(parts2) . parts3
 }
 
 GetCfgHotkeyOrder() {
@@ -1127,8 +1131,7 @@ NormalizeHotkeyId(hotkeyName) {
 }
 
 NormalizeBindValue(ByRef val) {
-    if (val = "ERROR")
-        val := ""
+    NormalizeHotkeyValue(val)
 }
 
 ClearRegisteredBindHotkeys() {

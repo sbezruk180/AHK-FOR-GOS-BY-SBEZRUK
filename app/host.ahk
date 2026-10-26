@@ -44,6 +44,62 @@ AppHost_Init() {
     return true
 }
 
+AppHost_SeedDefaultProfile(target) {
+    ; Never overwrite an existing configuration, including on upgrade/reinstall.
+    if FileExist(target)
+        return true
+    stage := target . ".default-" . DllCall("GetCurrentProcessId") . ".tmp"
+    written := 0
+    if (!A_IsUnicode) {
+        ; Preserve the supplied ANSI bytes even on a build/test host using CP1252.
+        if (A_IsCompiled) {
+            module := DllCall("GetModuleHandle", "Ptr", 0, "Ptr")
+            resource := DllCall("FindResourceW", "Ptr", module, "WStr", "DEFAULT_PROFILE", "Ptr", 10, "Ptr")
+            size := resource ? DllCall("SizeofResource", "Ptr", module, "Ptr", resource, "UInt") : 0
+            loaded := size ? DllCall("LoadResource", "Ptr", module, "Ptr", resource, "Ptr") : 0
+            address := loaded ? DllCall("LockResource", "Ptr", loaded, "Ptr") : 0
+            if (address && size) {
+                file := FileOpen(stage, "w")
+                if IsObject(file) {
+                    written := file.RawWrite(address + 0, size) = size
+                    file.Close()
+                }
+            }
+        } else {
+            source := A_ScriptDir . "\assets\defaults\profiles.default.ini"
+            FileCopy, %source%, %stage%, 1
+            written := !ErrorLevel
+        }
+    } else {
+        ; The Unicode GUI test host uses a Unicode INI so native INI APIs do not
+        ; reinterpret Cyrillic using the English runner's ANSI code page.
+        if (A_IsCompiled)
+            template := AppHost_ResourceText("DEFAULT_PROFILE")
+        else {
+            file := FileOpen(A_ScriptDir . "\assets\defaults\profiles.default.ini", "r", "CP1251")
+            template := IsObject(file) ? file.Read() : ""
+            if IsObject(file)
+                file.Close()
+        }
+        if (template != "") {
+            file := FileOpen(stage, "w", "UTF-16")
+            if IsObject(file) {
+                written := file.Write(template) > 0
+                file.Close()
+            }
+        }
+    }
+    if (written) {
+        FileMove, %stage%, %target%, 0
+        if (!ErrorLevel)
+            return true
+    }
+    if FileExist(stage)
+        FileDelete, %stage%
+    LogError("DefaultProfile", "Default profile could not be installed: " . target)
+    return !!FileExist(target)
+}
+
 AppHost_ArgumentValue(name) {
     if !IsObject(A_Args)
         return ""
