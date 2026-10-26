@@ -5,7 +5,7 @@
 | Поиск | Результат |
 | --- | --- |
 | [google](https://www.google.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B0%D0%BC%D0%B0%D0%B7%D0%B8%D0%BD%D0%B3%D0%B0&hl=ru) | Проверка робота/блокировка; наличие в индексе не установлено |
-| [bing](https://www.bing.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B0%D0%BC%D0%B0%D0%B7%D0%B8%D0%BD%D0%B3%D0%B0) | Результаты не удалось извлечь; вывод об индексации не сделан |
+| [bing](https://www.bing.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B0%D0%BC%D0%B0%D0%B7%D0%B8%D0%BD%D0%B3%D0%B0) | Среди извлечённых результатов ссылка не найдена |
 | [yandex](https://yandex.ru/search/?text=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B0%D0%BC%D0%B0%D0%B7%D0%B8%D0%BD%D0%B3%D0%B0) | Проверка робота/блокировка; наличие в индексе не установлено |
 | [duckduckgo](https://html.duckduckgo.com/html/?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B0%D0%BC%D0%B0%D0%B7%D0%B8%D0%BD%D0%B3%D0%B0) | Проверка робота/блокировка; наличие в индексе не установлено |
 | [github](https://github.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B0%D0%BC%D0%B0%D0%B7%D0%B8%D0%BD%D0%B3%D0%B0&type=repositories) | Результаты не удалось извлечь; вывод об индексации не сделан |

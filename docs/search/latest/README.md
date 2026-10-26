@@ -5,7 +5,7 @@
 | Поиск | Результат |
 | --- | --- |
 | [google](https://www.google.com/search?q=ahk+for+gos&hl=ru) | Проверка робота/блокировка; наличие в индексе не установлено |
-| [bing](https://www.bing.com/search?q=ahk+for+gos) | Среди извлечённых результатов ссылка не найдена |
+| [bing](https://www.bing.com/search?q=ahk+for+gos) | Ссылка на проект найдена |
 | [yandex](https://yandex.ru/search/?text=ahk+for+gos) | Проверка робота/блокировка; наличие в индексе не установлено |
 | [duckduckgo](https://html.duckduckgo.com/html/?q=ahk+for+gos) | Проверка робота/блокировка; наличие в индексе не установлено |
 | [github](https://github.com/search?q=ahk+for+gos&type=repositories) | Ссылка на проект найдена |
