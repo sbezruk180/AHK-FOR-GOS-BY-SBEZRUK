@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-10-24T12:41:44.861329+00:00",
+  "checked_at": "2026-10-26T11:00:27.438009+00:00",
   "endpoint": "https://api.indexnow.org/indexnow",
   "urls": [
     "https://sbezruk180.github.io/AHK-FOR-GOS-BY-SBEZRUK/",
@@ -10,6 +10,6 @@
   "meaning": "Acceptance acknowledges a submission; it does not confirm indexing or rankings.",
   "ownership_verified": true,
   "pages_verified": true,
-  "http_status": 202,
+  "http_status": 200,
   "response": ""
 }
