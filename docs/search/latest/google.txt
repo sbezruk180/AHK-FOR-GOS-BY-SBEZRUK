@@ -6,6 +6,6 @@
 
 
 
-IP-адрес: 172.206.245.231
-Время: 2026-10-26T21:24:28Z
-URL: https://www.google.com/search?q=ahk+for+gos&hl=ru&sei=C8XfaumjBY-y5NoP8p7FyAY
+IP-адрес: 130.131.239.115
+Время: 2026-10-26T21:57:36Z
+URL: https://www.google.com/search?q=ahk+for+gos&hl=ru&sei=zszfaomuBd20qtsPz86ugA8
