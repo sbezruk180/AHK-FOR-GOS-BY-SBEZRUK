@@ -242,7 +242,8 @@
       "callers": [
         "AppHost_ReadLaw",
         "LawSearch_CorpusFingerprint",
-        "Audit_DesktopHost"
+        "Audit_DesktopHost",
+        "RunSelfTestV1"
       ],
       "coverage": {},
       "description": "EXE, пути данных, встроенные ресурсы: LawPath; код: if !RegExMatch(name, \"i)^[a-z0-9_]+\\.txt$\") / return \"\""
@@ -24652,7 +24653,7 @@
       ],
       "winapi": [],
       "first_statement": "AppVersion := \"1.1\", ConfigVersion := 14 / SelfTestCriticalFailed := 0, SelfTestHighFailed := 0",
-      "sha256": "9781bb3e41afe9d7d4ca0224fb168246bb97b6eb0c19fab2e4ac657d344d712e",
+      "sha256": "c872c01e51928f524bb964e5252e1cd40053b3d8d0cd5849391bbac5c87602e0",
       "calls": [
         "AppHost_DataDir",
         "SelfTest_ReadFile",
@@ -24662,6 +24663,7 @@
         "SelfTest_HasNoBom",
         "V1_HasOnlyCrlf",
         "LawSearch_InitCatalog",
+        "AppHost_LawPath",
         "V1_HasDuplicateFunctions",
         "IsLikelyPointer",
         "V1_GetBetween",
@@ -41269,7 +41271,7 @@
     "app/state.ahk": "10235e5742cf90f017829ff1386c735e68056fadcbacd17cff92692425a04c71",
     "app/bootstrap.ahk": "a240ddbcb171031a65bcf9542cb6402aa0ddaabd050ff2798e22eaf079bac015",
     "app/core.ahk": "520b6448f6de6a90ec3ada61b2f22e39bdcc9222d777d69679852de3142c6398",
-    "app/diagnostics.ahk": "0d94d2e24d0943599c1f088d13befa4db6216103396fe34ceca69903ae9f8348",
+    "app/diagnostics.ahk": "d3618c64aaf6c6dea5ab9d80f4d74e7f077ffeae3d84c76c8ffd2a9a7bba732b",
     "app/profiles.ahk": "d27b9e2d9d62c417d9b6d9870ed72b18a80f6a4f29a4d6a6c7ed0279c396fcb3",
     "app/ui_settings.ahk": "2e42c97669ce44f257f69c2466cddbd331b6d275df35901a7197451b1d7cfa54",
     "app/ui_overlays.ahk": "5f46a6383b9a5c38ddd0957342850ca8120987584ddcc4987dd33961ed2f8da3",

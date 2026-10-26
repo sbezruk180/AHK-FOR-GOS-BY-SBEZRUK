@@ -444,7 +444,7 @@ RunSelfTestV1() {
     Loop % LawSearchDocCatalog.Length()
     {
         lawMeta := LawSearchDocCatalog[A_Index]
-        lawPath := root . "\laws\" . lawMeta.FileName
+        lawPath := AppHost_LawPath(lawMeta.FileName)
         SelfTest_Add(report, "Critical", "official law exists: " . lawMeta.Code, SelfTest_FileExistsNonEmpty(lawPath))
         SelfTest_Add(report, "High", "official law has no BOM: " . lawMeta.Code, SelfTest_HasNoBom(lawPath))
         SelfTest_Add(report, "High", "official law CRLF only: " . lawMeta.Code, V1_HasOnlyCrlf(lawPath))
