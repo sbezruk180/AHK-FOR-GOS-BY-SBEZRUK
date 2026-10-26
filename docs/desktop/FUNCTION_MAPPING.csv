@@ -543,8 +543,8 @@ MemoryLiveTest_SendRussian,AHK_FOR_GOS_BY_SBEZRUK.ahk:9324,app/diagnostics.ahk:1
 RunMemoryLiveTest,AHK_FOR_GOS_BY_SBEZRUK.ahk:9337,app/diagnostics.ahk:1266,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 AzmpAllowsTargetRead,AHK_FOR_GOS_BY_SBEZRUK.ahk:9370,app/game.ahk:57,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 HasCurrentID,AHK_FOR_GOS_BY_SBEZRUK.ahk:9378,app/game.ahk:65,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-IsGameActive,AHK_FOR_GOS_BY_SBEZRUK.ahk:9383,app/game.ahk:70,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-EnsureGameActive,AHK_FOR_GOS_BY_SBEZRUK.ahk:9390,app/game.ahk:77,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+IsGameActive,AHK_FOR_GOS_BY_SBEZRUK.ahk:9383,app/game.ahk:70,Адаптирована,Адаптирован путь пользовательских данных/отчётов
+EnsureGameActive,AHK_FOR_GOS_BY_SBEZRUK.ahk:9390,app/game.ahk:77,Адаптирована,Адаптирован путь пользовательских данных/отчётов
 GetCrosshairTargetPed,AHK_FOR_GOS_BY_SBEZRUK.ahk:9400,app/game.ahk:87,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 GetPedCoordinates,AHK_FOR_GOS_BY_SBEZRUK.ahk:9480,app/game.ahk:167,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 GetCrosshairTargetDistance,AHK_FOR_GOS_BY_SBEZRUK.ahk:9486,app/game.ahk:173,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
@@ -563,7 +563,7 @@ AutoTargetID_ReadAimedID,AHK_FOR_GOS_BY_SBEZRUK.ahk:9764,app/game.ahk:451,Без
 AutoTargetID_RequestConfirmation,AHK_FOR_GOS_BY_SBEZRUK.ahk:9850,app/game.ahk:532,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 AutoTargetID_TargetKey,AHK_FOR_GOS_BY_SBEZRUK.ahk:9894,app/game.ahk:576,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 AutoTargetID_CaptureNow,AHK_FOR_GOS_BY_SBEZRUK.ahk:9898,app/game.ahk:580,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-AutoTargetID_Poll,AHK_FOR_GOS_BY_SBEZRUK.ahk:9921,app/game.ahk:603,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+AutoTargetID_Poll,AHK_FOR_GOS_BY_SBEZRUK.ahk:9921,app/game.ahk:603,Адаптирована,Адаптирован путь пользовательских данных/отчётов
 SafeWarn,AHK_FOR_GOS_BY_SBEZRUK.ahk:9987,app/core.ahk:366,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 Evidence_IsAllowedEvent,AHK_FOR_GOS_BY_SBEZRUK.ahk:9997,app/chatlog.ahk:3,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 Evidence_EventLabel,AHK_FOR_GOS_BY_SBEZRUK.ahk:10008,app/chatlog.ahk:14,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
@@ -639,7 +639,7 @@ ChatLogReader_HandleTargetEvent,AHK_FOR_GOS_BY_SBEZRUK.ahk:11517,app/chatlog.ahk
 ChatLogReader_LineContainsName,AHK_FOR_GOS_BY_SBEZRUK.ahk:11535,app/chatlog.ahk:937,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 ChatLogReader_HandleLookupLine,AHK_FOR_GOS_BY_SBEZRUK.ahk:11547,app/chatlog.ahk:949,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 ChatLogReader_ProcessLine,AHK_FOR_GOS_BY_SBEZRUK.ahk:11579,app/chatlog.ahk:981,Адаптирована,Адаптирован путь пользовательских данных/отчётов
-ChatLogReader_Tick,AHK_FOR_GOS_BY_SBEZRUK.ahk:11668,app/chatlog.ahk:1071,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ChatLogReader_Tick,AHK_FOR_GOS_BY_SBEZRUK.ahk:11668,app/chatlog.ahk:1071,Адаптирована,Адаптирован путь пользовательских данных/отчётов
 NormalizeTextTrigger,AHK_FOR_GOS_BY_SBEZRUK.ahk:11737,app/bindings.ahk:3,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 ShowTriggerValue,AHK_FOR_GOS_BY_SBEZRUK.ahk:11745,app/ui_overlays.ahk:29,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 ShowHotkeyValue,AHK_FOR_GOS_BY_SBEZRUK.ahk:11751,app/ui_overlays.ahk:35,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
@@ -802,27 +802,27 @@ LoadUIAppearanceFromIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:15602,app/profiles.ahk:126,А
 LoadUISafetyAndAudioFromIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:15632,app/profiles.ahk:159,Адаптирована,Адаптирован путь пользовательских данных/отчётов
 LoadUIWindowPrefsFromIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:15708,app/profiles.ahk:238,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 NormalizeLoadedUISettings,AHK_FOR_GOS_BY_SBEZRUK.ahk:15730,app/profiles.ahk:260,Адаптирована,Адаптирован путь пользовательских данных/отчётов
-WriteUIAppearanceToIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:15841,app/profiles.ahk:372,Адаптирована,Адаптирован путь пользовательских данных/отчётов
-WriteUISafetyAndAudioToIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:15869,app/profiles.ahk:401,Адаптирована,Адаптирован путь пользовательских данных/отчётов
-WriteUIWindowPrefsToIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:15935,app/profiles.ahk:470,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-SaveUISettings,AHK_FOR_GOS_BY_SBEZRUK.ahk:15957,app/profiles.ahk:492,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-LoadUISettings,AHK_FOR_GOS_BY_SBEZRUK.ahk:15970,app/profiles.ahk:505,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-LoadHudWindowStateFromIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:15982,app/profiles.ahk:517,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-LoadBindListWindowStateFromIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:15990,app/profiles.ahk:525,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-LoadSettingsWindowStateFromIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:16000,app/profiles.ahk:535,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+WriteUIAppearanceToIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:15841,app/profiles.ahk:373,Адаптирована,Адаптирован путь пользовательских данных/отчётов
+WriteUISafetyAndAudioToIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:15869,app/profiles.ahk:402,Адаптирована,Адаптирован путь пользовательских данных/отчётов
+WriteUIWindowPrefsToIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:15935,app/profiles.ahk:471,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+SaveUISettings,AHK_FOR_GOS_BY_SBEZRUK.ahk:15957,app/profiles.ahk:493,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+LoadUISettings,AHK_FOR_GOS_BY_SBEZRUK.ahk:15970,app/profiles.ahk:506,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+LoadHudWindowStateFromIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:15982,app/profiles.ahk:518,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+LoadBindListWindowStateFromIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:15990,app/profiles.ahk:526,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+LoadSettingsWindowStateFromIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:16000,app/profiles.ahk:536,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 ChatQueue_Clear,AHK_FOR_GOS_BY_SBEZRUK.ahk:16012,app/automation.ahk:696,Адаптирована,Адаптирован путь пользовательских данных/отчётов
 SettingsGui_CanUpdate,AHK_FOR_GOS_BY_SBEZRUK.ahk:16027,app/ui_settings.ahk:288,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 UpdateAutomationSettingsStatus,AHK_FOR_GOS_BY_SBEZRUK.ahk:16032,app/core.ahk:499,Адаптирована,Адаптирован путь пользовательских данных/отчётов
 RunBackgroundTool,AHK_FOR_GOS_BY_SBEZRUK.ahk:16051,app/core.ahk:518,Адаптирована,Исправлен жизненный цикл окна/ввода/диагностического процесса; покрыто desktop smoke
 ClampWindowToVirtualDesktop,AHK_FOR_GOS_BY_SBEZRUK.ahk:16075,app/ui_overlays.ahk:436,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 NormalizeWindowStates,AHK_FOR_GOS_BY_SBEZRUK.ahk:16104,app/ui_overlays.ahk:465,Адаптирована,Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте
-LoadWindowStates,AHK_FOR_GOS_BY_SBEZRUK.ahk:16128,app/profiles.ahk:547,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-WriteHudWindowStateToIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:16138,app/profiles.ahk:557,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-WriteBindListWindowStateToIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:16146,app/profiles.ahk:565,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-WriteSettingsWindowStateToIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:16156,app/profiles.ahk:575,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-SaveHUDWindowState,AHK_FOR_GOS_BY_SBEZRUK.ahk:16168,app/profiles.ahk:587,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-SaveBindListWindowState,AHK_FOR_GOS_BY_SBEZRUK.ahk:16175,app/profiles.ahk:594,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-SaveSettingsWindowState,AHK_FOR_GOS_BY_SBEZRUK.ahk:16182,app/profiles.ahk:601,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+LoadWindowStates,AHK_FOR_GOS_BY_SBEZRUK.ahk:16128,app/profiles.ahk:548,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+WriteHudWindowStateToIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:16138,app/profiles.ahk:558,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+WriteBindListWindowStateToIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:16146,app/profiles.ahk:566,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+WriteSettingsWindowStateToIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:16156,app/profiles.ahk:576,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+SaveHUDWindowState,AHK_FOR_GOS_BY_SBEZRUK.ahk:16168,app/profiles.ahk:588,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+SaveBindListWindowState,AHK_FOR_GOS_BY_SBEZRUK.ahk:16175,app/profiles.ahk:595,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+SaveSettingsWindowState,AHK_FOR_GOS_BY_SBEZRUK.ahk:16182,app/profiles.ahk:602,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 NormalizeVisibleStateValue,AHK_FOR_GOS_BY_SBEZRUK.ahk:16189,app/ui_overlays.ahk:489,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 SetPendingGuiStateValues,AHK_FOR_GOS_BY_SBEZRUK.ahk:16193,app/ui_overlays.ahk:493,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 ApplyPendingGuiState,AHK_FOR_GOS_BY_SBEZRUK.ahk:16200,app/ui_overlays.ahk:500,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
@@ -916,7 +916,7 @@ ToggleIDOverlay,AHK_FOR_GOS_BY_SBEZRUK.ahk:18372,app/ui_overlays.ahk:1522,Без
 UpdateIDOverlay,AHK_FOR_GOS_BY_SBEZRUK.ahk:18380,app/ui_overlays.ahk:1530,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 ShowIDGui,AHK_FOR_GOS_BY_SBEZRUK.ahk:18389,app/ui_overlays.ahk:1539,Адаптирована,Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте
 ResetCurrentID,AHK_FOR_GOS_BY_SBEZRUK.ahk:18399,app/ui_overlays.ahk:1550,Адаптирована,Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте
-ApplyProfileModePreset,AHK_FOR_GOS_BY_SBEZRUK.ahk:18411,app/profiles.ahk:608,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ApplyProfileModePreset,AHK_FOR_GOS_BY_SBEZRUK.ahk:18411,app/profiles.ahk:609,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 ResetStyleDefaults,AHK_FOR_GOS_BY_SBEZRUK.ahk:18561,app/ui_settings.ahk:313,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 OpenSettings,AHK_FOR_GOS_BY_SBEZRUK.ahk:18587,app/ui_settings.ahk:339,Адаптирована,Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте
 ApplyPersistentAlwaysOnTop,AHK_FOR_GOS_BY_SBEZRUK.ahk:18612,app/ui_settings.ahk:359,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
@@ -938,61 +938,61 @@ Settings_GetCatalogItems,AHK_FOR_GOS_BY_SBEZRUK.ahk:18840,app/ui_settings.ahk:58
 Settings_AddAssistantCard,AHK_FOR_GOS_BY_SBEZRUK.ahk:18878,app/ui_settings.ahk:618,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 Settings_AddPageFrame,AHK_FOR_GOS_BY_SBEZRUK.ahk:18899,app/ui_settings.ahk:639,Адаптирована,Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте
 BuildSettingsGui,AHK_FOR_GOS_BY_SBEZRUK.ahk:18910,app/ui_settings.ahk:648,Адаптирована,Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте
-SyncConfigOnlyProfileFieldsToCfg,AHK_FOR_GOS_BY_SBEZRUK.ahk:19270,app/ui_settings.ahk:1051,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ApplyCfgConfigOnlyProfileFieldsToGlobals,AHK_FOR_GOS_BY_SBEZRUK.ahk:19304,app/ui_settings.ahk:1085,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ApplyCfgCatalogValuesToGlobals,AHK_FOR_GOS_BY_SBEZRUK.ahk:19329,app/ui_settings.ahk:1110,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-NormalizeCatalogTriggerGlobals,AHK_FOR_GOS_BY_SBEZRUK.ahk:19348,app/profiles.ahk:759,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ApplyCfgUiValuesToGlobals,AHK_FOR_GOS_BY_SBEZRUK.ahk:19363,app/ui_settings.ahk:1129,Адаптирована,Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте
-ApplyCfgProfileIdentityValuesToGlobals,AHK_FOR_GOS_BY_SBEZRUK.ahk:19528,app/ui_settings.ahk:1300,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ApplyCfgTemplateAndRpTextsToGlobals,AHK_FOR_GOS_BY_SBEZRUK.ahk:19544,app/ui_settings.ahk:1316,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-SaveGuiToGlobals,AHK_FOR_GOS_BY_SBEZRUK.ahk:19584,app/profiles.ahk:774,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-HasUsableConfigFilePath,AHK_FOR_GOS_BY_SBEZRUK.ahk:19613,app/profiles.ahk:803,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-EnsureConfigFilePath,AHK_FOR_GOS_BY_SBEZRUK.ahk:19618,app/profiles.ahk:808,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-GetSafeLastProfileName,AHK_FOR_GOS_BY_SBEZRUK.ahk:19628,app/profiles.ahk:818,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-CopyIniFileWithOverwrite,AHK_FOR_GOS_BY_SBEZRUK.ahk:19640,app/profiles.ahk:830,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-RefreshAfterProfilesImport,AHK_FOR_GOS_BY_SBEZRUK.ahk:19660,app/profiles.ahk:850,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-RefreshAfterThemeImport,AHK_FOR_GOS_BY_SBEZRUK.ahk:19670,app/profiles.ahk:860,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-MigrateContextAssistantProfiles,AHK_FOR_GOS_BY_SBEZRUK.ahk:19677,app/profiles.ahk:867,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-MigrateV6Configuration,AHK_FOR_GOS_BY_SBEZRUK.ahk:19720,app/profiles.ahk:910,Адаптирована,Адаптирован путь пользовательских данных/отчётов
-MigrateV7Configuration,AHK_FOR_GOS_BY_SBEZRUK.ahk:19785,app/profiles.ahk:976,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-IniWriteDefaultIfMissing,AHK_FOR_GOS_BY_SBEZRUK.ahk:19804,app/profiles.ahk:995,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-MigrateV9Configuration,AHK_FOR_GOS_BY_SBEZRUK.ahk:19815,app/profiles.ahk:1006,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-MigrateV11Configuration,AHK_FOR_GOS_BY_SBEZRUK.ahk:19852,app/profiles.ahk:1043,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-MigrateV12Configuration,AHK_FOR_GOS_BY_SBEZRUK.ahk:19898,app/profiles.ahk:1089,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-MigrateV13Configuration,AHK_FOR_GOS_BY_SBEZRUK.ahk:19916,app/profiles.ahk:1107,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-MigrateConfigInPlace,AHK_FOR_GOS_BY_SBEZRUK.ahk:19983,app/profiles.ahk:1174,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-InitProfiles,AHK_FOR_GOS_BY_SBEZRUK.ahk:20068,app/profiles.ahk:1260,Адаптирована,Адаптирован путь пользовательских данных/отчётов
-ProfileExists,AHK_FOR_GOS_BY_SBEZRUK.ahk:20091,app/profiles.ahk:1285,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-GetProfilesString,AHK_FOR_GOS_BY_SBEZRUK.ahk:20101,app/profiles.ahk:1295,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-GetFirstProfileName,AHK_FOR_GOS_BY_SBEZRUK.ahk:20109,app/profiles.ahk:1303,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-AddProfileToList,AHK_FOR_GOS_BY_SBEZRUK.ahk:20119,app/profiles.ahk:1313,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-RemoveProfileFromList,AHK_FOR_GOS_BY_SBEZRUK.ahk:20143,app/profiles.ahk:1337,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-LoadLastProfile,AHK_FOR_GOS_BY_SBEZRUK.ahk:20165,app/profiles.ahk:1359,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-WriteCurrentThemeToFile,AHK_FOR_GOS_BY_SBEZRUK.ahk:20171,app/profiles.ahk:1365,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-LoadThemeFromFile,AHK_FOR_GOS_BY_SBEZRUK.ahk:20197,app/profiles.ahk:1391,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ExportProfilesPack,AHK_FOR_GOS_BY_SBEZRUK.ahk:20237,app/profiles.ahk:1431,Адаптирована,Адаптирован путь пользовательских данных/отчётов
-ValidateProfilesImportFile,AHK_FOR_GOS_BY_SBEZRUK.ahk:20259,app/profiles.ahk:1453,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ImportProfilesPack,AHK_FOR_GOS_BY_SBEZRUK.ahk:20317,app/profiles.ahk:1511,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ExportThemeToFile,AHK_FOR_GOS_BY_SBEZRUK.ahk:20347,app/profiles.ahk:1541,Адаптирована,Адаптирован путь пользовательских данных/отчётов
-ImportThemeFromExternalFile,AHK_FOR_GOS_BY_SBEZRUK.ahk:20361,app/profiles.ahk:1555,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-LoadProfileIdentityFromIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:20381,app/profiles.ahk:1575,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-LoadProfileTemplateTextsFromIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:20400,app/profiles.ahk:1594,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-LoadProfileRpTextsFromIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:20429,app/profiles.ahk:1623,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-LoadProfileV9FieldsFromIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:20453,app/profiles.ahk:1647,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-WriteProfileV9FieldsToIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:20483,app/profiles.ahk:1677,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-LoadContextAssistantProfileFromIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:20544,app/profiles.ahk:1738,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-WriteContextAssistantProfileToIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:20576,app/profiles.ahk:1770,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-NormalizeCatalogHotkeyGlobals,AHK_FOR_GOS_BY_SBEZRUK.ahk:20595,app/profiles.ahk:1789,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-WriteCatalogHotkeysToIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:20610,app/profiles.ahk:1804,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-WriteCatalogTriggersToIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:20625,app/profiles.ahk:1819,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-FinalizeLoadedProfileState,AHK_FOR_GOS_BY_SBEZRUK.ahk:20640,app/profiles.ahk:1834,Адаптирована,Адаптирован путь пользовательских данных/отчётов
-GetReplacementProfileAfterDelete,AHK_FOR_GOS_BY_SBEZRUK.ahk:20650,app/profiles.ahk:1845,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-LoadProfile,AHK_FOR_GOS_BY_SBEZRUK.ahk:20658,app/profiles.ahk:1853,Адаптирована,Адаптирован путь пользовательских данных/отчётов
-WriteProfileIdentityToIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:20853,app/profiles.ahk:2051,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-WriteProfileTemplateTextsToIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:20873,app/profiles.ahk:2071,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-WriteProfileRpTextsToIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:20903,app/profiles.ahk:2101,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-SaveProfile,AHK_FOR_GOS_BY_SBEZRUK.ahk:20927,app/profiles.ahk:2125,Адаптирована,Адаптирован путь пользовательских данных/отчётов
-DeleteProfile,AHK_FOR_GOS_BY_SBEZRUK.ahk:20987,app/profiles.ahk:2186,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+SyncConfigOnlyProfileFieldsToCfg,AHK_FOR_GOS_BY_SBEZRUK.ahk:19270,app/ui_settings.ahk:1052,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ApplyCfgConfigOnlyProfileFieldsToGlobals,AHK_FOR_GOS_BY_SBEZRUK.ahk:19304,app/ui_settings.ahk:1086,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ApplyCfgCatalogValuesToGlobals,AHK_FOR_GOS_BY_SBEZRUK.ahk:19329,app/ui_settings.ahk:1111,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+NormalizeCatalogTriggerGlobals,AHK_FOR_GOS_BY_SBEZRUK.ahk:19348,app/profiles.ahk:760,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ApplyCfgUiValuesToGlobals,AHK_FOR_GOS_BY_SBEZRUK.ahk:19363,app/ui_settings.ahk:1130,Адаптирована,Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте
+ApplyCfgProfileIdentityValuesToGlobals,AHK_FOR_GOS_BY_SBEZRUK.ahk:19528,app/ui_settings.ahk:1302,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ApplyCfgTemplateAndRpTextsToGlobals,AHK_FOR_GOS_BY_SBEZRUK.ahk:19544,app/ui_settings.ahk:1318,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+SaveGuiToGlobals,AHK_FOR_GOS_BY_SBEZRUK.ahk:19584,app/profiles.ahk:775,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+HasUsableConfigFilePath,AHK_FOR_GOS_BY_SBEZRUK.ahk:19613,app/profiles.ahk:804,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+EnsureConfigFilePath,AHK_FOR_GOS_BY_SBEZRUK.ahk:19618,app/profiles.ahk:809,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+GetSafeLastProfileName,AHK_FOR_GOS_BY_SBEZRUK.ahk:19628,app/profiles.ahk:819,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+CopyIniFileWithOverwrite,AHK_FOR_GOS_BY_SBEZRUK.ahk:19640,app/profiles.ahk:831,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+RefreshAfterProfilesImport,AHK_FOR_GOS_BY_SBEZRUK.ahk:19660,app/profiles.ahk:851,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+RefreshAfterThemeImport,AHK_FOR_GOS_BY_SBEZRUK.ahk:19670,app/profiles.ahk:861,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+MigrateContextAssistantProfiles,AHK_FOR_GOS_BY_SBEZRUK.ahk:19677,app/profiles.ahk:868,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+MigrateV6Configuration,AHK_FOR_GOS_BY_SBEZRUK.ahk:19720,app/profiles.ahk:911,Адаптирована,Адаптирован путь пользовательских данных/отчётов
+MigrateV7Configuration,AHK_FOR_GOS_BY_SBEZRUK.ahk:19785,app/profiles.ahk:977,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+IniWriteDefaultIfMissing,AHK_FOR_GOS_BY_SBEZRUK.ahk:19804,app/profiles.ahk:996,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+MigrateV9Configuration,AHK_FOR_GOS_BY_SBEZRUK.ahk:19815,app/profiles.ahk:1007,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+MigrateV11Configuration,AHK_FOR_GOS_BY_SBEZRUK.ahk:19852,app/profiles.ahk:1044,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+MigrateV12Configuration,AHK_FOR_GOS_BY_SBEZRUK.ahk:19898,app/profiles.ahk:1090,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+MigrateV13Configuration,AHK_FOR_GOS_BY_SBEZRUK.ahk:19916,app/profiles.ahk:1108,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+MigrateConfigInPlace,AHK_FOR_GOS_BY_SBEZRUK.ahk:19983,app/profiles.ahk:1175,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+InitProfiles,AHK_FOR_GOS_BY_SBEZRUK.ahk:20068,app/profiles.ahk:1261,Адаптирована,Адаптирован путь пользовательских данных/отчётов
+ProfileExists,AHK_FOR_GOS_BY_SBEZRUK.ahk:20091,app/profiles.ahk:1286,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+GetProfilesString,AHK_FOR_GOS_BY_SBEZRUK.ahk:20101,app/profiles.ahk:1296,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+GetFirstProfileName,AHK_FOR_GOS_BY_SBEZRUK.ahk:20109,app/profiles.ahk:1304,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+AddProfileToList,AHK_FOR_GOS_BY_SBEZRUK.ahk:20119,app/profiles.ahk:1314,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+RemoveProfileFromList,AHK_FOR_GOS_BY_SBEZRUK.ahk:20143,app/profiles.ahk:1338,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+LoadLastProfile,AHK_FOR_GOS_BY_SBEZRUK.ahk:20165,app/profiles.ahk:1360,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+WriteCurrentThemeToFile,AHK_FOR_GOS_BY_SBEZRUK.ahk:20171,app/profiles.ahk:1366,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+LoadThemeFromFile,AHK_FOR_GOS_BY_SBEZRUK.ahk:20197,app/profiles.ahk:1392,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ExportProfilesPack,AHK_FOR_GOS_BY_SBEZRUK.ahk:20237,app/profiles.ahk:1432,Адаптирована,Адаптирован путь пользовательских данных/отчётов
+ValidateProfilesImportFile,AHK_FOR_GOS_BY_SBEZRUK.ahk:20259,app/profiles.ahk:1454,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ImportProfilesPack,AHK_FOR_GOS_BY_SBEZRUK.ahk:20317,app/profiles.ahk:1512,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ExportThemeToFile,AHK_FOR_GOS_BY_SBEZRUK.ahk:20347,app/profiles.ahk:1542,Адаптирована,Адаптирован путь пользовательских данных/отчётов
+ImportThemeFromExternalFile,AHK_FOR_GOS_BY_SBEZRUK.ahk:20361,app/profiles.ahk:1556,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+LoadProfileIdentityFromIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:20381,app/profiles.ahk:1576,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+LoadProfileTemplateTextsFromIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:20400,app/profiles.ahk:1595,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+LoadProfileRpTextsFromIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:20429,app/profiles.ahk:1624,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+LoadProfileV9FieldsFromIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:20453,app/profiles.ahk:1648,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+WriteProfileV9FieldsToIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:20483,app/profiles.ahk:1678,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+LoadContextAssistantProfileFromIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:20544,app/profiles.ahk:1739,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+WriteContextAssistantProfileToIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:20576,app/profiles.ahk:1771,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+NormalizeCatalogHotkeyGlobals,AHK_FOR_GOS_BY_SBEZRUK.ahk:20595,app/profiles.ahk:1790,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+WriteCatalogHotkeysToIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:20610,app/profiles.ahk:1805,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+WriteCatalogTriggersToIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:20625,app/profiles.ahk:1820,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+FinalizeLoadedProfileState,AHK_FOR_GOS_BY_SBEZRUK.ahk:20640,app/profiles.ahk:1835,Адаптирована,Адаптирован путь пользовательских данных/отчётов
+GetReplacementProfileAfterDelete,AHK_FOR_GOS_BY_SBEZRUK.ahk:20650,app/profiles.ahk:1846,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+LoadProfile,AHK_FOR_GOS_BY_SBEZRUK.ahk:20658,app/profiles.ahk:1854,Адаптирована,Адаптирован путь пользовательских данных/отчётов
+WriteProfileIdentityToIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:20853,app/profiles.ahk:2052,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+WriteProfileTemplateTextsToIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:20873,app/profiles.ahk:2072,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+WriteProfileRpTextsToIni,AHK_FOR_GOS_BY_SBEZRUK.ahk:20903,app/profiles.ahk:2102,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+SaveProfile,AHK_FOR_GOS_BY_SBEZRUK.ahk:20927,app/profiles.ahk:2126,Адаптирована,Адаптирован путь пользовательских данных/отчётов
+DeleteProfile,AHK_FOR_GOS_BY_SBEZRUK.ahk:20987,app/profiles.ahk:2187,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 WM_EXITSIZEMOVE,AHK_FOR_GOS_BY_SBEZRUK.ahk:21032,app/ui_overlays.ahk:1563,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 CloseAllDocs,AHK_FOR_GOS_BY_SBEZRUK.ahk:21077,app/ui_documents.ahk:22,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 LawDoc_PageCount,AHK_FOR_GOS_BY_SBEZRUK.ahk:21085,app/ui_documents.ahk:30,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
@@ -1041,7 +1041,7 @@ ToggleLawDoc,AHK_FOR_GOS_BY_SBEZRUK.ahk:22997,app/ui_documents.ahk:268,Без и
 LawDoc_PrefixById,AHK_FOR_GOS_BY_SBEZRUK.ahk:23027,app/ui_documents.ahk:298,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 ToggleLawDocFromChat,AHK_FOR_GOS_BY_SBEZRUK.ahk:23036,app/ui_documents.ahk:307,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 GetLawDocMeta,AHK_FOR_GOS_BY_SBEZRUK.ahk:23044,app/core.ahk:596,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-MigrateConfigIfNeeded,AHK_FOR_GOS_BY_SBEZRUK.ahk:23307,app/profiles.ahk:2231,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+MigrateConfigIfNeeded,AHK_FOR_GOS_BY_SBEZRUK.ahk:23307,app/profiles.ahk:2232,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 AZMP_TickElapsed,UDF.ahk:66,UDF.ahk:66,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 AZMP_ResetTargetCache,UDF.ahk:75,UDF.ahk:75,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 AZMP_CacheTarget,UDF.ahk:89,UDF.ahk:89,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария

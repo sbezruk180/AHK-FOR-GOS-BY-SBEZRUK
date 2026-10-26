@@ -1042,6 +1042,7 @@ BuildSettingsGui() {
     Gui, 2:Add, Text, x242 y772 w660 h18 vSettingsStatusText BackgroundTrans, »зменени€ сохран€ютс€ кнопкой Ђ—охранитьї или при закрытии окна.
     Gui, 2:Add, Text, x920 y772 w240 h18 Right +0x4000 vSettingsOwnerText BackgroundTrans, AHK FOR GOS BY SBEZRUK Ј SBezruk180
     SettingsCanvasHeight := Max(800, SettingsPageExtents[1] + 60)
+    Training_EnforceMockMode()
     SettingsGuiReady := 1
     Settings_UpdateScrollbars()
     Capture_ApplyWindow(hSettingsWnd)
@@ -1253,6 +1254,7 @@ ApplyCfgUiValuesToGlobals() {
     NormalizeSHA256(AzmpExpectedSHA256)
     ApplyGameProcessSelector()
     NormalizeOnOff(MockMode, "Off")
+    Training_EnforceMockMode()
     NormalizeOnOff(ChatQueueEnabled, "On")
     NormalizeOnOff(ChatLogReaderEnabled, "On")
     NormalizeOnOff(ChatLogAutoCleanupEnabled, "Off")

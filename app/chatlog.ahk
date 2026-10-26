@@ -1070,7 +1070,7 @@ ChatLogReader_ProcessLine(line) {
 
 ChatLogReader_Tick() {
     global ChatLogReaderEnabled, MockMode, ChatLogLastPos, ChatLogFileSeen, ChatLogReaderIdentity
-    if (ChatLogReaderEnabled != "On" || MockMode = "On")
+    if (ChatLogReaderEnabled != "On" || MockMode = "On" || Training_IsActive())
         return false
     path := ResolveChatLogPath()
     file := FileOpen(path, "r", "CP1251")

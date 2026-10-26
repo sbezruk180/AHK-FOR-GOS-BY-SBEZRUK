@@ -325,6 +325,7 @@ NormalizeLoadedUISettings() {
     NormalizeSHA256(AzmpExpectedSHA256)
     ApplyGameProcessSelector()
     NormalizeOnOff(MockMode, "Off")
+    Training_EnforceMockMode()
     NormalizeOnOff(ChatQueueEnabled, "On")
     NormalizeNumberRange(ChatQueueMinDelay, 700, 250, 5000)
     NormalizeOnOff(NotifySoundEnabled, "On")
