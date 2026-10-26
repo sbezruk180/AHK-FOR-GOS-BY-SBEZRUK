@@ -4,7 +4,7 @@
   "offline": true,
   "framework_runtime_required": false,
   "app_runtime": "AHK 1.1.37.02 ANSI x86",
-  "app_sha256": "2959c433763a914acfcf62b163a54a488d2112dfc27f9b7f0b84f7d8cd03e048",
+  "app_sha256": "09e2744d99c247210df08359a5a4ea608e55833bf5e78300272dfd7a4c901ebd",
   "official_runtime_archive_sha256": "6f3663f7cdd25063c8c8728f5d9b07813ced8780522fd1f124ba539e2854215f",
   "installer_sources": {
     "installer/native/app.manifest": "4058551a1862d1ffe686358196b6e922ba4e514573cdb70aaac8a0aa19de656c",
@@ -19,8 +19,8 @@
     {
       "path": "AHK_FOR_GOS.exe",
       "modes": 1,
-      "bytes": 5954560,
-      "sha256": "2959c433763a914acfcf62b163a54a488d2112dfc27f9b7f0b84f7d8cd03e048"
+      "bytes": 5962752,
+      "sha256": "09e2744d99c247210df08359a5a4ea608e55833bf5e78300272dfd7a4c901ebd"
     },
     {
       "path": "AHK_FOR_GOS_BY_SBEZRUK.ahk",
@@ -38,13 +38,13 @@
       "path": "Uninstall.exe",
       "modes": 3,
       "bytes": 1626624,
-      "sha256": "9bf16cba433c3bf471e6410041cfa6c78f55ee2595ab99837f12597f8bc27dfa"
+      "sha256": "774daf6491f1f6ef56b1167bc7c64d654479749f00fffca99fa3ca1f545e91b4"
     },
     {
       "path": "app\\action_trace.ahk",
       "modes": 2,
-      "bytes": 21788,
-      "sha256": "a5b4c6ab4996b2cb045140162ebc4038d8557a64b1b85350b9898946034443c2"
+      "bytes": 22077,
+      "sha256": "95f61dc3b909e447f6000010b9c4dd69b3ecc92b742d3bf7d218f1dfca0fbfdd"
     },
     {
       "path": "app\\actions.ahk",
@@ -145,8 +145,8 @@
     {
       "path": "app\\incident_card.ahk",
       "modes": 2,
-      "bytes": 29493,
-      "sha256": "d24ed236fd22d268376c5d33c9317168560c630108dc4fa634351c0844790ebe"
+      "bytes": 29872,
+      "sha256": "1a8103f98ca3699f6551ede81dd475b8840efd1bc22325beccca82724751d849"
     },
     {
       "path": "app\\private_text.ahk",
@@ -409,8 +409,8 @@
     {
       "path": "tests\\action_trace_regression.ahk",
       "modes": 2,
-      "bytes": 10725,
-      "sha256": "82b051f30228d546f4490efecc7f03fc366ef9d49bdb022c51a49a5104dc713d"
+      "bytes": 11132,
+      "sha256": "dc4f376612393ee97231dec055b9cdca303d3f4ac5df28ca74cfa3f53c43faa0"
     },
     {
       "path": "tests\\audit_regression.ahk",
@@ -445,8 +445,8 @@
     {
       "path": "tests\\command_palette_regression.ahk",
       "modes": 2,
-      "bytes": 5127,
-      "sha256": "4fbd7e113742efbfa62886edd1c044b3e0876d832295a33959d3f71215592bd9"
+      "bytes": 5337,
+      "sha256": "b4ee1abbf211ec9485402044c6c568fbb7e837a6e57c4d3e1f47c2b7844202e9"
     },
     {
       "path": "tests\\custom_builder_regression.ahk",
@@ -481,8 +481,8 @@
     {
       "path": "tests\\incident_card_regression.ahk",
       "modes": 2,
-      "bytes": 9625,
-      "sha256": "e2e104b58bf630522b1f8a680204fcf377578e9137ea8d248b5bc271dd8f704f"
+      "bytes": 10919,
+      "sha256": "1ce8f5731ea7f1ae78d87dce5577fa0826f64c380f088b5e533b034f241e6581"
     },
     {
       "path": "tests\\logic_audit_regression.ahk",
@@ -529,8 +529,8 @@
     {
       "path": "tests\\training_regression.ahk",
       "modes": 2,
-      "bytes": 7715,
-      "sha256": "3700326e733c88b8bfb88178058bda00267186b97b1819f4e56c79f0a3355948"
+      "bytes": 7859,
+      "sha256": "0e40aeb15660206ca8fd039095602dfc996cec92c7fc9be1df7c42072e295818"
     },
     {
       "path": "ui_style.ahk",
@@ -547,12 +547,12 @@
   ],
   "artifacts": {
     "AHK_FOR_GOS_Setup.exe": {
-      "bytes": 14259712,
-      "sha256": "bb7bba70fe3d6c864bb78ff17085e6200e319af18e391a4b100723d84fbd3d2c"
+      "bytes": 14270976,
+      "sha256": "35fabce1923a1f67c590121a26f6861ae8d343a0303e6ad16748dde0e0d04398"
     },
     "AHK_FOR_GOS_Uninstall.exe": {
       "bytes": 1626624,
-      "sha256": "9bf16cba433c3bf471e6410041cfa6c78f55ee2595ab99837f12597f8bc27dfa"
+      "sha256": "774daf6491f1f6ef56b1167bc7c64d654479749f00fffca99fa3ca1f545e91b4"
     }
   }
 }

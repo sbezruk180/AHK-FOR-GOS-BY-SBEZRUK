@@ -6,8 +6,29 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+concurrency:
+  group: workbench-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
+  prune:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      contents: read
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const branch=context.ref.replace('refs/heads/','');
+            const runs=await github.rest.actions.listWorkflowRuns({owner:context.repo.owner,repo:context.repo.repo,workflow_id:'workbench.yml',branch,per_page:30});
+            for(const run of runs.data.workflow_runs) {
+              if(run.id<context.runId && ['queued','in_progress','waiting'].includes(run.status)) {
+                try { await github.rest.actions.cancelWorkflowRun({owner:context.repo.owner,repo:context.repo.repo,run_id:run.id}); }
+                catch(error) { core.warning(error.message); }
+              }
+            }
   native:
+    needs: prune
     runs-on: windows-latest
     timeout-minutes: 35
     strategy:
@@ -53,6 +74,7 @@ jobs:
           path: ${{ runner.temp }}/workbench-results/*
           if-no-files-found: error
   installer:
+    needs: prune
     runs-on: windows-latest
     timeout-minutes: 10
     steps:

@@ -70,6 +70,7 @@ Training_RunDesktopChecks() {
         DesktopSmoke_Assert("training actual send remains local", SendChat("Проверка русского текста", "TrainingDesktop") = 1
             && InStr(TrainingSession.Model.Ledger[TrainingSession.Model.Ledger.Length()], "Проверка русского текста"))
         DesktopSmoke_Assert("training cannot arm real evidence screenshots", !Evidence_Arm("REPORT") && !Evidence_RequestScreenshot("REPORT"))
+        DesktopSmoke_Assert("training journal remains explicitly simulated when MockMode is changed", ActionTrace_Get(ActionTraceLastId).Mock)
         DesktopSmoke_Assert("training keyboard output remains local with MockMode OFF", SafeSend("{Home}", "Event", AutomationEpoch))
         MockMode := "On"
         Training_ModelOffer(TrainingSession.Model, "27", "Training_Player")

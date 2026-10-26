@@ -1,6 +1,13 @@
 ; Exercise real queue items and transport result contracts without any game.
 ActionTrace_RunRegression() {
     global
+    longParent := ActionTrace_Begin("Long scenario", 100)
+    Loop, 40 {
+        childRecord := ActionTrace_Begin("Completed inner send", 1)
+        ActionTrace_Finish(childRecord, "done")
+    }
+    AuditAssert("Trace: long running parent survives completed child history rotation", IsObject(ActionTrace_Get(longParent)) && ActionTraceOrder.Length() <= 24)
+    ActionTrace_Finish(longParent, "done")
     parent := ActionTrace_Begin("Parent operation", 1)
     child := ActionTrace_Begin("Inner send", 1)
     ActionTrace_Finish(child, "done")
