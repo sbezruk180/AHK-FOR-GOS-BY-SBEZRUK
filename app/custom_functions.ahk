@@ -412,7 +412,7 @@ CustomFunctionRunner_Process(inputEpoch := 0) {
         }
         if (step.Type = "TYPE")
         {
-            if (MockMode = "On" || AuditTestMode) {
+            if (MockMode = "On" || AuditTestMode || Training_IsActive()) {
                 MockPreview_Append("[TYPE] " . ApplyActionTemplate(step.Value))
                 continue
             }

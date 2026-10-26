@@ -64,6 +64,8 @@ Training_RunDesktopChecks() {
     try {
         MockMode := "Off"
         DesktopSmoke_Assert("training opens an actual native GUI without game", Training_Start() && TrainingHwnd && Training_IsActive())
+        GuiControlGet, mockModeEnabled, 2:Enabled, CFG_MockMode
+        DesktopSmoke_Assert("training freezes its temporary UI mode while preserving saved preference", !mockModeEnabled && CFG_MockMode = "On")
         DesktopSmoke_Assert("training does not persist its temporary MockMode", MockMode = "On" && Training_PersistedMockMode() = "Off")
         MockMode := "Off" ; The isolation must also survive an accidental settings change.
         DesktopSmoke_Assert("training memory entry point remains blocked", !checkHandles())
@@ -72,7 +74,7 @@ Training_RunDesktopChecks() {
         DesktopSmoke_Assert("training cannot arm real evidence screenshots", !Evidence_Arm("REPORT") && !Evidence_RequestScreenshot("REPORT"))
         DesktopSmoke_Assert("training journal remains explicitly simulated when MockMode is changed", ActionTrace_Get(ActionTraceLastId).Mock)
         DesktopSmoke_Assert("training keyboard output remains local with MockMode OFF", SafeSend("{Home}", "Event", AutomationEpoch))
-        MockMode := "On"
+        Training_EnforceMockMode()
         Training_ModelOffer(TrainingSession.Model, "27", "Training_Player")
         DesktopSmoke_Assert("training accepts offered target through production display", Training_Accept() && UserID = 27)
         Training_ModelOffer(TrainingSession.Model, "63", "Next_Player")

@@ -4,7 +4,7 @@
   "offline": true,
   "framework_runtime_required": false,
   "app_runtime": "AHK 1.1.37.02 ANSI x86",
-  "app_sha256": "c1a2231e604e728400bebdfc1a65c9a314ed121ece2c948406ef6298d697d03d",
+  "app_sha256": "392607052d97118be21252f67520ab7a75c65675c9c54e9148bac2aceef561bb",
   "official_runtime_archive_sha256": "6f3663f7cdd25063c8c8728f5d9b07813ced8780522fd1f124ba539e2854215f",
   "installer_sources": {
     "installer/native/app.manifest": "4058551a1862d1ffe686358196b6e922ba4e514573cdb70aaac8a0aa19de656c",
@@ -19,8 +19,8 @@
     {
       "path": "AHK_FOR_GOS.exe",
       "modes": 1,
-      "bytes": 5962752,
-      "sha256": "c1a2231e604e728400bebdfc1a65c9a314ed121ece2c948406ef6298d697d03d"
+      "bytes": 5966336,
+      "sha256": "392607052d97118be21252f67520ab7a75c65675c9c54e9148bac2aceef561bb"
     },
     {
       "path": "AHK_FOR_GOS_BY_SBEZRUK.ahk",
@@ -38,7 +38,7 @@
       "path": "Uninstall.exe",
       "modes": 3,
       "bytes": 1626624,
-      "sha256": "fe759851ddfd71e6de8c407c7698f17633ac28610dbff6f1a60d36f7e2fefeb2"
+      "sha256": "a971ac149bd73696aaa25d415c48d9d916f8a1f3ec6ee4eee218b73be563449e"
     },
     {
       "path": "app\\action_trace.ahk",
@@ -79,8 +79,8 @@
     {
       "path": "app\\chatlog.ahk",
       "modes": 2,
-      "bytes": 48448,
-      "sha256": "7ba62d159341e8de73de9a35311d2596615924d3c0ed5b5cc11c4bf62ca33fbb"
+      "bytes": 48471,
+      "sha256": "f1bec2a63a6f5f3e0f86b2aece96f59235903d30ff88b5554c3c5a03c643a2e4"
     },
     {
       "path": "app\\cli.ahk",
@@ -103,8 +103,8 @@
     {
       "path": "app\\custom_functions.ahk",
       "modes": 2,
-      "bytes": 47564,
-      "sha256": "2ddfbac411ab8213c71a7bb79d66494b58aa1c205af6597d50fd6d1b5e3110cd"
+      "bytes": 47587,
+      "sha256": "e67181fc4c8a696c94cc5da613375522342b9275e19ddc2db74e8ecb83f7f24d"
     },
     {
       "path": "app\\diagnostics.ahk",
@@ -121,8 +121,8 @@
     {
       "path": "app\\game.ahk",
       "modes": 2,
-      "bytes": 29128,
-      "sha256": "e52fc17923d97ef28acb1d322931f125f8e1b37c65ee8406d5d53a9c8513dc5b"
+      "bytes": 29197,
+      "sha256": "138959ba74b0aca36fcc8454365f06a29fe903c72cc51f6cac194d205355a788"
     },
     {
       "path": "app\\game_input.ahk",
@@ -157,8 +157,8 @@
     {
       "path": "app\\profiles.ahk",
       "modes": 2,
-      "bytes": 119976,
-      "sha256": "d27b9e2d9d62c417d9b6d9870ed72b18a80f6a4f29a4d6a6c7ed0279c396fcb3"
+      "bytes": 120008,
+      "sha256": "e0ff1bf7a9886312369bfafede46d45d60be0be5e5c7e65d2fe606be9aafe76d"
     },
     {
       "path": "app\\reference_guides.ahk",
@@ -181,8 +181,8 @@
     {
       "path": "app\\training.ahk",
       "modes": 2,
-      "bytes": 24864,
-      "sha256": "a8a0cf239e1b11a0acd57cc1d842ca991c94cf37dfc0af96ee92dd4ddef3cdd5"
+      "bytes": 25587,
+      "sha256": "1578e53887bfc3b19a783f60aa5f666278004acf1f6842e86f41574a85cefab2"
     },
     {
       "path": "app\\ui_documents.ahk",
@@ -199,8 +199,8 @@
     {
       "path": "app\\ui_settings.ahk",
       "modes": 2,
-      "bytes": 67793,
-      "sha256": "2e42c97669ce44f257f69c2466cddbd331b6d275df35901a7197451b1d7cfa54"
+      "bytes": 67857,
+      "sha256": "847bf5f4042eb428f0f013e4703f7acf5abd1c9291bd46c5d8835c0557568d1f"
     },
     {
       "path": "assets\\defaults\\profiles.default.ini",
@@ -529,8 +529,8 @@
     {
       "path": "tests\\training_regression.ahk",
       "modes": 2,
-      "bytes": 7859,
-      "sha256": "0e40aeb15660206ca8fd039095602dfc996cec92c7fc9be1df7c42072e295818"
+      "bytes": 8080,
+      "sha256": "88f2682744f44bb626d5901389390959207048be13e7352aa05a78b37c271514"
     },
     {
       "path": "ui_style.ahk",
@@ -547,12 +547,12 @@
   ],
   "artifacts": {
     "AHK_FOR_GOS_Setup.exe": {
-      "bytes": 14270976,
-      "sha256": "f75aecc5c69ea8bea6b97d3d1f3ff64d7f8a66318a2e73f05fd631523f797e38"
+      "bytes": 14275584,
+      "sha256": "73897144aca3a34c61d8bef91c46f9b20b6a17e09cde5fed70883483a372cf0c"
     },
     "AHK_FOR_GOS_Uninstall.exe": {
       "bytes": 1626624,
-      "sha256": "fe759851ddfd71e6de8c407c7698f17633ac28610dbff6f1a60d36f7e2fefeb2"
+      "sha256": "a971ac149bd73696aaa25d415c48d9d916f8a1f3ec6ee4eee218b73be563449e"
     }
   }
 }

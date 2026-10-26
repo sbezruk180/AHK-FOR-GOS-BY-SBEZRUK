@@ -69,14 +69,14 @@ HasCurrentID() {
 
 IsGameActive() {
     global MockMode
-    if (MockMode = "On")
+    if (MockMode = "On" || Training_IsActive())
         return true
     return GameLocator_IsActive()
 }
 
 EnsureGameActive() {
     global MockMode
-    if (MockMode = "On")
+    if (MockMode = "On" || Training_IsActive())
         return true
     if IsGameActive()
         return true
@@ -613,7 +613,7 @@ AutoTargetID_Poll() {
         AutoTargetID_ClearFailure()
         return
     }
-    if (AutoTargetIDEnabled != "On" || MockMode = "On" || IsObject(IDCaptureState) || PhysicalInputBusy)
+    if (AutoTargetIDEnabled != "On" || MockMode = "On" || Training_IsActive() || IsObject(IDCaptureState) || PhysicalInputBusy)
         return
     ownsConfirmation := AutoTargetPendingKey != "" && ContextAssistantMode = "confirm" && ContextAssistantAction = "EnterID"
     if (ContextAssistantMode != "" && !ownsConfirmation)

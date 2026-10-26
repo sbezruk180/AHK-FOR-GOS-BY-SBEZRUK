@@ -25,6 +25,27 @@ Training_PersistedMockMode() {
     return Training_IsActive() ? TrainingSession.Saved.MockMode : MockMode
 }
 
+Training_SyncMockControl(value, locked := false) {
+    global CFG_MockMode, hSettingsWnd
+    CFG_MockMode := value = "On" ? "On" : "Off"
+    if (hSettingsWnd && DllCall("IsWindow", "Ptr", hSettingsWnd)) {
+        GuiControl, 2:ChooseString, CFG_MockMode, %CFG_MockMode%
+        if (locked)
+            GuiControl, 2:Disable, CFG_MockMode
+        else
+            GuiControl, 2:Enable, CFG_MockMode
+    }
+}
+
+Training_EnforceMockMode() {
+    global MockMode
+    if !Training_IsActive()
+        return false
+    MockMode := "On"
+    Training_SyncMockControl("On", true)
+    return true
+}
+
 Training_NewModel() {
     return {Ledger: [], LedgerChars: 0, Pending: "", Accepted: "", Rejected: ""
         , Context: {ChatOpen: 0, InVehicle: 1, Distance: 2}
@@ -148,9 +169,10 @@ Training_Start(params*) {
         ServiceUI_Notify("Ввод ещё завершается. Повторите запуск учебного режима.", 3000, "WARN")
         return false
     }
-    saved := {MockMode: MockMode, UserID: UserID, ActiveID: ActiveID, Nickname: TargetNickname, IsMask: TargetIsMask, LastActionTick: LastActionTick}
+    saved := {MockMode: MockMode, UserID: UserID, ActiveID: ActiveID, Nickname: TargetNickname, IsMask: TargetIsMask, LastActionTick: LastActionTick, CfgMockMode: CFG_MockMode}
     TrainingSession := {Active: 1, Saved: saved, Model: Training_NewModel(), Prompt: ""}
     MockMode := "On", LastActionTick := 0
+    Training_EnforceMockMode()
     UserID := "", ActiveID := 0, TargetNickname := "", TargetIsMask := 0
     Training_ModelAppend(TrainingSession.Model, "Учебный режим: команды остаются внутри программы, GTA не требуется.")
     try {
@@ -186,6 +208,7 @@ Training_Stop(params*) {
     UserID := session.Saved.UserID, ActiveID := session.Saved.ActiveID
     TargetNickname := session.Saved.Nickname, TargetIsMask := session.Saved.IsMask
     TrainingSession := ""
+    Training_SyncMockControl(session.Saved.CfgMockMode)
     if IsFunc("IncidentCard_OnTargetChanged")
         Func("IncidentCard_OnTargetChanged").Call()
     UpdateHUD()
