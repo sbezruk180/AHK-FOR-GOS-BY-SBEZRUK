@@ -675,7 +675,7 @@ BuildSettingsGui() {
         pageLabels .= (pageLabels = "" ? "" : "|") . pages[A_Index].Label
 
     Gui, 2:Destroy
-    Gui, 2:+HwndhSettingsWnd +AlwaysOnTop -Caption +ToolWindow +Resize +0x300000 +E0x02000000 +DPIScale
+    Gui, 2:+HwndhSettingsWnd +AlwaysOnTop -Caption +ToolWindow +Resize +0x300000 +DPIScale
     Gui, 2:Color, %bg%, %controlBg%
     Gui, 2:Font, Norm s10 c%text%, Segoe UI
     buildW := 1180, buildH := 800

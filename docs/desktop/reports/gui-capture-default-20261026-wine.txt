@@ -1,8 +1,8 @@
 ﻿Desktop integration probe
 Runtime=1.1.37.02 | Unicode=1 | PtrSize=8
-Compiled=1 | Data=Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\gui-final-20261026
+Compiled=1 | Data=Z:\workspace\AHK-FOR-GOS-BY-SBEZRUK\.build\gui-stress-20261026
 No real game or OBS verification.
-INFO | startup WorkingSetMiB=55.11 PeakMiB=55.11
+INFO | startup WorkingSetMiB=54.99 PeakMiB=54.99
 PASS | compiled standalone host
 PASS | application mutex acquired
 PASS | duplicate application mutex detected
@@ -17,7 +17,7 @@ PASS | hotkeys really registered
 PASS | all catalog handlers including direct UI/GPS dispatch
 PASS | violet navigation blend uses real hex channels
 PASS | fullscreen-safe settings preserve foreground
-PASS | settings buffers child painting without a redundant layered surface
+PASS | settings uses opaque child controls without capture-sensitive window-wide composition
 PASS | unchanged navigation role does not invalidate the button
 PASS | settings page profile
 PASS | sidebar button dispatch profile
@@ -82,6 +82,7 @@ PASS | capture dropdown applies On to existing private GUI
 PASS | capture dropdown immediately removes exclusion from existing GUI
 PASS | Windows affinity is WDA_NONE after On to Off
 PASS | capture dropdown persists Off without a separate Save
+PASS | ten live capture On-Off transitions finish and respect the mode
 PASS | stable capture timer leaves status label paint region untouched
 PASS | actual atomic profile save
 PASS | private opener key survives profile reload
@@ -135,5 +136,5 @@ PASS | same-EXE diagnostic finishes in custom data directory
 PASS | diagnostic does not replace parent instance
 PASS | diagnostic report opens in own application GUI
 PASS | closing settings destroys its native window
-INFO | after native smoke WorkingSetMiB=245.20 PeakMiB=245.20
-Checks=132 | Failed=0
+INFO | after native smoke WorkingSetMiB=252.71 PeakMiB=252.71
+Checks=133 | Failed=0

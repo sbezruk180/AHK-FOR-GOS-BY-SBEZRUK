@@ -48,7 +48,7 @@ DesktopSmoke_Run() {
         OpenSettings("profile")
         DesktopSmoke_Assert("fullscreen-safe settings preserve foreground", DllCall("GetForegroundWindow", "Ptr") = focusProbeWindow)
         menuStyle := DllCall("GetWindowLong", "Ptr", hSettingsWnd, "Int", -20, "UInt")
-        DesktopSmoke_Assert("settings buffers child painting without a redundant layered surface", (menuStyle & 0x02000000) && !(menuStyle & 0x80000))
+        DesktopSmoke_Assert("settings uses opaque child controls without capture-sensitive window-wide composition", !(menuStyle & 0x02080000))
         DesktopSmoke_Assert("unchanged navigation role does not invalidate the button", !UIStyle_SetButtonRole(SettingsNavigationButtons[1], "nav-active"))
         pages := GetSettingsPageCatalog()
         for index, page in pages {
@@ -139,6 +139,16 @@ DesktopSmoke_Run() {
             DesktopSmokeReport .= "SKIP | native affinity read unavailable in this host: " . testAffinityError . "`r`n"
         IniRead, persistedCaptureMode, %ConfigFile%, UI, OBSHideWindows, ERROR
         DesktopSmoke_Assert("capture dropdown persists Off without a separate Save", persistedCaptureMode = "Off")
+        repeatedCaptureOK := true
+        Loop, 10 {
+            GuiControl, 2:ChooseString, CFG_OBSHideWindows, On
+            Capture_ModeChanged()
+            repeatedCaptureOK := repeatedCaptureOK && CaptureWindowStates[captureState.GuiHwnd].Enabled
+            GuiControl, 2:ChooseString, CFG_OBSHideWindows, Off
+            Capture_ModeChanged()
+            repeatedCaptureOK := repeatedCaptureOK && !CaptureWindowStates[captureState.GuiHwnd].Enabled
+        }
+        DesktopSmoke_Assert("ten live capture On-Off transitions finish and respect the mode", repeatedCaptureOK)
         Capture_RefreshWindows()
         GuiControlGet, captureStatusHwnd, 2:Hwnd, CaptureStatusText
         DllCall("ValidateRect", "Ptr", captureStatusHwnd, "Ptr", 0)
