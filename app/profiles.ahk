@@ -443,7 +443,7 @@ WriteUISafetyAndAudioToIni(fileName) {
     CheckedIniWrite(GameWindowTitle, fileName, "UI", "GameWindowTitle")
     CheckedIniWrite(GameProcessName, fileName, "UI", "GameProcessName")
     CheckedIniWrite(AzmpExpectedSHA256, fileName, "UI", "AzmpExpectedSHA256")
-    CheckedIniWrite(MockMode, fileName, "UI", "MockMode")
+    CheckedIniWrite(Training_PersistedMockMode(), fileName, "UI", "MockMode")
     CheckedIniWrite(ChatQueueEnabled, fileName, "UI", "ChatQueueEnabled")
     CheckedIniWrite(ChatQueueMinDelay, fileName, "UI", "ChatQueueMinDelay")
     CheckedIniWrite(NotifySoundEnabled, fileName, "UI", "NotifySoundEnabled")
@@ -1839,6 +1839,7 @@ FinalizeLoadedProfileState(profileName) {
     ApplyAllBinds()
     UpdateHUD()
     UpdateIDOverlay()
+    IncidentCard_OnTargetChanged()
 }
 
 GetReplacementProfileAfterDelete(deletedProfile) {
@@ -2037,6 +2038,7 @@ IniRead, Trig_Intro, %ConfigFile%, %section%, Trig_Intro,
     IniRead, Trig_ORD, %ConfigFile%, %section%, Trig_ORD, !орд
     IniRead, Trig_GT, %ConfigFile%, %section%, Trig_GT, !гостайна
     Guide_LoadProfile(ConfigFile, section)
+    GPS_LoadProfile(ConfigFile, section)
 
     NormalizeBindListItemsValue(BindListItems)
 
@@ -2171,6 +2173,7 @@ SaveProfile(profileName) {
     IniWriteText(BindListItems, target, section, "BindListItems")
     WriteCatalogTriggersToIni(target, section)
 
+    GPS_WriteProfile(target, section)
     ConfigAddProfile(target, profileName)
     CheckedIniWrite(profileName, target, "Profiles", "Last")
     if !ConfigCommit(target, ConfigFile)

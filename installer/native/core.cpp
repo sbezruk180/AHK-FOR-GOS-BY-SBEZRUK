@@ -1251,7 +1251,7 @@ Result Uninstall(const Options &o, bool keepData, std::atomic<bool> &cancel,
         if (fs::exists(p) && !DeleteFileW(p.c_str()))
           result.failed++;
       }
-      for (auto name : {L"logs", L"backups"})
+      for (auto name : {L"logs", L"backups", L"incidents"})
         RemoveTreeNoLinks(o.root / name, result, &cancel);
     }
     if (o.integration) {

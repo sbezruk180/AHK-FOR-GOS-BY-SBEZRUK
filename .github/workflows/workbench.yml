@@ -1,0 +1,130 @@
+name: Native Windows workbench verification and publication
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/workbench.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native:
+    runs-on: windows-latest
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        form: [exe, source]
+        repeat: [1, 2, 3]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify byte encodings, source graph and embedded shipping resources
+        run: |
+          python tools/validate_package.py
+          if ($LASTEXITCODE) { throw 'Package validation failed' }
+          python tools/verify_installer.py
+          if ($LASTEXITCODE) { throw 'Installer payload differs from current sources' }
+      - name: Run native ANSI x86 source or EXE, GUI and actual keyboard fixtures
+        shell: pwsh
+        run: |
+          $out = Join-Path $env:RUNNER_TEMP 'workbench-results'
+          python tools/deep_audit.py --form ${{ matrix.form }} --repeat ${{ matrix.repeat }} --output $out
+          if ($LASTEXITCODE) { throw 'Native test runner failed' }
+          $summary = Get-Content (Join-Path $out 'summary.json') -Raw | ConvertFrom-Json
+          foreach ($case in $summary.cases) {
+            if ($case.status -eq 'FAIL') {
+              Write-Output "::error title=Native regression::$($case.phase) / $($case.mode) / exit $($case.exit_code)"
+              foreach ($failure in $case.failures) { Write-Output "::error::$failure" }
+              $report = Join-Path $out $case.report
+              if (Test-Path $report) { Get-Content $report -Tail 14 }
+              $console = "$report.console.txt"
+              if (Test-Path $console) { Get-Content $console -Tail 14 }
+            }
+          }
+          if (!$summary.completed -or $summary.original_failures.Count -or $summary.tracing_failures.Count -or $summary.fixture_failures.Count -or $summary.remaining_processes.Count) {
+            throw 'Native regression or leaked owned process; publication blocked'
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: workbench-${{ matrix.form }}-${{ matrix.repeat }}
+          path: ${{ runner.temp }}/workbench-results/*
+          if-no-files-found: error
+  installer:
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify actual setup, uninstaller and data preservation
+        shell: pwsh
+        run: |
+          $fixture = Join-Path $env:RUNNER_TEMP 'legacy-fixture'
+          Expand-Archive installer/tests/legacy-6b1a595.zip $fixture
+          foreach ($test in @('core','Setup','Uninstall')) {
+            $file = if ($test -eq 'core') { 'Setup' } else { $test }
+            $report = Join-Path $env:RUNNER_TEMP "workbench-installer-$test.txt"
+            $arguments = if ($test -eq 'core') { @('--self-test',"`"$report`"",'--legacy-fixture',"`"$fixture`"") } else { @('--ui-test',"`"$report`"") }
+            $p = Start-Process (Resolve-Path "release/AHK_FOR_GOS_$file.exe") -ArgumentList $arguments -PassThru
+            if (!$p.WaitForExit(120000)) { $p.Kill(); throw 'Installer test timeout' }
+            Get-Content $report
+            if ($p.ExitCode) { throw "Shipping installer regression: $test" }
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: installer-results
+          path: ${{ runner.temp }}/workbench-installer-*.txt
+  publish:
+    needs: [native, installer]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: workbench-*
+          path: native-evidence
+      - name: Package verified shipping binaries and source distribution
+        run: python tools/package_release.py
+      - name: Publish the verified downloads and test evidence
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'); const {owner,repo}=context.repo;
+            const summaries=fs.readdirSync('native-evidence').map(folder=>JSON.parse(fs.readFileSync('native-evidence/'+folder+'/summary.json','utf8')));
+            if(summaries.length!==6 || summaries.some(s=>!s.completed || s.original_failures.length || s.tracing_failures.length || s.fixture_failures.length || (Array.isArray(s.remaining_processes)?s.remaining_processes.length:!!s.remaining_processes))) throw Error('Incomplete evidence');
+            const release=await github.rest.repos.getReleaseByTag({owner,repo,tag:'v1.1'});
+            const old=await github.paginate(github.rest.repos.listReleaseAssets,{owner,repo,release_id:release.data.id,per_page:100});
+            const staged=[];
+            for(const name of fs.readdirSync('dist/publish')) {
+              const item=await github.rest.repos.uploadReleaseAsset({owner,repo,release_id:release.data.id,name:'pending-'+context.runId+'-'+name,data:fs.readFileSync('dist/publish/'+name)});
+              staged.push({name,id:item.data.id});
+            }
+            for(const item of staged) {
+              const previous=old.find(asset=>asset.name===item.name);
+              if(previous) await github.rest.repos.deleteReleaseAsset({owner,repo,asset_id:previous.id});
+              await github.rest.repos.updateReleaseAsset({owner,repo,asset_id:item.id,name:item.name});
+            }
+            const run='https://github.com/'+owner+'/'+repo+'/actions/runs/'+context.runId;
+            const body=fs.readFileSync('RELEASE_NOTES_1_1_RU.md','utf8')+'\n\n[Точные исходники этой сборки](https://github.com/'+owner+'/'+repo+'/archive/'+context.sha+'.zip). Автоматические Source code по тегу v1.1 относятся к первой публикации; актуальный AHK-архив находится среди файлов релиза.\n\n[Шесть повторных проверок Windows ANSI x86: AHK и EXE]('+run+'). Игровой клиент Amazing и фактический захват OBS не проверялись.\n';
+            await github.rest.repos.updateRelease({owner,repo,release_id:release.data.id,body});
+            fs.mkdirSync('docs/desktop/reports',{recursive:true});
+            fs.writeFileSync('docs/desktop/reports/workbench-native-20261026.json',JSON.stringify({commit:context.sha,run,real_game:'NOT_TESTED',real_OBS:'NOT_TESTED',results:summaries},null,2)+'\n');
+      - name: Save native summaries on a separate evidence branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git switch -c workbench-evidence-${{ github.run_id }}
+          git add docs/desktop/reports/workbench-native-20261026.json
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib,subprocess
+          paths=sorted(p for p in subprocess.check_output(['git','ls-files','-z']).decode().split('\0') if p and p!='CHECKSUMS.sha256')
+          Path('CHECKSUMS.sha256').write_text(''.join(hashlib.sha256(Path(p).read_bytes()).hexdigest()+'  '+p+'\n' for p in paths))
+          PY
+          git add CHECKSUMS.sha256
+          git commit -m 'Record verified native Windows workbench results'
+          git push origin HEAD

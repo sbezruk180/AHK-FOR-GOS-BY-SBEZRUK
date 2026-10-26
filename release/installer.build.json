@@ -4,29 +4,29 @@
   "offline": true,
   "framework_runtime_required": false,
   "app_runtime": "AHK 1.1.37.02 ANSI x86",
-  "app_sha256": "774d7c70768c5d57f0d643890178b2c9fbe9b3cba8ac982dd681af05217a5d2f",
+  "app_sha256": "2959c433763a914acfcf62b163a54a488d2112dfc27f9b7f0b84f7d8cd03e048",
   "official_runtime_archive_sha256": "6f3663f7cdd25063c8c8728f5d9b07813ced8780522fd1f124ba539e2854215f",
   "installer_sources": {
     "installer/native/app.manifest": "4058551a1862d1ffe686358196b6e922ba4e514573cdb70aaac8a0aa19de656c",
     "installer/native/archive.cpp": "4290a4cd8f0bfe4440d9627d112bf7f284a9040afb67f3d5655790b2c5853d92",
-    "installer/native/core.cpp": "d67540eff6350634f97b5a4184549cf82f22caa6dc8f18f06f06a3cedf754353",
+    "installer/native/core.cpp": "c8cbd4695e78f960c228d4b074caa53aec85f63b5c6fb1219af3c5817fc6bfa9",
     "installer/native/core.hpp": "4b5d4d5c6d5d5853cacf977af112139b73d0ae698336bf4ae02f7473db74f960",
     "installer/native/main.cpp": "73b97e78d109be0e93a2074079fe88cc9d163a7ab6d87b29fb75036705436c5c",
-    "installer/native/selftest.cpp": "af7586a3ec036895b79e5cdb14cd40797d165fdaa8b57ea6ee7f0b288b3541ab",
+    "installer/native/selftest.cpp": "7d6efe0d6d3425ae32ef85d45c9d3995bcf9b8f53ce24081434aa146fbc8316d",
     "installer/native/ui.cpp": "69a170bd4308cfc94716205cf3dbb55b7e614d4cb25a1a9abfdd6c31d0a50054"
   },
   "entries": [
     {
       "path": "AHK_FOR_GOS.exe",
       "modes": 1,
-      "bytes": 5381120,
-      "sha256": "774d7c70768c5d57f0d643890178b2c9fbe9b3cba8ac982dd681af05217a5d2f"
+      "bytes": 5954560,
+      "sha256": "2959c433763a914acfcf62b163a54a488d2112dfc27f9b7f0b84f7d8cd03e048"
     },
     {
       "path": "AHK_FOR_GOS_BY_SBEZRUK.ahk",
       "modes": 2,
-      "bytes": 2577,
-      "sha256": "128817951eb237d43b54c062ef63c629b6d324512a76881c25f46e44b3772005"
+      "bytes": 3157,
+      "sha256": "8c6494e037f6f854760b5a7c9c85b5200ec668d815d932b51e35a938f66c0cbc"
     },
     {
       "path": "UDF.ahk",
@@ -37,26 +37,32 @@
     {
       "path": "Uninstall.exe",
       "modes": 3,
-      "bytes": 1622016,
-      "sha256": "f43a2d283d1d806f9020465c91bc4f1735e55b5aabea8980ad2945a55fa91121"
+      "bytes": 1626624,
+      "sha256": "9bf16cba433c3bf471e6410041cfa6c78f55ee2595ab99837f12597f8bc27dfa"
+    },
+    {
+      "path": "app\\action_trace.ahk",
+      "modes": 2,
+      "bytes": 21788,
+      "sha256": "a5b4c6ab4996b2cb045140162ebc4038d8557a64b1b85350b9898946034443c2"
     },
     {
       "path": "app\\actions.ahk",
       "modes": 2,
-      "bytes": 53604,
-      "sha256": "c3d95789b5dfe8016c6754445e8905274d19446dc57a24e9e26c6a4be97f9ae7"
+      "bytes": 52110,
+      "sha256": "183ff2f442e45aa16df9dc2bb9517d7081d93c10b40d9fb21de9c646a7722976"
     },
     {
       "path": "app\\automation.ahk",
       "modes": 2,
-      "bytes": 37290,
-      "sha256": "470f9fb82188784eed74b6f6b0433ec4896eb2a0994dc50988851322a45dd9a8"
+      "bytes": 38225,
+      "sha256": "5170263606a2b9ec5a5827cc67b49540625f5f549b8456bec38c08525bcb0e95"
     },
     {
       "path": "app\\bindings.ahk",
       "modes": 2,
-      "bytes": 60794,
-      "sha256": "da116f1a566329241af7f7e565aef35fa3246b4ba8f1e11bcd3d49b453c32ddd"
+      "bytes": 60901,
+      "sha256": "550bceaac34f1617b40263812ae10aec890ccd050c72c9a81542dd163e1786b5"
     },
     {
       "path": "app\\bootstrap.ahk",
@@ -67,14 +73,14 @@
     {
       "path": "app\\chat.ahk",
       "modes": 2,
-      "bytes": 21895,
-      "sha256": "c0f5cd3aee96f7e20a413fcf6753680fda78244a24b110a74c79a3609fa63a97"
+      "bytes": 23541,
+      "sha256": "b4df34d984ec6a1999cd00faaf900235e324e1cfb922955a645003de0fa379cf"
     },
     {
       "path": "app\\chatlog.ahk",
       "modes": 2,
-      "bytes": 48313,
-      "sha256": "9959676db56f018888ab55c7be58c7bfc86e45bcebb47a1ed18798e702c1fc8b"
+      "bytes": 48448,
+      "sha256": "7ba62d159341e8de73de9a35311d2596615924d3c0ed5b5cc11c4bf62ca33fbb"
     },
     {
       "path": "app\\cli.ahk",
@@ -83,28 +89,34 @@
       "sha256": "4158bcae340d5cafa75f1377d103fb5daf5367aa9d82d939d77b2f8d71ccf936"
     },
     {
+      "path": "app\\command_palette.ahk",
+      "modes": 2,
+      "bytes": 13602,
+      "sha256": "a4f233a7a190fa2393795d1960264b8e145857af94ca582eef2084044c6f2359"
+    },
+    {
       "path": "app\\core.ahk",
       "modes": 2,
-      "bytes": 18793,
-      "sha256": "74b770d44128b836bf47a402c714d1fd974b9a23b43685e179633e5c1499db50"
+      "bytes": 19078,
+      "sha256": "520b6448f6de6a90ec3ada61b2f22e39bdcc9222d777d69679852de3142c6398"
     },
     {
       "path": "app\\custom_functions.ahk",
       "modes": 2,
-      "bytes": 26384,
-      "sha256": "f20543bf1a1d8d0ba273f4751813855ea6b6f7e9e50feb8949eb10ce8adb3499"
+      "bytes": 47564,
+      "sha256": "2ddfbac411ab8213c71a7bb79d66494b58aa1c205af6597d50fd6d1b5e3110cd"
     },
     {
       "path": "app\\diagnostics.ahk",
       "modes": 2,
-      "bytes": 78584,
-      "sha256": "084ff18f89ebd24d4768e2d070da591e626199a2912b40e78ca581fb925a3609"
+      "bytes": 78659,
+      "sha256": "c43bea6582469c5d5a050204a56ded95c2a4e472d55775c8595c178f31daacae"
     },
     {
       "path": "app\\events.ahk",
       "modes": 2,
-      "bytes": 38719,
-      "sha256": "284536e2d9b6f2fa3afe0a776abc3fd5de555aeb59e351169e8693ca5f291933"
+      "bytes": 38937,
+      "sha256": "f6ad3e8d021585445261cdacaadc7f6b8fdd17be2c451df59822be2294dca48a"
     },
     {
       "path": "app\\game.ahk",
@@ -115,8 +127,14 @@
     {
       "path": "app\\game_input.ahk",
       "modes": 2,
-      "bytes": 8934,
-      "sha256": "477d2e1da30bb0f0016efd479b3d5c48a8139b9b8e5fa43f20798cfaf22e7916"
+      "bytes": 9120,
+      "sha256": "ed142e7d354105e224779c8078f65f22db7bb45b2e21692b73f8c0bf5cd17168"
+    },
+    {
+      "path": "app\\gps_calibration.ahk",
+      "modes": 2,
+      "bytes": 18391,
+      "sha256": "3cb519fb3bdbdc343fbfcb7af1bbf98228d8005f36917ae6e0783952171a8c35"
     },
     {
       "path": "app\\host.ahk",
@@ -125,16 +143,22 @@
       "sha256": "33f5000ab818e2c2509112ac55710c0059429c5842fbc0b346155a44cfab0e30"
     },
     {
+      "path": "app\\incident_card.ahk",
+      "modes": 2,
+      "bytes": 29493,
+      "sha256": "d24ed236fd22d268376c5d33c9317168560c630108dc4fa634351c0844790ebe"
+    },
+    {
       "path": "app\\private_text.ahk",
       "modes": 2,
-      "bytes": 8129,
-      "sha256": "d9f2ca77750fc2e7056f20fe591ad0b453a13a2428a2d43fef725f176daf6f7d"
+      "bytes": 8711,
+      "sha256": "b3a2c35f114ba90de0fb6801d504de9ba505525730f241cf23e1c08cb73dc388"
     },
     {
       "path": "app\\profiles.ahk",
       "modes": 2,
-      "bytes": 119839,
-      "sha256": "d6f32a65f7eb42719cb5d66c083242212b21d68505fabf695bfe822282ce4aa4"
+      "bytes": 119976,
+      "sha256": "d27b9e2d9d62c417d9b6d9870ed72b18a80f6a4f29a4d6a6c7ed0279c396fcb3"
     },
     {
       "path": "app\\reference_guides.ahk",
@@ -146,13 +170,19 @@
       "path": "app\\state.ahk",
       "modes": 2,
       "bytes": 36780,
-      "sha256": "0871aa87d38a87470f98512e514b2c0361da1e338b8dff3d8582cea61904e9c9"
+      "sha256": "10235e5742cf90f017829ff1386c735e68056fadcbacd17cff92692425a04c71"
     },
     {
       "path": "app\\text_commands.ahk",
       "modes": 2,
       "bytes": 5612,
       "sha256": "6b2d14bfda7d402eedb32165700915c019dd9aef69ea93f7c58da8f5b70d5102"
+    },
+    {
+      "path": "app\\training.ahk",
+      "modes": 2,
+      "bytes": 24864,
+      "sha256": "a8a0cf239e1b11a0acd57cc1d842ca991c94cf37dfc0af96ee92dd4ddef3cdd5"
     },
     {
       "path": "app\\ui_documents.ahk",
@@ -163,14 +193,14 @@
     {
       "path": "app\\ui_overlays.ahk",
       "modes": 2,
-      "bytes": 58114,
-      "sha256": "a61b169bfaa57da047fe158bae5c15903e486d33fc85353aadec830689169c62"
+      "bytes": 58275,
+      "sha256": "5f46a6383b9a5c38ddd0957342850ca8120987584ddcc4987dd33961ed2f8da3"
     },
     {
       "path": "app\\ui_settings.ahk",
       "modes": 2,
-      "bytes": 67325,
-      "sha256": "3b50f7f82b4c447ffc4231b8eaa89e5432897e6cc05ef5ba088d9dfc29b369b9"
+      "bytes": 67793,
+      "sha256": "2e42c97669ce44f257f69c2466cddbd331b6d275df35901a7197451b1d7cfa54"
     },
     {
       "path": "assets\\defaults\\profiles.default.ini",
@@ -199,8 +229,8 @@
     {
       "path": "common.ahk",
       "modes": 2,
-      "bytes": 40818,
-      "sha256": "290314e7997d9ea2e0ce00a82d6270ecb16f81b08ddd8a074bcde0f67a5eea4e"
+      "bytes": 40914,
+      "sha256": "abfc5e62288f304f791bdaaf1041432f588a82e6a32f484c0ce6e7fc07d860cd"
     },
     {
       "path": "helper.ahk",
@@ -367,26 +397,38 @@
     {
       "path": "runtime_support.ahk",
       "modes": 2,
-      "bytes": 49709,
-      "sha256": "3713a7136cbade4683df08f78969b77d217fe984afcdd1a34f1ef3f1bed457b5"
+      "bytes": 50010,
+      "sha256": "7f75ce2f695604d24389ccacbb1105c8d1a2c2c60fc7a5bdc354998e9a683060"
     },
     {
       "path": "service_ui.ahk",
       "modes": 2,
-      "bytes": 24160,
-      "sha256": "d29e60a84717370adb56c7ed24af9d31257e041f5e572bfebc3f9d781b361a9f"
+      "bytes": 25897,
+      "sha256": "e53b8ea28dc9050c6f7eb19c82ff0256de20456755a23dbf60445c61d7fd0e7e"
+    },
+    {
+      "path": "tests\\action_trace_regression.ahk",
+      "modes": 2,
+      "bytes": 10725,
+      "sha256": "82b051f30228d546f4490efecc7f03fc366ef9d49bdb022c51a49a5104dc713d"
     },
     {
       "path": "tests\\audit_regression.ahk",
       "modes": 2,
-      "bytes": 34306,
-      "sha256": "d9336bbce35602688332776e919f3da03a2e2999cb6fd6336b56ceb31539b1ea"
+      "bytes": 34498,
+      "sha256": "7534f66f290ac53f6a9a0216c12a7f19eb8978aabb9d5025a4e98031fdb7fa5b"
     },
     {
       "path": "tests\\autoid_source_regression.ahk",
       "modes": 2,
       "bytes": 5637,
       "sha256": "20ef46fb6afda05c08171dc8ffaf393b46d8f5e315489090388888488feee468"
+    },
+    {
+      "path": "tests\\block_builder_regression.ahk",
+      "modes": 2,
+      "bytes": 7012,
+      "sha256": "5e88ec302c563a931c99f386075367912be9089f4ebb33fd98d833461980d1bf"
     },
     {
       "path": "tests\\chat_state_regression.ahk",
@@ -399,6 +441,12 @@
       "modes": 2,
       "bytes": 9636,
       "sha256": "2cd34cf551d878b079de2d76c926cef892cb50b49c9c49649847fe9dc88f8f63"
+    },
+    {
+      "path": "tests\\command_palette_regression.ahk",
+      "modes": 2,
+      "bytes": 5127,
+      "sha256": "4fbd7e113742efbfa62886edd1c044b3e0876d832295a33959d3f71215592bd9"
     },
     {
       "path": "tests\\custom_builder_regression.ahk",
@@ -415,14 +463,26 @@
     {
       "path": "tests\\desktop_smoke.ahk",
       "modes": 2,
-      "bytes": 22161,
-      "sha256": "4fcab3e538c3bb0b869c0f799fd7b393a8c3f8d189deb89da00c9b37ab737b13"
+      "bytes": 22395,
+      "sha256": "8309eaa1c9a46ef880e0ecae9bf1e10b803057b941fc66d0eb89685e28eecddc"
+    },
+    {
+      "path": "tests\\gps_calibration_regression.ahk",
+      "modes": 2,
+      "bytes": 10186,
+      "sha256": "69d735e6db5a6f3a5809db0846e2fdb1d22570191ccc8cbf02f05aceaeee73b8"
     },
     {
       "path": "tests\\id_capture_regression.ahk",
       "modes": 2,
       "bytes": 7389,
       "sha256": "6f5d7d7c9e6c45cd2060f9a31a66629942d857b18d7e170465ceb3f1b5ec1570"
+    },
+    {
+      "path": "tests\\incident_card_regression.ahk",
+      "modes": 2,
+      "bytes": 9625,
+      "sha256": "e2e104b58bf630522b1f8a680204fcf377578e9137ea8d248b5bc271dd8f704f"
     },
     {
       "path": "tests\\logic_audit_regression.ahk",
@@ -467,6 +527,12 @@
       "sha256": "eb164362dcd3981534c45867ef42c1b2085e02880bdd23b65a822247f57719e1"
     },
     {
+      "path": "tests\\training_regression.ahk",
+      "modes": 2,
+      "bytes": 7715,
+      "sha256": "3700326e733c88b8bfb88178058bda00267186b97b1819f4e56c79f0a3355948"
+    },
+    {
       "path": "ui_style.ahk",
       "modes": 2,
       "bytes": 20266,
@@ -481,12 +547,12 @@
   ],
   "artifacts": {
     "AHK_FOR_GOS_Setup.exe": {
-      "bytes": 13489152,
-      "sha256": "bb2d37edae04ac1263a67e59ec821c54616073d132526c9973ec8dfee38c259b"
+      "bytes": 14259712,
+      "sha256": "bb7bba70fe3d6c864bb78ff17085e6200e319af18e391a4b100723d84fbd3d2c"
     },
     "AHK_FOR_GOS_Uninstall.exe": {
-      "bytes": 1622016,
-      "sha256": "f43a2d283d1d806f9020465c91bc4f1735e55b5aabea8980ad2945a55fa91121"
+      "bytes": 1626624,
+      "sha256": "9bf16cba433c3bf471e6410041cfa6c78f55ee2595ab99837f12597f8bc27dfa"
     }
   }
 }

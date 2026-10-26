@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'tools/build'))
 from ahk_symbols import functions
 NAMES = {
- 'app/chat.ahk': ['ChatTransport_Send'],
+ 'app/chat.ahk': ['ChatTransport_SendCore'],
  'chat_typing.ahk': ['ChatTyping_ShouldType', 'ChatTyping_IsFactionCommand', 'ChatTyping_NormalizeCommands', 'ChatTyping_DefaultCommands', 'ChatTyping_ModeFromLabel', 'ChatTyping_ModeLabel'],
 }
 PROBE = r'''#NoEnv
@@ -115,6 +115,26 @@ TickNow() {
 GameLocator_IsActive() {
     return true
 }
+
+Training_IsActive(args*) {
+    return false
+}
+ActionTrace_RegisterBatch(args*) {
+    return 0
+}
+ActionTrace_RegisterItem(args*) {
+    return 0
+}
+ActionTrace_QueueAttempt(args*) {
+}
+ActionTrace_QueueRetryPending(args*) {
+}
+ActionTrace_QueueTransportResult(args*) {
+}
+ActionTrace_QueueComplete(args*) {
+}
+ActionTrace_CancelBatch(args*) {
+}
 '''
 def main():
  p = argparse.ArgumentParser(description=__doc__); p.add_argument('output', type=Path); args = p.parse_args()
@@ -123,7 +143,7 @@ def main():
  pieces = [PROBE]
  for path, names in NAMES.items():
   found = {n: body for n, _, _, body in functions((ROOT / path).read_text('cp1251'))}
-  pieces.extend(found[n] for n in names)
+  pieces.extend(found[n].replace('ChatTransport_SendCore(', 'ChatTransport_Send(', 1) if n == 'ChatTransport_SendCore' else found[n] for n in names)
  out.parent.mkdir(parents=True, exist_ok=True)
  out.write_text('\n\n'.join(pieces), encoding='utf-8-sig'); print(out)
 if __name__ == '__main__': main()

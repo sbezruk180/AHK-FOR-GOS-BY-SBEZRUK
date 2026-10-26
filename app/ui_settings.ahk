@@ -1000,6 +1000,13 @@ BuildSettingsGui() {
     Gui, 2:Add, Button, x250 y732 w250 h28 gOpenCustomFunctionBuilderLabel, Конструктор своих функций
     Gui, 2:Font, Norm s8 c%muted%, Segoe UI
     Gui, 2:Add, Text, x514 y736 w596 h20 BackgroundTrans, Свои последовательности, паузы, таймеры, уведомления и TXT/hotkey-запуск.
+    Gui, 2:Font, Norm s9 c%text%, Segoe UI
+    Gui, 2:Add, Button, x250 y774 w164 h32 gTools_OpenPalette, Палитра команд
+    Gui, 2:Add, Button, x424 y774 w164 h32 gTools_OpenIncident, Карточка дела
+    Gui, 2:Add, Button, x598 y774 w164 h32 gTools_OpenTrace, Результат действия
+    Gui, 2:Add, Button, x772 y774 w164 h32 gTools_OpenTraining, Учебный режим
+    Gui, 2:Add, Button, x946 y774 w164 h32 gTools_OpenGPS, Настроить GPS
+    Settings_RecordExtent(818)
     chatLogChecked := (ChatLogReaderEnabled = "On") ? " Checked" : ""
     autoTargetChecked := (AutoTargetIDEnabled = "On") ? " Checked" : ""
     Gui, 2:Font, Norm s9 c%text%, Segoe UI

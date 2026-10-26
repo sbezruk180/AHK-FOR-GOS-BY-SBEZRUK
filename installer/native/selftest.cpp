@@ -149,6 +149,8 @@ int SelfTest(const fs::path &report, const fs::path &legacyFixture) {
     check("owned installation record", OwnedRoot(o.root));
     Write(o.data / L"profiles.ini", {'m', 'y', ' ', 'b', 'i', 'n', 'd', 's'});
     auto profile = Read(o.data / L"profiles.ini");
+    Write(o.data / L"incidents" / L"case.txt", {'c', 'a', 's', 'e'});
+    Write(o.root / L"incidents" / L"portable-case.txt", {'k', 'e', 'e', 'p'});
     cancel = true;
     auto aborted = Install(o, cancel, notify);
     cancel = false;
@@ -200,6 +202,9 @@ int SelfTest(const fs::path &report, const fs::path &legacyFixture) {
     check("uninstall keep profiles", removed.ok);
     check("keep profiles preserves exact bytes",
           Read(o.data / L"profiles.ini") == profile);
+    check("keep-data removal preserves incident cards in both locations",
+          fs::exists(o.data / L"incidents" / L"case.txt") &&
+          fs::exists(o.root / L"incidents" / L"portable-case.txt"));
     check("uninstall preserves unrelated files",
           fs::exists(o.root / L"my-unrelated.txt"));
     check("uninstall removes bundled A32",
@@ -217,6 +222,8 @@ int SelfTest(const fs::path &report, const fs::path &legacyFixture) {
     auto full = Uninstall(o, false, cancel, notify);
     check("full project removal", full.ok);
     check("full removes project data", !fs::exists(o.data));
+    check("full project removal also removes portable incident data",
+          !fs::exists(o.root / L"incidents"));
     Options renamed = o;
     renamed.root = base / L"renamed-installed";
     renamed.data = base / L"renamed-profiles";

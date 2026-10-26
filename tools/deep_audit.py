@@ -229,7 +229,7 @@ def run_audit(output, form, repeat):
     for traced in (False,True):
         phase='traced' if traced else 'original'
         source=source_trace if traced else ROOT
-        command=[trace_exe if traced else exe] if form=='exe' else [ahk,'/ErrorStdOut','/CP1251',source/'AHK_FOR_GOS_BY_SBEZRUK.ahk']
+        command=[trace_exe if traced else exe, '/ErrorStdOut'] if form=='exe' else [ahk,'/ErrorStdOut','/CP1251',source/'AHK_FOR_GOS_BY_SBEZRUK.ahk']
         startup_env=dict(os.environ)
         if traced:startup_env['AHK_AUDIT_COVERAGE']=str(output/(phase+'_startup.coverage.txt'))
         startup_row=startup_check(command,work/phase/'startup',startup_env)

@@ -48,9 +48,9 @@ with tempfile.TemporaryDirectory(prefix='desktop-check-',dir=ROOT/'.build') as f
             if stopped.returncode not in (0,1) or (stopped.returncode==1 and stopped.stderr):
                 raise RuntimeError('Wine server reset failed: '+stopped.stderr.decode(errors='replace'))
             subprocess.run([args.wineserver,'-w'],env=env,check=True,stdout=subprocess.DEVNULL)
-            cmd=[args.wine,winpath(exe),'--data-dir',winpath(data),flag]
+            cmd=[args.wine,winpath(exe),'/ErrorStdOut','--data-dir',winpath(data),flag]
         else:
-            cmd=[str(exe),'--data-dir',str(data),flag]
+            cmd=[str(exe),'/ErrorStdOut','--data-dir',str(data),flag]
         began=time.monotonic()
         try:
             process=subprocess.run(cmd,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=240)

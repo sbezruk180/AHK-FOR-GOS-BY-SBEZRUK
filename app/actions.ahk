@@ -2,16 +2,18 @@
 
 CanRunAction(actionName, needsID := false, checkChatClosed := true, requireVehicle := false, requireChatOpen := false, requireCloseRange := false) {
     if (IsObject(IDCaptureState) || PhysicalInputBusy || IsObject(GameMenuStarting) || IsObject(GameMenuLease))
-        return false
+        return ActionTrace_Rejected(actionName, "Ввод занят другой операцией")
+    if Training_IsActive()
+        return Training_CanRunAction(actionName, needsID, checkChatClosed, requireVehicle, requireChatOpen, requireCloseRange)
     global ActionCooldownMs, LastActionTick
     global SafeModeEnabled, SafeBlockWhenChat, SafeVehicleChecks, SafeRequireChatForEditable
     global SafeDistanceChecks, SafeDistanceLimit
 
     if !EnsureGameActive()
-        return false
+        return ActionTrace_Rejected(actionName, "Игра отсутствует или её окно не активно")
 
     if (needsID && !CheckID())
-        return false
+        return ActionTrace_Rejected(actionName, "ID игрока не выбран")
 
     masterSafe := (SafeModeEnabled = "On")
     requireOpenCheck := requireChatOpen && (masterSafe || SafeRequireChatForEditable = "On")
@@ -20,13 +22,13 @@ CanRunAction(actionName, needsID := false, checkChatClosed := true, requireVehic
     {
         chatState := isInChat()
         if (requireOpenCheck && chatState != 1)
-            return SafeWarn("Открой чат перед действием: " . actionName)
+            return ActionTrace_Rejected(actionName, "Открой чат перед действием: " . actionName, true)
         if (requireClosedCheck && chatState = 1)
-            return SafeWarn("Закрой чат перед действием: " . actionName)
+            return ActionTrace_Rejected(actionName, "Закрой чат перед действием: " . actionName, true)
     }
 
     if (requireVehicle && (masterSafe || SafeVehicleChecks = "On") && isPlayerInAnyVehicle() <= 0)
-        return SafeWarn("Действие требует транспорт: " . actionName)
+        return ActionTrace_Rejected(actionName, "Действие требует транспорт: " . actionName, true)
 
     shouldCheckDistance := requireCloseRange || (needsID && SafeDistanceChecks = "On")
     if (shouldCheckDistance && (masterSafe || SafeDistanceChecks = "On"))
@@ -35,9 +37,9 @@ CanRunAction(actionName, needsID := false, checkChatClosed := true, requireVehic
         distSource := ""
         dist := GetCrosshairTargetDistance(distSource)
         if (dist < 0)
-            return SafeWarn("Не удалось определить расстояние до цели: " . actionName)
+            return ActionTrace_Rejected(actionName, "Не удалось определить расстояние до цели: " . actionName, true)
         if (dist > SafeDistanceLimit)
-            return SafeWarn("Цель слишком далеко: " . Round(dist, 1) . " м, лимит " . SafeDistanceLimit . " м")
+            return ActionTrace_Rejected(actionName, "Цель слишком далеко: " . Round(dist, 1) . " м, лимит " . SafeDistanceLimit . " м", true)
         LogError("DistanceCheck", actionName . ": " . Round(dist, 2) . " м | " . distSource, "INFO")
     }
 
@@ -46,7 +48,7 @@ CanRunAction(actionName, needsID := false, checkChatClosed := true, requireVehic
     {
         elapsed := TickNow() - LastActionTick
         if (LastActionTick > 0 && elapsed < ActionCooldownMs)
-            return false
+            return ActionTrace_Rejected(actionName, "Не завершена пауза между действиями")
     }
 
     LastActionTick := TickNow()
@@ -1145,56 +1147,7 @@ SendGpsDialogDown(count, delayMs := 35, inputEpoch := 0) {
 }
 
 RunGpsDialogAction(actionName, downCount, gpsNumber, inputEpoch := 0) {
-    if (!inputEpoch)
-        inputEpoch := AutomationEpoch
-    if (inputEpoch != AutomationEpoch)
-        return false
-    gpsNumber := Trim(gpsNumber)
-    if (!RegExMatch(gpsNumber, "^[0-9]{1,5}$") || gpsNumber + 0 < 1 || gpsNumber + 0 > 10000
-        || !RegExMatch(downCount . "", "^[0-9]+$") || downCount > 80) {
-        Notify("warn")
-        return false
-    }
-    if !CanRunAction(actionName, false, false)
-        return false
-    reservation := GameMenu_Reserve("GPS", inputEpoch)
-    if !IsObject(reservation)
-        return SafeWarn("GPS: ввод занят другим действием.")
-    ok := false, stage := "закрытие чата"
-    try {
-        if !GameMenu_Prepare(reservation)
-            return false
-        stage := "открытие /gps"
-        ; Amazing GPS is driven by keys; do not inspect SA-MP dialog memory.
-        ; Keep a cancellable opening pause before navigation.
-        lease := GameMenu_SendCommand(reservation, "/gps", 500, false)
-        if !IsObject(lease)
-            return false
-        ; GPS alone uses shorter key presses; other game menus keep 30/50 ms.
-        lease.KeyDelay := 10, lease.KeyDuration := 20
-        stage := "выбор пункта"
-        if !GameMenu_Tap(lease, "Home")
-            return false
-        Loop %downCount%
-            if !GameMenu_Tap(lease, "Down")
-                return false
-        stage := "открытие поля номера"
-        if (!GameMenu_Tap(lease, "Enter") || !GameMenu_Wait(lease, 200))
-            return false
-        stage := "ввод номера"
-        if (!GameMenu_TypeDigits(lease, gpsNumber) || !GameMenu_Wait(lease, 50))
-            return false
-        stage := "подтверждение"
-        ok := GameMenu_Tap(lease, "Enter")
-        return ok
-    } finally {
-        GameMenu_Close(reservation)
-        if (!ok) {
-            LogError("GPS", "Остановлено: " . stage . "; поколение " . inputEpoch . ". Повтор /gps не выполнялся.", "WARN")
-            if (inputEpoch = AutomationEpoch)
-                ServiceUI_Notify("GPS остановлен: " . stage . ". Проверьте активное окно игры.", 3500, "WARN")
-        }
-    }
+    return GPS_Run(actionName, downCount, gpsNumber, inputEpoch)
 }
 
 InputAction_DoEnterID(inputEpoch := 0) {

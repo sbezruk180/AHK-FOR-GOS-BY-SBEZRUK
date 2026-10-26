@@ -165,6 +165,22 @@ for _, command in ["!signals", "!cbuyfks"] {
     TextCheck("private alias releases ownership " . command, !ServiceUI_IsInputActive() && !PrivateTextInputBusy && !PhysicalInputBusy)
 }
 }
+; Natural-language phrases must keep spaces and use Enter, through the real hook.
+for _, command in ["сигналы спецоперации", "сигналы спецоперции"] {
+    CloseAllDocs()
+    current_doc := 0
+    TextPrivateCommand := command, TextPrivateSent := 0
+    ControlGetText, beforePalette, , ahk_id %TextTargetEdit%
+    SetTimer, TextFixture_ObserveInput, 25
+    SendLevel, 2
+    SendEvent, !t
+    SendLevel, 0
+    Sleep, 550
+    SetTimer, TextFixture_ObserveInput, Off
+    ControlGetText, afterPalette, , ahk_id %TextTargetEdit%
+    TextCheck("palette executes a multiword natural phrase " . command, TextFixture_WaitDoc(21) && TextPrivateSent)
+    TextCheck("palette phrase never leaks or retains input", beforePalette == afterPalette && !PrivateTextInputBusy && !PhysicalInputBusy)
+}
 TextPrivateCommand := ""
 TextTriggerInputMode := "Игровой чат"
 Trig_GuideSignals := "!medic"
@@ -212,7 +228,10 @@ if (IsObject(ServiceUIInputState) && ServiceUIInputState.GuiHwnd) {
     if (TextPrivateCommand != "" && !TextPrivateSent) {
         TextPrivateSent := 1
         SendEvent, % "{Raw}" . TextPrivateCommand
-        SendEvent, {Space}
+        if (SubStr(TextPrivateCommand, 1, 1) = "!")
+            SendEvent, {Space}
+        else
+            SendEvent, {Enter}
     } else if (TextPrivateCommand = "")
         SendEvent, {Escape}
     SendLevel, 0

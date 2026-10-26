@@ -2,7 +2,7 @@
 
 SendChat(text, source := "Direct", contextGuard := "") {
     result := ChatTransport_Send(text, source, "", contextGuard)
-    if (result = 1 && (!IsObject(contextGuard) || contextGuard.Call()))
+    if (result = 1 && !Training_IsActive() && (!IsObject(contextGuard) || contextGuard.Call()))
         Evidence_MaybeCaptureReportText(text)
     return result
 }
@@ -54,16 +54,42 @@ ChatTransport_GetConnectionSummary(runMemoryCheck := 0) {
 }
 
 ChatTransport_Send(text, source := "ChatTransport", role := "", contextGuard := "") {
-    if (IsObject(contextGuard) && !contextGuard.Call())
+    ; Queue entries already have a batch trace; direct sends get their own one.
+    traceId := !ChatQueueBusy ? ActionTrace_Begin(source, 1) : 0
+    traceStep := traceId ? ActionTrace_Add(traceId, "CHAT", text, false) : 0
+    if (traceId)
+        ActionTrace_Update(traceId, traceStep, "running", "Подготовка транспорта.")
+    try {
+        result := ChatTransport_SendCore(text, source, role, contextGuard)
+        if (traceId)
+            ActionTrace_RecordTransport(traceId, traceStep, result, ChatTransportStatus)
+        return result
+    } catch e {
+        if (traceId) {
+            ActionTrace_Update(traceId, traceStep, "unknown", "Исключение: " . e.Message . ". Вызов мог начаться; повтор запрещён.")
+            ActionTrace_Finish(traceId, "unknown", e.Message)
+        }
+        throw e
+    }
+}
+
+ChatTransport_SendCore(text, source := "ChatTransport", role := "", contextGuard := "") {
+    if (IsObject(contextGuard) && !contextGuard.Call()) {
+        ChatTransport_SetStatus("Отправка отменена: контекст операции изменился.", source, "WARN")
         return -1
-    if (IsObject(IDCaptureState) || ServiceUI_IsInputActive() || (IsObject(GameMenuStarting) && (source != GameMenuStarting.Source || !GameMenu_ReservationIsCurrent(GameMenuStarting))) || IsObject(GameMenuLease))
+    }
+    if (IsObject(IDCaptureState) || ServiceUI_IsInputActive() || (IsObject(GameMenuStarting) && (source != GameMenuStarting.Source || !GameMenu_ReservationIsCurrent(GameMenuStarting))) || IsObject(GameMenuLease)) {
+        ChatTransport_SetStatus("Отправка недоступна: ввод ID, личный ввод или меню заняли управление.", source, "WARN")
         return -1
+    }
     global MockMode, TextSendMode, g_RemoteOperation
     global ChatTransportLastMemoryFailureTick, ChatTransportMemoryRetryMs
     text := "" . text
-    if (text = "")
+    if (text = "") {
+        ChatTransport_SetStatus("Пустая строка не отправляется.", source, "WARN")
         return -1
-    if (MockMode = "On")
+    }
+    if (MockMode = "On" || Training_IsActive())
     {
         MockPreview_Append(text)
         ChatTransport_SetStatus("Mock (без игры)", source)
@@ -91,13 +117,17 @@ ChatTransport_Send(text, source := "ChatTransport", role := "", contextGuard := 
 
     if (transportMode = "Memory")
     {
-        if IsObject(g_RemoteOperation)
+        if IsObject(g_RemoteOperation) {
+            ChatTransport_SetStatus("Вызов памяти ещё выполняется; повтор отключён.", source, "WARN")
             return -2
+        }
         ; Only fall back before a memory operation is attempted, never after an uncertain call.
         if !checkHandles() {
             memoryError := MemoryGetShortError()
-            if IsObject(g_RemoteOperation)
+            if IsObject(g_RemoteOperation) {
+                ChatTransport_SetStatus("Вызов памяти ещё выполняется; повтор отключён.", source, "WARN")
                 return -2
+            }
             if (TextSendMode = "FactionTypingMemory") {
                 ChatTransport_SetStatus("Память недоступна: " . memoryError . "; вставка отключена для этого режима", source, "WARN")
                 return -1
@@ -120,8 +150,10 @@ ChatTransport_Send(text, source := "ChatTransport", role := "", contextGuard := 
         return IsObject(g_RemoteOperation) ? -2 : result
     }
 
-    if IsObject(g_RemoteOperation)
+    if IsObject(g_RemoteOperation) {
+        ChatTransport_SetStatus("Вызов памяти ещё выполняется; повтор отключён.", source, "WARN")
         return -2
+    }
     memoryError := ""
     nowTick := TickNow()
     canRetryMemory := (ChatTransportLastMemoryFailureTick <= 0 || nowTick - ChatTransportLastMemoryFailureTick >= ChatTransportMemoryRetryMs)

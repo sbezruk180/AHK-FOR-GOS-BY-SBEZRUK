@@ -12,7 +12,7 @@ GameMenu_Reserve(source, epoch := 0, target := "") {
         if (source = "" || epoch != AutomationEpoch || PhysicalInputBusy || ChatQueueBusy
             || IsObject(IDCaptureState) || ServiceUI_IsInputActive() || IsObject(GameMenuStarting) || IsObject(GameMenuLease))
             return false
-        if (MockMode != "On" && !AuditTestMode && !GameLocator_IsActive())
+        if (MockMode != "On" && !AuditTestMode && !Training_IsActive() && !GameLocator_IsActive())
             return false
         reservation := {Epoch: epoch, Hwnd: WinExist("A"), Profile: CurrentProfile, Source: source, Target: target}
         GameMenuStarting := reservation
@@ -27,7 +27,7 @@ GameMenu_ReservationIsCurrent(reservation) {
     if (!IsObject(reservation) || GameMenuStarting != reservation || reservation.Epoch != AutomationEpoch
         || reservation.Profile != CurrentProfile || (reservation.Target != "" && "ID:" . reservation.Target != "ID:" . UserID))
         return false
-    return (MockMode = "On" || AuditTestMode) || (reservation.Hwnd = WinExist("A") && GameLocator_IsActive())
+    return (MockMode = "On" || AuditTestMode || Training_IsActive()) || (reservation.Hwnd = WinExist("A") && GameLocator_IsActive())
 }
 
 GameMenu_Prepare(reservation) {
@@ -38,7 +38,7 @@ GameMenu_Prepare(reservation) {
     if !IsObject(lease)
         return false
     try {
-        if (MockMode = "On" || AuditTestMode)
+        if (MockMode = "On" || AuditTestMode || Training_IsActive())
             return true
         chatState := isInChat()
         if (chatState < 0)
@@ -96,7 +96,7 @@ GameMenu_Acquire(epoch) {
     try {
         if (epoch != AutomationEpoch || PhysicalInputBusy || IsObject(IDCaptureState) || ServiceUI_IsInputActive() || IsObject(GameMenuLease))
             return false
-        if (MockMode != "On" && !AuditTestMode && !GameLocator_IsActive())
+        if (MockMode != "On" && !AuditTestMode && !Training_IsActive() && !GameLocator_IsActive())
             return false
         if (IsObject(GameMenuStarting) && !GameMenu_ReservationIsCurrent(GameMenuStarting))
             return false
@@ -115,7 +115,7 @@ GameMenu_IsCurrent(lease) {
         return false
     if (IsObject(lease.Reservation) && !GameMenu_ReservationIsCurrent(lease.Reservation))
         return false
-    return (MockMode = "On" || AuditTestMode) || (lease.Hwnd = WinExist("A") && GameLocator_IsActive())
+    return (MockMode = "On" || AuditTestMode || Training_IsActive()) || (lease.Hwnd = WinExist("A") && GameLocator_IsActive())
 }
 
 GameMenu_Release(lease) {
@@ -131,7 +131,7 @@ GameMenu_Release(lease) {
 
 GameMenu_Wait(lease, delayMs) {
     global MockMode
-    if (MockMode = "On" || AuditTestMode)
+    if (MockMode = "On" || AuditTestMode || Training_IsActive())
         return GameMenu_IsCurrent(lease)
     started := TickNow()
     while (TickNow() - started < delayMs) {
@@ -150,7 +150,7 @@ GameMenu_Tap(lease, key) {
 
 GameMenu_WaitChatClosed(lease, timeoutMs := 1800) {
     global MockMode
-    if (MockMode = "On" || AuditTestMode)
+    if (MockMode = "On" || AuditTestMode || Training_IsActive())
         return GameMenu_IsCurrent(lease)
     started := TickNow(), stable := 0
     while (TickNow() - started < timeoutMs) {
@@ -221,7 +221,7 @@ GameUi_ShouldShowPassive() {
         return false
     if (FullscreenSafeGui = "On")
         return true
-    if (MockMode = "On" || AuditTestMode)
+    if (MockMode = "On" || AuditTestMode || Training_IsActive())
         return false
     if !GameLocator_IsActive()
         return false

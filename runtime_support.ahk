@@ -248,6 +248,7 @@ ChatQueue_EnqueueBatch(lines, source, delayAfter := 700, menu := "", onFirstSent
             item.Batch := id
             ChatQueueItems.Push(item)
         }
+        ActionTrace_RegisterBatch(id, prepared)
     } finally {
         Critical, %previous%
     }
@@ -257,6 +258,7 @@ ChatQueue_EnqueueBatch(lines, source, delayAfter := 700, menu := "", onFirstSent
 
 ChatQueue_CompleteItem(item, result) {
     global ChatQueueItems
+    ActionTrace_QueueComplete(item, result)
     if (!item.HasKey("Batch") || !item.Batch || !QueueBatchStates.HasKey(item.Batch))
         return
     batch := QueueBatchStates[item.Batch]
@@ -291,8 +293,11 @@ ChatQueue_CompleteItem(item, result) {
 
 ChatQueue_CancelBatches() {
     for _, batch in QueueBatchStates {
-        if (batch.State = "queued")
+        if (batch.State = "queued") {
+            if (batch.TraceId)
+                ActionTrace_Finish(batch.TraceId, "cancelled", "Очередь или контекст операции очищены.")
             batch.State := "cancelled"
+        }
     }
 }
 
@@ -341,7 +346,7 @@ SafeSend(keys, mode := "Input", epoch := "", inputLease := "") {
     global MockMode
     if (epoch != "" && epoch != AutomationEpoch)
         return false
-    if (MockMode = "On" || AuditTestMode) {
+    if (MockMode = "On" || AuditTestMode || Training_IsActive()) {
         MockPreview_Append("[INPUT " . mode . "] " . keys)
         return true
     }
@@ -965,6 +970,7 @@ JoinStrings(values, separator := ", ") {
 
 ChatQueue_CancelBatch(id) {
     global ChatQueueItems
+    ActionTrace_CancelBatch(id)
     kept := []
     for _, item in ChatQueueItems {
         if (!item.HasKey("Batch") || item.Batch != id)

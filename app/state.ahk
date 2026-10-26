@@ -6,7 +6,7 @@ global MemoryLiveTestMode := HasCommandLineArg("--memory-live-test") ? 1 : 0
 if (!UiPreviewMode && !AcquireAppInstance())
     ExitApp
 
-global AppVersion := "1.0"
+global AppVersion := "1.1"
 global ConfigVersion := 14
 global ConfigFile := FileExist(AppHost_DataDir() . "\profiles_updated.ini") ? AppHost_DataDir() . "\profiles_updated.ini" : AppHost_DataDir() . "\profiles.ini"
 global ThemesFile := AppHost_DataDir() . "\themes.ini"

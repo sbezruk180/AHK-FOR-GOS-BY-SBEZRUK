@@ -230,7 +230,7 @@ V1_AllGosubTargetsExist(text, ByRef details) {
 
 V1_RunMigrationTest(ByRef details) {
     global AppVersion
-    AppVersion := "1.0"
+    AppVersion := "1.1"
     dir := A_Temp . "\AMZ_GOS_V13_" . DllCall("GetCurrentProcessId") . "_" . TickNow()
     FileCreateDir, %dir%
     fileName := dir . "\profiles.ini"
@@ -389,6 +389,7 @@ V1_CheckProfileConflicts(fileName, ByRef details) {
         if (meta.HotkeyVar != "") {
             iniKey := meta.HotkeyVar
             IniRead, value, %fileName%, %section%, %iniKey%,
+            NormalizeHotkeyValue(value)
             value := NormalizeHotkeyId(value)
             if (value != "" && hotkeys.HasKey(value))
                 conflicts.Push(value . ": " . hotkeys[value] . "/" . meta.Token)
@@ -398,7 +399,7 @@ V1_CheckProfileConflicts(fileName, ByRef details) {
         if (meta.TriggerVar != "") {
             iniKey := meta.TriggerVar
             IniRead, value, %fileName%, %section%, %iniKey%,
-            value := Trim(value)
+            NormalizeTextTrigger(value)
             StringLower, value, value
             if (value != "" && triggers.HasKey(value))
                 conflicts.Push(value . ": " . triggers[value] . "/" . meta.Token)
@@ -415,7 +416,7 @@ RunSelfTestV1() {
     global AppVersion, ConfigVersion
     global LawSearchDocCatalog
 
-    AppVersion := "1.0", ConfigVersion := 14
+    AppVersion := "1.1", ConfigVersion := 14
     SelfTestCriticalFailed := 0, SelfTestHighFailed := 0
     SelfTestMediumWarnings := 0, SelfTestLowNotes := 0, SelfTestTotal := 0
 
@@ -428,7 +429,7 @@ RunSelfTestV1() {
     udfText := SelfTest_ReadFile(root . "\UDF.ahk")
     commonText := SelfTest_ReadFile(root . "\common.ahk")
 
-    report := "AHK FOR GOS BY SBEZRUK v1.0 regression self-test`r`n"
+    report := "AHK FOR GOS BY SBEZRUK v1.1 regression self-test`r`n"
     report .= "Runtime: AutoHotkey " . A_AhkVersion . " | ANSI=" . (!A_IsUnicode) . " | PtrSize=" . A_PtrSize . "`r`n"
     report .= "Project: " . root . "`r`nLIVE GAME: NOT RUN`r`n`r`n"
 
@@ -450,11 +451,11 @@ RunSelfTestV1() {
     }
     SelfTest_Add(report, "Critical", "AHK v1.1 ANSI 32-bit runtime"
         , !A_IsUnicode && A_PtrSize = 4 && SubStr(A_AhkVersion, 1, 4) = "1.1.")
-    SelfTest_Add(report, "Critical", "release v1.0 and schema v14"
-        , InStr(mainText, "AppVersion := ""1.0""") && InStr(mainText, "ConfigVersion := 14"))
+    SelfTest_Add(report, "Critical", "release v1.1 and schema v14"
+        , InStr(mainText, "AppVersion := ""1.1""") && InStr(mainText, "ConfigVersion := 14"))
     IniRead, iniSchema, %profilePath%, Meta, ConfigVersion, 0
     IniRead, iniRelease, %profilePath%, Meta, AppVersion, 0
-    SelfTest_Add(report, "Critical", "active INI uses v1.0/v14", iniSchema = 14 && iniRelease = "1.0")
+    SelfTest_Add(report, "Critical", "active INI uses compatible release and schema v14", iniSchema = 14 && (iniRelease = "1.0" || iniRelease = "1.1"))
     SelfTest_Add(report, "Critical", "single helper and modular include contract"
         , IsFunc("AppHost_Init") && IsFunc("LawCorpus_GetText") && IsFunc("AutoTargetID_Poll")
         && V1_HasDuplicateFunctions(mainText, duplicates) = false, duplicates)
@@ -665,7 +666,7 @@ RunSelfTestV1() {
 }
 
 RunSelfTest() {
-    ; Compatibility entry point: the v1.0/v13 suite is the single authoritative self-test.
+    ; Compatibility entry point for the shared regression self-test.
     return RunSelfTestV1()
 }
 
@@ -1371,7 +1372,7 @@ RunV1MockRegression() {
     checks.Push(["отмена всей автоматизации", cancelOk])
     ok := cancelOk && ok
 
-    report := "AHK FOR GOS BY SBEZRUK v1.0 MockMode regression`r`n"
+    report := "AHK FOR GOS BY SBEZRUK v1.1 MockMode regression`r`n"
     Loop % checks.Length()
         report .= (checks[A_Index][2] ? "PASS" : "FAIL") . " | " . checks[A_Index][1] . "`r`n"
     report .= (ok ? "RESULT=PASS" : "RESULT=FAIL") . "`r`nLIVE GAME: NOT RUN`r`n"
@@ -1403,7 +1404,7 @@ RunLawSearchRegression() {
     checks.Push(["dynamic full-document pages preserve every character", SelfTest_CorpusPagesComplete()])
     package := LawSearch_Find("ALL", "сотрудник", 99)
     checks.Push(["30-result cap and total", package.Results.Length() <= 30 && package.Passed >= package.Results.Length()])
-    report := "AHK FOR GOS BY SBEZRUK v1.0 law-search regression`r`n"
+    report := "AHK FOR GOS BY SBEZRUK v1.1 law-search regression`r`n"
     report .= "Documents=" . audit.Documents . " Pages=" . audit.Pages
         . " ArticleHeadings=" . audit.Headings . " AuditFailures=" . audit.Failures.Length() . "`r`n"
     report .= "OfficialCorpusDocs=" . corpusAudit.Documents . " CorpusChars=" . corpusAudit.Characters
