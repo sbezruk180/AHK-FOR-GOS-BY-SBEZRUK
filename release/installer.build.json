@@ -4,7 +4,7 @@
   "offline": true,
   "framework_runtime_required": false,
   "app_runtime": "AHK 1.1.37.02 ANSI x86",
-  "app_sha256": "3f97a6769d13943641098e8995480aba015bc984107f3b35d109681890ed70bd",
+  "app_sha256": "017825e63f0829c720668b8fa403c92142526922cd16c4c665f387336df568e2",
   "official_runtime_archive_sha256": "6f3663f7cdd25063c8c8728f5d9b07813ced8780522fd1f124ba539e2854215f",
   "installer_sources": {
     "installer/native/app.manifest": "4058551a1862d1ffe686358196b6e922ba4e514573cdb70aaac8a0aa19de656c",
@@ -20,7 +20,7 @@
       "path": "AHK_FOR_GOS.exe",
       "modes": 1,
       "bytes": 5962752,
-      "sha256": "3f97a6769d13943641098e8995480aba015bc984107f3b35d109681890ed70bd"
+      "sha256": "017825e63f0829c720668b8fa403c92142526922cd16c4c665f387336df568e2"
     },
     {
       "path": "AHK_FOR_GOS_BY_SBEZRUK.ahk",
@@ -38,7 +38,7 @@
       "path": "Uninstall.exe",
       "modes": 3,
       "bytes": 1626624,
-      "sha256": "32c7860bce2fb64ac25a31a9ef31901748918aec85be5cb5bdcdc9ca7fa58ebb"
+      "sha256": "7cce11cadf85658e8f6e30872e6002e5b64441a1f0c89ba75382d5514724e047"
     },
     {
       "path": "app\\action_trace.ahk",
@@ -109,8 +109,8 @@
     {
       "path": "app\\diagnostics.ahk",
       "modes": 2,
-      "bytes": 78723,
-      "sha256": "0d94d2e24d0943599c1f088d13befa4db6216103396fe34ceca69903ae9f8348"
+      "bytes": 78722,
+      "sha256": "d3618c64aaf6c6dea5ab9d80f4d74e7f077ffeae3d84c76c8ffd2a9a7bba732b"
     },
     {
       "path": "app\\events.ahk",
@@ -548,11 +548,11 @@
   "artifacts": {
     "AHK_FOR_GOS_Setup.exe": {
       "bytes": 14270976,
-      "sha256": "3c861e29526716761928b845ad92073da970581a9ca6a51a2c2cc8c9c290b8c7"
+      "sha256": "d69bb169ffd890a2dbacb3c8dfb40d4bf6b0645fc35d4d534b00a980fb631439"
     },
     "AHK_FOR_GOS_Uninstall.exe": {
       "bytes": 1626624,
-      "sha256": "32c7860bce2fb64ac25a31a9ef31901748918aec85be5cb5bdcdc9ca7fa58ebb"
+      "sha256": "7cce11cadf85658e8f6e30872e6002e5b64441a1f0c89ba75382d5514724e047"
     }
   }
 }

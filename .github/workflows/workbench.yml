@@ -1,5 +1,5 @@
 name: Native Windows workbench verification and publication
-# Source diagnostics must resolve modules independently of --data-dir.
+# Source diagnostics resolve modules and effective law overrides independently of --data-dir.
 on:
   push:
     branches: [main]

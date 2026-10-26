@@ -263,6 +263,9 @@ def run_audit(output, form, repeat):
             summary['cases'].append(row)
             (output/'summary.json').write_text(json.dumps(summary,indent=2)+'\n')
             print(json.dumps({k:row[k] for k in ('mode','phase','status','exit_code','seconds')}),flush=True)
+            if row['status']=='FAIL':
+                for failure in row['failures']:
+                    print('::error title=Native '+phase+' '+mode+'::'+failure,flush=True)
     # Fixture sinks/predicates are explicit; actual IO is Win32/keyboard, not GTA.
     for name,builder,report_name in FIXTURES:
         folder=work/'fixtures'/name;script=folder/'native.ahk';folder.mkdir(parents=True,exist_ok=True)
