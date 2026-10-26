@@ -1,0 +1,52 @@
+name: Read native GUI timeout diagnostics
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/gui-diagnostics.yml']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),{owner,repo}=context.repo;
+            const result=await github.rest.actions.listWorkflowRunArtifacts({owner,repo,run_id:40312611270});
+            const item=result.data.artifacts.find(x=>x.name==='gui-capture-default-profile-tests');
+            if(!item) throw new Error('Native diagnostics artifact missing');
+            const zip=await github.rest.actions.downloadArtifact({owner,repo,artifact_id:item.id,archive_format:'zip'});
+            fs.writeFileSync('/tmp/native-ui-diagnostics.zip',Buffer.from(zip.data));
+      - run: |
+          python - <<'PY'
+          from pathlib import Path
+          import zipfile
+          output=Path('docs/desktop/reports')
+          with zipfile.ZipFile('/tmp/native-ui-diagnostics.zip') as archive:
+              for name in archive.namelist():
+                  if name.endswith('timeout.png'):
+                      (output/'gui-native-timeout-20261026.png').write_bytes(archive.read(name))
+                  elif name.endswith('desktop_smoke_progress.txt'):
+                      data=archive.read(name)
+                      (output/'gui-native-timeout-20261026.txt').write_bytes(data)
+                      print(data.decode('utf-8-sig')[-3000:])
+          PY
+      - name: Save captured diagnostics
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/desktop/reports/gui-native-timeout-20261026.*
+          python - <<'PY'
+          import hashlib,subprocess
+          from pathlib import Path
+          names=sorted(p for p in subprocess.check_output(['git','ls-files','-z']).decode().split('\0') if p and p!='CHECKSUMS.sha256')
+          Path('CHECKSUMS.sha256').write_text(''.join(hashlib.sha256(Path(p).read_bytes()).hexdigest()+'  '+p+'\n' for p in names))
+          PY
+          git add CHECKSUMS.sha256
+          git commit -m 'Record Windows screenshot at the exact GUI test timeout [skip ci]'
+          git push origin HEAD:main
