@@ -135,6 +135,16 @@ def build(args):
         flat, n = re.subn(r'(?m)^if \(A_PtrSize != 4 \|\| A_IsUnicode\)\r?\n\{\r?\n    MsgBox,[^\n]+\n    ExitApp, 2\r?\n\}', '; TEST ONLY: U64 logic/native GUI validation, not a game build.', flat, count=1)
         if n != 1:
             raise ValueError('Architecture guard not found; refusing test build')
+        # Checkpoints exist only in the explicit Unicode test binary. Keep the
+        # shipping script and its module resources byte-identical to the source.
+        trace = r'FileAppend, % "PROGRESS | bootstrap`r`n", % AppHost_DataDir() . "\desktop_smoke_progress.txt", UTF-8'
+        flat = re.sub(r'(?m)^InitProfiles\(\)\r?$', lambda m: trace + '\r\n' + m[0], flat, count=1)
+        for call in ['MigrateConfigIfNeeded()', 'LoadLastProfile()']:
+            flat = re.sub(r'(?m)^(    )?' + re.escape(call) + r'\r?$', lambda m: (m[1] or '') + trace.replace('bootstrap', call) + '\r\n' + m[0], flat, count=1)
+        marker = r'DesktopSmoke_Assert(name, ok) {'
+        checkpoint = r'    FileAppend, % (ok ? "PASS" : "FAIL") . " | " . name . "`r`n", % AppHost_DataDir() . "\desktop_smoke_progress.txt", UTF-8'
+        flat = flat.replace(marker, marker + '\r\n' + checkpoint, 1)
+
     output = Path(args.output or (ROOT/'dist'/('AHK_FOR_GOS_TEST_U64.exe' if args.test_u64 else 'AHK_FOR_GOS.exe'))).resolve()
     output.parent.mkdir(parents=True, exist_ok=True)
     if args.test_u64 and 'TEST_U64' not in output.name:
