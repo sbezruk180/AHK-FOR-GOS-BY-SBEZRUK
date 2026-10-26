@@ -56,10 +56,24 @@ jobs:
           if ($LASTEXITCODE) { throw 'GUI host build failed' }
           $data = Join-Path $env:RUNNER_TEMP 'gui-profile-desktop'
           $p = Start-Process (Resolve-Path 'dist/AHK_FOR_GOS_TEST_U64.exe') -ArgumentList @('--desktop-smoke','--data-dir',"`"$data`"") -PassThru
-          if (!$p.WaitForExit(150000)) { $p.Kill(); throw 'GUI test timeout' }
+          if (!$p.WaitForExit(150000)) {
+            $progress = Join-Path $data 'desktop_smoke_progress.txt'
+            if (Test-Path $progress) { Get-Content $progress -Tail 12 | ForEach-Object { Write-Output "::error title=GUI timeout checkpoint::$_" } }
+            Add-Type -AssemblyName System.Windows.Forms
+            Add-Type -AssemblyName System.Drawing
+            $bounds = [Windows.Forms.SystemInformation]::VirtualScreen
+            $bitmap = New-Object Drawing.Bitmap $bounds.Width,$bounds.Height
+            $graphics = [Drawing.Graphics]::FromImage($bitmap)
+            try {
+              $graphics.CopyFromScreen($bounds.Location,[Drawing.Point]::Empty,$bounds.Size)
+              $bitmap.Save((Join-Path $data 'timeout.png'))
+            } finally { $graphics.Dispose(); $bitmap.Dispose() }
+            $p.Kill()
+            throw 'GUI test timeout'
+          }
           $report = Join-Path $data 'desktop_smoke_report.txt'
           Get-Content $report
-          if ($p.ExitCode) { throw 'GUI or capture-switch regression failed' }
+          if ($p.ExitCode) { Get-Content $report | Where-Object { $_ -match '^FAIL' } | ForEach-Object { Write-Output "::error title=GUI regression::$_" }; throw 'GUI or capture-switch regression failed' }
       - name: Native installer and uninstaller regressions
         shell: pwsh
         run: |
@@ -81,6 +95,8 @@ jobs:
           path: |
             ${{ runner.temp }}/gui-profile-*.txt
             ${{ runner.temp }}/gui-profile-desktop/*report.txt
+            ${{ runner.temp }}/gui-profile-desktop/*progress.txt
+            ${{ runner.temp }}/gui-profile-desktop/*.png
       - name: Refresh the tested 1.1 downloads and exact source link
         uses: actions/github-script@v7
         with:
