@@ -144,6 +144,15 @@ def build(args):
         marker = r'DesktopSmoke_Assert(name, ok) {'
         checkpoint = r'    FileAppend, % (ok ? "PASS" : "FAIL") . " | " . name . "`r`n", % AppHost_DataDir() . "\desktop_smoke_progress.txt", UTF-8'
         flat = flat.replace(marker, marker + '\r\n' + checkpoint, 1)
+        for marker, label in [
+            ('Capture_ModeChanged(controlHwnd := 0, guiEvent := "", eventInfo := "", eventError := "") {', 'capture-mode entry'),
+            ('    Capture_RefreshWindows()\r\n    SaveUISettings()', 'capture-mode before refresh')]:
+            flat = flat.replace(marker, trace.replace('bootstrap', label) + '\r\n' + marker if marker.startswith('    ') else marker + '\r\n' + trace.replace('bootstrap', label), 1)
+        native_call = '        ok := DllCall("user32\\SetWindowDisplayAffinity", "Ptr", hwnd, "UInt", enabled ? 0x11 : 0, "Int")'
+        native_before = r'        FileAppend, % "AFFINITY before hwnd=" . hwnd . " enabled=" . enabled . "`r`n", % AppHost_DataDir() . "\desktop_smoke_progress.txt", UTF-8'
+        native_after = r'        FileAppend, % "AFFINITY after hwnd=" . hwnd . " result=" . ok . "`r`n", % AppHost_DataDir() . "\desktop_smoke_progress.txt", UTF-8'
+        flat = flat.replace(native_call, native_before + '\r\n' + native_call + '\r\n' + native_after, 1)
+
 
     output = Path(args.output or (ROOT/'dist'/('AHK_FOR_GOS_TEST_U64.exe' if args.test_u64 else 'AHK_FOR_GOS.exe'))).resolve()
     output.parent.mkdir(parents=True, exist_ok=True)
