@@ -3,7 +3,7 @@ name: Native Windows workbench verification and publication
 on:
   push:
     branches: [main]
-    paths: ['.github/workflows/workbench.yml', '*.ahk', 'app/**', 'tests/**', 'release/AHK_FOR_GOS.exe', 'installer/native/**', 'tools/deep_audit.py']
+    paths: ['.github/workflows/workbench.yml', '*.ahk', 'app/**', 'tests/**', 'release/AHK_FOR_GOS.exe', 'installer/native/**', 'tools/deep_audit.py', 'tools/build_*_fixture.py']
   workflow_dispatch:
 permissions:
   contents: read

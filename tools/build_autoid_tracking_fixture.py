@@ -260,4 +260,5 @@ LogError(source,text,level) {
 }
 '''
 labels = s[s.index('\nDoConfirmID:') + 1:s.index('\nDoResetID:')]
+source += '\nTraining_IsActive() {\n    return false ; Explicit non-training Auto ID fixture context.\n}\n'
 output.write_bytes((source+'\n'+funcs+'\n'+labels).replace('\n','\r\n').encode('cp1251'))

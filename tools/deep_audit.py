@@ -284,7 +284,7 @@ def run_audit(output, form, repeat):
             assert old in text
             text=text.replace(old,replacement,1)
         if '__AuditCoverage_Hit(name)' not in text:script.write_text(text+'\n'+HOOK,encoding='utf-8-sig')
-        command=[compiled_fixture(script,runtime,folder/'native.exe')] if form=='exe' else [ahk,'/ErrorStdOut',script]
+        command=[compiled_fixture(script,runtime,folder/'native.exe'), '/ErrorStdOut'] if form=='exe' else [ahk,'/ErrorStdOut',script]
         data=folder/'data';env=dict(os.environ);env['AHK_AUDIT_COVERAGE']=str(output/('fixture_'+name+'.coverage.txt'))
         row,text=invoke(command+['--data-dir',data],folder,report_name,timeout=150,env=env)
         row.update(mode=name,phase='fixture',report='fixture_'+report_name)
