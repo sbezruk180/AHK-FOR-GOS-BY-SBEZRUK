@@ -24937,7 +24937,7 @@
       "commands": [],
       "winapi": [],
       "first_statement": "DiagnosticsFailCount := 0 / DiagnosticsWarnCount := 0",
-      "sha256": "4ae39c10437143ef7924d421173d8e11fdc9f78c1b64d8c56dd61cb7614a0c4e",
+      "sha256": "74682b96ee1a715823882f9164e5b9a2e43553551ff38348249b6fdd0f9c70cd",
       "calls": [
         "AppHost_DataDir",
         "Diagnostics_GetActiveConfigPath",
@@ -41271,7 +41271,7 @@
     "app/state.ahk": "10235e5742cf90f017829ff1386c735e68056fadcbacd17cff92692425a04c71",
     "app/bootstrap.ahk": "a240ddbcb171031a65bcf9542cb6402aa0ddaabd050ff2798e22eaf079bac015",
     "app/core.ahk": "520b6448f6de6a90ec3ada61b2f22e39bdcc9222d777d69679852de3142c6398",
-    "app/diagnostics.ahk": "d3618c64aaf6c6dea5ab9d80f4d74e7f077ffeae3d84c76c8ffd2a9a7bba732b",
+    "app/diagnostics.ahk": "d3df16798904dd11ea6556808b46823d1b9e2d7040fe2c1439a79833076bb08d",
     "app/profiles.ahk": "d27b9e2d9d62c417d9b6d9870ed72b18a80f6a4f29a4d6a6c7ed0279c396fcb3",
     "app/ui_settings.ahk": "2e42c97669ce44f257f69c2466cddbd331b6d275df35901a7197451b1d7cfa54",
     "app/ui_overlays.ahk": "5f46a6383b9a5c38ddd0957342850ca8120987584ddcc4987dd33961ed2f8da3",

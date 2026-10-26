@@ -812,9 +812,9 @@ RunDiagnosticsExport() {
 
     projectDir := AppHost_DataDir()
     mainPath := A_ScriptFullPath
-    helperPath := projectDir . "\helper.ahk"
-    commonPath := projectDir . "\common.ahk"
-    udfPath := projectDir . "\UDF.ahk"
+    helperPath := A_ScriptDir . "\helper.ahk"
+    commonPath := A_ScriptDir . "\common.ahk"
+    udfPath := A_ScriptDir . "\UDF.ahk"
     profilesPath := Diagnostics_GetActiveConfigPath(projectDir)
     themesPath := projectDir . "\themes.ini"
     selftestPath := projectDir . "\selftest_report.txt"
