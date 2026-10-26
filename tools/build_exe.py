@@ -146,6 +146,7 @@ def build(args):
     for path in sorted((ROOT/'laws').glob('*.txt')):
         resources.append((10, 'LAW_'+path.stem.upper(), path.read_bytes()))
         resources.append((10, 'LAW_DIGEST_'+path.stem.upper(), digest(path.read_bytes()).encode('ascii')))
+    resources.append((10, 'DEFAULT_PROFILE', (ROOT/'assets/defaults/profiles.default.ini').read_bytes()))
     resources.extend([(10, 'LICENSE_PROJECT', (ROOT/'LICENSE').read_bytes()),
                       (10, 'LICENSE_ENGINE', (ROOT/'third_party/AutoHotkey-GPL-2.0.txt').read_bytes()),
                       (16, 1, version_resource())])

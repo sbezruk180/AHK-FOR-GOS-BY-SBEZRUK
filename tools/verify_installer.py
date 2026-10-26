@@ -31,6 +31,8 @@ def main():
  graph=SourceGraph(ROOT);graph.flatten()
  for path in graph.files:
   name=str(path.relative_to(ROOT)).replace('/','\\');assert entries[name]['modes']==2 and entries[name]['body']==path.read_bytes(),name
+ for path in (ROOT/'assets').rglob('*'):
+  if path.is_file():assert entries[str(path.relative_to(ROOT)).replace('/','\\')]['body']==path.read_bytes(),path
  for path in (ROOT/'laws').glob('*.txt'):assert entries['laws\\'+path.name]['body']==path.read_bytes()
  runtime=PE(entries['runtime\\AutoHotkeyA32.exe']['body']);assert runtime.machine==0x14c
  assert entries['Инструкция.txt']['body']==('\ufeff'+(ROOT/'installer/USER_GUIDE_RU.txt').read_text('utf-8')).encode('utf-8')

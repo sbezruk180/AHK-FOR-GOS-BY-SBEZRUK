@@ -1,0 +1,106 @@
+name: Verify and publish menu capture and default-profile fixes
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/gui-profile-update.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify shipping source and binary payloads
+        run: |
+          python tools/validate_package.py
+          if ($LASTEXITCODE) { throw 'Package mismatch' }
+          python tools/verify_installer.py
+          if ($LASTEXITCODE) { throw 'Installer mismatch' }
+          python tools/package_release.py
+          if ($LASTEXITCODE) { throw 'Packaging failed' }
+      - name: Native ANSI x86 first launch, EXE and ordinary AHK
+        shell: pwsh
+        run: |
+          $source = Join-Path $env:RUNNER_TEMP 'source-ansi-fixture'
+          Expand-Archive dist/publish/AHK_FOR_GOS_AHK_v1.1.zip $source
+          $report = Join-Path $env:RUNNER_TEMP 'gui-profile-ansi.txt'
+          foreach ($mode in @('exe','ahk')) {
+            $data = Join-Path $env:RUNNER_TEMP "ansi-default-$mode"
+            $file = if ($mode -eq 'exe') { (Resolve-Path 'release/AHK_FOR_GOS.exe').Path } else { Join-Path $source 'runtime/AutoHotkeyA32.exe' }
+            $arguments = @('--ui-preview','--data-dir',"`"$data`"")
+            if ($mode -eq 'ahk') { $arguments = @('/CP1251',"`"$(Join-Path $source 'AHK_FOR_GOS_BY_SBEZRUK.ahk')`"") + $arguments }
+            $p = Start-Process $file -ArgumentList $arguments -PassThru
+            try {
+              $ini = Join-Path $data 'profiles.ini'
+              for ($attempt=0; $attempt -lt 100 -and !(Test-Path $ini); $attempt++) { Start-Sleep -Milliseconds 100 }
+              if (!(Test-Path $ini)) { throw "No seeded INI: $mode" }
+              $text = [Text.Encoding]::GetEncoding(1251).GetString([IO.File]::ReadAllBytes($ini))
+              foreach ($expected in @('[Profile_Основной]','[Profile_основа]','Surname=Лукашенко')) {
+                if (!$text.Contains($expected)) { throw "ANSI profile lost Cyrillic or a supplied profile: $mode / $expected" }
+              }
+              "PASS | $mode starts and seeds both supplied profiles in CP1251" | Add-Content $report
+            } finally {
+              if (!$p.HasExited) { $p.Kill(); $p.WaitForExit() }
+            }
+          }
+          Get-Content $report
+      - name: Actual Windows GUI and capture-switch regression
+        shell: pwsh
+        run: |
+          python tools/build_exe.py --test-u64
+          if ($LASTEXITCODE) { throw 'GUI host build failed' }
+          $data = Join-Path $env:RUNNER_TEMP 'gui-profile-desktop'
+          $p = Start-Process (Resolve-Path 'dist/AHK_FOR_GOS_TEST_U64.exe') -ArgumentList @('--desktop-smoke','--data-dir',"`"$data`"") -PassThru
+          if (!$p.WaitForExit(150000)) { $p.Kill(); throw 'GUI test timeout' }
+          $report = Join-Path $data 'desktop_smoke_report.txt'
+          Get-Content $report
+          if ($p.ExitCode) { throw 'GUI or capture-switch regression failed' }
+      - name: Native installer and uninstaller regressions
+        shell: pwsh
+        run: |
+          $fixture = Join-Path $env:RUNNER_TEMP 'legacy-profile-fixture'
+          Expand-Archive installer/tests/legacy-6b1a595.zip $fixture
+          foreach ($test in @('core','Setup','Uninstall')) {
+            $file = if ($test -eq 'core') { 'Setup' } else { $test }
+            $report = Join-Path $env:RUNNER_TEMP "gui-profile-$test.txt"
+            $arguments = if ($test -eq 'core') { @('--self-test',"`"$report`"",'--legacy-fixture',"`"$fixture`"") } else { @('--ui-test',"`"$report`"") }
+            $p = Start-Process (Resolve-Path "release/AHK_FOR_GOS_$file.exe") -ArgumentList $arguments -PassThru
+            if (!$p.WaitForExit(120000)) { $p.Kill(); throw 'Installer test timeout' }
+            Get-Content $report
+            if ($p.ExitCode) { throw "Shipping regression: $test" }
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: gui-capture-default-profile-tests
+          path: |
+            ${{ runner.temp }}/gui-profile-*.txt
+            ${{ runner.temp }}/gui-profile-desktop/*report.txt
+      - name: Refresh the tested 1.1 downloads and exact source link
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),{owner,repo}=context.repo;
+            const release=await github.rest.repos.getReleaseByTag({owner,repo,tag:'v1.1'});
+            const names=fs.readdirSync('dist/publish').filter(name=>fs.statSync('dist/publish/'+name).isFile());
+            const old=await github.paginate(github.rest.repos.listReleaseAssets,{owner,repo,release_id:release.data.id,per_page:100});
+            // Upload every new file before replacing any public download.
+            const staged=[];
+            for(const name of names) {
+              const asset=await github.rest.repos.uploadReleaseAsset({owner,repo,release_id:release.data.id,name:'pending-'+context.runId+'-'+name,data:fs.readFileSync('dist/publish/'+name)});
+              staged.push({name,id:asset.data.id});
+            }
+            for(const item of staged) {
+              const previous=old.find(asset=>asset.name===item.name);
+              if(previous) await github.rest.repos.deleteReleaseAsset({owner,repo,asset_id:previous.id});
+              await github.rest.repos.updateReleaseAsset({owner,repo,asset_id:item.id,name:item.name});
+            }
+            const source='https://github.com/'+owner+'/'+repo+'/archive/'+context.sha+'.zip';
+            const body=fs.readFileSync('RELEASE_NOTES_1_1_RU.md','utf8')+'\n\n[Точные полные исходники обновлённой сборки 26.10.2026]('+source+'). Автоматические Source code (zip/tar.gz) по тегу v1.1 относятся к первоначальной публикации; для этого обновления используйте ссылку на точные исходники или AHK-архив из файлов релиза.\n\n[Проверки этой сборки](https://github.com/'+owner+'/'+repo+'/actions/runs/'+context.runId+').\n';
+            await github.rest.repos.updateRelease({owner,repo,release_id:release.data.id,body});
+            core.notice('Published verified GUI/capture/default-profile patch for v1.1');

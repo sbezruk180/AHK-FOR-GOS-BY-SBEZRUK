@@ -18,6 +18,22 @@ DesktopSmoke_Run() {
         DesktopSmoke_Assert("first startup creates compatible INI", FileExist(ConfigFile) && CurrentProfile != "")
         IniRead, schema, %ConfigFile%, Meta, ConfigVersion, 0
         DesktopSmoke_Assert("configuration schema 14", schema = 14)
+        seededFixture := AppHost_DataDir() . "\default_profile_fixture.ini"
+        if FileExist(seededFixture)
+            FileDelete, %seededFixture%
+        DesktopSmoke_Assert("first-run default profile seeds a missing INI", AppHost_SeedDefaultProfile(seededFixture))
+        IniRead, seededNames, %seededFixture%, Profiles, Names, ERROR
+        IniRead, seededLast, %seededFixture%, Profiles, Last, ERROR
+        IniRead, seededSurname, %seededFixture%, Profile_Основной, Surname, ERROR
+        DesktopSmoke_Assert("supplied export keeps both profiles and selected default", seededNames = "Основной|основа" && seededLast = "Основной" && seededSurname = "Лукашенко")
+        DesktopSmoke_Assert("supplied RP text codec survives initial seeding", InStr(IniReadText(seededFixture, "Profile_Основной", "T_Intro"), "инструктором УЦ СР ГАИ"))
+        CheckedIniWrite("keep-custom-profile", seededFixture, "Profile_Основной", "Surname")
+        existingProfileDigest := FileSHA256(seededFixture)
+        DesktopSmoke_Assert("reinstall never replaces an existing profile", AppHost_SeedDefaultProfile(seededFixture) && FileSHA256(seededFixture) = existingProfileDigest)
+        importedOpener := "!е", importedSearch := "+^а"
+        NormalizeHotkeyValue(importedOpener)
+        NormalizeHotkeyValue(importedSearch)
+        DesktopSmoke_Assert("imported Russian hotkey letters map to physical Alt+T and Ctrl+Shift+F", importedOpener = "!t" && importedSearch = "+^f")
         ApplyAllBinds()
         DesktopSmoke_Assert("hotkeys really registered", IsObject(RegisteredBindHotkeys) && RegisteredBindHotkeys.Length() >= 5)
         catalog := GetBindCatalog()
@@ -31,6 +47,9 @@ DesktopSmoke_Run() {
         WinActivate, ahk_id %focusProbeWindow%
         OpenSettings("profile")
         DesktopSmoke_Assert("fullscreen-safe settings preserve foreground", DllCall("GetForegroundWindow", "Ptr") = focusProbeWindow)
+        menuStyle := DllCall("GetWindowLong", "Ptr", hSettingsWnd, "Int", -20, "UInt")
+        DesktopSmoke_Assert("settings buffers child painting without a redundant layered surface", (menuStyle & 0x02000000) && !(menuStyle & 0x80000))
+        DesktopSmoke_Assert("unchanged navigation role does not invalidate the button", !UIStyle_SetButtonRole(SettingsNavigationButtons[1], "nav-active"))
         pages := GetSettingsPageCatalog()
         for index, page in pages {
             switched := Settings_SwitchPage(index)
@@ -96,16 +115,42 @@ DesktopSmoke_Run() {
         TextTriggerInputMode := savedMode
         Bind_TextCommandInput := "^!t"
         DesktopSmoke_Assert("private TXT opener is registered in dispatch map", GetBoundLabelByToken("TextCommandInput") = "DoPrivateTextInput")
+        savedCaptureMode := OBSHideWindows
+        savedCapturePreview := UiPreviewMode
+        UiPreviewMode := 0
+        OBSHideWindows := "Off"
         captureState := ServiceUI_NewInputState("TXT", "Private test", 180, 60, "!audit", false, AutomationEpoch, 0, CurrentProfile, TickNow())
         captureState.ForcePrivacy := true
         ServiceUI_CreateInputGui(captureState)
-        DesktopSmoke_Assert("private TXT window requests privacy independently of global switch", CapturePrivateWindows.HasKey(captureState.GuiHwnd))
+        DesktopSmoke_Assert("global Off permits the private TXT GUI to open", DllCall("IsWindowVisible", "Ptr", captureState.GuiHwnd))
         actualPrivacy := CaptureWindowStates[captureState.GuiHwnd]
-        DesktopSmoke_Assert("private window stays hidden without confirmed OS exclusion", (IsObject(actualPrivacy) && actualPrivacy.Verified && actualPrivacy.Enabled) || !DllCall("IsWindowVisible", "Ptr", captureState.GuiHwnd))
+        DesktopSmoke_Assert("global Off overrides private-window capture request", CapturePrivateWindows.HasKey(captureState.GuiHwnd) && IsObject(actualPrivacy) && !actualPrivacy.Enabled)
         extended := DllCall("GetWindowLong", "Ptr", captureState.GuiHwnd, "Int", -20, "UInt")
         DesktopSmoke_Assert("private TXT window never activates and is click-through", (extended & 0x08000020) = 0x08000020)
+        GuiControl, 2:ChooseString, CFG_OBSHideWindows, On
+        Capture_ModeChanged()
+        DesktopSmoke_Assert("capture dropdown applies On to existing private GUI", OBSHideWindows = "On" && CaptureWindowStates[captureState.GuiHwnd].Enabled)
+        GuiControl, 2:ChooseString, CFG_OBSHideWindows, Off
+        Capture_ModeChanged()
+        DesktopSmoke_Assert("capture dropdown immediately removes exclusion from existing GUI", OBSHideWindows = "Off" && !CaptureWindowStates[captureState.GuiHwnd].Enabled)
+        if Capture_ReadAffinity(captureState.GuiHwnd, testAffinity, testAffinityError)
+            DesktopSmoke_Assert("Windows affinity is WDA_NONE after On to Off", testAffinity = 0)
+        else
+            DesktopSmokeReport .= "SKIP | native affinity read unavailable in this host: " . testAffinityError . "`r`n"
+        IniRead, persistedCaptureMode, %ConfigFile%, UI, OBSHideWindows, ERROR
+        DesktopSmoke_Assert("capture dropdown persists Off without a separate Save", persistedCaptureMode = "Off")
+        Capture_RefreshWindows()
+        GuiControlGet, captureStatusHwnd, 2:Hwnd, CaptureStatusText
+        DllCall("ValidateRect", "Ptr", captureStatusHwnd, "Ptr", 0)
+        Capture_RefreshWindows()
+        DesktopSmoke_Assert("stable capture timer leaves status label paint region untouched", !DllCall("GetUpdateRect", "Ptr", captureStatusHwnd, "Ptr", 0, "Int", false))
         Gui, ServiceInput:Destroy
         CapturePrivateWindows.Delete(captureState.GuiHwnd)
+        OBSHideWindows := savedCaptureMode
+        GuiControl, 2:ChooseString, CFG_OBSHideWindows, %savedCaptureMode%
+        Capture_RefreshWindows()
+        SaveUISettings()
+        UiPreviewMode := savedCapturePreview
         unknownSection := "DesktopCompatibility"
         CheckedIniWrite("keep-me", ConfigFile, unknownSection, "UnknownKey")
         expectedPrivateBind := Bind_TextCommandInput

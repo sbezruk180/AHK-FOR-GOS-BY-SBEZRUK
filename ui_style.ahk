@@ -110,7 +110,8 @@ UIStyle_Apply(guiName, hwnd) {
         ; reject this optional attribute while keeping their normal frame.
         borderColor := HexToBGR(edge)
         try DllCall("dwmapi\DwmSetWindowAttribute", "Ptr", hwnd, "UInt", 34, "UInt*", borderColor, "UInt", 4)
-        DllCall("RedrawWindow", "Ptr", hwnd, "Ptr", 0, "Ptr", 0, "UInt", 0x185)
+        DllCall("SetProp", "Ptr", hwnd, "Str", "AHK.UI.Styled", "Ptr", 1)
+        DllCall("RedrawWindow", "Ptr", hwnd, "Ptr", 0, "Ptr", 0, "UInt", 0x85)
     } finally {
         DetectHiddenWindows, %oldHidden%
     }
@@ -351,6 +352,8 @@ UIStyle_SetTextRole(hwnd, role := "text") {
 
 UIStyle_SetRole(hwnd, propertyName, role, roles) {
     if (!hwnd || !DllCall("IsWindow", "Ptr", hwnd) || !roles.HasKey(role))
+        return false
+    if (DllCall("GetProp", "Ptr", hwnd, "Str", propertyName, "Ptr") = roles[role])
         return false
     if !DllCall("SetProp", "Ptr", hwnd, "Str", propertyName, "Ptr", roles[role])
         return false

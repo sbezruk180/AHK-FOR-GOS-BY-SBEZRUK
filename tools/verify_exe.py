@@ -22,6 +22,7 @@ for path, expected in metadata['sources'].items():
  assert pe.resource('SOURCE_'+Path(path).name.upper())==(root/path).read_bytes(),path
 for path in (root/'laws').glob('*.txt'):
  assert pe.resource('LAW_'+path.stem.upper())==path.read_bytes(),path
+assert pe.resource('DEFAULT_PROFILE')==(root/'assets/defaults/profiles.default.ini').read_bytes(), 'Bundled default profile mismatch'
 code=pe.resource('>AUTOHOTKEY SCRIPT<').decode('utf-8')
 assert not re.search(r'(?mi)^\s*#include\s', code), 'Unresolved file include'
 if not args.test_u64:
