@@ -423,15 +423,15 @@ RunSelfTestV1() {
     root := AppHost_DataDir()
     mainPath := A_ScriptFullPath
     profilePath := FileExist(root . "\profiles_updated.ini") ? root . "\profiles_updated.ini" : root . "\profiles.ini"
-    paths := [mainPath, root . "\helper.ahk", root . "\UDF.ahk", root . "\common.ahk"]
+    paths := [mainPath, A_ScriptDir . "\helper.ahk", A_ScriptDir . "\UDF.ahk", A_ScriptDir . "\common.ahk"]
     mainText := SelfTest_ReadFile(mainPath)
     helperText := ""
-    udfText := SelfTest_ReadFile(root . "\UDF.ahk")
-    commonText := SelfTest_ReadFile(root . "\common.ahk")
+    udfText := SelfTest_ReadFile(A_ScriptDir . "\UDF.ahk")
+    commonText := SelfTest_ReadFile(A_ScriptDir . "\common.ahk")
 
     report := "AHK FOR GOS BY SBEZRUK v1.1 regression self-test`r`n"
     report .= "Runtime: AutoHotkey " . A_AhkVersion . " | ANSI=" . (!A_IsUnicode) . " | PtrSize=" . A_PtrSize . "`r`n"
-    report .= "Project: " . root . "`r`nLIVE GAME: NOT RUN`r`n`r`n"
+    report .= "Project: " . A_ScriptDir . "`r`nData: " . root . "`r`nLIVE GAME: NOT RUN`r`n`r`n"
 
     Loop % paths.Length()
     {
