@@ -28,6 +28,21 @@ IncidentCard_RunRegression(scratch := "") {
         AuditAssert("Incident: dedicated record writes to disk", IncidentCard_SaveRecord(card, root))
         read := IncidentCard_LoadRecord(card.RecordID, root)
         AuditAssert("Incident: actual file reads all fields", IsObject(read) && read.Notes = card.Notes && read.Laws[1].Key = "UK|5.1")
+        lockedStage := root . "\" . card.RecordID . ".case.tmp-" . DllCall("GetCurrentProcessId")
+        lockedHandle := DllCall("CreateFileW", "WStr", lockedStage, "UInt", 0xC0000000, "UInt", 0, "Ptr", 0, "UInt", 2, "UInt", 0x80, "Ptr", 0, "Ptr")
+        if (lockedHandle && lockedHandle != -1 && lockedHandle != 0xFFFFFFFF) {
+            try {
+                AuditAssert("Incident: locked staging cleanup releases writer and preserves saved data", !IncidentCard_SaveRecord(card, root)
+                    && !IncidentCardWriteBusy && IncidentCard_LoadRecord(card.RecordID, root).Notes = read.Notes)
+            } finally {
+                DllCall("CloseHandle", "Ptr", lockedHandle)
+                if FileExist(lockedStage)
+                    FileDelete, %lockedStage%
+            }
+            AuditAssert("Incident: write recovers after a transient staging lock", IncidentCard_SaveRecord(card, root))
+            read := IncidentCard_LoadRecord(card.RecordID, root)
+        } else
+            AuditAssert("Incident: owned staging lock fixture created", false)
         prior := IncidentCard_EncodeRecord(read), card.Notes := ""
         Loop, 16001
             card.Notes .= "А"
@@ -62,6 +77,8 @@ IncidentCard_RunRegression(scratch := "") {
         if IsObject(file)
             file.Close()
         AuditAssert("Incident: actual readable UTF8 export preserves notes", export != "" && InStr(output, card.Notes) && InStr(output, "Статья 5.1") && InStr(output, "UTC"))
+        secondExport := IncidentCard_Export(card, root)
+        AuditAssert("Incident: rapid exports never overwrite an earlier export", export != secondExport && FileExist(export) && FileExist(secondExport))
         other := IncidentCard_CreateRecord(IncidentCard_NormalizeTarget("8", "Другой_Игрок", 0, "Основной"))
         IncidentCard_SaveRecord(other, root)
         all := IncidentCard_LoadEntries(root)

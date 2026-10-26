@@ -7634,7 +7634,7 @@
       "line": 8,
       "end_line": 12,
       "kind": "application",
-      "subsystem": "command_palette",
+      "subsystem": "палитра команд и локальный поиск действий",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -7646,7 +7646,7 @@
         "CommandPalette_Find"
       ],
       "coverage": {},
-      "description": "command_palette: Нормализовать ; код: StringLower, text, text / text := StrReplace(text, \"ё\", \"е\")"
+      "description": "палитра команд и локальный поиск действий: Нормализовать ; код: StringLower, text, text / text := StrReplace(text, \"ё\", \"е\")"
     },
     {
       "name": "CommandPalette_Synonyms",
@@ -7654,7 +7654,7 @@
       "line": 14,
       "end_line": 30,
       "kind": "application",
-      "subsystem": "command_palette",
+      "subsystem": "палитра команд и локальный поиск действий",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -7665,7 +7665,7 @@
         "CommandPalette_Catalog"
       ],
       "coverage": {},
-      "description": "command_palette: Synonyms; код: , Search: \"обыск обыскать досмотр досмотреть\", Rights: \"права зачитать миранда\" / , GuideRights: \"пр"
+      "description": "палитра команд и локальный поиск действий: Synonyms; код: , Search: \"обыск обыскать досмотр досмотреть\", Rights: \"права зачитать миранда\" / , GuideRights: \"пр"
     },
     {
       "name": "CommandPalette_Catalog",
@@ -7673,7 +7673,7 @@
       "line": 32,
       "end_line": 61,
       "kind": "application",
-      "subsystem": "command_palette",
+      "subsystem": "палитра команд и локальный поиск действий",
       "purpose": null,
       "commands": [
         "hotkey"
@@ -7692,7 +7692,7 @@
         "CommandPalette_RunRegression"
       ],
       "coverage": {},
-      "description": "command_palette: Catalog; операции: hotkey; код: rows := [] / for _, meta in GetBindCatalog() {"
+      "description": "палитра команд и локальный поиск действий: Catalog; операции: hotkey; код: rows := [] / for _, meta in GetBindCatalog() {"
     },
     {
       "name": "CommandPalette_ActionKey",
@@ -7700,7 +7700,7 @@
       "line": 63,
       "end_line": 73,
       "kind": "application",
-      "subsystem": "command_palette",
+      "subsystem": "палитра команд и локальный поиск действий",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -7711,7 +7711,7 @@
         "CommandPalette_Find"
       ],
       "coverage": {},
-      "description": "command_palette: ActionKey; код: if !IsObject(action) / return \"\""
+      "description": "палитра команд и локальный поиск действий: ActionKey; код: if !IsObject(action) / return \"\""
     },
     {
       "name": "CommandPalette_NearWord",
@@ -7719,7 +7719,7 @@
       "line": 75,
       "end_line": 96,
       "kind": "application",
-      "subsystem": "command_palette",
+      "subsystem": "палитра команд и локальный поиск действий",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -7731,7 +7731,7 @@
         "CommandPalette_RunRegression"
       ],
       "coverage": {},
-      "description": "command_palette: NearWord; код: if (a = b) / return true"
+      "description": "палитра команд и локальный поиск действий: NearWord; код: if (a = b) / return true"
     },
     {
       "name": "CommandPalette_Score",
@@ -7739,7 +7739,7 @@
       "line": 98,
       "end_line": 117,
       "kind": "application",
-      "subsystem": "command_palette",
+      "subsystem": "палитра команд и локальный поиск действий",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -7752,7 +7752,7 @@
         "CommandPalette_Find"
       ],
       "coverage": {},
-      "description": "command_palette: Score; код: if (query = \"\") / return 1"
+      "description": "палитра команд и локальный поиск действий: Score; код: if (query = \"\") / return 1"
     },
     {
       "name": "CommandPalette_Find",
@@ -7760,7 +7760,7 @@
       "line": 119,
       "end_line": 149,
       "kind": "application",
-      "subsystem": "command_palette",
+      "subsystem": "палитра команд и локальный поиск действий",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -7780,7 +7780,7 @@
         "CommandPalette_RunRegression"
       ],
       "coverage": {},
-      "description": "command_palette: Найти ; код: exact := PrivateText_Resolve(query), exactKey := CommandPalette_ActionKey(exact) / normalized := Com"
+      "description": "палитра команд и локальный поиск действий: Найти ; код: exact := PrivateText_Resolve(query), exactKey := CommandPalette_ActionKey(exact) / normalized := Com"
     },
     {
       "name": "CommandPalette_Describe",
@@ -7788,7 +7788,7 @@
       "line": 151,
       "end_line": 165,
       "kind": "application",
-      "subsystem": "command_palette",
+      "subsystem": "палитра команд и локальный поиск действий",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -7804,7 +7804,7 @@
         "CommandPalette_RunRegression"
       ],
       "coverage": {},
-      "description": "command_palette: Describe; код: if !IsObject(row) / return \"Совпадений нет. Попробуйте: зачитать права, надеть наручники, дом, карто"
+      "description": "палитра команд и локальный поиск действий: Describe; код: if !IsObject(row) / return \"Совпадений нет. Попробуйте: зачитать права, надеть наручники, дом, карто"
     },
     {
       "name": "CommandPalette_Update",
@@ -7812,7 +7812,7 @@
       "line": 167,
       "end_line": 181,
       "kind": "application",
-      "subsystem": "command_palette",
+      "subsystem": "палитра команд и локальный поиск действий",
       "purpose": null,
       "commands": [
         "GuiControl"
@@ -7829,7 +7829,7 @@
         "CommandPalette_RunDesktopChecks"
       ],
       "coverage": {},
-      "description": "command_palette: Обновить ; операции: GuiControl; код: if (CommandPaletteLastQuery != state.Value || !IsObject(CommandPaletteRows)) { / CommandPaletteRows "
+      "description": "палитра команд и локальный поиск действий: Обновить ; операции: GuiControl; код: if (CommandPaletteLastQuery != state.Value || !IsObject(CommandPaletteRows)) { / CommandPaletteRows "
     },
     {
       "name": "CommandPalette_KeyDown",
@@ -7837,7 +7837,7 @@
       "line": 183,
       "end_line": 199,
       "kind": "application",
-      "subsystem": "command_palette",
+      "subsystem": "палитра команд и локальный поиск действий",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -7848,7 +7848,7 @@
       ],
       "callers": [],
       "coverage": {},
-      "description": "command_palette: KeyDown; код: if (vk != 0x26 && vk != 0x28 && vk != 9) / return false"
+      "description": "палитра команд и локальный поиск действий: KeyDown; код: if (vk != 0x26 && vk != 0x28 && vk != 9) / return false"
     },
     {
       "name": "CommandPalette_Char",
@@ -7856,7 +7856,7 @@
       "line": 201,
       "end_line": 210,
       "kind": "application",
-      "subsystem": "command_palette",
+      "subsystem": "палитра команд и локальный поиск действий",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -7867,7 +7867,7 @@
       ],
       "callers": [],
       "coverage": {},
-      "description": "command_palette: Char; код: if (chars != \" \" || SubStr(state.Value, 1, 1) != \"!\") / return"
+      "description": "палитра команд и локальный поиск действий: Char; код: if (chars != \" \" || SubStr(state.Value, 1, 1) != \"!\") / return"
     },
     {
       "name": "CommandPalette_AllowDesktop",
@@ -7875,7 +7875,7 @@
       "line": 212,
       "end_line": 216,
       "kind": "application",
-      "subsystem": "command_palette",
+      "subsystem": "палитра команд и локальный поиск действий",
       "purpose": null,
       "commands": [],
       "winapi": [
@@ -7890,7 +7890,7 @@
         "CommandPalette_Open"
       ],
       "coverage": {},
-      "description": "command_palette: AllowDesktop; код: hwnd := DllCall(\"GetForegroundWindow\", \"Ptr\") / DllCall(\"GetWindowThreadProcessId\", \"Ptr\", hwnd, \"UI"
+      "description": "палитра команд и локальный поиск действий: AllowDesktop; код: hwnd := DllCall(\"GetForegroundWindow\", \"Ptr\") / DllCall(\"GetWindowThreadProcessId\", \"Ptr\", hwnd, \"UI"
     },
     {
       "name": "CommandPalette_Open",
@@ -7898,7 +7898,7 @@
       "line": 218,
       "end_line": 279,
       "kind": "application",
-      "subsystem": "command_palette",
+      "subsystem": "палитра команд и локальный поиск действий",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -7922,7 +7922,7 @@
         "Tools_OpenPalette"
       ],
       "coverage": {},
-      "description": "command_palette: Открыть ; код: if (PrivateTextInputBusy || PhysicalInputBusy || IsObject(IDCaptureState) || ServiceUI_IsInputActive"
+      "description": "палитра команд и локальный поиск действий: Открыть ; код: if (PrivateTextInputBusy || PhysicalInputBusy || IsObject(IDCaptureState) || ServiceUI_IsInputActive"
     },
     {
       "name": "Tools_OpenPalette",
@@ -7930,7 +7930,7 @@
       "line": 281,
       "end_line": 283,
       "kind": "application",
-      "subsystem": "command_palette",
+      "subsystem": "палитра команд и локальный поиск действий",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -7941,7 +7941,7 @@
       ],
       "callers": [],
       "coverage": {},
-      "description": "command_palette: Открыть Palette; код: return CommandPalette_Open()"
+      "description": "палитра команд и локальный поиск действий: Открыть Palette; код: return CommandPalette_Open()"
     },
     {
       "name": "Tools_OpenIncident",
@@ -7949,7 +7949,7 @@
       "line": 285,
       "end_line": 287,
       "kind": "application",
-      "subsystem": "command_palette",
+      "subsystem": "палитра команд и локальный поиск действий",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -7960,7 +7960,7 @@
       ],
       "callers": [],
       "coverage": {},
-      "description": "command_palette: Открыть Incident; код: return IncidentCard_Open()"
+      "description": "палитра команд и локальный поиск действий: Открыть Incident; код: return IncidentCard_Open()"
     },
     {
       "name": "Tools_OpenTrace",
@@ -7968,7 +7968,7 @@
       "line": 289,
       "end_line": 291,
       "kind": "application",
-      "subsystem": "command_palette",
+      "subsystem": "палитра команд и локальный поиск действий",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -7979,7 +7979,7 @@
       ],
       "callers": [],
       "coverage": {},
-      "description": "command_palette: Открыть Trace; код: return ActionTrace_Open()"
+      "description": "палитра команд и локальный поиск действий: Открыть Trace; код: return ActionTrace_Open()"
     },
     {
       "name": "Tools_OpenBuilder",
@@ -7987,7 +7987,7 @@
       "line": 293,
       "end_line": 295,
       "kind": "application",
-      "subsystem": "command_palette",
+      "subsystem": "палитра команд и локальный поиск действий",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -7998,7 +7998,7 @@
       ],
       "callers": [],
       "coverage": {},
-      "description": "command_palette: Открыть Builder; код: OpenCustomFunctionBuilder()"
+      "description": "палитра команд и локальный поиск действий: Открыть Builder; код: OpenCustomFunctionBuilder()"
     },
     {
       "name": "Tools_OpenTraining",
@@ -8006,7 +8006,7 @@
       "line": 297,
       "end_line": 299,
       "kind": "application",
-      "subsystem": "command_palette",
+      "subsystem": "палитра команд и локальный поиск действий",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -8017,7 +8017,7 @@
       ],
       "callers": [],
       "coverage": {},
-      "description": "command_palette: Открыть Training; код: return Training_Open()"
+      "description": "палитра команд и локальный поиск действий: Открыть Training; код: return Training_Open()"
     },
     {
       "name": "Tools_OpenGPS",
@@ -8025,7 +8025,7 @@
       "line": 301,
       "end_line": 303,
       "kind": "application",
-      "subsystem": "command_palette",
+      "subsystem": "палитра команд и локальный поиск действий",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -8036,7 +8036,7 @@
       ],
       "callers": [],
       "coverage": {},
-      "description": "command_palette: Открыть GPS; код: return GPS_OpenCalibration()"
+      "description": "палитра команд и локальный поиск действий: Открыть GPS; код: return GPS_OpenCalibration()"
     },
     {
       "name": "GPS_Defaults",
@@ -8044,7 +8044,7 @@
       "line": 14,
       "end_line": 17,
       "kind": "application",
-      "subsystem": "gps_calibration",
+      "subsystem": "настройки GPS, планы ввода и пробный запуск",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -8061,7 +8061,7 @@
         "Training_RunDesktopChecks"
       ],
       "coverage": {},
-      "description": "gps_calibration: Defaults; код: return {HomeDown: 15, OrganizationDown: 16, OpenMs: 500, FieldMs: 200 / , ConfirmMs: 50, KeyDelay: 1"
+      "description": "настройки GPS, планы ввода и пробный запуск: Defaults; код: return {HomeDown: 15, OrganizationDown: 16, OpenMs: 500, FieldMs: 200 / , ConfirmMs: 50, KeyDelay: 1"
     },
     {
       "name": "GPS_FieldCatalog",
@@ -8069,7 +8069,7 @@
       "line": 19,
       "end_line": 28,
       "kind": "application",
-      "subsystem": "gps_calibration",
+      "subsystem": "настройки GPS, планы ввода и пробный запуск",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -8086,7 +8086,7 @@
         "GPS_CalibrationDefaults"
       ],
       "coverage": {},
-      "description": "gps_calibration: FieldCatalog; код: , {Key: \"OrganizationDown\", Caption: \"Стрелок вниз: организация\", Minimum: 0, Maximum: 80} / , {Key:"
+      "description": "настройки GPS, планы ввода и пробный запуск: FieldCatalog; код: , {Key: \"OrganizationDown\", Caption: \"Стрелок вниз: организация\", Minimum: 0, Maximum: 80} / , {Key:"
     },
     {
       "name": "GPS_ValidateSettings",
@@ -8094,7 +8094,7 @@
       "line": 30,
       "end_line": 45,
       "kind": "application",
-      "subsystem": "gps_calibration",
+      "subsystem": "настройки GPS, планы ввода и пробный запуск",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -8108,7 +8108,7 @@
         "GPS_RunRegression"
       ],
       "coverage": {},
-      "description": "gps_calibration: Проверить настройки; код: errorText := \"\" / if !IsObject(settings) {"
+      "description": "настройки GPS, планы ввода и пробный запуск: Проверить настройки; код: errorText := \"\" / if !IsObject(settings) {"
     },
     {
       "name": "GPS_GetSettings",
@@ -8116,7 +8116,7 @@
       "line": 47,
       "end_line": 59,
       "kind": "application",
-      "subsystem": "gps_calibration",
+      "subsystem": "настройки GPS, планы ввода и пробный запуск",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -8138,7 +8138,7 @@
         "GPS_RunRegression"
       ],
       "coverage": {},
-      "description": "gps_calibration: Получить настройки; код: source := IsObject(override) ? override : GPSSettings / defaults := GPS_Defaults(), settings := {}"
+      "description": "настройки GPS, планы ввода и пробный запуск: Получить настройки; код: source := IsObject(override) ? override : GPSSettings / defaults := GPS_Defaults(), settings := {}"
     },
     {
       "name": "GPS_LoadProfile",
@@ -8146,7 +8146,7 @@
       "line": 61,
       "end_line": 71,
       "kind": "application",
-      "subsystem": "gps_calibration",
+      "subsystem": "настройки GPS, планы ввода и пробный запуск",
       "purpose": null,
       "commands": [
         "IniRead"
@@ -8164,7 +8164,7 @@
         "LoadProfile"
       ],
       "coverage": {},
-      "description": "gps_calibration: Загрузить профиль; операции: IniRead; код: settings := GPS_Defaults() / for _, field in GPS_FieldCatalog() {"
+      "description": "настройки GPS, планы ввода и пробный запуск: Загрузить профиль; операции: IniRead; код: settings := GPS_Defaults() / for _, field in GPS_FieldCatalog() {"
     },
     {
       "name": "GPS_WriteProfile",
@@ -8172,7 +8172,7 @@
       "line": 73,
       "end_line": 78,
       "kind": "application",
-      "subsystem": "gps_calibration",
+      "subsystem": "настройки GPS, планы ввода и пробный запуск",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -8189,7 +8189,7 @@
         "SaveProfile"
       ],
       "coverage": {},
-      "description": "gps_calibration: Записать профиль; код: settings := GPS_GetSettings(settings) / for _, field in GPS_FieldCatalog()"
+      "description": "настройки GPS, планы ввода и пробный запуск: Записать профиль; код: settings := GPS_GetSettings(settings) / for _, field in GPS_FieldCatalog()"
     },
     {
       "name": "GPS_ResolveDownCount",
@@ -8197,7 +8197,7 @@
       "line": 80,
       "end_line": 89,
       "kind": "application",
-      "subsystem": "gps_calibration",
+      "subsystem": "настройки GPS, планы ввода и пробный запуск",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -8211,7 +8211,7 @@
         "GPS_RunRegression"
       ],
       "coverage": {},
-      "description": "gps_calibration: Определить Down Count; код: settings := GPS_GetSettings(settings) / if (defaultDownCount = 15)"
+      "description": "настройки GPS, планы ввода и пробный запуск: Определить Down Count; код: settings := GPS_GetSettings(settings) / if (defaultDownCount = 15)"
     },
     {
       "name": "GPS_BuildPlan",
@@ -8219,7 +8219,7 @@
       "line": 91,
       "end_line": 105,
       "kind": "application",
-      "subsystem": "gps_calibration",
+      "subsystem": "настройки GPS, планы ввода и пробный запуск",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -8234,7 +8234,7 @@
         "GPS_RunRegression"
       ],
       "coverage": {},
-      "description": "gps_calibration: Сформировать Plan; код: if (!RegExMatch(downCount . \"\", \"^[0-9]+$\") || downCount + 0 > 80 / || !RegExMatch(gpsNumber . \"\", \""
+      "description": "настройки GPS, планы ввода и пробный запуск: Сформировать Plan; код: if (!RegExMatch(downCount . \"\", \"^[0-9]+$\") || downCount + 0 > 80 / || !RegExMatch(gpsNumber . \"\", \""
     },
     {
       "name": "GPS_PreviewText",
@@ -8242,7 +8242,7 @@
       "line": 107,
       "end_line": 122,
       "kind": "application",
-      "subsystem": "gps_calibration",
+      "subsystem": "настройки GPS, планы ввода и пробный запуск",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -8258,7 +8258,7 @@
         "GPS_RunRegression"
       ],
       "coverage": {},
-      "description": "gps_calibration: PreviewText; код: settings := GPS_GetSettings(settings) / down := category = \"organization\" ? settings.OrganizationDow"
+      "description": "настройки GPS, планы ввода и пробный запуск: PreviewText; код: settings := GPS_GetSettings(settings) / down := category = \"organization\" ? settings.OrganizationDow"
     },
     {
       "name": "GPS_Run",
@@ -8266,7 +8266,7 @@
       "line": 124,
       "end_line": 195,
       "kind": "application",
-      "subsystem": "gps_calibration",
+      "subsystem": "настройки GPS, планы ввода и пробный запуск",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -8300,7 +8300,7 @@
         "RunGpsDialogAction"
       ],
       "coverage": {},
-      "description": "gps_calibration: Выполнить ; код: if (!inputEpoch) / inputEpoch := AutomationEpoch"
+      "description": "настройки GPS, планы ввода и пробный запуск: Выполнить ; код: if (!inputEpoch) / inputEpoch := AutomationEpoch"
     },
     {
       "name": "GPS_OpenCalibration",
@@ -8308,7 +8308,7 @@
       "line": 197,
       "end_line": 245,
       "kind": "application",
-      "subsystem": "gps_calibration",
+      "subsystem": "настройки GPS, планы ввода и пробный запуск",
       "purpose": null,
       "commands": [
         "Gui"
@@ -8334,7 +8334,7 @@
         "GPS_RunDesktopChecks"
       ],
       "coverage": {},
-      "description": "gps_calibration: Открыть Calibration; операции: Gui; код: GPS_CancelTrial() / if (GPSCalibrationProfile = CurrentProfile && GPSCalibrationHwnd && DllCall(\"IsW"
+      "description": "настройки GPS, планы ввода и пробный запуск: Открыть Calibration; операции: Gui; код: GPS_CancelTrial() / if (GPSCalibrationProfile = CurrentProfile && GPSCalibrationHwnd && DllCall(\"IsW"
     },
     {
       "name": "GPS_CalibrationRead",
@@ -8342,7 +8342,7 @@
       "line": 247,
       "end_line": 272,
       "kind": "application",
-      "subsystem": "gps_calibration",
+      "subsystem": "настройки GPS, планы ввода и пробный запуск",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -8360,7 +8360,7 @@
         "GPS_CalibrationTrialStart"
       ],
       "coverage": {},
-      "description": "gps_calibration: CalibrationRead; код: if (GPSCalibrationProfile != CurrentProfile) { / GPS_CalibrationSetStatus(\"Профиль сменился. Закройт"
+      "description": "настройки GPS, планы ввода и пробный запуск: CalibrationRead; код: if (GPSCalibrationProfile != CurrentProfile) { / GPS_CalibrationSetStatus(\"Профиль сменился. Закройт"
     },
     {
       "name": "GPS_CalibrationSetStatus",
@@ -8368,7 +8368,7 @@
       "line": 274,
       "end_line": 279,
       "kind": "application",
-      "subsystem": "gps_calibration",
+      "subsystem": "настройки GPS, планы ввода и пробный запуск",
       "purpose": null,
       "commands": [],
       "winapi": [
@@ -8387,7 +8387,7 @@
         "GPS_CalibrationTrialFire"
       ],
       "coverage": {},
-      "description": "gps_calibration: CalibrationSetStatus; код: if (GPSCalibrationHwnd && DllCall(\"IsWindow\", \"Ptr\", GPSCalibrationHwnd)) / UIStyle_SetTextIfChanged"
+      "description": "настройки GPS, планы ввода и пробный запуск: CalibrationSetStatus; код: if (GPSCalibrationHwnd && DllCall(\"IsWindow\", \"Ptr\", GPSCalibrationHwnd)) / UIStyle_SetTextIfChanged"
     },
     {
       "name": "GPS_CalibrationPreview",
@@ -8395,7 +8395,7 @@
       "line": 281,
       "end_line": 287,
       "kind": "application",
-      "subsystem": "gps_calibration",
+      "subsystem": "настройки GPS, планы ввода и пробный запуск",
       "purpose": null,
       "commands": [
         "GuiControl"
@@ -8413,7 +8413,7 @@
         "GPS_RunDesktopChecks"
       ],
       "coverage": {},
-      "description": "gps_calibration: CalibrationPreview; операции: GuiControl; код: if !GPS_CalibrationRead(settings, category, number) / return false"
+      "description": "настройки GPS, планы ввода и пробный запуск: CalibrationPreview; операции: GuiControl; код: if !GPS_CalibrationRead(settings, category, number) / return false"
     },
     {
       "name": "GPS_CalibrationSave",
@@ -8421,7 +8421,7 @@
       "line": 289,
       "end_line": 306,
       "kind": "application",
-      "subsystem": "gps_calibration",
+      "subsystem": "настройки GPS, планы ввода и пробный запуск",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -8436,7 +8436,7 @@
       ],
       "callers": [],
       "coverage": {},
-      "description": "gps_calibration: CalibrationSave; код: if !GPS_CalibrationRead(settings, category, number) / return false"
+      "description": "настройки GPS, планы ввода и пробный запуск: CalibrationSave; код: if !GPS_CalibrationRead(settings, category, number) / return false"
     },
     {
       "name": "GPS_CalibrationDefaults",
@@ -8444,7 +8444,7 @@
       "line": 308,
       "end_line": 312,
       "kind": "application",
-      "subsystem": "gps_calibration",
+      "subsystem": "настройки GPS, планы ввода и пробный запуск",
       "purpose": null,
       "commands": [
         "GuiControl"
@@ -8461,7 +8461,7 @@
         "GPS_RunDesktopChecks"
       ],
       "coverage": {},
-      "description": "gps_calibration: CalibrationDefaults; операции: GuiControl; код: for _, field in GPS_FieldCatalog() / GuiControl, GpsCalibration:, % \"GPSCal_\" . field.Key, % GPS_Def"
+      "description": "настройки GPS, планы ввода и пробный запуск: CalibrationDefaults; операции: GuiControl; код: for _, field in GPS_FieldCatalog() / GuiControl, GpsCalibration:, % \"GPSCal_\" . field.Key, % GPS_Def"
     },
     {
       "name": "GPS_CalibrationTrialStart",
@@ -8469,7 +8469,7 @@
       "line": 314,
       "end_line": 328,
       "kind": "application",
-      "subsystem": "gps_calibration",
+      "subsystem": "настройки GPS, планы ввода и пробный запуск",
       "purpose": null,
       "commands": [
         "Gui",
@@ -8487,7 +8487,7 @@
       ],
       "callers": [],
       "coverage": {},
-      "description": "gps_calibration: CalibrationTrialStart; операции: Gui, SetTimer; код: if !GPS_CalibrationRead(settings, category, number) / return false"
+      "description": "настройки GPS, планы ввода и пробный запуск: CalibrationTrialStart; операции: Gui, SetTimer; код: if !GPS_CalibrationRead(settings, category, number) / return false"
     },
     {
       "name": "GPS_CalibrationTrialFire",
@@ -8495,7 +8495,7 @@
       "line": 330,
       "end_line": 352,
       "kind": "application",
-      "subsystem": "gps_calibration",
+      "subsystem": "настройки GPS, планы ввода и пробный запуск",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -8511,7 +8511,7 @@
         "GPS_RunRegression"
       ],
       "coverage": {},
-      "description": "gps_calibration: CalibrationTrialFire; код: if (IsObject(expectedTrial) && expectedTrial != GPSCalibrationTrial) / return false"
+      "description": "настройки GPS, планы ввода и пробный запуск: CalibrationTrialFire; код: if (IsObject(expectedTrial) && expectedTrial != GPSCalibrationTrial) / return false"
     },
     {
       "name": "GPS_CancelTrial",
@@ -8519,7 +8519,7 @@
       "line": 354,
       "end_line": 360,
       "kind": "application",
-      "subsystem": "gps_calibration",
+      "subsystem": "настройки GPS, планы ввода и пробный запуск",
       "purpose": null,
       "commands": [
         "SetTimer"
@@ -8536,7 +8536,7 @@
         "CancelAllAutomation"
       ],
       "coverage": {},
-      "description": "gps_calibration: Отменить Trial; операции: SetTimer; код: GPSCalibrationTrial := \"\" / if IsObject(GPSCalibrationTimer)"
+      "description": "настройки GPS, планы ввода и пробный запуск: Отменить Trial; операции: SetTimer; код: GPSCalibrationTrial := \"\" / if IsObject(GPSCalibrationTimer)"
     },
     {
       "name": "GPS_CalibrationClose",
@@ -8544,7 +8544,7 @@
       "line": 362,
       "end_line": 367,
       "kind": "application",
-      "subsystem": "gps_calibration",
+      "subsystem": "настройки GPS, планы ввода и пробный запуск",
       "purpose": null,
       "commands": [
         "Gui"
@@ -8561,7 +8561,7 @@
         "GPS_RunDesktopChecks"
       ],
       "coverage": {},
-      "description": "gps_calibration: CalibrationClose; операции: Gui; код: GPS_CancelTrial() / Gui, GpsCalibration:Destroy"
+      "description": "настройки GPS, планы ввода и пробный запуск: CalibrationClose; операции: Gui; код: GPS_CancelTrial() / Gui, GpsCalibration:Destroy"
     },
     {
       "name": "GpsCalibrationGuiClose",
@@ -8569,7 +8569,7 @@
       "line": 369,
       "end_line": 371,
       "kind": "application",
-      "subsystem": "gps_calibration",
+      "subsystem": "настройки GPS, планы ввода и пробный запуск",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -8580,7 +8580,7 @@
       ],
       "callers": [],
       "coverage": {},
-      "description": "gps_calibration: GpsCalibrationGuiClose; код: GPS_CalibrationClose()"
+      "description": "настройки GPS, планы ввода и пробный запуск: GpsCalibrationGuiClose; код: GPS_CalibrationClose()"
     },
     {
       "name": "GpsCalibrationGuiEscape",
@@ -8588,7 +8588,7 @@
       "line": 373,
       "end_line": 375,
       "kind": "application",
-      "subsystem": "gps_calibration",
+      "subsystem": "настройки GPS, планы ввода и пробный запуск",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -8599,21 +8599,22 @@
       ],
       "callers": [],
       "coverage": {},
-      "description": "gps_calibration: GpsCalibrationGuiEscape; код: GPS_CalibrationClose()"
+      "description": "настройки GPS, планы ввода и пробный запуск: GpsCalibrationGuiEscape; код: GPS_CalibrationClose()"
     },
     {
       "name": "ActionTrace_Begin",
       "file": "app/action_trace.ahk",
       "line": 17,
-      "end_line": 38,
+      "end_line": 46,
       "kind": "application",
-      "subsystem": "action_trace",
+      "subsystem": "результаты шагов, причины остановки и безопасный повтор",
       "purpose": null,
       "commands": [],
       "winapi": [],
       "first_statement": "if !IsObject(ActionTraceRecords) / ActionTraceRecords := {}",
-      "sha256": "0e7650a2c7b68d20d9bcc84f643cb17cb14ddaa06e59fb67ee70e72761807f7e",
+      "sha256": "67203a99e4bff91e1873037ed3559c3c674a046ccc36a705fc028a96f971bc93",
       "calls": [
+        "Training_IsActive",
         "TickNow",
         "ActionTrace_Changed"
       ],
@@ -8628,15 +8629,15 @@
         "CustomFunction_StartSteps"
       ],
       "coverage": {},
-      "description": "action_trace: Begin; код: if !IsObject(ActionTraceRecords) / ActionTraceRecords := {}"
+      "description": "результаты шагов, причины остановки и безопасный повтор: Begin; код: if !IsObject(ActionTraceRecords) / ActionTraceRecords := {}"
     },
     {
       "name": "ActionTrace_Get",
       "file": "app/action_trace.ahk",
-      "line": 40,
-      "end_line": 43,
+      "line": 48,
+      "end_line": 51,
       "kind": "application",
-      "subsystem": "action_trace",
+      "subsystem": "результаты шагов, причины остановки и безопасный повтор",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -8655,18 +8656,19 @@
         "ActionTrace_RetryStep",
         "ActionTrace_Refresh",
         "ActionTrace_RenderDetail",
-        "ActionTrace_RunRegression"
+        "ActionTrace_RunRegression",
+        "Training_RunDesktopChecks"
       ],
       "coverage": {},
-      "description": "action_trace: Получить ; код: return IsObject(ActionTraceRecords) && ActionTraceRecords.HasKey(id) ? ActionTraceRecords[id] : \"\""
+      "description": "результаты шагов, причины остановки и безопасный повтор: Получить ; код: return IsObject(ActionTraceRecords) && ActionTraceRecords.HasKey(id) ? ActionTraceRecords[id] : \"\""
     },
     {
       "name": "ActionTrace_Add",
       "file": "app/action_trace.ahk",
-      "line": 45,
-      "end_line": 58,
+      "line": 53,
+      "end_line": 66,
       "kind": "application",
-      "subsystem": "action_trace",
+      "subsystem": "результаты шагов, причины остановки и безопасный повтор",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -8688,15 +8690,15 @@
         "CustomFunctionRunner_Process"
       ],
       "coverage": {},
-      "description": "action_trace: Добавить ; код: record := ActionTrace_Get(id) / if !IsObject(record)"
+      "description": "результаты шагов, причины остановки и безопасный повтор: Добавить ; код: record := ActionTrace_Get(id) / if !IsObject(record)"
     },
     {
       "name": "ActionTrace_Update",
       "file": "app/action_trace.ahk",
-      "line": 60,
-      "end_line": 77,
+      "line": 68,
+      "end_line": 85,
       "kind": "application",
-      "subsystem": "action_trace",
+      "subsystem": "результаты шагов, причины остановки и безопасный повтор",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -8723,15 +8725,15 @@
         "CustomFunctionRunner_Process"
       ],
       "coverage": {},
-      "description": "action_trace: Обновить ; код: record := ActionTrace_Get(id) / if (!IsObject(record) || index < 1 || index > record.Steps.Length())"
+      "description": "результаты шагов, причины остановки и безопасный повтор: Обновить ; код: record := ActionTrace_Get(id) / if (!IsObject(record) || index < 1 || index > record.Steps.Length())"
     },
     {
       "name": "ActionTrace_Rejected",
       "file": "app/action_trace.ahk",
-      "line": 79,
-      "end_line": 87,
+      "line": 87,
+      "end_line": 95,
       "kind": "application",
-      "subsystem": "action_trace",
+      "subsystem": "результаты шагов, причины остановки и безопасный повтор",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -8749,15 +8751,15 @@
         "CanRunAction"
       ],
       "coverage": {},
-      "description": "action_trace: Rejected; код: id := ActionTrace_Begin(source, 1) / step := ActionTrace_Add(id, \"CHECK\", \"Проверки перед действием\""
+      "description": "результаты шагов, причины остановки и безопасный повтор: Rejected; код: id := ActionTrace_Begin(source, 1) / step := ActionTrace_Add(id, \"CHECK\", \"Проверки перед действием\""
     },
     {
       "name": "ActionTrace_QueueTransportResult",
       "file": "app/action_trace.ahk",
-      "line": 89,
-      "end_line": 95,
+      "line": 97,
+      "end_line": 103,
       "kind": "application",
-      "subsystem": "action_trace",
+      "subsystem": "результаты шагов, причины остановки и безопасный повтор",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -8772,15 +8774,15 @@
         "ChatQueue_Tick"
       ],
       "coverage": {},
-      "description": "action_trace: QueueTransportResult; код: if (!IsObject(item) || result != 1) / return"
+      "description": "результаты шагов, причины остановки и безопасный повтор: QueueTransportResult; код: if (!IsObject(item) || result != 1) / return"
     },
     {
       "name": "ActionTrace_IsStatus",
       "file": "app/action_trace.ahk",
-      "line": 97,
-      "end_line": 100,
+      "line": 105,
+      "end_line": 108,
       "kind": "application",
-      "subsystem": "action_trace",
+      "subsystem": "результаты шагов, причины остановки и безопасный повтор",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -8792,15 +8794,15 @@
         "ActionTrace_Finish"
       ],
       "coverage": {},
-      "description": "action_trace: Проверить состояние; код: return status = \"queued\" || status = \"running\" || status = \"sent\" || status = \"done\" / || status = \""
+      "description": "результаты шагов, причины остановки и безопасный повтор: Проверить состояние; код: return status = \"queued\" || status = \"running\" || status = \"sent\" || status = \"done\" / || status = \""
     },
     {
       "name": "ActionTrace_Finish",
       "file": "app/action_trace.ahk",
-      "line": 102,
-      "end_line": 121,
+      "line": 110,
+      "end_line": 129,
       "kind": "application",
-      "subsystem": "action_trace",
+      "subsystem": "результаты шагов, причины остановки и безопасный повтор",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -8826,15 +8828,15 @@
         "CustomFunction_TraceComplete"
       ],
       "coverage": {},
-      "description": "action_trace: Finish; код: record := ActionTrace_Get(id) / if (!IsObject(record) || !ActionTrace_IsStatus(status) || status = \""
+      "description": "результаты шагов, причины остановки и безопасный повтор: Finish; код: record := ActionTrace_Get(id) / if (!IsObject(record) || !ActionTrace_IsStatus(status) || status = \""
     },
     {
       "name": "ActionTrace_IsRetrySafeText",
       "file": "app/action_trace.ahk",
-      "line": 123,
-      "end_line": 130,
+      "line": 131,
+      "end_line": 138,
       "kind": "application",
-      "subsystem": "action_trace",
+      "subsystem": "результаты шагов, причины остановки и безопасный повтор",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -8848,15 +8850,15 @@
         "ActionTrace_RunRegression"
       ],
       "coverage": {},
-      "description": "action_trace: Проверить Retry Safe текст; код: if (text = \"\" || StrLen(text) > 1023 || InStr(text, \"`n\") || InStr(text, \"`r\")) / return false"
+      "description": "результаты шагов, причины остановки и безопасный повтор: Проверить Retry Safe текст; код: if (text = \"\" || StrLen(text) > 1023 || InStr(text, \"`n\") || InStr(text, \"`r\")) / return false"
     },
     {
       "name": "ActionTrace_RegisterBatch",
       "file": "app/action_trace.ahk",
-      "line": 132,
-      "end_line": 147,
+      "line": 140,
+      "end_line": 155,
       "kind": "application",
-      "subsystem": "action_trace",
+      "subsystem": "результаты шагов, причины остановки и безопасный повтор",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -8871,15 +8873,15 @@
         "ChatQueue_EnqueueBatch"
       ],
       "coverage": {},
-      "description": "action_trace: Зарегистрировать Batch; код: if (!IsObject(prepared) || !prepared.Length() || !QueueBatchStates.HasKey(batchId)) / return 0"
+      "description": "результаты шагов, причины остановки и безопасный повтор: Зарегистрировать Batch; код: if (!IsObject(prepared) || !prepared.Length() || !QueueBatchStates.HasKey(batchId)) / return 0"
     },
     {
       "name": "ActionTrace_RegisterItem",
       "file": "app/action_trace.ahk",
-      "line": 149,
-      "end_line": 159,
+      "line": 157,
+      "end_line": 167,
       "kind": "application",
-      "subsystem": "action_trace",
+      "subsystem": "результаты шагов, причины остановки и безопасный повтор",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -8893,15 +8895,15 @@
         "ChatQueue_Enqueue"
       ],
       "coverage": {},
-      "description": "action_trace: Зарегистрировать элемент; код: if !IsObject(item) / return 0"
+      "description": "результаты шагов, причины остановки и безопасный повтор: Зарегистрировать элемент; код: if !IsObject(item) / return 0"
     },
     {
       "name": "ActionTrace_QueueAttempt",
       "file": "app/action_trace.ahk",
-      "line": 161,
-      "end_line": 172,
+      "line": 169,
+      "end_line": 180,
       "kind": "application",
-      "subsystem": "action_trace",
+      "subsystem": "результаты шагов, причины остановки и безопасный повтор",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -8916,15 +8918,15 @@
         "ChatQueue_Tick"
       ],
       "coverage": {},
-      "description": "action_trace: QueueAttempt; код: if (!IsObject(item) || !item.TraceId) / return"
+      "description": "результаты шагов, причины остановки и безопасный повтор: QueueAttempt; код: if (!IsObject(item) || !item.TraceId) / return"
     },
     {
       "name": "ActionTrace_QueueRetryPending",
       "file": "app/action_trace.ahk",
-      "line": 174,
-      "end_line": 177,
+      "line": 182,
+      "end_line": 185,
       "kind": "application",
-      "subsystem": "action_trace",
+      "subsystem": "результаты шагов, причины остановки и безопасный повтор",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -8937,15 +8939,15 @@
         "ChatQueue_Tick"
       ],
       "coverage": {},
-      "description": "action_trace: QueueRetryPending; код: if IsObject(item) / ActionTrace_Update(item.TraceId, item.TraceIndex, \"queued\", \"Вызов не запускался"
+      "description": "результаты шагов, причины остановки и безопасный повтор: QueueRetryPending; код: if IsObject(item) / ActionTrace_Update(item.TraceId, item.TraceIndex, \"queued\", \"Вызов не запускался"
     },
     {
       "name": "ActionTrace_QueueComplete",
       "file": "app/action_trace.ahk",
-      "line": 179,
-      "end_line": 200,
+      "line": 187,
+      "end_line": 208,
       "kind": "application",
-      "subsystem": "action_trace",
+      "subsystem": "результаты шагов, причины остановки и безопасный повтор",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -8963,15 +8965,15 @@
         "ChatQueue_Clear"
       ],
       "coverage": {},
-      "description": "action_trace: QueueComplete; код: if (!IsObject(item) || !item.TraceId) / return"
+      "description": "результаты шагов, причины остановки и безопасный повтор: QueueComplete; код: if (!IsObject(item) || !item.TraceId) / return"
     },
     {
       "name": "ActionTrace_CancelBatch",
       "file": "app/action_trace.ahk",
-      "line": 202,
-      "end_line": 205,
+      "line": 210,
+      "end_line": 213,
       "kind": "application",
-      "subsystem": "action_trace",
+      "subsystem": "результаты шагов, причины остановки и безопасный повтор",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -8984,15 +8986,15 @@
         "ChatQueue_CancelBatch"
       ],
       "coverage": {},
-      "description": "action_trace: Отменить Batch; код: if (QueueBatchStates.HasKey(batchId) && QueueBatchStates[batchId].TraceId) / ActionTrace_Finish(Queu"
+      "description": "результаты шагов, причины остановки и безопасный повтор: Отменить Batch; код: if (QueueBatchStates.HasKey(batchId) && QueueBatchStates[batchId].TraceId) / ActionTrace_Finish(Queu"
     },
     {
       "name": "ActionTrace_RecordTransport",
       "file": "app/action_trace.ahk",
-      "line": 207,
-      "end_line": 223,
+      "line": 215,
+      "end_line": 231,
       "kind": "application",
-      "subsystem": "action_trace",
+      "subsystem": "результаты шагов, причины остановки и безопасный повтор",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -9008,22 +9010,23 @@
         "ChatTransport_Send"
       ],
       "coverage": {},
-      "description": "action_trace: RecordTransport; код: record := ActionTrace_Get(id) / if !IsObject(record)"
+      "description": "результаты шагов, причины остановки и безопасный повтор: RecordTransport; код: record := ActionTrace_Get(id) / if !IsObject(record)"
     },
     {
       "name": "ActionTrace_CanRetry",
       "file": "app/action_trace.ahk",
-      "line": 225,
-      "end_line": 245,
+      "line": 233,
+      "end_line": 253,
       "kind": "application",
-      "subsystem": "action_trace",
+      "subsystem": "результаты шагов, причины остановки и безопасный повтор",
       "purpose": null,
       "commands": [],
       "winapi": [],
       "first_statement": "reason := \"\" / record := ActionTrace_Get(id)",
-      "sha256": "2a21a10a2e1ad70ae66728a13c143d8975343a5960a8ec9ce9f99a650396e133",
+      "sha256": "96a2ef21eec0b4da78ac86d031c4aebc5cdd4d7023cbb47b3f377150822467a8",
       "calls": [
         "ActionTrace_Get",
+        "Training_IsActive",
         "ChatQueue_Count",
         "ServiceUI_IsInputActive"
       ],
@@ -9033,15 +9036,15 @@
         "ActionTrace_RunRegression"
       ],
       "coverage": {},
-      "description": "action_trace: Проверить возможность Retry; код: reason := \"\" / record := ActionTrace_Get(id)"
+      "description": "результаты шагов, причины остановки и безопасный повтор: Проверить возможность Retry; код: reason := \"\" / record := ActionTrace_Get(id)"
     },
     {
       "name": "ActionTrace_RetryStep",
       "file": "app/action_trace.ahk",
-      "line": 247,
-      "end_line": 293,
+      "line": 255,
+      "end_line": 301,
       "kind": "application",
-      "subsystem": "action_trace",
+      "subsystem": "результаты шагов, причины остановки и безопасный повтор",
       "purpose": null,
       "commands": [
         "WinActivate"
@@ -9066,15 +9069,15 @@
         "ActionTrace_RunRegression"
       ],
       "coverage": {},
-      "description": "action_trace: RetryStep; операции: WinActivate; код: if (ActionTraceRetryBusy) / return false"
+      "description": "результаты шагов, причины остановки и безопасный повтор: RetryStep; операции: WinActivate; код: if (ActionTraceRetryBusy) / return false"
     },
     {
       "name": "ActionTrace_StatusLabel",
       "file": "app/action_trace.ahk",
-      "line": 295,
-      "end_line": 299,
+      "line": 303,
+      "end_line": 307,
       "kind": "application",
-      "subsystem": "action_trace",
+      "subsystem": "результаты шагов, причины остановки и безопасный повтор",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -9086,15 +9089,15 @@
         "ActionTrace_RenderDetail"
       ],
       "coverage": {},
-      "description": "action_trace: StatusLabel; код: , failed: \"Не выполнено\", unknown: \"Результат неизвестен\", cancelled: \"Отменено\", skipped: \"Пропущен"
+      "description": "результаты шагов, причины остановки и безопасный повтор: StatusLabel; код: , failed: \"Не выполнено\", unknown: \"Результат неизвестен\", cancelled: \"Отменено\", skipped: \"Пропущен"
     },
     {
       "name": "ActionTrace_Changed",
       "file": "app/action_trace.ahk",
-      "line": 301,
-      "end_line": 305,
+      "line": 309,
+      "end_line": 313,
       "kind": "application",
-      "subsystem": "action_trace",
+      "subsystem": "результаты шагов, причины остановки и безопасный повтор",
       "purpose": null,
       "commands": [
         "SetTimer"
@@ -9111,15 +9114,15 @@
         "ActionTrace_RetryStep"
       ],
       "coverage": {},
-      "description": "action_trace: Changed; операции: SetTimer; код: if (ActionTraceVisible) / SetTimer, ActionTrace_Refresh, -40"
+      "description": "результаты шагов, причины остановки и безопасный повтор: Changed; операции: SetTimer; код: if (ActionTraceVisible) / SetTimer, ActionTrace_Refresh, -40"
     },
     {
       "name": "ActionTrace_Open",
       "file": "app/action_trace.ahk",
-      "line": 307,
-      "end_line": 339,
+      "line": 315,
+      "end_line": 347,
       "kind": "application",
-      "subsystem": "action_trace",
+      "subsystem": "результаты шагов, причины остановки и безопасный повтор",
       "purpose": null,
       "commands": [
         "Gui"
@@ -9139,15 +9142,15 @@
         "ActionTrace_RunDesktopChecks"
       ],
       "coverage": {},
-      "description": "action_trace: Открыть ; операции: Gui; код: GetThemeColors(bg, panel, fg, accent, muted) / GetControlSurfaceColors(controlBg, controlText, cardB"
+      "description": "результаты шагов, причины остановки и безопасный повтор: Открыть ; операции: Gui; код: GetThemeColors(bg, panel, fg, accent, muted) / GetControlSurfaceColors(controlBg, controlText, cardB"
     },
     {
       "name": "ActionTrace_Close",
       "file": "app/action_trace.ahk",
-      "line": 341,
-      "end_line": 347,
+      "line": 349,
+      "end_line": 355,
       "kind": "application",
-      "subsystem": "action_trace",
+      "subsystem": "результаты шагов, причины остановки и безопасный повтор",
       "purpose": null,
       "commands": [
         "SetTimer",
@@ -9162,15 +9165,15 @@
         "ActionTrace_RunDesktopChecks"
       ],
       "coverage": {},
-      "description": "action_trace: Закрыть ; операции: SetTimer, Gui; код: SetTimer, ActionTrace_Refresh, Off / ActionTraceVisible := 0"
+      "description": "результаты шагов, причины остановки и безопасный повтор: Закрыть ; операции: SetTimer, Gui; код: SetTimer, ActionTrace_Refresh, Off / ActionTraceVisible := 0"
     },
     {
       "name": "ActionTrace_SelectLatest",
       "file": "app/action_trace.ahk",
-      "line": 349,
-      "end_line": 353,
+      "line": 357,
+      "end_line": 361,
       "kind": "application",
-      "subsystem": "action_trace",
+      "subsystem": "результаты шагов, причины остановки и безопасный повтор",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -9181,15 +9184,15 @@
       ],
       "callers": [],
       "coverage": {},
-      "description": "action_trace: Выбрать Latest; код: ActionTraceSelectedId := ActionTraceLastId, ActionTraceSelectedStep := 0 / ActionTrace_Refresh()"
+      "description": "результаты шагов, причины остановки и безопасный повтор: Выбрать Latest; код: ActionTraceSelectedId := ActionTraceLastId, ActionTraceSelectedStep := 0 / ActionTrace_Refresh()"
     },
     {
       "name": "ActionTrace_HistoryChanged",
       "file": "app/action_trace.ahk",
-      "line": 355,
-      "end_line": 363,
+      "line": 363,
+      "end_line": 371,
       "kind": "application",
-      "subsystem": "action_trace",
+      "subsystem": "результаты шагов, причины остановки и безопасный повтор",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -9200,15 +9203,15 @@
       ],
       "callers": [],
       "coverage": {},
-      "description": "action_trace: HistoryChanged; код: GuiControlGet, row, ActionTrace:, AT_History / if (row > 0 && row <= ActionTraceRows.Length()) {"
+      "description": "результаты шагов, причины остановки и безопасный повтор: HistoryChanged; код: GuiControlGet, row, ActionTrace:, AT_History / if (row > 0 && row <= ActionTraceRows.Length()) {"
     },
     {
       "name": "ActionTrace_StepChanged",
       "file": "app/action_trace.ahk",
-      "line": 365,
-      "end_line": 372,
+      "line": 373,
+      "end_line": 380,
       "kind": "application",
-      "subsystem": "action_trace",
+      "subsystem": "результаты шагов, причины остановки и безопасный повтор",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -9219,15 +9222,15 @@
       ],
       "callers": [],
       "coverage": {},
-      "description": "action_trace: StepChanged; код: if (guiEvent = \"Normal\" || guiEvent = \"I\" || guiEvent = \"DoubleClick\") { / if (eventInfo > 0)"
+      "description": "результаты шагов, причины остановки и безопасный повтор: StepChanged; код: if (guiEvent = \"Normal\" || guiEvent = \"I\" || guiEvent = \"DoubleClick\") { / if (eventInfo > 0)"
     },
     {
       "name": "ActionTrace_RetrySelected",
       "file": "app/action_trace.ahk",
-      "line": 374,
-      "end_line": 377,
+      "line": 382,
+      "end_line": 385,
       "kind": "application",
-      "subsystem": "action_trace",
+      "subsystem": "результаты шагов, причины остановки и безопасный повтор",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -9238,15 +9241,15 @@
       ],
       "callers": [],
       "coverage": {},
-      "description": "action_trace: RetrySelected; код: return ActionTrace_RetryStep(ActionTraceSelectedId, ActionTraceSelectedStep)"
+      "description": "результаты шагов, причины остановки и безопасный повтор: RetrySelected; код: return ActionTrace_RetryStep(ActionTraceSelectedId, ActionTraceSelectedStep)"
     },
     {
       "name": "ActionTrace_Refresh",
       "file": "app/action_trace.ahk",
-      "line": 379,
-      "end_line": 437,
+      "line": 387,
+      "end_line": 445,
       "kind": "application",
-      "subsystem": "action_trace",
+      "subsystem": "результаты шагов, причины остановки и безопасный повтор",
       "purpose": null,
       "commands": [
         "GuiControl",
@@ -9269,15 +9272,15 @@
         "ActionTrace_RunDesktopChecks"
       ],
       "coverage": {},
-      "description": "action_trace: Обновить ; операции: GuiControl, Gui; код: if (!ActionTraceVisible || !DllCall(\"IsWindow\", \"Ptr\", hActionTraceWnd)) / return"
+      "description": "результаты шагов, причины остановки и безопасный повтор: Обновить ; операции: GuiControl, Gui; код: if (!ActionTraceVisible || !DllCall(\"IsWindow\", \"Ptr\", hActionTraceWnd)) / return"
     },
     {
       "name": "ActionTrace_RenderDetail",
       "file": "app/action_trace.ahk",
-      "line": 439,
-      "end_line": 466,
+      "line": 447,
+      "end_line": 474,
       "kind": "application",
-      "subsystem": "action_trace",
+      "subsystem": "результаты шагов, причины остановки и безопасный повтор",
       "purpose": null,
       "commands": [
         "GuiControl"
@@ -9297,7 +9300,7 @@
         "ActionTrace_Refresh"
       ],
       "coverage": {},
-      "description": "action_trace: Отрисовать Detail; операции: GuiControl; код: if (!ActionTraceVisible) / return"
+      "description": "результаты шагов, причины остановки и безопасный повтор: Отрисовать Detail; операции: GuiControl; код: if (!ActionTraceVisible) / return"
     },
     {
       "name": "IncidentCard_DataDir",
@@ -9305,7 +9308,7 @@
       "line": 18,
       "end_line": 20,
       "kind": "application",
-      "subsystem": "incident_card",
+      "subsystem": "карточки происшествий, хранение и экспорт",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -9321,7 +9324,7 @@
         "IncidentCard_Export"
       ],
       "coverage": {},
-      "description": "incident_card: DataDir; код: return root != \"\" ? RTrim(root, \"\\/\") : AppHost_DataDir() . \"\\incidents\""
+      "description": "карточки происшествий, хранение и экспорт: DataDir; код: return root != \"\" ? RTrim(root, \"\\/\") : AppHost_DataDir() . \"\\incidents\""
     },
     {
       "name": "IncidentCard_ValidRecordID",
@@ -9329,7 +9332,7 @@
       "line": 22,
       "end_line": 24,
       "kind": "application",
-      "subsystem": "incident_card",
+      "subsystem": "карточки происшествий, хранение и экспорт",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -9344,7 +9347,7 @@
         "IncidentCard_RunRegression"
       ],
       "coverage": {},
-      "description": "incident_card: ValidRecordID; код: return RegExMatch(id . \"\", \"^[0-9]{14}-[0-9]{1,15}-[0-9]{1,6}$\") > 0"
+      "description": "карточки происшествий, хранение и экспорт: ValidRecordID; код: return RegExMatch(id . \"\", \"^[0-9]{14}-[0-9]{1,15}-[0-9]{1,6}$\") > 0"
     },
     {
       "name": "IncidentCard_CleanLine",
@@ -9352,7 +9355,7 @@
       "line": 26,
       "end_line": 28,
       "kind": "application",
-      "subsystem": "incident_card",
+      "subsystem": "карточки происшествий, хранение и экспорт",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -9367,7 +9370,7 @@
         "IncidentCard_AddLaw"
       ],
       "coverage": {},
-      "description": "incident_card: CleanLine; код: return SubStr(Trim(RegExReplace(value . \"\", \"[\\x00-\\x1F\\x7F]\", \" \")), 1, maxLen)"
+      "description": "карточки происшествий, хранение и экспорт: CleanLine; код: return SubStr(Trim(RegExReplace(value . \"\", \"[\\x00-\\x1F\\x7F]\", \" \")), 1, maxLen)"
     },
     {
       "name": "IncidentCard_NormalizeTarget",
@@ -9375,7 +9378,7 @@
       "line": 30,
       "end_line": 42,
       "kind": "application",
-      "subsystem": "incident_card",
+      "subsystem": "карточки происшествий, хранение и экспорт",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -9391,7 +9394,7 @@
         "IncidentCard_RunRegression"
       ],
       "coverage": {},
-      "description": "incident_card: Нормализовать цель; код: id := Trim(id . \"\") / if (isMask) {"
+      "description": "карточки происшествий, хранение и экспорт: Нормализовать цель; код: id := Trim(id . \"\") / if (isMask) {"
     },
     {
       "name": "IncidentCard_CurrentTarget",
@@ -9399,7 +9402,7 @@
       "line": 44,
       "end_line": 49,
       "kind": "application",
-      "subsystem": "incident_card",
+      "subsystem": "карточки происшествий, хранение и экспорт",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -9413,7 +9416,7 @@
         "IncidentCard_PaletteButton"
       ],
       "coverage": {},
-      "description": "incident_card: CurrentTarget; код: if (!ActiveID) / return \"\""
+      "description": "карточки происшествий, хранение и экспорт: CurrentTarget; код: if (!ActiveID) / return \"\""
     },
     {
       "name": "IncidentCard_TargetMatches",
@@ -9421,7 +9424,7 @@
       "line": 51,
       "end_line": 58,
       "kind": "application",
-      "subsystem": "incident_card",
+      "subsystem": "карточки происшествий, хранение и экспорт",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -9435,7 +9438,7 @@
         "IncidentCard_RunRegression"
       ],
       "coverage": {},
-      "description": "incident_card: TargetMatches; код: if (!IsObject(card) || !IsObject(target) || card.Profile != target.Profile / || card.Mask != target."
+      "description": "карточки происшествий, хранение и экспорт: TargetMatches; код: if (!IsObject(card) || !IsObject(target) || card.Profile != target.Profile / || card.Mask != target."
     },
     {
       "name": "IncidentCard_CreateRecord",
@@ -9443,7 +9446,7 @@
       "line": 60,
       "end_line": 75,
       "kind": "application",
-      "subsystem": "incident_card",
+      "subsystem": "карточки происшествий, хранение и экспорт",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -9458,7 +9461,7 @@
         "IncidentCard_RunRegression"
       ],
       "coverage": {},
-      "description": "incident_card: Создать Record; код: if !IsObject(target) / return \"\""
+      "description": "карточки происшествий, хранение и экспорт: Создать Record; код: if !IsObject(target) / return \"\""
     },
     {
       "name": "IncidentCard_EncodeRecord",
@@ -9466,7 +9469,7 @@
       "line": 77,
       "end_line": 103,
       "kind": "application",
-      "subsystem": "incident_card",
+      "subsystem": "карточки происшествий, хранение и экспорт",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -9485,7 +9488,7 @@
         "IncidentCard_RunRegression"
       ],
       "coverage": {},
-      "description": "incident_card: Закодировать Record; код: if (!IsObject(card) || !IncidentCard_ValidRecordID(card.RecordID) / || !RegExMatch(card.Created . \"\""
+      "description": "карточки происшествий, хранение и экспорт: Закодировать Record; код: if (!IsObject(card) || !IncidentCard_ValidRecordID(card.RecordID) / || !RegExMatch(card.Created . \"\""
     },
     {
       "name": "IncidentCard_DecodeRecord",
@@ -9493,7 +9496,7 @@
       "line": 105,
       "end_line": 150,
       "kind": "application",
-      "subsystem": "incident_card",
+      "subsystem": "карточки происшествий, хранение и экспорт",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -9510,7 +9513,7 @@
         "IncidentCard_RunRegression"
       ],
       "coverage": {},
-      "description": "incident_card: Декодировать Record; код: if (StrLen(text) > 131072 || SubStr(text, 1, 25) != \"AHK_FOR_GOS_INCIDENT_V1`r`n\") / return \"\""
+      "description": "карточки происшествий, хранение и экспорт: Декодировать Record; код: if (StrLen(text) > 131072 || SubStr(text, 1, 25) != \"AHK_FOR_GOS_INCIDENT_V1`r`n\") / return \"\""
     },
     {
       "name": "IncidentCard_IsEncodedText",
@@ -9518,7 +9521,7 @@
       "line": 152,
       "end_line": 157,
       "kind": "application",
-      "subsystem": "incident_card",
+      "subsystem": "карточки происшествий, хранение и экспорт",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -9530,15 +9533,15 @@
         "IncidentCard_RunRegression"
       ],
       "coverage": {},
-      "description": "incident_card: Проверить Encoded текст; код: if !RegExMatch(text, \"^H1:([0-9]{1,6}):([A-F0-9]*)$\", match) / return false"
+      "description": "карточки происшествий, хранение и экспорт: Проверить Encoded текст; код: if !RegExMatch(text, \"^H1:([0-9]{1,6}):([A-F0-9]*)$\", match) / return false"
     },
     {
       "name": "IncidentCard_SaveRecord",
       "file": "app/incident_card.ahk",
       "line": 159,
-      "end_line": 206,
+      "end_line": 211,
       "kind": "application",
-      "subsystem": "incident_card",
+      "subsystem": "карточки происшествий, хранение и экспорт",
       "purpose": null,
       "commands": [
         "FileDelete"
@@ -9549,11 +9552,12 @@
         "MoveFileExW"
       ],
       "first_statement": "previousCritical := A_IsCritical / Critical, On",
-      "sha256": "b8f8b630314cc1eeb910389bf1806c34cad0eecd03867dc8ed30553459e85dd1",
+      "sha256": "c0ebddd61791c453a102bedc9a1e302dd35769aa4d48aba7776d87e27c5c1131",
       "calls": [
         "IncidentCard_EncodeRecord",
         "IncidentCard_DataDir",
-        "IncidentCard_UpdateEntry"
+        "IncidentCard_UpdateEntry",
+        "LogError"
       ],
       "callers": [
         "IncidentCard_SaveFromGui",
@@ -9564,15 +9568,15 @@
         "IncidentCard_RunRegression"
       ],
       "coverage": {},
-      "description": "incident_card: Сохранить Record; операции: FileDelete; код: previousCritical := A_IsCritical / Critical, On"
+      "description": "карточки происшествий, хранение и экспорт: Сохранить Record; операции: FileDelete; код: previousCritical := A_IsCritical / Critical, On"
     },
     {
       "name": "IncidentCard_RecordEntry",
       "file": "app/incident_card.ahk",
-      "line": 208,
-      "end_line": 211,
+      "line": 213,
+      "end_line": 216,
       "kind": "application",
-      "subsystem": "incident_card",
+      "subsystem": "карточки происшествий, хранение и экспорт",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -9585,15 +9589,15 @@
         "IncidentCard_RunRegression"
       ],
       "coverage": {},
-      "description": "incident_card: RecordEntry; код: return {RecordID: card.RecordID, Profile: card.Profile, ID: card.ID / , Nickname: card.Nickname, Mas"
+      "description": "карточки происшествий, хранение и экспорт: RecordEntry; код: return {RecordID: card.RecordID, Profile: card.Profile, ID: card.ID / , Nickname: card.Nickname, Mas"
     },
     {
       "name": "IncidentCard_UpdateEntry",
       "file": "app/incident_card.ahk",
-      "line": 213,
-      "end_line": 226,
+      "line": 218,
+      "end_line": 231,
       "kind": "application",
-      "subsystem": "incident_card",
+      "subsystem": "карточки происшествий, хранение и экспорт",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -9607,15 +9611,15 @@
         "IncidentCard_SelectTarget"
       ],
       "coverage": {},
-      "description": "incident_card: Обновить Entry; код: if !IsObject(IncidentCardEntries) / IncidentCardEntries := []"
+      "description": "карточки происшествий, хранение и экспорт: Обновить Entry; код: if !IsObject(IncidentCardEntries) / IncidentCardEntries := []"
     },
     {
       "name": "IncidentCard_LoadRecord",
       "file": "app/incident_card.ahk",
-      "line": 228,
-      "end_line": 241,
+      "line": 233,
+      "end_line": 246,
       "kind": "application",
-      "subsystem": "incident_card",
+      "subsystem": "карточки происшествий, хранение и экспорт",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -9634,15 +9638,15 @@
         "IncidentCard_RunDesktopChecks"
       ],
       "coverage": {},
-      "description": "incident_card: Загрузить Record; код: if !IncidentCard_ValidRecordID(id) / return \"\""
+      "description": "карточки происшествий, хранение и экспорт: Загрузить Record; код: if !IncidentCard_ValidRecordID(id) / return \"\""
     },
     {
       "name": "IncidentCard_LoadEntries",
       "file": "app/incident_card.ahk",
-      "line": 243,
-      "end_line": 264,
+      "line": 248,
+      "end_line": 269,
       "kind": "application",
-      "subsystem": "incident_card",
+      "subsystem": "карточки происшествий, хранение и экспорт",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -9659,15 +9663,15 @@
         "IncidentCard_RunRegression"
       ],
       "coverage": {},
-      "description": "incident_card: Загрузить Entries; код: folder := IncidentCard_DataDir(root), names := \"\", entries := [] / Loop, Files, % folder . \"\\*.case\""
+      "description": "карточки происшествий, хранение и экспорт: Загрузить Entries; код: folder := IncidentCard_DataDir(root), names := \"\", entries := [] / Loop, Files, % folder . \"\\*.case\""
     },
     {
       "name": "IncidentCard_RecordingAllowed",
       "file": "app/incident_card.ahk",
-      "line": 266,
-      "end_line": 270,
+      "line": 271,
+      "end_line": 275,
       "kind": "application",
-      "subsystem": "incident_card",
+      "subsystem": "карточки происшествий, хранение и экспорт",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -9680,15 +9684,15 @@
         "IncidentCard_OnTargetChanged"
       ],
       "coverage": {},
-      "description": "incident_card: RecordingAllowed; код: training := IsFunc(\"Training_IsActive\") ? Func(\"Training_IsActive\").Call() : false / return !trainin"
+      "description": "карточки происшествий, хранение и экспорт: RecordingAllowed; код: training := IsFunc(\"Training_IsActive\") ? Func(\"Training_IsActive\").Call() : false / return !trainin"
     },
     {
       "name": "IncidentCard_OnChatLine",
       "file": "app/incident_card.ahk",
-      "line": 272,
-      "end_line": 285,
+      "line": 277,
+      "end_line": 290,
       "kind": "application",
-      "subsystem": "incident_card",
+      "subsystem": "карточки происшествий, хранение и экспорт",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -9703,15 +9707,15 @@
         "ChatLogReader_ProcessLine"
       ],
       "coverage": {},
-      "description": "incident_card: Обработать событие Chat строку; код: if !IncidentCard_RecordingAllowed(allowTest) / return false"
+      "description": "карточки происшествий, хранение и экспорт: Обработать событие Chat строку; код: if !IncidentCard_RecordingAllowed(allowTest) / return false"
     },
     {
       "name": "IncidentCard_LineMatches",
       "file": "app/incident_card.ahk",
-      "line": 287,
-      "end_line": 300,
+      "line": 292,
+      "end_line": 305,
       "kind": "application",
-      "subsystem": "incident_card",
+      "subsystem": "карточки происшествий, хранение и экспорт",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -9723,15 +9727,15 @@
         "IncidentCard_RunRegression"
       ],
       "coverage": {},
-      "description": "incident_card: LineMatches; код: if (!IsObject(card) || card.Mask) / return false"
+      "description": "карточки происшествий, хранение и экспорт: LineMatches; код: if (!IsObject(card) || card.Mask) / return false"
     },
     {
       "name": "IncidentCard_CollectChat",
       "file": "app/incident_card.ahk",
-      "line": 302,
-      "end_line": 326,
+      "line": 307,
+      "end_line": 331,
       "kind": "application",
-      "subsystem": "incident_card",
+      "subsystem": "карточки происшествий, хранение и экспорт",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -9746,15 +9750,15 @@
         "IncidentCard_RunRegression"
       ],
       "coverage": {},
-      "description": "incident_card: CollectChat; код: if (!IsObject(card) || !IsObject(card.Chat)) / return 0"
+      "description": "карточки происшествий, хранение и экспорт: CollectChat; код: if (!IsObject(card) || !IsObject(card.Chat)) / return 0"
     },
     {
       "name": "IncidentCard_AddLaw",
       "file": "app/incident_card.ahk",
-      "line": 328,
-      "end_line": 346,
+      "line": 333,
+      "end_line": 351,
       "kind": "application",
-      "subsystem": "incident_card",
+      "subsystem": "карточки происшествий, хранение и экспорт",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -9770,15 +9774,15 @@
         "IncidentCard_RunRegression"
       ],
       "coverage": {},
-      "description": "incident_card: Добавить законодательство; код: if (!IsObject(card) || !IsObject(item) || item.DocCode = \"\" || item.ItemId = \"\" / || !RegExMatch(ite"
+      "description": "карточки происшествий, хранение и экспорт: Добавить законодательство; код: if (!IsObject(card) || !IsObject(item) || item.DocCode = \"\" || item.ItemId = \"\" / || !RegExMatch(ite"
     },
     {
       "name": "IncidentCard_FormatTime",
       "file": "app/incident_card.ahk",
-      "line": 348,
-      "end_line": 351,
+      "line": 353,
+      "end_line": 356,
       "kind": "application",
-      "subsystem": "incident_card",
+      "subsystem": "карточки происшествий, хранение и экспорт",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -9790,15 +9794,15 @@
         "IncidentCard_RefreshGui"
       ],
       "coverage": {},
-      "description": "incident_card: Отформатировать время; код: FormatTime, formatted, %stamp%, yyyy-MM-dd HH:mm:ss / return formatted . \" UTC\""
+      "description": "карточки происшествий, хранение и экспорт: Отформатировать время; код: FormatTime, formatted, %stamp%, yyyy-MM-dd HH:mm:ss / return formatted . \" UTC\""
     },
     {
       "name": "IncidentCard_Label",
       "file": "app/incident_card.ahk",
-      "line": 353,
-      "end_line": 355,
+      "line": 358,
+      "end_line": 360,
       "kind": "application",
-      "subsystem": "incident_card",
+      "subsystem": "карточки происшествий, хранение и экспорт",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -9810,15 +9814,15 @@
         "IncidentCard_RefreshGui"
       ],
       "coverage": {},
-      "description": "incident_card: Label; код: return (card.Mask ? \"Маска \" : \"ID \") . card.ID . (card.Nickname != \"\" ? \" / \" . card.Nickname : \"\")"
+      "description": "карточки происшествий, хранение и экспорт: Label; код: return (card.Mask ? \"Маска \" : \"ID \") . card.ID . (card.Nickname != \"\" ? \" / \" . card.Nickname : \"\")"
     },
     {
       "name": "IncidentCard_Report",
       "file": "app/incident_card.ahk",
-      "line": 357,
-      "end_line": 371,
+      "line": 362,
+      "end_line": 376,
       "kind": "application",
-      "subsystem": "incident_card",
+      "subsystem": "карточки происшествий, хранение и экспорт",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -9832,20 +9836,22 @@
         "IncidentCard_Export"
       ],
       "coverage": {},
-      "description": "incident_card: Report; код: if !IsObject(card) / return \"\""
+      "description": "карточки происшествий, хранение и экспорт: Report; код: if !IsObject(card) / return \"\""
     },
     {
       "name": "IncidentCard_Export",
       "file": "app/incident_card.ahk",
-      "line": 373,
-      "end_line": 388,
+      "line": 378,
+      "end_line": 398,
       "kind": "application",
-      "subsystem": "incident_card",
+      "subsystem": "карточки происшествий, хранение и экспорт",
       "purpose": null,
       "commands": [],
-      "winapi": [],
+      "winapi": [
+        "GetCurrentProcessId"
+      ],
       "first_statement": "if (!IsObject(card) || IncidentCard_EncodeRecord(card) = \"\") / return \"\"",
-      "sha256": "eac24d02ce2de959fae051cffdebc2fe1d3ac0fdfcd0563e3cb77c76fdb08369",
+      "sha256": "eeb77ad00ee2d4990d89a2d9a0db2311fce013df061a1c18bd54ddcbbae066a0",
       "calls": [
         "IncidentCard_EncodeRecord",
         "IncidentCard_DataDir",
@@ -9856,15 +9862,15 @@
         "IncidentCard_RunRegression"
       ],
       "coverage": {},
-      "description": "incident_card: Export; код: if (!IsObject(card) || IncidentCard_EncodeRecord(card) = \"\") / return \"\""
+      "description": "карточки происшествий, хранение и экспорт: Export; код: if (!IsObject(card) || IncidentCard_EncodeRecord(card) = \"\") / return \"\""
     },
     {
       "name": "IncidentCard_SaveFromGui",
       "file": "app/incident_card.ahk",
-      "line": 390,
-      "end_line": 399,
+      "line": 400,
+      "end_line": 409,
       "kind": "application",
-      "subsystem": "incident_card",
+      "subsystem": "карточки происшествий, хранение и экспорт",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -9884,15 +9890,15 @@
         "IncidentCard_Close"
       ],
       "coverage": {},
-      "description": "incident_card: Сохранить From Gui; код: if !IsObject(IncidentCardCurrent) / return true"
+      "description": "карточки происшествий, хранение и экспорт: Сохранить From Gui; код: if !IsObject(IncidentCardCurrent) / return true"
     },
     {
       "name": "IncidentCard_SelectTarget",
       "file": "app/incident_card.ahk",
-      "line": 401,
-      "end_line": 430,
+      "line": 411,
+      "end_line": 440,
       "kind": "application",
-      "subsystem": "incident_card",
+      "subsystem": "карточки происшествий, хранение и экспорт",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -9915,15 +9921,15 @@
         "IncidentCard_NewButton"
       ],
       "coverage": {},
-      "description": "incident_card: Выбрать цель; код: if !IncidentCard_RecordingAllowed(allowTest) / return false"
+      "description": "карточки происшествий, хранение и экспорт: Выбрать цель; код: if !IncidentCard_RecordingAllowed(allowTest) / return false"
     },
     {
       "name": "IncidentCard_FindRecord",
       "file": "app/incident_card.ahk",
-      "line": 432,
-      "end_line": 443,
+      "line": 442,
+      "end_line": 453,
       "kind": "application",
-      "subsystem": "incident_card",
+      "subsystem": "карточки происшествий, хранение и экспорт",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -9938,15 +9944,15 @@
         "IncidentCard_RunRegression"
       ],
       "coverage": {},
-      "description": "incident_card: Найти Record; код: if (!IsObject(target) || !IsObject(entries)) / return \"\""
+      "description": "карточки происшествий, хранение и экспорт: Найти Record; код: if (!IsObject(target) || !IsObject(entries)) / return \"\""
     },
     {
       "name": "IncidentCard_OnTargetChanged",
       "file": "app/incident_card.ahk",
-      "line": 445,
-      "end_line": 458,
+      "line": 455,
+      "end_line": 468,
       "kind": "application",
-      "subsystem": "incident_card",
+      "subsystem": "карточки происшествий, хранение и экспорт",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -9965,15 +9971,15 @@
         "ResetCurrentID"
       ],
       "coverage": {},
-      "description": "incident_card: Обработать событие цель Changed; код: if (!IncidentCard_RecordingAllowed(allowTest) || !IncidentCardEnabled || IncidentCardBusy) / return "
+      "description": "карточки происшествий, хранение и экспорт: Обработать событие цель Changed; код: if (!IncidentCard_RecordingAllowed(allowTest) || !IncidentCardEnabled || IncidentCardBusy) / return "
     },
     {
       "name": "IncidentCard_SetStatus",
       "file": "app/incident_card.ahk",
-      "line": 460,
-      "end_line": 465,
+      "line": 470,
+      "end_line": 475,
       "kind": "application",
-      "subsystem": "incident_card",
+      "subsystem": "карточки происшествий, хранение и экспорт",
       "purpose": null,
       "commands": [
         "GuiControl"
@@ -9996,15 +10002,15 @@
         "IncidentCard_Close"
       ],
       "coverage": {},
-      "description": "incident_card: Установить состояние; операции: GuiControl; код: IncidentCardStatus := text / if (IncidentCardHwnd)"
+      "description": "карточки происшествий, хранение и экспорт: Установить состояние; операции: GuiControl; код: IncidentCardStatus := text / if (IncidentCardHwnd)"
     },
     {
       "name": "IncidentCard_RefreshGui",
       "file": "app/incident_card.ahk",
-      "line": 467,
-      "end_line": 501,
+      "line": 477,
+      "end_line": 511,
       "kind": "application",
-      "subsystem": "incident_card",
+      "subsystem": "карточки происшествий, хранение и экспорт",
       "purpose": null,
       "commands": [
         "GuiControl"
@@ -10028,15 +10034,15 @@
         "IncidentCard_ChatButton"
       ],
       "coverage": {},
-      "description": "incident_card: Обновить Gui; операции: GuiControl; код: if (!IncidentCardHwnd) / return"
+      "description": "карточки происшествий, хранение и экспорт: Обновить Gui; операции: GuiControl; код: if (!IncidentCardHwnd) / return"
     },
     {
       "name": "IncidentCard_NextHint",
       "file": "app/incident_card.ahk",
-      "line": 503,
-      "end_line": 513,
+      "line": 513,
+      "end_line": 523,
       "kind": "application",
-      "subsystem": "incident_card",
+      "subsystem": "карточки происшествий, хранение и экспорт",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -10047,15 +10053,15 @@
         "IncidentCard_RefreshGui"
       ],
       "coverage": {},
-      "description": "incident_card: NextHint; код: if !IsObject(card) / return \"Далее: выберите цель и создайте карточку.\""
+      "description": "карточки происшествий, хранение и экспорт: NextHint; код: if !IsObject(card) / return \"Далее: выберите цель и создайте карточку.\""
     },
     {
       "name": "IncidentCard_Open",
       "file": "app/incident_card.ahk",
-      "line": 515,
-      "end_line": 581,
+      "line": 525,
+      "end_line": 591,
       "kind": "application",
-      "subsystem": "incident_card",
+      "subsystem": "карточки происшествий, хранение и экспорт",
       "purpose": null,
       "commands": [
         "Gui",
@@ -10082,15 +10088,15 @@
         "IncidentCard_RunDesktopChecks"
       ],
       "coverage": {},
-      "description": "incident_card: Открыть ; операции: Gui, GuiControl; код: if (IncidentCardHwnd && DllCall(\"IsWindow\", \"Ptr\", IncidentCardHwnd)) { / IncidentCard_OnTargetChang"
+      "description": "карточки происшествий, хранение и экспорт: Открыть ; операции: Gui, GuiControl; код: if (IncidentCardHwnd && DllCall(\"IsWindow\", \"Ptr\", IncidentCardHwnd)) { / IncidentCard_OnTargetChang"
     },
     {
       "name": "IncidentCard_SelectEntry",
       "file": "app/incident_card.ahk",
-      "line": 583,
-      "end_line": 600,
+      "line": 593,
+      "end_line": 610,
       "kind": "application",
-      "subsystem": "incident_card",
+      "subsystem": "карточки происшествий, хранение и экспорт",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -10104,15 +10110,15 @@
       ],
       "callers": [],
       "coverage": {},
-      "description": "incident_card: Выбрать Entry; код: GuiControlGet, index, IncidentJournal:, IC_List / if (!IncidentCardEntries.HasKey(index) || (IsObjec"
+      "description": "карточки происшествий, хранение и экспорт: Выбрать Entry; код: GuiControlGet, index, IncidentJournal:, IC_List / if (!IncidentCardEntries.HasKey(index) || (IsObjec"
     },
     {
       "name": "IncidentCard_CurrentButton",
       "file": "app/incident_card.ahk",
-      "line": 602,
-      "end_line": 607,
+      "line": 612,
+      "end_line": 617,
       "kind": "application",
-      "subsystem": "incident_card",
+      "subsystem": "карточки происшествий, хранение и экспорт",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -10125,15 +10131,15 @@
       ],
       "callers": [],
       "coverage": {},
-      "description": "incident_card: CurrentButton; код: result := IncidentCard_SelectTarget() / IncidentCard_RefreshGui()"
+      "description": "карточки происшествий, хранение и экспорт: CurrentButton; код: result := IncidentCard_SelectTarget() / IncidentCard_RefreshGui()"
     },
     {
       "name": "IncidentCard_NewButton",
       "file": "app/incident_card.ahk",
-      "line": 609,
-      "end_line": 614,
+      "line": 619,
+      "end_line": 624,
       "kind": "application",
-      "subsystem": "incident_card",
+      "subsystem": "карточки происшествий, хранение и экспорт",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -10146,15 +10152,15 @@
       ],
       "callers": [],
       "coverage": {},
-      "description": "incident_card: NewButton; код: result := IncidentCard_SelectTarget(true) / IncidentCard_RefreshGui()"
+      "description": "карточки происшествий, хранение и экспорт: NewButton; код: result := IncidentCard_SelectTarget(true) / IncidentCard_RefreshGui()"
     },
     {
       "name": "IncidentCard_AddNoteButton",
       "file": "app/incident_card.ahk",
-      "line": 616,
-      "end_line": 638,
+      "line": 626,
+      "end_line": 648,
       "kind": "application",
-      "subsystem": "incident_card",
+      "subsystem": "карточки происшествий, хранение и экспорт",
       "purpose": null,
       "commands": [
         "GuiControl"
@@ -10170,15 +10176,15 @@
       ],
       "callers": [],
       "coverage": {},
-      "description": "incident_card: Добавить Note кнопку; операции: GuiControl; код: if !IsObject(IncidentCardCurrent) / return false"
+      "description": "карточки происшествий, хранение и экспорт: Добавить Note кнопку; операции: GuiControl; код: if !IsObject(IncidentCardCurrent) / return false"
     },
     {
       "name": "IncidentCard_AddLawButton",
       "file": "app/incident_card.ahk",
-      "line": 640,
-      "end_line": 653,
+      "line": 650,
+      "end_line": 663,
       "kind": "application",
-      "subsystem": "incident_card",
+      "subsystem": "карточки происшествий, хранение и экспорт",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -10193,15 +10199,15 @@
       ],
       "callers": [],
       "coverage": {},
-      "description": "incident_card: Добавить законодательство кнопку; код: if (!IsObject(IncidentCardCurrent) || !IsObject(SearchResults) || !SearchResults.HasKey(SearchCurren"
+      "description": "карточки происшествий, хранение и экспорт: Добавить законодательство кнопку; код: if (!IsObject(IncidentCardCurrent) || !IsObject(SearchResults) || !SearchResults.HasKey(SearchCurren"
     },
     {
       "name": "IncidentCard_ChatButton",
       "file": "app/incident_card.ahk",
-      "line": 655,
-      "end_line": 664,
+      "line": 665,
+      "end_line": 674,
       "kind": "application",
-      "subsystem": "incident_card",
+      "subsystem": "карточки происшествий, хранение и экспорт",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -10216,15 +10222,15 @@
       ],
       "callers": [],
       "coverage": {},
-      "description": "incident_card: ChatButton; код: if (!IsObject(IncidentCardCurrent) || !IncidentCard_SaveFromGui()) / return false"
+      "description": "карточки происшествий, хранение и экспорт: ChatButton; код: if (!IsObject(IncidentCardCurrent) || !IncidentCard_SaveFromGui()) / return false"
     },
     {
       "name": "IncidentCard_RightsButton",
       "file": "app/incident_card.ahk",
-      "line": 666,
-      "end_line": 668,
+      "line": 676,
+      "end_line": 678,
       "kind": "application",
-      "subsystem": "incident_card",
+      "subsystem": "карточки происшествий, хранение и экспорт",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -10235,15 +10241,15 @@
       ],
       "callers": [],
       "coverage": {},
-      "description": "incident_card: RightsButton; код: return Guide_Toggle(24)"
+      "description": "карточки происшествий, хранение и экспорт: RightsButton; код: return Guide_Toggle(24)"
     },
     {
       "name": "IncidentCard_PaletteButton",
       "file": "app/incident_card.ahk",
-      "line": 670,
-      "end_line": 679,
+      "line": 680,
+      "end_line": 689,
       "kind": "application",
-      "subsystem": "incident_card",
+      "subsystem": "карточки происшествий, хранение и экспорт",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -10257,15 +10263,15 @@
       ],
       "callers": [],
       "coverage": {},
-      "description": "incident_card: PaletteButton; код: if (!IncidentCard_TargetMatches(IncidentCardCurrent, IncidentCard_CurrentTarget())) { / IncidentCard"
+      "description": "карточки происшествий, хранение и экспорт: PaletteButton; код: if (!IncidentCard_TargetMatches(IncidentCardCurrent, IncidentCard_CurrentTarget())) { / IncidentCard"
     },
     {
       "name": "IncidentCard_ExportButton",
       "file": "app/incident_card.ahk",
-      "line": 681,
-      "end_line": 688,
+      "line": 691,
+      "end_line": 698,
       "kind": "application",
-      "subsystem": "incident_card",
+      "subsystem": "карточки происшествий, хранение и экспорт",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -10280,15 +10286,15 @@
         "IncidentCard_RunDesktopChecks"
       ],
       "coverage": {},
-      "description": "incident_card: ExportButton; код: if !IncidentCard_SaveFromGui() / return false"
+      "description": "карточки происшествий, хранение и экспорт: ExportButton; код: if !IncidentCard_SaveFromGui() / return false"
     },
     {
       "name": "IncidentCard_SaveButton",
       "file": "app/incident_card.ahk",
-      "line": 690,
-      "end_line": 694,
+      "line": 700,
+      "end_line": 704,
       "kind": "application",
-      "subsystem": "incident_card",
+      "subsystem": "карточки происшествий, хранение и экспорт",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -10302,15 +10308,15 @@
         "IncidentCard_RunDesktopChecks"
       ],
       "coverage": {},
-      "description": "incident_card: Сохранить кнопку; код: result := IncidentCard_SaveFromGui() / IncidentCard_SetStatus(result ? \"Карточка сохранена.\" : \"Ошиб"
+      "description": "карточки происшествий, хранение и экспорт: Сохранить кнопку; код: result := IncidentCard_SaveFromGui() / IncidentCard_SetStatus(result ? \"Карточка сохранена.\" : \"Ошиб"
     },
     {
       "name": "IncidentCard_Close",
       "file": "app/incident_card.ahk",
-      "line": 696,
-      "end_line": 705,
+      "line": 706,
+      "end_line": 715,
       "kind": "application",
-      "subsystem": "incident_card",
+      "subsystem": "карточки происшествий, хранение и экспорт",
       "purpose": null,
       "commands": [
         "Gui"
@@ -10329,15 +10335,15 @@
         "IncidentCard_RunDesktopChecks"
       ],
       "coverage": {},
-      "description": "incident_card: Закрыть ; операции: Gui; код: if !IncidentCard_SaveFromGui() { / IncidentCard_SetStatus(\"Не удалось сохранить карточку. Окно остав"
+      "description": "карточки происшествий, хранение и экспорт: Закрыть ; операции: Gui; код: if !IncidentCard_SaveFromGui() { / IncidentCard_SetStatus(\"Не удалось сохранить карточку. Окно остав"
     },
     {
       "name": "IncidentCard_Shutdown",
       "file": "app/incident_card.ahk",
-      "line": 707,
-      "end_line": 709,
+      "line": 717,
+      "end_line": 719,
       "kind": "application",
-      "subsystem": "incident_card",
+      "subsystem": "карточки происшествий, хранение и экспорт",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -10348,15 +10354,15 @@
       ],
       "callers": [],
       "coverage": {},
-      "description": "incident_card: Shutdown; код: return IncidentCard_Close()"
+      "description": "карточки происшествий, хранение и экспорт: Shutdown; код: return IncidentCard_Close()"
     },
     {
       "name": "IncidentJournalGuiClose",
       "file": "app/incident_card.ahk",
-      "line": 711,
-      "end_line": 713,
+      "line": 721,
+      "end_line": 723,
       "kind": "application",
-      "subsystem": "incident_card",
+      "subsystem": "карточки происшествий, хранение и экспорт",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -10367,15 +10373,15 @@
       ],
       "callers": [],
       "coverage": {},
-      "description": "incident_card: IncidentJournalGuiClose; код: IncidentCard_Close()"
+      "description": "карточки происшествий, хранение и экспорт: IncidentJournalGuiClose; код: IncidentCard_Close()"
     },
     {
       "name": "IncidentJournalGuiEscape",
       "file": "app/incident_card.ahk",
-      "line": 715,
-      "end_line": 717,
+      "line": 725,
+      "end_line": 727,
       "kind": "application",
-      "subsystem": "incident_card",
+      "subsystem": "карточки происшествий, хранение и экспорт",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -10386,7 +10392,7 @@
       ],
       "callers": [],
       "coverage": {},
-      "description": "incident_card: IncidentJournalGuiEscape; код: IncidentCard_Close()"
+      "description": "карточки происшествий, хранение и экспорт: IncidentJournalGuiEscape; код: IncidentCard_Close()"
     },
     {
       "name": "Training_IsActive",
@@ -10394,7 +10400,7 @@
       "line": 18,
       "end_line": 21,
       "kind": "application",
-      "subsystem": "training",
+      "subsystem": "учебный чат, цели, GPS и виртуальные условия",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -10414,6 +10420,8 @@
         "GameMenu_WaitChatClosed",
         "GameUi_ShouldShowPassive",
         "CommandPalette_Open",
+        "ActionTrace_Begin",
+        "ActionTrace_CanRetry",
         "Training_PersistedMockMode",
         "Training_Start",
         "Training_Stop",
@@ -10446,7 +10454,7 @@
         "ChatTransport_SendCore"
       ],
       "coverage": {},
-      "description": "training: Проверить Active; код: return IsObject(TrainingSession) && TrainingSession.Active"
+      "description": "учебный чат, цели, GPS и виртуальные условия: Проверить Active; код: return IsObject(TrainingSession) && TrainingSession.Active"
     },
     {
       "name": "Training_PersistedMockMode",
@@ -10454,7 +10462,7 @@
       "line": 23,
       "end_line": 26,
       "kind": "application",
-      "subsystem": "training",
+      "subsystem": "учебный чат, цели, GPS и виртуальные условия",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -10468,7 +10476,7 @@
         "WriteUISafetyAndAudioToIni"
       ],
       "coverage": {},
-      "description": "training: PersistedMockMode; код: return Training_IsActive() ? TrainingSession.Saved.MockMode : MockMode"
+      "description": "учебный чат, цели, GPS и виртуальные условия: PersistedMockMode; код: return Training_IsActive() ? TrainingSession.Saved.MockMode : MockMode"
     },
     {
       "name": "Training_NewModel",
@@ -10476,7 +10484,7 @@
       "line": 28,
       "end_line": 32,
       "kind": "application",
-      "subsystem": "training",
+      "subsystem": "учебный чат, цели, GPS и виртуальные условия",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -10489,7 +10497,7 @@
         "RunTrainingRegression"
       ],
       "coverage": {},
-      "description": "training: NewModel; код: return {Ledger: [], LedgerChars: 0, Pending: \"\", Accepted: \"\", Rejected: \"\" / , Context: {ChatOpen: "
+      "description": "учебный чат, цели, GPS и виртуальные условия: NewModel; код: return {Ledger: [], LedgerChars: 0, Pending: \"\", Accepted: \"\", Rejected: \"\" / , Context: {ChatOpen: "
     },
     {
       "name": "Training_ModelAppend",
@@ -10497,7 +10505,7 @@
       "line": 34,
       "end_line": 46,
       "kind": "application",
-      "subsystem": "training",
+      "subsystem": "учебный чат, цели, GPS и виртуальные условия",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -10512,7 +10520,7 @@
         "RunTrainingRegression"
       ],
       "coverage": {},
-      "description": "training: ModelAppend; код: if (!IsObject(model) || !IsObject(model.Ledger)) / return false"
+      "description": "учебный чат, цели, GPS и виртуальные условия: ModelAppend; код: if (!IsObject(model) || !IsObject(model.Ledger)) / return false"
     },
     {
       "name": "Training_ModelKeys",
@@ -10520,7 +10528,7 @@
       "line": 48,
       "end_line": 93,
       "kind": "application",
-      "subsystem": "training",
+      "subsystem": "учебный чат, цели, GPS и виртуальные условия",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -10532,7 +10540,7 @@
         "RunTrainingRegression"
       ],
       "coverage": {},
-      "description": "training: ModelKeys; код: if (!IsObject(model) || !IsObject(model.GPS)) / return false"
+      "description": "учебный чат, цели, GPS и виртуальные условия: ModelKeys; код: if (!IsObject(model) || !IsObject(model.GPS)) / return false"
     },
     {
       "name": "Training_ModelRecord",
@@ -10540,7 +10548,7 @@
       "line": 95,
       "end_line": 103,
       "kind": "application",
-      "subsystem": "training",
+      "subsystem": "учебный чат, цели, GPS и виртуальные условия",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -10555,7 +10563,7 @@
         "RunTrainingRegression"
       ],
       "coverage": {},
-      "description": "training: ModelRecord; код: if !Training_ModelAppend(model, text) / return false"
+      "description": "учебный чат, цели, GPS и виртуальные условия: ModelRecord; код: if !Training_ModelAppend(model, text) / return false"
     },
     {
       "name": "Training_ModelOffer",
@@ -10563,7 +10571,7 @@
       "line": 105,
       "end_line": 112,
       "kind": "application",
-      "subsystem": "training",
+      "subsystem": "учебный чат, цели, GPS и виртуальные условия",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -10578,7 +10586,7 @@
         "Training_RunDesktopChecks"
       ],
       "coverage": {},
-      "description": "training: ModelOffer; код: target := Trim(target . \"\") / if (!IsObject(model) || !RegExMatch(target, \"^[0-9]{1,4}$\") || target "
+      "description": "учебный чат, цели, GPS и виртуальные условия: ModelOffer; код: target := Trim(target . \"\") / if (!IsObject(model) || !RegExMatch(target, \"^[0-9]{1,4}$\") || target "
     },
     {
       "name": "Training_ModelResolveTarget",
@@ -10586,7 +10594,7 @@
       "line": 114,
       "end_line": 124,
       "kind": "application",
-      "subsystem": "training",
+      "subsystem": "учебный чат, цели, GPS и виртуальные условия",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -10601,7 +10609,7 @@
         "RunTrainingRegression"
       ],
       "coverage": {},
-      "description": "training: ModelResolveTarget; код: if (!IsObject(model) || !IsObject(model.Pending)) / return false"
+      "description": "учебный чат, цели, GPS и виртуальные условия: ModelResolveTarget; код: if (!IsObject(model) || !IsObject(model.Pending)) / return false"
     },
     {
       "name": "Training_Open",
@@ -10609,7 +10617,7 @@
       "line": 126,
       "end_line": 128,
       "kind": "application",
-      "subsystem": "training",
+      "subsystem": "учебный чат, цели, GPS и виртуальные условия",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -10622,7 +10630,7 @@
         "Tools_OpenTraining"
       ],
       "coverage": {},
-      "description": "training: Открыть ; код: return Training_Start()"
+      "description": "учебный чат, цели, GPS и виртуальные условия: Открыть ; код: return Training_Start()"
     },
     {
       "name": "Training_Shutdown",
@@ -10630,7 +10638,7 @@
       "line": 130,
       "end_line": 132,
       "kind": "application",
-      "subsystem": "training",
+      "subsystem": "учебный чат, цели, GPS и виртуальные условия",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -10641,7 +10649,7 @@
       ],
       "callers": [],
       "coverage": {},
-      "description": "training: Shutdown; код: return Training_Stop()"
+      "description": "учебный чат, цели, GPS и виртуальные условия: Shutdown; код: return Training_Stop()"
     },
     {
       "name": "Training_Start",
@@ -10649,7 +10657,7 @@
       "line": 134,
       "end_line": 167,
       "kind": "application",
-      "subsystem": "training",
+      "subsystem": "учебный чат, цели, GPS и виртуальные условия",
       "purpose": null,
       "commands": [
         "Gui"
@@ -10674,7 +10682,7 @@
         "Training_RunDesktopChecks"
       ],
       "coverage": {},
-      "description": "training: Запустить ; операции: Gui; код: if Training_IsActive() { / if (TrainingHwnd)"
+      "description": "учебный чат, цели, GPS и виртуальные условия: Запустить ; операции: Gui; код: if Training_IsActive() { / if (TrainingHwnd)"
     },
     {
       "name": "Training_Stop",
@@ -10682,7 +10690,7 @@
       "line": 169,
       "end_line": 194,
       "kind": "application",
-      "subsystem": "training",
+      "subsystem": "учебный чат, цели, GPS и виртуальные условия",
       "purpose": null,
       "commands": [
         "SetTimer",
@@ -10706,7 +10714,7 @@
         "Training_RunDesktopChecks"
       ],
       "coverage": {},
-      "description": "training: Остановить ; операции: SetTimer, Gui; код: if !Training_IsActive() / return false"
+      "description": "учебный чат, цели, GPS и виртуальные условия: Остановить ; операции: SetTimer, Gui; код: if !Training_IsActive() / return false"
     },
     {
       "name": "Training_CreateWindow",
@@ -10714,7 +10722,7 @@
       "line": 196,
       "end_line": 252,
       "kind": "application",
-      "subsystem": "training",
+      "subsystem": "учебный чат, цели, GPS и виртуальные условия",
       "purpose": null,
       "commands": [
         "Gui"
@@ -10733,7 +10741,7 @@
         "Training_Start"
       ],
       "coverage": {},
-      "description": "training: Создать окно; операции: Gui; код: GetThemeColors(bg, panel, fg, accent, muted) / GetControlSurfaceColors(surface, inputFg, card, edge,"
+      "description": "учебный чат, цели, GPS и виртуальные условия: Создать окно; операции: Gui; код: GetThemeColors(bg, panel, fg, accent, muted) / GetControlSurfaceColors(surface, inputFg, card, edge,"
     },
     {
       "name": "Training_Bind",
@@ -10741,7 +10749,7 @@
       "line": 254,
       "end_line": 259,
       "kind": "application",
-      "subsystem": "training",
+      "subsystem": "учебный чат, цели, GPS и виртуальные условия",
       "purpose": null,
       "commands": [
         "GuiControl"
@@ -10754,7 +10762,7 @@
         "Training_CreateWindow"
       ],
       "coverage": {},
-      "description": "training: Bind; операции: GuiControl; код: callback := Func(functionName) / if (boundValue != \"\")"
+      "description": "учебный чат, цели, GPS и виртуальные условия: Bind; операции: GuiControl; код: callback := Func(functionName) / if (boundValue != \"\")"
     },
     {
       "name": "Training_HotkeysAllowed",
@@ -10762,7 +10770,7 @@
       "line": 261,
       "end_line": 264,
       "kind": "application",
-      "subsystem": "training",
+      "subsystem": "учебный чат, цели, GPS и виртуальные условия",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -10774,7 +10782,7 @@
       ],
       "callers": [],
       "coverage": {},
-      "description": "training: HotkeysAllowed; код: return Training_IsActive() && TrainingHwnd && WinActive(\"ahk_id \" . TrainingHwnd) && !ServiceUI_IsIn"
+      "description": "учебный чат, цели, GPS и виртуальные условия: HotkeysAllowed; код: return Training_IsActive() && TrainingHwnd && WinActive(\"ahk_id \" . TrainingHwnd) && !ServiceUI_IsIn"
     },
     {
       "name": "Training_SetHotkeys",
@@ -10782,7 +10790,7 @@
       "line": 266,
       "end_line": 280,
       "kind": "application",
-      "subsystem": "training",
+      "subsystem": "учебный чат, цели, GPS и виртуальные условия",
       "purpose": null,
       "commands": [
         "Hotkey"
@@ -10796,7 +10804,7 @@
         "Training_Stop"
       ],
       "coverage": {},
-      "description": "training: Установить Hotkeys; операции: Hotkey; код: Hotkey, If, %TrainingHotkeyContext% / try {"
+      "description": "учебный чат, цели, GPS и виртуальные условия: Установить Hotkeys; операции: Hotkey; код: Hotkey, If, %TrainingHotkeyContext% / try {"
     },
     {
       "name": "Training_RecordOutput",
@@ -10804,7 +10812,7 @@
       "line": 282,
       "end_line": 294,
       "kind": "application",
-      "subsystem": "training",
+      "subsystem": "учебный чат, цели, GPS и виртуальные условия",
       "purpose": null,
       "commands": [
         "SetTimer"
@@ -10827,7 +10835,7 @@
         "MockPreview_Append"
       ],
       "coverage": {},
-      "description": "training: RecordOutput; операции: SetTimer; код: if !Training_IsActive() / return false"
+      "description": "учебный чат, цели, GPS и виртуальные условия: RecordOutput; операции: SetTimer; код: if !Training_IsActive() / return false"
     },
     {
       "name": "Training_Render",
@@ -10835,7 +10843,7 @@
       "line": 296,
       "end_line": 317,
       "kind": "application",
-      "subsystem": "training",
+      "subsystem": "учебный чат, цели, GPS и виртуальные условия",
       "purpose": null,
       "commands": [
         "GuiControl"
@@ -10854,7 +10862,7 @@
         "Training_Reset"
       ],
       "coverage": {},
-      "description": "training: Отрисовать ; операции: GuiControl; код: if (!Training_IsActive() || !TrainingHwnd) / return false"
+      "description": "учебный чат, цели, GPS и виртуальные условия: Отрисовать ; операции: GuiControl; код: if (!Training_IsActive() || !TrainingHwnd) / return false"
     },
     {
       "name": "Training_Send",
@@ -10862,7 +10870,7 @@
       "line": 319,
       "end_line": 337,
       "kind": "application",
-      "subsystem": "training",
+      "subsystem": "учебный чат, цели, GPS и виртуальные условия",
       "purpose": null,
       "commands": [
         "GuiControl"
@@ -10880,7 +10888,7 @@
       ],
       "callers": [],
       "coverage": {},
-      "description": "training: Отправить ; операции: GuiControl; код: if (!Training_IsActive() || ServiceUI_IsInputActive()) / return false"
+      "description": "учебный чат, цели, GPS и виртуальные условия: Отправить ; операции: GuiControl; код: if (!Training_IsActive() || ServiceUI_IsInputActive()) / return false"
     },
     {
       "name": "Training_OfferFromUI",
@@ -10888,7 +10896,7 @@
       "line": 339,
       "end_line": 350,
       "kind": "application",
-      "subsystem": "training",
+      "subsystem": "учебный чат, цели, GPS и виртуальные условия",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -10903,7 +10911,7 @@
       ],
       "callers": [],
       "coverage": {},
-      "description": "training: OfferFromUI; код: if (!Training_IsActive() || ServiceUI_IsInputActive()) / return false"
+      "description": "учебный чат, цели, GPS и виртуальные условия: OfferFromUI; код: if (!Training_IsActive() || ServiceUI_IsInputActive()) / return false"
     },
     {
       "name": "Training_Accept",
@@ -10911,7 +10919,7 @@
       "line": 352,
       "end_line": 362,
       "kind": "application",
-      "subsystem": "training",
+      "subsystem": "учебный чат, цели, GPS и виртуальные условия",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -10928,7 +10936,7 @@
         "Training_RunDesktopChecks"
       ],
       "coverage": {},
-      "description": "training: Accept; код: if (!Training_IsActive() || ServiceUI_IsInputActive()) / return false"
+      "description": "учебный чат, цели, GPS и виртуальные условия: Accept; код: if (!Training_IsActive() || ServiceUI_IsInputActive()) / return false"
     },
     {
       "name": "Training_Reject",
@@ -10936,7 +10944,7 @@
       "line": 364,
       "end_line": 371,
       "kind": "application",
-      "subsystem": "training",
+      "subsystem": "учебный чат, цели, GPS и виртуальные условия",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -10952,7 +10960,7 @@
         "Training_RunDesktopChecks"
       ],
       "coverage": {},
-      "description": "training: Reject; код: if (!Training_IsActive() || ServiceUI_IsInputActive()) / return false"
+      "description": "учебный чат, цели, GPS и виртуальные условия: Reject; код: if (!Training_IsActive() || ServiceUI_IsInputActive()) / return false"
     },
     {
       "name": "Training_GPSOpen",
@@ -10960,7 +10968,7 @@
       "line": 373,
       "end_line": 377,
       "kind": "application",
-      "subsystem": "training",
+      "subsystem": "учебный чат, цели, GPS и виртуальные условия",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -10972,7 +10980,7 @@
       ],
       "callers": [],
       "coverage": {},
-      "description": "training: GPSOpen; код: if !Training_IsActive() / return false"
+      "description": "учебный чат, цели, GPS и виртуальные условия: GPSOpen; код: if !Training_IsActive() / return false"
     },
     {
       "name": "Training_GPSKey",
@@ -10980,7 +10988,7 @@
       "line": 379,
       "end_line": 383,
       "kind": "application",
-      "subsystem": "training",
+      "subsystem": "учебный чат, цели, GPS и виртуальные условия",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -10993,7 +11001,7 @@
       ],
       "callers": [],
       "coverage": {},
-      "description": "training: GPSKey; код: if (!Training_IsActive() || ServiceUI_IsInputActive()) / return false"
+      "description": "учебный чат, цели, GPS и виртуальные условия: GPSKey; код: if (!Training_IsActive() || ServiceUI_IsInputActive()) / return false"
     },
     {
       "name": "Training_GPSDigits",
@@ -11001,7 +11009,7 @@
       "line": 385,
       "end_line": 392,
       "kind": "application",
-      "subsystem": "training",
+      "subsystem": "учебный чат, цели, GPS и виртуальные условия",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -11014,7 +11022,7 @@
       ],
       "callers": [],
       "coverage": {},
-      "description": "training: GPSDigits; код: if (!Training_IsActive() || ServiceUI_IsInputActive()) / return false"
+      "description": "учебный чат, цели, GPS и виртуальные условия: GPSDigits; код: if (!Training_IsActive() || ServiceUI_IsInputActive()) / return false"
     },
     {
       "name": "Training_Reset",
@@ -11022,7 +11030,7 @@
       "line": 394,
       "end_line": 408,
       "kind": "application",
-      "subsystem": "training",
+      "subsystem": "учебный чат, цели, GPS и виртуальные условия",
       "purpose": null,
       "commands": [
         "GuiControl"
@@ -11043,7 +11051,7 @@
         "Training_RunDesktopChecks"
       ],
       "coverage": {},
-      "description": "training: Сбросить ; операции: GuiControl; код: if !Training_IsActive() / return false"
+      "description": "учебный чат, цели, GPS и виртуальные условия: Сбросить ; операции: GuiControl; код: if !Training_IsActive() / return false"
     },
     {
       "name": "Training_SetVirtualContext",
@@ -11051,7 +11059,7 @@
       "line": 410,
       "end_line": 419,
       "kind": "application",
-      "subsystem": "training",
+      "subsystem": "учебный чат, цели, GPS и виртуальные условия",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -11065,7 +11073,7 @@
         "Training_RunDesktopChecks"
       ],
       "coverage": {},
-      "description": "training: Установить Virtual Context; код: if (!Training_IsActive() || !RegExMatch(distance . \"\", \"^[0-9]{1,4}(?:[.,][0-9]{1,2})?$\")) / return "
+      "description": "учебный чат, цели, GPS и виртуальные условия: Установить Virtual Context; код: if (!Training_IsActive() || !RegExMatch(distance . \"\", \"^[0-9]{1,4}(?:[.,][0-9]{1,2})?$\")) / return "
     },
     {
       "name": "Training_ApplyContext",
@@ -11073,7 +11081,7 @@
       "line": 421,
       "end_line": 430,
       "kind": "application",
-      "subsystem": "training",
+      "subsystem": "учебный чат, цели, GPS и виртуальные условия",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -11087,7 +11095,7 @@
       ],
       "callers": [],
       "coverage": {},
-      "description": "training: Применить Context; код: if (!Training_IsActive() || ServiceUI_IsInputActive()) / return false"
+      "description": "учебный чат, цели, GPS и виртуальные условия: Применить Context; код: if (!Training_IsActive() || ServiceUI_IsInputActive()) / return false"
     },
     {
       "name": "Training_CanRunAction",
@@ -11095,7 +11103,7 @@
       "line": 432,
       "end_line": 460,
       "kind": "application",
-      "subsystem": "training",
+      "subsystem": "учебный чат, цели, GPS и виртуальные условия",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -11111,7 +11119,7 @@
         "CanRunAction"
       ],
       "coverage": {},
-      "description": "training: Проверить возможность Run действие; код: if !Training_IsActive() / return false"
+      "description": "учебный чат, цели, GPS и виртуальные условия: Проверить возможность Run действие; код: if !Training_IsActive() / return false"
     },
     {
       "name": "Training_OpenPalette",
@@ -11119,7 +11127,7 @@
       "line": 462,
       "end_line": 466,
       "kind": "application",
-      "subsystem": "training",
+      "subsystem": "учебный чат, цели, GPS и виртуальные условия",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -11130,7 +11138,7 @@
       ],
       "callers": [],
       "coverage": {},
-      "description": "training: Открыть Palette; код: if (Training_IsActive() && IsFunc(\"CommandPalette_Open\")) / return Func(\"CommandPalette_Open\").Call("
+      "description": "учебный чат, цели, GPS и виртуальные условия: Открыть Palette; код: if (Training_IsActive() && IsFunc(\"CommandPalette_Open\")) / return Func(\"CommandPalette_Open\").Call("
     },
     {
       "name": "Training_OpenBuilder",
@@ -11138,7 +11146,7 @@
       "line": 468,
       "end_line": 472,
       "kind": "application",
-      "subsystem": "training",
+      "subsystem": "учебный чат, цели, GPS и виртуальные условия",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -11150,7 +11158,7 @@
       ],
       "callers": [],
       "coverage": {},
-      "description": "training: Открыть Builder; код: if Training_IsActive() / return OpenCustomFunctionBuilder()"
+      "description": "учебный чат, цели, GPS и виртуальные условия: Открыть Builder; код: if Training_IsActive() / return OpenCustomFunctionBuilder()"
     },
     {
       "name": "Training_Request",
@@ -11158,7 +11166,7 @@
       "line": 476,
       "end_line": 530,
       "kind": "application",
-      "subsystem": "training",
+      "subsystem": "учебный чат, цели, GPS и виртуальные условия",
       "purpose": null,
       "commands": [
         "Gui",
@@ -11183,7 +11191,7 @@
         "Training_Confirm"
       ],
       "coverage": {},
-      "description": "training: Request; операции: Gui, GuiControl; код: if (!Training_IsActive() || PhysicalInputBusy || ServiceUI_IsInputActive() || IsObject(IDCaptureStat"
+      "description": "учебный чат, цели, GPS и виртуальные условия: Request; операции: Gui, GuiControl; код: if (!Training_IsActive() || PhysicalInputBusy || ServiceUI_IsInputActive() || IsObject(IDCaptureStat"
     },
     {
       "name": "Training_PromptComplete",
@@ -11191,7 +11199,7 @@
       "line": 532,
       "end_line": 543,
       "kind": "application",
-      "subsystem": "training",
+      "subsystem": "учебный чат, цели, GPS и виртуальные условия",
       "purpose": null,
       "commands": [],
       "winapi": [
@@ -11207,7 +11215,7 @@
         "TrainingPromptGuiClose"
       ],
       "coverage": {},
-      "description": "training: PromptComplete; код: if (!Training_IsActive() || ServiceUIInputState != state || state.Pending != \"\" / || state.Epoch != "
+      "description": "учебный чат, цели, GPS и виртуальные условия: PromptComplete; код: if (!Training_IsActive() || ServiceUIInputState != state || state.Pending != \"\" / || state.Epoch != "
     },
     {
       "name": "Training_Confirm",
@@ -11215,7 +11223,7 @@
       "line": 545,
       "end_line": 548,
       "kind": "application",
-      "subsystem": "training",
+      "subsystem": "учебный чат, цели, GPS и виртуальные условия",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -11228,7 +11236,7 @@
         "ServiceUI_Confirm"
       ],
       "coverage": {},
-      "description": "training: Подтвердить ; код: answer := \"\" / return Training_Request(title, text . \"`nВведите 1 — Да, 0 — Нет.\", answer, 1, 60) &&"
+      "description": "учебный чат, цели, GPS и виртуальные условия: Подтвердить ; код: answer := \"\" / return Training_Request(title, text . \"`nВведите 1 — Да, 0 — Нет.\", answer, 1, 60) &&"
     },
     {
       "name": "TrainingGuiClose",
@@ -11236,7 +11244,7 @@
       "line": 550,
       "end_line": 552,
       "kind": "application",
-      "subsystem": "training",
+      "subsystem": "учебный чат, цели, GPS и виртуальные условия",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -11247,7 +11255,7 @@
       ],
       "callers": [],
       "coverage": {},
-      "description": "training: TrainingGuiClose; код: Training_Stop()"
+      "description": "учебный чат, цели, GPS и виртуальные условия: TrainingGuiClose; код: Training_Stop()"
     },
     {
       "name": "TrainingGuiEscape",
@@ -11255,7 +11263,7 @@
       "line": 554,
       "end_line": 556,
       "kind": "application",
-      "subsystem": "training",
+      "subsystem": "учебный чат, цели, GPS и виртуальные условия",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -11266,7 +11274,7 @@
       ],
       "callers": [],
       "coverage": {},
-      "description": "training: TrainingGuiEscape; код: Training_Stop()"
+      "description": "учебный чат, цели, GPS и виртуальные условия: TrainingGuiEscape; код: Training_Stop()"
     },
     {
       "name": "TrainingPromptGuiClose",
@@ -11274,7 +11282,7 @@
       "line": 558,
       "end_line": 562,
       "kind": "application",
-      "subsystem": "training",
+      "subsystem": "учебный чат, цели, GPS и виртуальные условия",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -11288,7 +11296,7 @@
         "TrainingPromptGuiEscape"
       ],
       "coverage": {},
-      "description": "training: TrainingPromptGuiClose; код: if (Training_IsActive() && IsObject(TrainingSession.Prompt)) / Training_PromptComplete(TrainingSessi"
+      "description": "учебный чат, цели, GPS и виртуальные условия: TrainingPromptGuiClose; код: if (Training_IsActive() && IsObject(TrainingSession.Prompt)) / Training_PromptComplete(TrainingSessi"
     },
     {
       "name": "TrainingPromptGuiEscape",
@@ -11296,7 +11304,7 @@
       "line": 564,
       "end_line": 566,
       "kind": "application",
-      "subsystem": "training",
+      "subsystem": "учебный чат, цели, GPS и виртуальные условия",
       "purpose": null,
       "commands": [],
       "winapi": [],
@@ -11307,7 +11315,7 @@
       ],
       "callers": [],
       "coverage": {},
-      "description": "training: TrainingPromptGuiEscape; код: TrainingPromptGuiClose()"
+      "description": "учебный чат, цели, GPS и виртуальные условия: TrainingPromptGuiEscape; код: TrainingPromptGuiClose()"
     },
     {
       "name": "Guide_GetCatalog",
@@ -12703,7 +12711,7 @@
       "name": "CommandPalette_RunRegression",
       "file": "tests/command_palette_regression.ahk",
       "line": 1,
-      "end_line": 48,
+      "end_line": 52,
       "kind": "test",
       "subsystem": "тесты",
       "purpose": null,
@@ -12712,7 +12720,7 @@
       ],
       "winapi": [],
       "first_statement": "saved := CustomFunctions, savedTrigger := Trig_Intro / try {",
-      "sha256": "60ce6c0863afb5d4f0421d5f13905d58dfb868df05566ecdd055edf5ae8bd3e8",
+      "sha256": "773eacf07166b3e59795230cee923f4deb4e5bc2a9be82afb69eb1e7319e84ea",
       "calls": [
         "PrivateText_Resolve",
         "AuditAssert",
@@ -12734,8 +12742,8 @@
     {
       "name": "CommandPalette_RunDesktopChecks",
       "file": "tests/command_palette_regression.ahk",
-      "line": 50,
-      "end_line": 75,
+      "line": 54,
+      "end_line": 79,
       "kind": "test",
       "subsystem": "тесты",
       "purpose": null,
@@ -12858,22 +12866,22 @@
       "name": "ActionTrace_RunRegression",
       "file": "tests/action_trace_regression.ahk",
       "line": 2,
-      "end_line": 114,
+      "end_line": 121,
       "kind": "test",
       "subsystem": "тесты",
       "purpose": null,
       "commands": [],
       "winapi": [],
-      "first_statement": "parent := ActionTrace_Begin(\"Parent operation\", 1) / child := ActionTrace_Begin(\"Inner send\", 1)",
-      "sha256": "b56abd974717b05858c2c8c773a1b36a30f6513d317a447d78c57f18174f41ea",
+      "first_statement": "longParent := ActionTrace_Begin(\"Long scenario\", 100) / Loop, 40 {",
+      "sha256": "f6da46c43fe7a788fe11ebc3ebdfec8b3d93f302000a07c2750ac0f945c23809",
       "calls": [
         "ActionTrace_Begin",
         "ActionTrace_Finish",
         "AuditAssert",
+        "ActionTrace_Get",
         "GetDynamicGlobalValue",
         "ActionTrace_Add",
         "ActionTrace_Update",
-        "ActionTrace_Get",
         "ActionTrace_IsRetrySafeText",
         "ChatQueue_EnqueueBatch",
         "ChatQueue_Tick",
@@ -12893,13 +12901,13 @@
         "RunAuditSelfTest"
       ],
       "coverage": {},
-      "description": "тесты: Выполнить Regression; код: parent := ActionTrace_Begin(\"Parent operation\", 1) / child := ActionTrace_Begin(\"Inner send\", 1)"
+      "description": "тесты: Выполнить Regression; код: longParent := ActionTrace_Begin(\"Long scenario\", 100) / Loop, 40 {"
     },
     {
       "name": "ActionTrace_RunDesktopChecks",
       "file": "tests/action_trace_regression.ahk",
-      "line": 116,
-      "end_line": 134,
+      "line": 123,
+      "end_line": 141,
       "kind": "test",
       "subsystem": "тесты",
       "purpose": null,
@@ -12929,16 +12937,20 @@
       "name": "IncidentCard_RunRegression",
       "file": "tests/incident_card_regression.ahk",
       "line": 2,
-      "end_line": 78,
+      "end_line": 95,
       "kind": "test",
       "subsystem": "тесты",
       "purpose": null,
-      "commands": [],
+      "commands": [
+        "FileDelete"
+      ],
       "winapi": [
-        "GetCurrentProcessId"
+        "GetCurrentProcessId",
+        "CreateFileW",
+        "CloseHandle"
       ],
       "first_statement": "root := (scratch != \"\" ? scratch : AppHost_DataDir()) . \"\\incident-regression-\" . DllCall(\"GetCurrentProcessId\") / FileCreateDir, %root%",
-      "sha256": "51732af439cff6904a260c680a07f08a542cda5d3a1af289e2a7647af19d5365",
+      "sha256": "61f7ec0cc0ca73ca9fe3c516317d18f04f73c9e7fc0f22526c544f4030c92900",
       "calls": [
         "AppHost_DataDir",
         "IncidentCard_NormalizeTarget",
@@ -12965,13 +12977,13 @@
         "RunAuditSelfTest"
       ],
       "coverage": {},
-      "description": "тесты: Выполнить Regression; код: root := (scratch != \"\" ? scratch : AppHost_DataDir()) . \"\\incident-regression-\" . DllCall(\"GetCurren"
+      "description": "тесты: Выполнить Regression; операции: FileDelete; код: root := (scratch != \"\" ? scratch : AppHost_DataDir()) . \"\\incident-regression-\" . DllCall(\"GetCurren"
     },
     {
       "name": "IncidentCard_RunDesktopChecks",
       "file": "tests/incident_card_regression.ahk",
-      "line": 80,
-      "end_line": 105,
+      "line": 97,
+      "end_line": 122,
       "kind": "test",
       "subsystem": "тесты",
       "purpose": null,
@@ -13050,14 +13062,14 @@
       "name": "Training_RunDesktopChecks",
       "file": "tests/training_regression.ahk",
       "line": 60,
-      "end_line": 102,
+      "end_line": 103,
       "kind": "test",
       "subsystem": "тесты",
       "purpose": null,
       "commands": [],
       "winapi": [],
       "first_statement": "savedMode := MockMode, savedID := UserID, savedActive := ActiveID, savedNick := TargetNickname, savedMask := TargetIsMask / savedGPS := GPSSettings, savedCooldown := ActionCooldownMs",
-      "sha256": "157b603cb5474414b088c5d6631a50140fefcf8c21571afe9ae8078e32ad392b",
+      "sha256": "5109c6fb228f7cbf2b483e40e9b726c9069a14ebf09dc1ce81c6e672b40cbdef",
       "calls": [
         "DesktopSmoke_Assert",
         "Training_Start",
@@ -13067,6 +13079,7 @@
         "SendChat",
         "Evidence_Arm",
         "Evidence_RequestScreenshot",
+        "ActionTrace_Get",
         "SafeSend",
         "Training_ModelOffer",
         "Training_Accept",
@@ -23210,6 +23223,7 @@
         "GameMenu_Run",
         "PrivateText_ReportBlocked",
         "GPS_Run",
+        "IncidentCard_SaveRecord",
         "LogUIError",
         "MemoryLiveTest_Finish",
         "CreateConfigBackup",
@@ -41224,8 +41238,8 @@
     "app/private_text.ahk": "b3a2c35f114ba90de0fb6801d504de9ba505525730f241cf23e1c08cb73dc388",
     "app/command_palette.ahk": "a4f233a7a190fa2393795d1960264b8e145857af94ca582eef2084044c6f2359",
     "app/gps_calibration.ahk": "3cb519fb3bdbdc343fbfcb7af1bbf98228d8005f36917ae6e0783952171a8c35",
-    "app/action_trace.ahk": "a5b4c6ab4996b2cb045140162ebc4038d8557a64b1b85350b9898946034443c2",
-    "app/incident_card.ahk": "d24ed236fd22d268376c5d33c9317168560c630108dc4fa634351c0844790ebe",
+    "app/action_trace.ahk": "95f61dc3b909e447f6000010b9c4dd69b3ecc92b742d3bf7d218f1dfca0fbfdd",
+    "app/incident_card.ahk": "1a8103f98ca3699f6551ede81dd475b8840efd1bc22325beccca82724751d849",
     "app/training.ahk": "a8a0cf239e1b11a0acd57cc1d842ca991c94cf37dfc0af96ee92dd4ddef3cdd5",
     "app/reference_guides.ahk": "e53b551e8bd9585d1121072fc40893cbbdcdcd3cc06008fd4e4e0eccd553364d",
     "ui_style.ahk": "2caf3596199bfdf5f62a0d042a4fe2c8355724d5aab45ec63d2ca9546b8e003f",
@@ -41243,11 +41257,11 @@
     "tests/reference_guides_regression.ahk": "eee7f84b219ae25991266cd826ccb35890bac8aba0e3caa959988d1b4effa7e4",
     "tests/text_commands_regression.ahk": "eb164362dcd3981534c45867ef42c1b2085e02880bdd23b65a822247f57719e1",
     "tests/custom_builder_regression.ahk": "f0d71b8706f5d1cebae71b59091420e607f92eab0b2692d3427543175b5ef46c",
-    "tests/command_palette_regression.ahk": "4fbd7e113742efbfa62886edd1c044b3e0876d832295a33959d3f71215592bd9",
+    "tests/command_palette_regression.ahk": "b4ee1abbf211ec9485402044c6c568fbb7e837a6e57c4d3e1f47c2b7844202e9",
     "tests/gps_calibration_regression.ahk": "69d735e6db5a6f3a5809db0846e2fdb1d22570191ccc8cbf02f05aceaeee73b8",
-    "tests/action_trace_regression.ahk": "82b051f30228d546f4490efecc7f03fc366ef9d49bdb022c51a49a5104dc713d",
-    "tests/incident_card_regression.ahk": "e2e104b58bf630522b1f8a680204fcf377578e9137ea8d248b5bc271dd8f704f",
-    "tests/training_regression.ahk": "3700326e733c88b8bfb88178058bda00267186b97b1819f4e56c79f0a3355948",
+    "tests/action_trace_regression.ahk": "dc4f376612393ee97231dec055b9cdca303d3f4ac5df28ca74cfa3f53c43faa0",
+    "tests/incident_card_regression.ahk": "1ce8f5731ea7f1ae78d87dce5577fa0826f64c380f088b5e533b034f241e6581",
+    "tests/training_regression.ahk": "0e40aeb15660206ca8fd039095602dfc996cec92c7fc9be1df7c42072e295818",
     "tests/block_builder_regression.ahk": "5e88ec302c563a931c99f386075367912be9089f4ebb33fd98d833461980d1bf",
     "tests/audit_regression.ahk": "7534f66f290ac53f6a9a0216c12a7f19eb8978aabb9d5025a4e98031fdb7fa5b",
     "helper.ahk": "487275a9d5abf1fe6c9c99f1d037724c1d262a1a4890267124a138ce9edd1235",

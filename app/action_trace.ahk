@@ -24,15 +24,23 @@ ActionTrace_Begin(source, expectedSteps := 0) {
     record := {Id: id, Source: SubStr(source . "", 1, 120), Steps: [], Total: 0
         , Expected: Max(0, Floor(expectedSteps + 0)), Observed: 0, State: "running"
         , Epoch: AutomationEpoch, Profile: CurrentProfile, Target: UserID . ""
-        , Mock: MockMode = "On" || AuditTestMode, Started: TickNow(), Finished: 0
+        , Mock: MockMode = "On" || AuditTestMode || Training_IsActive(), Started: TickNow(), Finished: 0
         , Stamp: A_Hour . ":" . A_Min . ":" . A_Sec, Detail: ""}
     ActionTraceRecords[id] := record
     ActionTraceOrder.Push(id)
     ActionTraceLastId := id
-    ; The cap is deliberate even for still-queued old entries: queue capacity can
-    ; be 1000. Evicted trace ids become harmless no-ops rather than retaining RAM.
-    while (ActionTraceOrder.Length() > 24)
-        ActionTraceRecords.Delete(ActionTraceOrder.RemoveAt(1))
+    ; Prefer completed records so a long scenario keeps its parent journal.
+    ; If all 24 records are active, the oldest still yields to the strict cap.
+    while (ActionTraceOrder.Length() > 24) {
+        removeIndex := 1
+        for index, candidate in ActionTraceOrder {
+            if (ActionTraceRecords[candidate].State != "running") {
+                removeIndex := index
+                break
+            }
+        }
+        ActionTraceRecords.Delete(ActionTraceOrder.RemoveAt(removeIndex))
+    }
     ActionTrace_Changed()
     return id
 }
@@ -234,7 +242,7 @@ ActionTrace_CanRetry(id, index, ByRef reason, requireIdle := true) {
         if (step.Status != "failed" || !step.Retryable || step.Replayed)
             reason := "Повтор доступен только для точно неотправленного сообщения. Команды игры, меню и неопределённые вызовы запрещены."
         else if (record.Epoch != AutomationEpoch || record.Profile != CurrentProfile || "ID:" . record.Target != "ID:" . UserID
-            || !!record.Mock != !!(MockMode = "On" || AuditTestMode))
+            || !!record.Mock != !!(MockMode = "On" || AuditTestMode || Training_IsActive()))
             reason := "Профиль, цель или режим изменились; повтор из старого контекста запрещён."
         else if (requireIdle && (ChatQueue_Count() || ChatQueueBusy || PhysicalInputBusy || IsObject(IDCaptureState)
             || ServiceUI_IsInputActive() || IsObject(GameMenuStarting) || IsObject(GameMenuLease)

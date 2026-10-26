@@ -26,13 +26,15 @@ CommandPalette_RunRegression() {
         results := CommandPalette_Find("", 3)
         AuditAssert("Palette results bounded", results.Length() = 3)
         configProbe := AppHost_DataDir() . "\palette-profile-probe.ini"
-        FileDelete, %configProbe%
+        if FileExist(configProbe)
+            FileDelete, %configProbe%
         CheckedIniWrite("Empty", configProbe, "Profiles", "Last")
         AuditAssert("Diagnostics missing legacy binding keys are not ERROR conflicts", V1_CheckProfileConflicts(configProbe, conflictDetail))
         CheckedIniWrite("!е", configProbe, "Profile_Empty", "Bind_EnterID")
         CheckedIniWrite("!t", configProbe, "Profile_Empty", "Bind_OpenBindsTab")
         AuditAssert("Diagnostics compares imported Russian and English physical hotkeys", !V1_CheckProfileConflicts(configProbe, conflictDetail))
-        FileDelete, %configProbe%
+        if FileExist(configProbe)
+            FileDelete, %configProbe%
         AuditAssert("Palette bounded edit distance", CommandPalette_NearWord("наручники", "наручнки") && !CommandPalette_NearWord("дом", "дым") && !CommandPalette_NearWord("права", "правильно"))
         rows := CommandPalette_Catalog(), toolsOK := true
         for _, row in rows {
@@ -42,6 +44,8 @@ CommandPalette_RunRegression() {
         AuditAssert("Palette all tool handlers implemented", toolsOK)
         preview := CommandPalette_Describe(results[1])
         AuditAssert("Palette preview identifies actual profile", InStr(preview, CurrentProfile))
+    } catch e {
+        AuditAssert("Palette exception: " . e.Message . " | " . e.What . " | " . e.Extra . " | " . e.Line, false)
     } finally {
         CustomFunctions := saved, Trig_Intro := savedTrigger
     }

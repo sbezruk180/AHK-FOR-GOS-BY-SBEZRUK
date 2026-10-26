@@ -199,9 +199,14 @@ IncidentCard_SaveRecord(card, root := "") {
     } finally {
         if (!ok)
             card.Updated := previousUpdated
-        if FileExist(stage)
-            FileDelete, %stage%
         IncidentCardWriteBusy := 0
+        if FileExist(stage) {
+            try {
+                FileDelete, %stage%
+            } catch cleanupError {
+                LogError("IncidentCard", "Временный файл недоступен для удаления: " . stage, "WARN")
+            }
+        }
     }
 }
 
@@ -371,20 +376,25 @@ IncidentCard_Report(card) {
 }
 
 IncidentCard_Export(card, root := "") {
+    static serial := 0
     if (!IsObject(card) || IncidentCard_EncodeRecord(card) = "")
         return ""
     folder := IncidentCard_DataDir(root) . "\exports"
-    FileCreateDir, %folder%
-    target := folder . "\" . card.RecordID . "-" . A_NowUTC . ".txt"
-    file := FileOpen(target, "w", "UTF-8")
-    if !IsObject(file)
-        return ""
     try {
-        ok := file.Write(IncidentCard_Report(card)) > 0
-    } finally {
-        file.Close()
+        FileCreateDir, %folder%
+        target := folder . "\" . card.RecordID . "-" . A_NowUTC . "-" . DllCall("GetCurrentProcessId") . "-" . (++serial) . ".txt"
+        file := FileOpen(target, "w", "UTF-8")
+        if !IsObject(file)
+            return ""
+        try {
+            ok := file.Write(IncidentCard_Report(card)) > 0
+        } finally {
+            file.Close()
+        }
+        return ok ? target : ""
+    } catch exportError {
+        return ""
     }
-    return ok ? target : ""
 }
 
 IncidentCard_SaveFromGui() {
