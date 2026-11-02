@@ -1,0 +1,70 @@
+name: CSharp v2 isolated preview
+on:
+  push:
+    branches: [v2-csharp-preview]
+    paths: ['versions/2.0-csharp/**', 'laws/**', '.github/workflows/csharp-v2.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: Core tests
+        shell: pwsh
+        run: |
+          dotnet run --project versions/2.0-csharp/tests/Gos.Tests -c Release | Tee-Object core-report.txt
+          if ($LASTEXITCODE) { throw 'Core regression failed' }
+      - name: Publish independent x86 EXE
+        shell: pwsh
+        run: |
+          ./versions/2.0-csharp/build.ps1
+          if ($LASTEXITCODE) { throw 'Publish failed' }
+      - name: Native UI, physical keyboard and x86 ABI
+        shell: pwsh
+        run: |
+          $folder = Join-Path $env:RUNNER_TEMP 'gos-v2-native'
+          $app = Resolve-Path versions/2.0-csharp/out/win-x86/Gos.exe
+          $p = Start-Process $app -ArgumentList @('--ui-selftest',"`"$folder`"") -PassThru
+          if (!$p.WaitForExit(90000)) { $p.Kill(); throw 'Native selftest timeout' }
+          Get-Content (Join-Path $folder 'native-report.txt')
+          Copy-Item $folder native-results -Recurse
+          if ($p.ExitCode) { throw 'Native selftest failed' }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: GOS-2-CSharp-preview
+          path: |
+            versions/2.0-csharp/out/win-x86/Gos.exe
+            versions/2.0-csharp/out/win-x86/SHA256SUMS.txt
+            core-report.txt
+            native-results/**
+  evidence:
+    needs: verify
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: GOS-2-CSharp-preview
+          path: artifacts
+      - name: Save tested preview and screenshots separately
+        run: |
+          mkdir -p versions/2.0-csharp/download
+          cp artifacts/versions/2.0-csharp/out/win-x86/Gos.exe versions/2.0-csharp/download/Gos.exe
+          cp artifacts/versions/2.0-csharp/out/win-x86/SHA256SUMS.txt versions/2.0-csharp/download/
+          cp artifacts/core-report.txt versions/2.0-csharp/download/
+          cp -r artifacts/native-results versions/2.0-csharp/download/
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git switch -c csharp-v2-build-${{ github.run_id }}
+          git add -f versions/2.0-csharp/download
+          git commit -m 'Archive verified CSharp preview and native UI evidence'
+          git push origin HEAD
