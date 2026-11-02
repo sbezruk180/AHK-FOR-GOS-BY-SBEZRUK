@@ -62,6 +62,15 @@ jobs:
           cp artifacts/versions/2.0-csharp/out/win-x86/SHA256SUMS.txt versions/2.0-csharp/download/
           cp artifacts/core-report.txt versions/2.0-csharp/download/
           cp -r artifacts/native-results versions/2.0-csharp/download/
+          python - <<'PY'
+          from pathlib import Path
+          import zipfile,subprocess
+          root=Path('versions/2.0-csharp')
+          paths=subprocess.check_output(['git','ls-files','-z',str(root)]).decode().split('\0')
+          with zipfile.ZipFile(root/'download/Gos-2.0-CSharp-Source.zip','w',zipfile.ZIP_DEFLATED) as archive:
+              for name in paths:
+                  if name and '/download/' not in name: archive.write(name,Path(name).relative_to(root))
+          PY
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git switch -c csharp-v2-build-${{ github.run_id }}
