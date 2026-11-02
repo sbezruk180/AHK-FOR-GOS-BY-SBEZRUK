@@ -1,0 +1,22 @@
+{
+  "source_commit": "a688336",
+  "workflow_run": "https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK/actions/runs/41395670361",
+  "core_checks": 79,
+  "native_checks": 25,
+  "failures": 0,
+  "real_game": "NOT_TESTED",
+  "exclusive_fullscreen": "NOT_TESTED_EXTERNAL_OVERLAY_LIMITATION",
+  "obs_recording": "NOT_TESTED",
+  "downloads": {
+    "Gos.exe": {
+      "url": "https://raw.githubusercontent.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK/csharp-v2-build-41395670361/versions/2.0-csharp/download/Gos.exe",
+      "bytes": 48256306,
+      "sha256": "98a355faa37820db079fc86b2beb3407546be8e58bf963869f7f99ecaecd7645"
+    },
+    "Gos-2.0-CSharp-Source.zip": {
+      "url": "https://raw.githubusercontent.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK/csharp-v2-build-41395670361/versions/2.0-csharp/download/Gos-2.0-CSharp-Source.zip",
+      "bytes": 273590,
+      "sha256": "d8efb27ee1cfe90c409dfac1fc710778cf9b8e591719ae4fc0877a1b2a338d33"
+    }
+  }
+}

@@ -2,6 +2,9 @@
 
 Экспериментальная версия **2.0.0-preview.1**, C# / .NET 10 LTS / WinForms / Windows x86. Старый AHK 1.1 и его пользовательские данные остаются отдельными. Новая программа не запускает AutoHotkey и не требует его установки.
 
+
+[Скачать EXE](https://raw.githubusercontent.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK/csharp-v2-build-41395670361/versions/2.0-csharp/download/Gos.exe) · [Исходники отдельным архивом](https://raw.githubusercontent.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK/csharp-v2-build-41395670361/versions/2.0-csharp/download/Gos-2.0-CSharp-Source.zip) · [Отчёт и ограничения](docs/REPORT_RU.md)
+
 ## Быстрый старт
 
 1. Закрыть старую AHK-версию, чтобы её бинды не конфликтовали с новой. Запустить `Gos.exe`. Среда .NET включена в единый EXE. При первом старте .NET может распаковать свои native-библиотеки в системную временную папку — отдельная установка runtime не нужна.
@@ -70,3 +73,9 @@ dotnet build src/Gos.Windows/Gos.Windows.csproj -c Release
 `Gos.exe --ui-selftest <одноразовая-папка>` запускает отдельную проверку нативных окон, снятия affinity, реальных scan-code русской/английской печати в собственном окне и исходного stdcall в собственной памяти. Пользовательские/игровые данные для этого не нужны. Игра в этом режиме не проверяется.
 
 Windows workflow: `.github/workflows/csharp-v2.yml`. Результат, EXE и снимки сохраняются в отдельной ветке сборки. Исходники preview живут в `v2-csharp-preview`; стабильная ветка и релиз AHK 1.1 не заменяются.
+
+## Снимок интерфейса
+
+Реальное окно на Windows-тестовом стенде; имена и ID заданы фикстурой, игра не запущена.
+
+![Меню GOS 2](docs/screenshots/actions.png)
