@@ -53,13 +53,15 @@ public sealed class ChatTransport(GameMemory game) : IMessageTransport, IKeyTran
                     Progress?.Invoke($"Клавишный ввод: {index}/{text.Length} — нажимайте любые буквенные клавиши; Pause — отмена");
                     await WaitForPhysicalKey(ct);
                 }
+                long characterStart=System.Diagnostics.Stopwatch.GetTimestamp();
                 RequireGame(ct);
                 if (game.IsChatOpen != true) throw new InvalidOperationException("Чат закрыт во время печати. Действие остановлено.");
                 KeyboardHook.TypeCharacter(text[index]);
                 if (mode == SendMode.RandomTyping)
                 {
                     int speed = Random.Shared.Next(settings.MinCps, settings.MaxCps + 1);
-                    await Task.Delay(Math.Max(1, 1000 / speed), ct);
+                    int remaining=(int)Math.Ceiling(1000.0/speed-System.Diagnostics.Stopwatch.GetElapsedTime(characterStart).TotalMilliseconds);
+                    if(remaining>0)await Task.Delay(remaining,ct);
                 }
             }
             // End assisted capture before injecting Enter; injected keys never earn permits.

@@ -36,7 +36,7 @@ public sealed class AppController : IAppController, IDisposable
         ui=SynchronizationContext.Current??new WindowsFormsSynchronizationContext();
         transport=new(game);runner=new(transport);
         runner.StatusChanged+=Notify; transport.Progress+=Notify;
-        keyboard=new();keyboard.KeyInput+=HandleKey;keyboard.CallbackError+=e=>Notify("Обработчик клавиатуры: "+e.Message);
+        keyboard=new();keyboard.KeyInput+=HandleKey;keyboard.CallbackError+=e=>{runner.Cancel();Notify("Обработчик клавиатуры: "+e.Message);};
         timer.Tick+=async(_,_)=>await TickAsync();
         game.ExpectedHash=Settings.ExpectedModuleHash;
         game.ChatCallLaunched+=()=>{if(Volatile.Read(ref stopRunning))Interlocked.Exchange(ref lastStop,Environment.TickCount64);};

@@ -190,5 +190,5 @@ public class ReferenceForm : GosForm
 public sealed class RightsForm : ReferenceForm
 {
     public RightsForm(IAppController controller) : base(controller, "Права задержанного", string.Join(Environment.NewLine + Environment.NewLine,
-        ActionCatalog.All.First(a => a.Key == "rights").Lines.Select(line => Template.Expand(line, controller.Settings, controller.Target)))) { }
+        ActionCatalog.StepsFor(ActionCatalog.All.First(a => a.Key == "rights"), controller.Settings).Select(step => Template.Expand(step.Text, controller.Settings, controller.Target)))) { }
 }
