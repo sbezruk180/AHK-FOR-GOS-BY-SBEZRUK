@@ -1,0 +1,26 @@
+PASS | Shipping host is x86
+PASS | Real shell created
+PASS | Page opens: Действия
+PASS | No horizontal scrolling: Действия
+PASS | Page opens: Конструктор
+PASS | No horizontal scrolling: Конструктор
+PASS | Page opens: Законы
+PASS | No horizontal scrolling: Законы
+PASS | Page opens: Настройки
+PASS | No horizontal scrolling: Настройки
+PASS | Page opens: О приложении
+PASS | No horizontal scrolling: О приложении
+PASS | OBS Off clears affinity
+PASS | Palette no-activate style
+PASS | Empty Enter sends nothing
+PASS | Escape closes palette
+PASS | HUD no-activate
+PASS | Nearby displays fixture rows
+PASS | Rights reference never sends
+PASS | Overlays hide outside game
+PASS | Actual scan-code English/Russian input
+PASS | Injected hook events do not look physical
+PASS | Original x86 stdcall executes on owned process
+PASS | Stub receives exact argument
+PASS | Stub normal-return marker independent of callee EAX
+RESULT | failed=0
