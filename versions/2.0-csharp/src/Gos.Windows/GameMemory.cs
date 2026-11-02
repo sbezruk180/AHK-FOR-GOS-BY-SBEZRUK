@@ -233,6 +233,18 @@ public sealed class GameMemory : IDisposable
         }
     }
 
+    public bool ValidateTarget(TargetSnapshot target)
+    {
+        lock(sync)
+        {
+            Refresh(); if(!ForegroundMatches()||!BuildAllowed()||target.Id is <0 or >=MaxPlayers)return false;
+            uint pool=PlayerPool(),info=ListedInfo(pool,target.Id);
+            if(!Pointer(info))return false;
+            if(target.Ped!=0&&!Matches(info,target.Ped))return false;
+            return target.Ped==0||string.IsNullOrEmpty(target.Name)||Nickname(info)==target.Name;
+        }
+    }
+
     /// <summary>Only streamed remote players, not NPCs or all connected players. Distances are 3D game units.</summary>
     public IReadOnlyList<NearbyPlayer> ReadNearby(double radius)
     {
@@ -273,11 +285,12 @@ public sealed class GameMemory : IDisposable
         }
     }
 
-    public void SendChat(string text)
+    public void SendChat(string text, CancellationToken cancellationToken=default)
     {
         lock (sync)
         {
             ObjectDisposedException.ThrowIf(disposed, this);
+            cancellationToken.ThrowIfCancellationRequested();
             if (string.IsNullOrWhiteSpace(text) || text.Length > 1023 || text.Any(c => c == '\0' || c == '\r' || c == '\n'))
                 throw new ArgumentException("Сообщение должно быть одной строкой длиной до 1023 символов.");
             byte[] encoded;
@@ -311,6 +324,7 @@ public sealed class GameMemory : IDisposable
                         throw new Win32Exception(Marshal.GetLastWin32Error(), "Не удалось подготовить вызов игрового чата.");
                     if (!ForegroundMatches() || ExpectedHash != expectedAtStart || !BuildAllowed() || !Executable(function))
                         throw new InvalidOperationException("Контекст изменился до отправки.");
+                    cancellationToken.ThrowIfCancellationRequested();
                     thread = Native.CreateRemoteThread(writable, 0, 0, remoteCode, 0, 0, out _);
                     if (thread == 0) throw new Win32Exception(Marshal.GetLastWin32Error(), "Игровой вызов не запущен.");
                     launched = true;

@@ -17,12 +17,27 @@ internal static class Program
         try
         {
             Directory.CreateDirectory(Root);
-            Settings(); Catalog(); Laws(); Profiles(); Events(); await Runner();
+            Settings(); Catalog(); Laws(); Profiles(); Events(); await Runner(); await Assisted();
             Console.WriteLine($"RESULT: {count} passed, 0 failed; Core only, actual game/OBS/Win32 not exercised.");
             return 0;
         }
         catch(Exception error){Console.Error.WriteLine(error);return 1;}
         finally {if(Directory.Exists(Root))Directory.Delete(Root,true);}
+    }
+    private static async Task Assisted()
+    {
+        var gate=new AssistedInput();gate.Begin(3);
+        gate.Press(true,false);gate.Press(true,false);gate.Press(true,false);
+        using var timeout=new CancellationTokenSource(2000);
+        await gate.WaitAsync(timeout.Token);await gate.WaitAsync(timeout.Token);await gate.WaitAsync(timeout.Token);
+        Check(true,"Three rapid presses produce three characters without loss");
+        gate.End();Check(!gate.Press(true,false),"Assisted input releases keys when inactive");
+        gate.Begin(1);gate.Press(true,true);gate.Press(false,false);
+        using var cancel=new CancellationTokenSource(30);
+        await ThrowsAsync<OperationCanceledException>(()=>gate.WaitAsync(cancel.Token),"Key repeat and key-up do not grant a character");
+        gate.Press(true,false);gate.End();gate.Begin(1);
+        using var cancel2=new CancellationTokenSource(30);
+        await ThrowsAsync<OperationCanceledException>(()=>gate.WaitAsync(cancel2.Token),"Presses cannot leak into next chat message");gate.End();
     }
     private static void Settings()
     {
@@ -62,6 +77,7 @@ internal static class Program
     {
         var library=new LawLibrary();
         Check(library.Documents.Count==20,"All twenty laws actually embedded");
+        Check(library.Documents.Single(d=>d.Key=="VU").Name.Contains("внутренних дел")&&library.Documents.Single(d=>d.Key=="VV").Name.Contains("вертикали"),"Law titles match actual original documents");
         Check(library.Documents.All(d=>d.Text.Length>100 && !d.Text.Contains('\uFFFD')),"All law corpora decode as original Cyrillic");
         Check(library.Search("ук").All(x=>x.Document.EndsWith("(UK)"))&&library.Search("ук").Count>0,"Russian document alias scopes legal search");
         Check(library.Search("полиции").Count>0,"Law text search returns actual source lines");
@@ -110,6 +126,10 @@ internal static class Program
     }
     private static void Events()
     {
+        Check(ChatEventParser.Parse("Other_Player[7] говорит: Вы начали преследование Target_Player[42]", "Own_Player")==null,"Foreign quoted server text cannot offer target");
+        Check(ChatEventParser.Parse("Other_Player[7] говорит: Own_Player начал преследование Target_Player[42]", "Own_Player")==null,"Mentioning own nickname in chat is not own event");
+        Check(ChatEventParser.Parse("[12:30:25] Вы начали преследование Target_Player[42]", "Own_Player")?.Id==42,"Timestamped own server event accepted");
+
         Check(ChatEventParser.Parse("Вы начали преследование Test_Player[42]","") is {Kind:"chase",Id:42},"Own chase event offers exact ID");
         Check(ChatEventParser.Parse("Other_Player[7] начал преследование Test_Player[42]","Own_Player")==null,"Foreign chase does not automate");
         Check(ChatEventParser.Parse("Own_Player[7] начал преследование Test_Player[42]","Own_Player")?.Id==42,"Two-ID event chooses target rather than own ID");

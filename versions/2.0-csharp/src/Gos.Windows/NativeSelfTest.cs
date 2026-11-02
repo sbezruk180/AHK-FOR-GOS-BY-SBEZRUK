@@ -20,7 +20,8 @@ internal static class NativeSelfTest
             foreach(var page in new[]{"Действия","Конструктор","Законы","Настройки","О приложении"})
             {
                 var nav=Descendants(shell).OfType<Button>().First(b=>b.Text==page);nav.PerformClick();Application.DoEvents();
-                Check("Page opens: "+page,shell.Controls.Count>0);Image(shell,page switch {"Действия"=>"actions","Конструктор"=>"builder","Законы"=>"laws","Настройки"=>"settings",_=>"about"});
+                Check("Page opens: "+page,shell.Controls.Count>0);
+                Check("No horizontal scrolling: "+page,Descendants(shell).OfType<FlowLayoutPanel>().Where(f=>f.AutoScroll).All(f=>!f.HorizontalScroll.Visible));Image(shell,page switch {"Действия"=>"actions","Конструктор"=>"builder","Законы"=>"laws","Настройки"=>"settings",_=>"about"});
             }
             foreach(Form form in Application.OpenForms)
             {WindowPolicy.Apply(form,false,false);Check("OBS Off clears affinity",Native.GetWindowDisplayAffinity(form.Handle,out uint value)&&value==0);}

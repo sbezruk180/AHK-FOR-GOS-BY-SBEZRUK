@@ -21,6 +21,27 @@ public sealed class ShellForm : GosForm
     {
         app = controller; Text = "AHK FOR GOS · 2.0 / C#"; MinimumSize = new Size(760, 540); Size = new Size(1080, 760);
         StartPosition = FormStartPosition.CenterScreen;
+        FormBorderStyle = FormBorderStyle.None; Padding = new Padding(1);
+        var titlebar = new Panel { Dock = DockStyle.Top, Height = 40, BackColor = Theme.Panel };
+        var title = new Label { Text = "AHK FOR GOS  /  2.0", AutoSize = false, Dock = DockStyle.Fill,
+            Padding = new Padding(18, 11, 0, 0), ForeColor = Theme.Muted, Font = Theme.Body(9) };
+        Point dragOrigin = Point.Empty, windowOrigin = Point.Empty; bool dragging = false;
+        void DragTitle(object? sender, MouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Left || sender is not Control source) return;
+            dragOrigin = Cursor.Position; windowOrigin = Location; dragging = true; source.Capture = true;
+        }
+        void MoveTitle(object? sender, MouseEventArgs e)
+        {
+            if (dragging) Location = new Point(windowOrigin.X + Cursor.Position.X - dragOrigin.X, windowOrigin.Y + Cursor.Position.Y - dragOrigin.Y);
+        }
+        void EndDrag(object? sender, MouseEventArgs e)
+        { dragging = false; if (sender is Control source) source.Capture = false; }
+        foreach (Control source in new Control[] { titlebar, title })
+        { source.MouseDown += DragTitle; source.MouseMove += MoveTitle; source.MouseUp += EndDrag; source.MouseCaptureChanged += (_, _) => { if (!source.Capture) dragging = false; }; }
+        var hide = Theme.Button("—", Hide); hide.Dock = DockStyle.Right; hide.Width = 46; hide.Margin = Padding.Empty;
+        var close = Theme.Button("×", () => { editing = null; Hide(); }); close.Dock = DockStyle.Right; close.Width = 46; close.Margin = Padding.Empty;
+        titlebar.Controls.Add(title); titlebar.Controls.Add(hide); titlebar.Controls.Add(close);
         var sidebar = new Panel { Dock = DockStyle.Left, Width = 184, BackColor = Theme.Panel, Padding = new Padding(14, 22, 14, 12) };
         var brand = Theme.Label("GOS", true); brand.Font = Theme.Heading(25); brand.ForeColor = Theme.Accent; brand.Location = new Point(20, 24);
         var version = Theme.Label("Личное рабочее место"); version.Font = Theme.Body(9); version.Location = new Point(20, 70);
@@ -32,7 +53,7 @@ public sealed class ShellForm : GosForm
             navigation[page] = button; sidebar.Controls.Add(button);
         }
         var stop = Theme.Button("Остановить · Pause", app.Cancel); stop.ForeColor = Theme.Danger; stop.Dock = DockStyle.Bottom; sidebar.Controls.Add(stop);
-        Controls.Add(content); Controls.Add(sidebar); Controls.Add(footer);
+        Controls.Add(content); Controls.Add(sidebar); Controls.Add(footer); Controls.Add(titlebar);
         FormClosing += (_, e) => { if (e.CloseReason == CloseReason.UserClosing) { e.Cancel = true; editing = null; Hide(); } };
         app.Changed += StateChanged; Disposed += (_, _) => app.Changed -= StateChanged;
         Navigate("Действия");
@@ -78,11 +99,10 @@ public sealed class ShellForm : GosForm
     }
     private FlowLayoutPanel Stack(string title, string hint)
     {
-        var stack = new FlowLayoutPanel { Dock = DockStyle.Fill, FlowDirection = FlowDirection.TopDown, WrapContents = false, AutoScroll = true, BackColor = Theme.Background };
+        var stack = new ResponsiveStack();
         content.Controls.Add(stack);
         var heading = Theme.Label(title, true); stack.Controls.Add(heading);
-        var help = Theme.Label(hint); help.MaximumSize = new Size(Math.Max(300, content.ClientSize.Width - 42), 0); stack.Controls.Add(help);
-        stack.SizeChanged += (_, _) => { foreach (Control child in stack.Controls) if (child is Panel) child.Width = Math.Max(300, stack.ClientSize.Width - 24); };
+        var help = Theme.Label(hint); stack.Controls.Add(help);
         return stack;
     }
     private void BuildActions()
@@ -96,12 +116,12 @@ public sealed class ShellForm : GosForm
         var cancel = Theme.Button("Отменить всё · Pause", app.Cancel); cancel.Width = 240; stack.Controls.Add(cancel);
         foreach (var action in ActionCatalog.All)
         {
-            var card = new Panel { Width = Math.Max(300, content.Width - 48), Height = 112, BackColor = Theme.Panel, Margin = new Padding(0, 0, 0, 10) };
-            var title = Theme.Label(action.Name); title.ForeColor = Theme.Text; title.Font = Theme.Heading(11); title.Location = new Point(16, 12); card.Controls.Add(title);
-            var description = Theme.Label(action.Description + (action.ForceMemory ? " · Отправка через память" : ""));
-            description.AutoSize = false; description.SetBounds(16, 42, Math.Max(180, card.Width - 180), 58); card.Controls.Add(description);
+            var card = new Panel { Width = Math.Max(300, content.Width - 48), Height = 88, BackColor = Theme.Panel, Margin = new Padding(0, 0, 0, 10) };
+            var title = Theme.Label(action.Name); title.ForeColor = Theme.Text; title.Font = Theme.Heading(11); title.Location = new Point(16, 10); card.Controls.Add(title);
+            var description = Theme.Label(action.Description);
+            description.AutoSize = false; description.SetBounds(16, 36, Math.Max(140, card.Width - 180), 45); card.Controls.Add(description);
             var run = Theme.Button(action.Key == "rights-gui" ? "Открыть" : "Выполнить", () => _ = Execute(() => app.RunAsync(action.Key)), true);
-            run.Size = new Size(130, 38); run.Location = new Point(card.Width - 148, 34); run.Anchor = AnchorStyles.Right | AnchorStyles.Top; card.Controls.Add(run);
+            run.Size = new Size(130, 38); run.Location = new Point(card.Width - 148, 24); run.Anchor = AnchorStyles.Right | AnchorStyles.Top; card.Controls.Add(run);
             description.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right; stack.Controls.Add(card);
         }
     }
@@ -115,10 +135,11 @@ public sealed class ShellForm : GosForm
         var name = Input("Название сценария", stack, "Новый сценарий");
         var steps = new ListBox { Width = 680, Height = 155 }; Theme.Style(steps); stack.Controls.Add(steps);
         var kind = "send";
+        string KindName() => kind switch { "send" => "сообщение", "wait" => "пауза", "notice" => "уведомление", _ => "клавиша меню" };
         var kindButton = Theme.Button("Шаг: сообщение", () => { }); kindButton.Width = 240;
-        kindButton.Click += (_, _) => { kind = kind == "send" ? "wait" : kind == "wait" ? "notice" : "send"; kindButton.Text = "Шаг: " + (kind == "send" ? "сообщение" : kind == "wait" ? "пауза" : "уведомление"); };
+        kindButton.Click += (_, _) => { kind = kind == "send" ? "wait" : kind == "wait" ? "notice" : kind == "notice" ? "key" : "send"; kindButton.Text = "Шаг: " + KindName(); };
         stack.Controls.Add(kindButton);
-        var text = Input("Текст сообщения / уведомления", stack, "/me предъявил удостоверение.");
+        var text = Input("Текст сообщения / уведомления; для клавиши: Down, Up, Enter, Home, End", stack, "/me предъявил удостоверение.");
         var delay = Input("Длительность паузы, миллисекунды", stack, "1000");
         var working = new List<ScenarioStep>(); string? selectedId = null;
         bool loadingScenario = false, restoringSelection = false;
@@ -126,7 +147,7 @@ public sealed class ShellForm : GosForm
         void RefreshSteps()
         {
             int selected = steps.SelectedIndex; steps.Items.Clear();
-            foreach (var step in working) steps.Items.Add(step.Kind == "wait" ? $"Пауза · {step.DelayMs} мс" : (step.Kind == "notice" ? "Уведомление · " : "Сообщение · ") + step.Text);
+            foreach (var step in working) steps.Items.Add(step.Kind == "wait" ? $"Пауза · {step.DelayMs} мс" : (step.Kind == "notice" ? "Уведомление · " : step.Kind == "key" ? "Клавиша · " : "Сообщение · ") + step.Text);
             if (steps.Items.Count > 0) steps.SelectedIndex = Math.Clamp(selected, 0, steps.Items.Count - 1);
         }
         void FillScenarios()
@@ -174,7 +195,7 @@ public sealed class ShellForm : GosForm
         {
             if (steps.SelectedIndex < 0) return;
             var step = working[steps.SelectedIndex]; text.Text = step.Text; delay.Text = step.DelayMs.ToString(); kind = step.Kind;
-            kindButton.Text = "Шаг: " + (kind == "send" ? "сообщение" : kind == "wait" ? "пауза" : "уведомление");
+            kindButton.Text = "Шаг: " + KindName();
         };
         var buttons = Row(); stack.Controls.Add(buttons);
         Scenario Draft() => new() { Id = selectedId ?? Guid.NewGuid().ToString("N"), Name = name.Text.Trim(), Steps = working.Select(s => new ScenarioStep { Kind = s.Kind, Text = s.Text, DelayMs = s.DelayMs }).ToList() };
@@ -304,9 +325,29 @@ public sealed class ShellForm : GosForm
     {
         Theme.Style(field); field.MouseDown += (_, _) => { editing = field; footer.Text = Passive ? "Поле выбрано · Esc — закончить ввод" : app.Status; };
     }
-    private static FlowLayoutPanel Row() => new() { Width = 700, Height = 100, AutoSize = true, WrapContents = true, BackColor = Theme.Background, Margin = new Padding(0, 8, 0, 12) };
+    private static FlowLayoutPanel Row() => new() { Width = 700, Height = 42, AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, WrapContents = true, BackColor = Theme.Background, Margin = new Padding(0, 8, 0, 12) };
     private async Task Execute(Func<Task> action) { try { await action(); } catch (Exception ex) { app.Notify(ex.Message); } }
     private void ShowDocument(string title, string text) { var doc = new ReferenceForm(app, title, text); doc.ShowReference(); }
+    protected override void OnPaint(PaintEventArgs e)
+    {
+        base.OnPaint(e); using var border = new Pen(Theme.Border); e.Graphics.DrawRectangle(border, 0, 0, Width - 1, Height - 1);
+    }
+    protected override void WndProc(ref Message m)
+    {
+        if (m.Msg == 0x84)
+        {
+            var point = PointToClient(new Point(unchecked((short)(long)m.LParam), unchecked((short)((long)m.LParam >> 16))));
+            int edge = Math.Max(5, (int)(6 * DeviceDpi / 96f));
+            bool left = point.X < edge, right = point.X >= ClientSize.Width - edge;
+            bool top = point.Y < edge, bottom = point.Y >= ClientSize.Height - edge;
+            if (left || right || top || bottom)
+            {
+                m.Result = (nint)(top ? left ? 13 : right ? 14 : 12 : bottom ? left ? 16 : right ? 17 : 15 : left ? 10 : 11);
+                return;
+            }
+        }
+        base.WndProc(ref m);
+    }
     public bool HandleKey(KeyStroke key)
     {
         if (!Visible || !Passive || key.Injected) return false;

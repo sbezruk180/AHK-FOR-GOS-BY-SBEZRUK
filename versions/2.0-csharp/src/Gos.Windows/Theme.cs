@@ -223,3 +223,64 @@ internal static class PassiveTyping
         field.ScrollToCaret(); return true;
     }
 }
+
+
+/// <summary>A vertical page whose content width never exceeds its visible viewport.</summary>
+internal sealed class ResponsiveStack : FlowLayoutPanel
+{
+    private bool arranging;
+    private readonly Dictionary<Control, int> preferredWidths = new();
+    public ResponsiveStack()
+    {
+        Dock = DockStyle.Fill; FlowDirection = FlowDirection.TopDown; WrapContents = false;
+        AutoScroll = true; BackColor = Theme.Background;
+        DoubleBuffered = true;
+    }
+    protected override void OnControlAdded(ControlEventArgs e)
+    {
+        preferredWidths[e.Control!] = e.Control!.Width;
+        base.OnControlAdded(e); PerformLayout();
+    }
+    protected override void OnControlRemoved(ControlEventArgs e)
+    {
+        preferredWidths.Remove(e.Control!); base.OnControlRemoved(e);
+    }
+    protected override void OnLayout(LayoutEventArgs levent)
+    {
+        if (arranging || ClientSize.Width < 40) { base.OnLayout(levent); return; }
+        arranging = true;
+        try
+        {
+            // Always reserve a vertical scrollbar so appearing/disappearing scrollbars
+            // cannot make a previous content width overflow the next layout.
+            int available = Math.Max(100, ClientSize.Width - Padding.Horizontal - SystemInformation.VerticalScrollBarWidth - 6);
+            foreach (Control child in Controls)
+            {
+                int width = Math.Max(60, available - child.Margin.Horizontal);
+                if (child is Label or CheckBox)
+                {
+                    child.MaximumSize = new Size(width, 0);
+                }
+                else if (child is FlowLayoutPanel row)
+                {
+                    row.MaximumSize = new Size(width, 0);
+                    row.MinimumSize = new Size(width, 0);
+                    row.Width = width;
+                    row.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+                }
+                else if (child is Panel)
+                {
+                    child.Width = width;
+                }
+                else
+                {
+                    int desired = preferredWidths.GetValueOrDefault(child, width);
+                    child.Width = Math.Min(width, Math.Max(60, desired));
+                }
+            }
+            AutoScrollMinSize = Size.Empty;
+            base.OnLayout(levent);
+        }
+        finally { arranging = false; }
+    }
+}

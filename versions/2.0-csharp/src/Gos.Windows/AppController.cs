@@ -90,6 +90,8 @@ public sealed class AppController : IAppController, IDisposable
         if(action==null){Notify("Команда не найдена");return;}
         if(action.RequiresTarget && Target==null){Notify("Выберите ID: наведитесь на игрока и нажмите F1 либо задайте ID в меню.");return;}
         if(!IsGameActive){Notify("Вернитесь в GTA. Действия не отправляются в другие приложения.");return;}
+        if(runner.IsBusy){Notify("Завершите действие или нажмите Pause.");return;}
+        transport.GuardTarget=action.RequiresTarget?Target:null;
         if(key=="stop")
         {
             var left=30000-(Environment.TickCount64-lastStop);
@@ -105,6 +107,8 @@ public sealed class AppController : IAppController, IDisposable
     public async Task RunScenarioAsync(Scenario scenario)
     {
         if(!IsGameActive){Notify("Сценарий можно запустить только в активной GTA.");return;}
+        if(runner.IsBusy){Notify("Завершите действие или нажмите Pause.");return;}
+        transport.GuardTarget=scenario.Steps.Any(s=>s.Text.Contains("{id}",StringComparison.OrdinalIgnoreCase))?Target:null;
         try {await runner.RunAsync(scenario.Steps,Settings,Target);}
         catch(OperationCanceledException){Notify("Сценарий отменён");}catch(Exception e){Notify(e.Message);}
     }
