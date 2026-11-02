@@ -314,7 +314,7 @@ public sealed class ShellForm : GosForm
             Text = "Быстрый старт\r\nF10 — меню · Alt+T — команды · F1/F2 — Auto ID · Pause — отмена.\r\n\r\nВо время игры окна не активируются: выберите поле мышью и вводите текст. Esc завершает ввод или скрывает меню.\r\n\r\nПолноэкранный режим\r\nВнешние окна работают поверх игры через Windows/DWM. Настоящий эксклюзивный DirectX fullscreen может не показывать такие окна; используйте полноэкранный режим без рамки. Перехват графики игры в приложение не встроен.\r\n\r\nПамять и совместимость\r\nАдреса перенесены из исходников; конкретный клиент Amazing необходимо проверить отдельно. Неопределённая отправка автоматически не повторяется.\r\n\r\nOBS\r\nУспешный флаг Windows не доказывает результат видеозаписи. Проверьте используемый источник OBS.\r\n\r\nПриложение не является официальной программой Amazing. Соблюдайте правила сервера." };
         Register(notes); stack.Controls.Add(notes);
         stack.Controls.Add(Theme.Label(WindowPolicy.CaptureStatus));
-        var status = Theme.Label(app.Status); status.MaximumSize = new Size(680, 0); stack.Controls.Add(status);
+        var status = Theme.Label(app.ConnectionStatus + Environment.NewLine + app.Status); status.MaximumSize = new Size(680, 0); stack.Controls.Add(status);
     }
     private TextBox Input(string label, Control parent, string value)
     {

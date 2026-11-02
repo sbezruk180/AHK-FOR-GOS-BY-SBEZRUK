@@ -92,7 +92,7 @@ internal static class NativeSelfTest
     [DllImport("kernel32.dll")]static extern nint CreateThread(nint attributes,nuint stack,nint start,nint parameter,uint flags,out uint id);
     sealed class FixtureController : IAppController
     {
-        public AppSettings Settings{get;}=new();public string Status=>"Проверка Windows GUI · игра не используется";
+        public AppSettings Settings{get;}=new();public string Status=>"Проверка Windows GUI · игра не используется";public string ConnectionStatus=>"Тестовые данные, не игровой клиент";
         public TargetSnapshot? Target=>new(42,"Alex_Smirnov");public TargetSnapshot? Candidate=>new(17,"Ivan_Petrov");
         public bool GameActive;public bool IsGameActive=>GameActive;
         public IReadOnlyList<NearbyPlayer> Nearby=>[new(42,"Alex_Smirnov",4.3),new(17,"Ivan_Petrov",12.8)];

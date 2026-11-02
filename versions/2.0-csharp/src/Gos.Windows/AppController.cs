@@ -29,6 +29,7 @@ public sealed class AppController : IAppController, IDisposable
     public IReadOnlyList<NearbyPlayer> Nearby {get;private set;}=[];
     public LawLibrary Laws {get;}=new();
     public bool IsGameActive=>game.IsActive;
+    public string ConnectionStatus=>game.Status;
     public event Action? Changed;
     public AppController(string directory)
     {
@@ -164,7 +165,7 @@ public sealed class AppController : IAppController, IDisposable
                         var eventKey=hit.Kind+":"+hit.Id;
                         if(eventTimes.TryGetValue(eventKey,out long last)&&now-last<5000)continue;
                         if(eventTimes.Count>64)eventTimes.Clear();eventTimes[eventKey]=now;
-                        eventCandidate=Candidate=new(hit.Id,hit.Name);eventCandidateUntil=now+10000;Notify($"Событие {hit.Kind}: ID {hit.Id}. F1 — принять / F2 — отказ. Команда автоматически не отправляется.");
+                        eventCandidate=Candidate=new(hit.Id,hit.Name);eventCandidateUntil=now+10000;Notify($"{(hit.Kind switch {"revive"=>"Реанимация","chase"=>"Преследование","stun"=>"Оглушение",_=>"Местоположение"})}: ID {hit.Id}. F1 — принять / F2 — отказ. Команда автоматически не отправляется.");
                     }
                 }catch(IOException){}catch(UnauthorizedAccessException){}
             }
@@ -196,9 +197,9 @@ public sealed class AppController : IAppController, IDisposable
             }
         }
         bool handled=false;
-        if(transport.IsAssisting && stroke.Down && stroke.VirtualKey is 0x1B or 0x11 or 0x12 or 0x5B or 0x5C or 0xA2 or 0xA3 or 0xA4 or 0xA5)
+        if(transport.IsTyping && stroke.Down && stroke.VirtualKey is 0x1B or 0x11 or 0x12 or 0x5B or 0x5C or 0xA2 or 0xA3 or 0xA4 or 0xA5)
         {runner.Cancel();Notify("Печать остановлена клавишей отмены/модификатором.");handled=stroke.VirtualKey==0x1B;}
-        else if(transport.IsAssisting) handled=transport.ConsumeKey(stroke);
+        else if(transport.IsTyping) handled=transport.ConsumeKey(stroke);
         else if(Application.OpenForms.OfType<ReferenceForm>().LastOrDefault(f=>f.Visible&&f.Passive) is {} reference)handled=reference.HandleKey(stroke);
         else if(command?.IsOpen==true) handled=command.HandleKey(stroke);
         else if(stroke.Down&&!stroke.Repeat&&Candidate!=null&&stroke.VirtualKey is 0x70 or 0x71)

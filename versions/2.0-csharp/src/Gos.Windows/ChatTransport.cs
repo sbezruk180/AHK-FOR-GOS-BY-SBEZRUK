@@ -6,13 +6,14 @@ public sealed class ChatTransport(GameMemory game) : IMessageTransport, IKeyTran
 {
     readonly AssistedInput input=new();
     public bool IsAssisting=>input.IsActive;
+    volatile bool typing; public bool IsTyping=>typing;
     public event Action<string>? Progress;
     public TargetSnapshot? GuardTarget {get;set;}
     void ValidateTarget() {if(GuardTarget is {} target&&!game.ValidateTarget(target))throw new InvalidOperationException("Выбранный игрок вышел или изменился. Выберите ID заново.");}
     public bool ConsumeKey(KeyStroke stroke)
     {
         if (stroke.Injected || stroke.VirtualKey is 0x10 or 0x11 or 0x12 or 0xA0 or 0xA1 or 0xA2 or 0xA3 or 0xA4 or 0xA5) return false;
-        return input.Press(stroke.Down,stroke.Repeat);
+        return input.IsActive?input.Press(stroke.Down,stroke.Repeat):typing;
     }
     Task WaitForPhysicalKey(CancellationToken ct)=>input.WaitAsync(ct);
     void RequireGame(CancellationToken ct)
@@ -38,6 +39,8 @@ public sealed class ChatTransport(GameMemory game) : IMessageTransport, IKeyTran
         nint originalWindow=Native.GetForegroundWindow(), originalLayout=KeyboardHook.CaptureLayout();
         try
         {
+            typing=true;
+            if(mode==SendMode.KeyAssisted)input.Begin(text.Length);
             for (int i=0; i<150 && ModifiersDown(); i++) await Task.Delay(10,ct);
             if (ModifiersDown()) throw new InvalidOperationException("Отпустите Alt, Ctrl и Shift перед печатью.");
             RequireGame(ct);
@@ -45,7 +48,6 @@ public sealed class ChatTransport(GameMemory game) : IMessageTransport, IKeyTran
             opened = true;
             await Task.Delay(100,ct);
             if (game.IsChatOpen != true) throw new InvalidOperationException("Игра не подтвердила открытие чата. Текст не отправлен.");
-            if(mode==SendMode.KeyAssisted)input.Begin(text.Length);
             for (int index=0; index<text.Length; index++)
             {
                 if (mode == SendMode.KeyAssisted)
@@ -75,7 +77,7 @@ public sealed class ChatTransport(GameMemory game) : IMessageTransport, IKeyTran
         }
         finally
         {
-            input.End();
+            typing=false;input.End();
             // Only cancel the chat this operation opened; never send keys to another app.
             if (opened && !submitted && game.IsActive && !ModifiersDown() && game.IsChatOpen == true) KeyboardHook.PressKey(0x1B);
             if(Native.GetForegroundWindow()==originalWindow)
@@ -89,5 +91,5 @@ public sealed class ChatTransport(GameMemory game) : IMessageTransport, IKeyTran
         int vk = key.ToUpperInvariant() switch { "DOWN"=>0x28,"UP"=>0x26,"ENTER"=>0x0D,"HOME"=>0x24,"END"=>0x23,_=>throw new InvalidOperationException("Клавиша меню не разрешена.") };
         KeyboardHook.PressKey(vk); return Task.CompletedTask;
     }
-    public void Dispose()=>input.End();
+    public void Dispose(){typing=false;input.End();}
 }

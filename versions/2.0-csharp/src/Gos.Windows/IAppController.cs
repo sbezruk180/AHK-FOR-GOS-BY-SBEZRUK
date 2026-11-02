@@ -4,6 +4,7 @@ public interface IAppController
 {
     AppSettings Settings { get; }
     string Status { get; }
+    string ConnectionStatus { get; }
     TargetSnapshot? Target { get; }
     TargetSnapshot? Candidate { get; }
     bool IsGameActive { get; }

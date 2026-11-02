@@ -50,7 +50,7 @@ public sealed class AutomationRunner(IMessageTransport transport) : IDisposable
                 var step=steps[i]; cts.Token.ThrowIfCancellationRequested();
                 if (step.Kind=="send" && previousWasMessage && frozen.LineDelayMs>0)
                     await Task.Delay(frozen.LineDelayMs,cts.Token).ConfigureAwait(false);
-                Publish($"Шаг {i+1}/{steps.Length}: {step.Kind}");
+                Publish($"Шаг {i+1}/{steps.Length}: {(step.Kind switch {"send"=>"сообщение","wait"=>"пауза","notice"=>"уведомление",_=>"клавиша меню"})}");
                 cts.Token.ThrowIfCancellationRequested();
                 switch(step.Kind)
                 {
