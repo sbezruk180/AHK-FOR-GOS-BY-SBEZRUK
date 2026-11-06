@@ -1,0 +1,120 @@
+PASS Normalize typing bounds independently of action delays
+PASS Normalize nearby refresh avoids busy polling
+PASS Identity cannot inject another chat line
+PASS Default menu and palette survive empty migrated dictionary
+PASS Reject malformed expected DLL hash
+PASS Structured scenario accepts explicit send and wait
+PASS Reject executable or unknown step kinds
+PASS Key steps have an explicit navigation whitelist
+PASS Unbounded wait rejected
+PASS Embedded newline command injection rejected
+PASS Duplicate scenario IDs rejected
+PASS All ten requested action entries present once
+PASS Required memory route: intro
+PASS Required memory route: stop
+PASS Required memory route: rights
+PASS Russian and English command aliases
+PASS Command whitespace handled
+PASS Rights GUI never sends chat by catalogue
+PASS Player ID zero is valid
+PASS Target required placeholder rejects missing target
+PASS Unknown placeholders fail visibly
+PASS Action discovery by task name
+PASS SOS keeps actual original menu key sequence
+PASS Custom incar RP retains mechanical command
+PASS All twenty laws actually embedded
+PASS Law titles match actual original documents
+PASS All law corpora decode as original Cyrillic
+PASS Russian document alias scopes legal search
+PASS Law text search returns actual source lines
+PASS No fabricated search results
+PASS Law search output bounded
+PASS Search query bounded
+PASS Cyrillic settings and scenarios persist
+PASS Corrupt JSON recovers previous valid backup without silent reset
+PASS Recovery retains corrupt primary for manual investigation
+PASS Newer settings schema not silently overwritten
+PASS Newer primary cannot downgrade via old backup
+PASS Saving cannot overwrite newer-version primary
+PASS Rejected downgrade preserves primary bytes
+PASS Selected legacy profile recognized
+PASS Legacy identity and H1 nickname adapted
+PASS Legacy multiline H1 RP preserved
+PASS Legacy global UI values retained
+PASS Legacy AHK modifier and physical Cyrillic key converted
+PASS Import never modifies original INI
+PASS Actual bundled old profile imports without interpreter
+PASS Actual old H1 rights and stop lines retained
+PASS Pre-H1 newline escaping preserved without double decoding
+PASS Malformed H1 rejected
+PASS Failed import has no partial live mutation
+PASS Missing import is explicitly unsuccessful
+PASS Foreign quoted server text cannot offer target
+PASS Mentioning own nickname in chat is not own event
+PASS Timestamped own server event accepted
+PASS Own chase event offers exact ID
+PASS Foreign chase does not automate
+PASS Two-ID event chooses target rather than own ID
+PASS Revive accepts ID zero
+PASS Impossible player ID rejected
+PASS Nickname alone does not invent an ID
+PASS Hotkeys parse existing Alt+T without character-layout conversion
+PASS Hotkeys normalize legacy modifier order and spacing
+PASS Legacy Cyrillic key resolves to the same physical Russian keyboard position
+PASS Legacy digit aliases have one physical identity
+PASS Unassigned hotkeys are explicit
+PASS Reject modifier-only, Windows, duplicated-modifier and multiple-main-key strings
+PASS Only bare F1/F2/Pause are reserved
+PASS Duplicates compare parsed chords rather than spelling
+PASS Every supported physical key survives canonical serialization
+PASS Recording consumes left Ctrl and waits for main key
+PASS Physical main key records chord and starts release drain
+PASS Held main key cannot re-record or launch action
+PASS Recorded main-key up is consumed
+PASS Recorded modifier up is consumed and ends capture ownership
+PASS Ordinary dispatch resumes only after release
+PASS Reserved F1 produces useful validation and keeps recording
+PASS Escape cancels recording while retaining its key-up ownership
+PASS Delete explicitly clears an assignment
+PASS Injected keys cannot assign a shortcut
+PASS F10 can be assigned without triggering menu toggle
+PASS Unmatched pre-recording modifier up passes through instead of sticking Alt
+PASS Auto-repeat from a pre-held key does not steal its matching key-up
+PASS Windows chords never become game bindings
+PASS Chat log starts at tail without replaying historical actions
+PASS Unchanged chat log produces no events
+PASS Partial chat line waits for newline
+PASS Chat log joins partial CP1251 lines and processes complete events once in order
+PASS Completed chat events are not replayed on idle poll
+PASS Chat log truncation clears prior partial line
+PASS New log after truncation starts without stale bytes
+PASS Chat log flood is bounded and skips stale batch
+PASS Chat log recovers after bounded flood without replay
+PASS Deleted chat log clears watch state
+PASS Recreated chat log begins at new tail
+PASS Recreated chat log emits only subsequent complete lines
+PASS Disabling and re-enabling log watch never replays old actions
+PASS Right Ctrl remains held after left Ctrl release
+PASS Injected modifier cannot affect physical hotkeys
+PASS Physical Shift/Alt packets match chord without text conversion
+PASS Modifier releases restore physical state
+PASS Actual sequence preserves all lines and forced memory route
+PASS Completion releases runner
+PASS Validate late missing target before any send
+PASS Invalid second step cannot partially send first
+PASS Concurrent action rejected rather than queued
+PASS Cancel interrupts wait
+PASS No delayed message after cancellation
+PASS Transport failure stops dependent messages
+PASS No automatic retry of unknown transport result
+PASS Live settings edits cannot alter an executing scenario
+PASS Cancel interrupts cooperative transport operation
+PASS Cancelled in-flight transport has no follow-up step
+PASS SOS emits real key transport calls
+PASS Observer exception does not change send semantics
+PASS Disposed runner cannot restart
+PASS Three rapid presses produce three characters without loss
+PASS Assisted input releases keys when inactive
+PASS Key repeat and key-up do not grant a character
+PASS Presses cannot leak into next chat message
+RESULT: 119 passed, 0 failed; Core only, actual game/OBS/Win32 not exercised.
