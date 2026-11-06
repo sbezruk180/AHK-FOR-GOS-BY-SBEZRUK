@@ -1,0 +1,47 @@
+START | Native verification
+PASS | Shipping host is x86
+PASS | Real shell created
+PASS | Page opens: Действия
+PASS | No horizontal scrolling: Действия
+PASS | Page opens: Клавиши
+PASS | No horizontal scrolling: Клавиши
+PASS | Page opens: Конструктор
+PASS | No horizontal scrolling: Конструктор
+PASS | Page opens: Законы
+PASS | No horizontal scrolling: Законы
+PASS | Page opens: Настройки
+PASS | No horizontal scrolling: Настройки
+PASS | Page opens: О приложении
+PASS | No horizontal scrolling: О приложении
+PASS | Assign button starts capture for chosen action
+PASS | Recorded key remains a draft
+PASS | Recorded key displayed on binding card
+PASS | Save applies recorded binding
+PASS | Cancel discards key removal
+PASS | No editable hotkey-name text fields
+PASS | Settings draft survives section switch
+PASS | Settings cancel restores saved identity
+PASS | Action search filters to requested command
+PASS | Small binding page has vertical-only scrolling
+PASS | Menu switches to passive mode for gameplay
+PASS | Menu accepts desktop activation after leaving game
+PASS | OBS Off clears affinity
+PASS | Palette no-activate style
+PASS | Empty Enter sends nothing
+PASS | Escape closes palette
+PASS | HUD no-activate
+PASS | Nearby displays fixture rows
+PASS | Rights reference never sends
+PASS | Overlays hide outside game
+PASS | Reference returns to desktop interaction
+PASS | Escape closes desktop reference while text has focus
+PASS | Actual scan-code English/Russian input
+PASS | Injected hook events do not look physical
+PASS | Hotkey fixture owns native foreground
+PASS | Native press records Ctrl+K without typed key names
+PASS | Recording never executes action or leaks characters
+PASS | Recording changes draft only
+PASS | Captured binding persisted
+PASS | Physical route invokes action once per press
+PASS | Bound key does not enter native text box
+PASS | Same physical hotkey works under Russian layout
