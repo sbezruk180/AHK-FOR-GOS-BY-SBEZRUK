@@ -20,6 +20,8 @@ public sealed class GameMemory : IDisposable
     private const uint SampInfoOffset = 0x26E8DC, InputInfoOffset = 0x26E8F4;
     private const uint GtaPedPool = 0xB74490, PedSize = 0x7C4;
     private readonly object sync = new();
+    // Scalar pointer reads dominate HUD scans. All access runs under sync; no per-pointer heap array.
+    private readonly byte[] scalarReadBuffer = new byte[4];
     private SafeProcessHandle? process;
     private uint processId, moduleBase, moduleSize;
     private string modulePath = "", expectedHash = "", hashKey = "";
@@ -93,9 +95,10 @@ public sealed class GameMemory : IDisposable
             {
                 if (process == null)
                 {
-                    foreach (var candidate in Process.GetProcessesByName("gta_sa"))
+                    var candidates = Process.GetProcessesByName("gta_sa");
+                    try
                     {
-                        using (candidate)
+                        foreach (var candidate in candidates)
                         {
                             var opened = Native.OpenProcess(Native.ReadAccess, false, (uint)candidate.Id);
                             if (opened.IsInvalid) { opened.Dispose(); continue; }
@@ -104,6 +107,7 @@ public sealed class GameMemory : IDisposable
                             process = opened; processId = (uint)candidate.Id; break;
                         }
                     }
+                    finally { foreach (var candidate in candidates) candidate.Dispose(); }
                     if (process == null) { status = "gta_sa.exe не найден или доступ запрещён"; return; }
                 }
                 using var game = Process.GetProcessById((int)processId);
@@ -469,7 +473,14 @@ public sealed class GameMemory : IDisposable
         return Native.ReadProcessMemory(process, Ptr(address), buffer, (nuint)size, out var read) && read == (nuint)size ? buffer : null;
     }
     private bool TryReadUInt(uint address, out uint value)
-    { var bytes = Read(address, 4); value = bytes == null ? 0 : U32(bytes, 0); return bytes != null; }
+    {
+        value = 0;
+        if (process == null || process.IsInvalid || process.IsClosed || address < 0x10000
+            || (ulong)address + 4 > 0x1_0000_0000UL) return false;
+        if (!Native.ReadProcessMemory(process, Ptr(address), scalarReadBuffer, 4, out var read) || read != 4) return false;
+        value = U32(scalarReadBuffer, 0);
+        return true;
+    }
     private uint ReadUInt(uint address) => TryReadUInt(address, out var value) ? value : 0;
     private static bool Pointer(uint value) => value is >= 0x10000 and < 0xFFFF0000 && value % 4 == 0;
     private static nint Ptr(uint value) => unchecked((nint)(nuint)value);

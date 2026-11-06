@@ -17,10 +17,22 @@ public static class Theme
     public static readonly Color Danger = Color.FromArgb(255, 151, 168);
     public static Font Body(float size = 10) => new("Segoe UI", size, FontStyle.Regular);
     public static Font Heading(float size = 18) => new("Segoe UI", size, FontStyle.Bold);
+    // Controls share a small font palette; painters keep disposable Body()/Heading() instances.
+    private static readonly Dictionary<(float Size, bool Bold), Font> controlFonts = new();
+    public static Font UiBody(float size = 10) => UiFont(size, false);
+    public static Font UiHeading(float size = 18) => UiFont(size, true);
+    private static Font UiFont(float size, bool bold)
+    {
+        lock (controlFonts)
+        {
+            if (!controlFonts.TryGetValue((size, bold), out var font)) controlFonts[(size, bold)] = font = new Font("Segoe UI", size, bold ? FontStyle.Bold : FontStyle.Regular);
+            return font;
+        }
+    }
 
     public static void Style(Control control)
     {
-        control.Font = Body();
+        control.Font = UiBody();
         control.ForeColor = Text;
         if (control is TextBoxBase or ListBox or ListView or ComboBox or NumericUpDown)
             control.BackColor = Surface;
@@ -35,7 +47,7 @@ public static class Theme
     public static Label Label(string text, bool heading = false) => new()
     {
         Text = text, ForeColor = heading ? Text : Muted, AutoSize = true,
-        Font = heading ? Heading() : Body(), Margin = new Padding(0, 0, 0, 12)
+        Font = heading ? UiHeading() : UiBody(), Margin = new Padding(0, 0, 0, 12)
     };
 
     public static GosButton Button(string text, Action action, bool primary = false)
@@ -54,7 +66,7 @@ public sealed class GosButton : Button
     public GosButton()
     {
         FlatStyle = FlatStyle.Flat; FlatAppearance.BorderSize = 0;
-        ForeColor = Theme.Text; BackColor = Theme.Surface; Font = Theme.Body();
+        ForeColor = Theme.Text; BackColor = Theme.Surface; Font = Theme.UiBody();
         Cursor = Cursors.Hand; Margin = new Padding(0, 0, 10, 10);
         SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint, true);
     }
@@ -75,7 +87,7 @@ public sealed class GosButton : Button
         path.AddArc(rect.Left, rect.Bottom - corner, corner, corner, 90, 90); path.CloseFigure();
         using var brush = new SolidBrush(fill); e.Graphics.FillPath(brush, path);
         if (Focused && ShowFocusCues) { using var pen = new Pen(Theme.Accent, 2); e.Graphics.DrawPath(pen, path); }
-        TextRenderer.DrawText(e.Graphics, Text, Font, rect, Enabled ? Theme.Text : Theme.Muted,
+        TextRenderer.DrawText(e.Graphics, Text, Font, rect, Enabled ? ForeColor : Theme.Muted,
             TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis);
     }
 }
@@ -121,7 +133,7 @@ public class GosForm : Form
     protected override bool ShowWithoutActivation => Passive;
     public GosForm()
     {
-        Font = Theme.Body(); BackColor = Theme.Background; ForeColor = Theme.Text;
+        Font = Theme.UiBody(); BackColor = Theme.Background; ForeColor = Theme.Text;
         AutoScaleMode = AutoScaleMode.Dpi; DoubleBuffered = true;
     }
     protected override CreateParams CreateParams
@@ -279,6 +291,68 @@ internal sealed class ResponsiveStack : FlowLayoutPanel
                 }
             }
             AutoScrollMinSize = Size.Empty;
+            base.OnLayout(levent);
+        }
+        finally { arranging = false; }
+    }
+}
+
+/// <summary>Buffered rounded surface with a quiet outline; child controls share its fill.</summary>
+internal sealed class SurfacePanel : Panel
+{
+    public SurfacePanel()
+    {
+        BackColor = Theme.Panel;
+        SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer, true);
+    }
+    protected override void OnPaintBackground(PaintEventArgs e) => e.Graphics.Clear(Parent?.BackColor ?? Theme.Background);
+    protected override void OnPaint(PaintEventArgs e)
+    {
+        e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+        using var path = new GraphicsPath();
+        var rect = new Rectangle(0, 0, Math.Max(1, Width - 1), Math.Max(1, Height - 1)); int corner = 14;
+        path.AddArc(rect.Left, rect.Top, corner, corner, 180, 90); path.AddArc(rect.Right - corner, rect.Top, corner, corner, 270, 90);
+        path.AddArc(rect.Right - corner, rect.Bottom - corner, corner, corner, 0, 90); path.AddArc(rect.Left, rect.Bottom - corner, corner, corner, 90, 90); path.CloseFigure();
+        using var fill = new SolidBrush(Theme.Panel); using var border = new Pen(Theme.Border);
+        e.Graphics.FillPath(fill, path); e.Graphics.DrawPath(border, path); base.OnPaint(e);
+    }
+}
+
+/// <summary>Two compact columns on wide viewports; one column on small windows. Filtered controls remain owned.</summary>
+internal sealed class CardGrid(int rowHeight) : Panel
+{
+    private HashSet<Control> included = [];
+    private bool arranging;
+    public void SetCards(IEnumerable<Control> cards)
+    {
+        SuspendLayout();
+        foreach (var card in cards) { Controls.Add(card); included.Add(card); }
+        ResumeLayout(); PerformLayout();
+    }
+    public void Filter(Func<Control, bool> predicate)
+    {
+        SuspendLayout(); included = Controls.Cast<Control>().Where(predicate).ToHashSet();
+        foreach (Control card in Controls) card.Visible = included.Contains(card);
+        ResumeLayout(); PerformLayout();
+    }
+    protected override void OnLayout(LayoutEventArgs levent)
+    {
+        if (arranging) return;
+        arranging = true;
+        try
+        {
+            int gap = Math.Max(8, (int)Math.Round(10 * DeviceDpi / 96f));
+            int scaledHeight = (int)Math.Round(rowHeight * DeviceDpi / 96f);
+            int columns = Width >= 650 * DeviceDpi / 96f ? 2 : 1;
+            int cellWidth = Math.Max(100, (Width - (columns - 1) * gap) / columns);
+            int index = 0;
+            foreach (Control card in Controls)
+            {
+                if (!included.Contains(card)) continue;
+                card.SetBounds(index % columns * (cellWidth + gap), index / columns * (scaledHeight + gap), cellWidth, scaledHeight); index++;
+            }
+            int rows = (index + columns - 1) / columns;
+            Height = rows == 0 ? 0 : rows * (scaledHeight + gap) - gap;
             base.OnLayout(levent);
         }
         finally { arranging = false; }

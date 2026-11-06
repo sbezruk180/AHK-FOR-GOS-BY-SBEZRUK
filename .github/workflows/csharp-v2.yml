@@ -25,7 +25,7 @@ jobs:
         run: |
           ./versions/2.0-csharp/build.ps1
           if ($LASTEXITCODE) { throw 'Publish failed' }
-      - name: Native UI, physical keyboard and x86 ABI
+      - name: Native UI, keyboard routing on owned windows and x86 ABI
         shell: pwsh
         run: |
           $folder = Join-Path $env:RUNNER_TEMP 'gos-v2-native'
@@ -76,4 +76,27 @@ jobs:
           git switch -c csharp-v2-build-${{ github.run_id }}
           git add -f versions/2.0-csharp/download
           git commit -m 'Archive verified CSharp preview and native UI evidence'
+          git push origin HEAD
+  diagnostics:
+    needs: verify
+    if: failure()
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: GOS-2-CSharp-preview
+          path: artifacts
+      - name: Preserve failed verification reports without publishing a binary
+        run: |
+          mkdir -p versions/2.0-csharp/failed-verification
+          if [ -f artifacts/core-report.txt ]; then cp artifacts/core-report.txt versions/2.0-csharp/failed-verification/; fi
+          if [ -d artifacts/native-results ]; then cp -r artifacts/native-results versions/2.0-csharp/failed-verification/; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git switch -c csharp-v2-failed-${{ github.run_id }}
+          git add -f versions/2.0-csharp/failed-verification
+          git commit --allow-empty -m 'Preserve failed CSharp verification diagnostics'
           git push origin HEAD

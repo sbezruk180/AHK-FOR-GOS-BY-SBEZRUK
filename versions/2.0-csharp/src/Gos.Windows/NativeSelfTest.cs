@@ -17,12 +17,45 @@ internal static class NativeSelfTest
             Check("Real shell created",shell.IsHandleCreated&&shell.Visible);
             void Image(Form form,string name)
             {using var bitmap=new Bitmap(Math.Max(1,form.Width),Math.Max(1,form.Height));form.DrawToBitmap(bitmap,new Rectangle(Point.Empty,bitmap.Size));bitmap.Save(Path.Combine(output,name+".png"));}
-            foreach(var page in new[]{"Действия","Конструктор","Законы","Настройки","О приложении"})
+            foreach(var page in new[]{"Действия","Клавиши","Конструктор","Законы","Настройки","О приложении"})
             {
                 var nav=Descendants(shell).OfType<Button>().First(b=>b.Text==page);nav.PerformClick();Application.DoEvents();
                 Check("Page opens: "+page,shell.Controls.Count>0);
-                Check("No horizontal scrolling: "+page,Descendants(shell).OfType<FlowLayoutPanel>().Where(f=>f.AutoScroll).All(f=>!f.HorizontalScroll.Visible));Image(shell,page switch {"Действия"=>"actions","Конструктор"=>"builder","Законы"=>"laws","Настройки"=>"settings",_=>"about"});
+                Check("No horizontal scrolling: "+page,Descendants(shell).OfType<FlowLayoutPanel>().Where(f=>f.AutoScroll).All(f=>!f.HorizontalScroll.Visible));Image(shell,page switch {"Действия"=>"actions","Клавиши"=>"hotkeys","Конструктор"=>"builder","Законы"=>"laws","Настройки"=>"settings",_=>"about"});
             }
+            shell.ReviewPage("Клавиши");Application.DoEvents();
+            Button BindButton(string name)=>Descendants(shell).OfType<Button>().First(b=>b.Name==name);
+            BindButton("bind-capture-intro").PerformClick();
+            Check("Assign button starts capture for chosen action",app.IsCapturingHotkey&&app.RecordingAction=="intro");
+            app.CompleteCapture("Ctrl+K");
+            Check("Recorded key remains a draft",!app.Settings.Hotkeys.ContainsKey("intro"));
+            Check("Recorded key displayed on binding card",Descendants(shell).First(c=>c.Name=="bind-value-intro").Text=="Ctrl+K");
+            BindButton("bind-save").PerformClick();Application.DoEvents();
+            Check("Save applies recorded binding",app.Settings.Hotkeys.GetValueOrDefault("intro")=="Ctrl+K");
+            BindButton("bind-clear-intro").PerformClick();BindButton("bind-cancel").PerformClick();Application.DoEvents();
+            Check("Cancel discards key removal",app.Settings.Hotkeys.GetValueOrDefault("intro")=="Ctrl+K");
+            Check("No editable hotkey-name text fields",!Descendants(shell).OfType<TextBoxBase>().Any(t=>!t.ReadOnly));
+            Image(shell,"hotkeys");
+            shell.ReviewPage("Настройки");Application.DoEvents();
+            var originalName=app.Settings.Name;
+            Descendants(shell).OfType<TextBox>().First().Text="Тестовый персонаж";
+            Descendants(shell).OfType<Button>().First(b=>b.Text=="Отправка").PerformClick();Application.DoEvents();
+            Image(shell,"settings-send");
+            Descendants(shell).OfType<Button>().First(b=>b.Text=="Профиль").PerformClick();Application.DoEvents();
+            Check("Settings draft survives section switch",Descendants(shell).OfType<TextBox>().First().Text=="Тестовый персонаж"&&app.Settings.Name==originalName);
+            Descendants(shell).OfType<Button>().First(b=>b.Name=="settings-cancel").PerformClick();Application.DoEvents();
+            Check("Settings cancel restores saved identity",Descendants(shell).OfType<TextBox>().First().Text==originalName);
+            shell.ReviewPage("Действия");Application.DoEvents();
+            var search=Descendants(shell).OfType<TextBox>().First(t=>t.Name=="action-search");search.Text="/cuff";Application.DoEvents();
+            Check("Action search filters to requested command",Descendants(shell).OfType<Button>().Where(b=>b.Name.StartsWith("action-run-")&&b.Visible).Select(b=>b.Name).SequenceEqual(new[]{"action-run-cuff"}));
+            search.Text="";
+            shell.Size=new(800,580);shell.ReviewPage("Клавиши");Application.DoEvents();Image(shell,"hotkeys-small");
+            Check("Small binding page has vertical-only scrolling",Descendants(shell).OfType<FlowLayoutPanel>().Where(f=>f.AutoScroll).All(f=>!f.HorizontalScroll.Visible));
+            shell.Size=new(1120,800);
+            shell.SyncGameMode(true);Application.DoEvents();
+            Check("Menu switches to passive mode for gameplay",shell.Passive&&(GetWindowLong(shell.Handle,-20)&0x08000000)!=0);
+            shell.SyncGameMode(false);shell.Activate();Application.DoEvents();
+            Check("Menu accepts desktop activation after leaving game",!shell.Passive&&(GetWindowLong(shell.Handle,-20)&0x08000000)==0&&Native.GetForegroundWindow()==shell.Handle);
             foreach(Form form in Application.OpenForms)
             {WindowPolicy.Apply(form,false,false);Check("OBS Off clears affinity",Native.GetWindowDisplayAffinity(form.Handle,out uint value)&&value==0);}
             app.GameActive=true;
@@ -38,7 +71,11 @@ internal static class NativeSelfTest
             using var rights=new RightsForm(app);rights.ShowReference();Application.DoEvents();Image(rights,"rights");
             Check("Rights reference never sends",app.Runs==0);
             app.GameActive=false;hud.RefreshState();nearby.RefreshState();Check("Overlays hide outside game",!hud.Visible&&!nearby.Visible);
-            rights.Hide();palette.Hide();shell.Hide();
+            rights.SyncGameMode(false);rights.Activate();Descendants(rights).OfType<RichTextBox>().Single().Focus();Application.DoEvents();
+            Check("Reference returns to desktop interaction",!rights.Passive&&(GetWindowLong(rights.Handle,-20)&0x08000000)==0);
+            KeyboardHook.PressKey((int)Keys.Escape);for(int i=0;i<5;i++){Application.DoEvents();Thread.Sleep(10);}
+            Check("Escape closes desktop reference while text has focus",rights.IsDisposed);
+            if(!rights.IsDisposed)rights.Hide();palette.Hide();shell.Hide();
             using(var inputWindow=new Form{Text="Owned input fixture",Size=new(420,160)})
             using(var input=new TextBox{Dock=DockStyle.Fill,Multiline=true})
             {
@@ -53,6 +90,7 @@ internal static class NativeSelfTest
                 }
                 else {Check("Native foreground fixture acquired",false);}
             }
+            NativeHotkeyTests.Run(Check,output);
             if(IntPtr.Size==4)TestStub(Check);
         }
         catch(Exception e){lines.Add("FAIL | unexpected: "+e);failures++;}
@@ -92,14 +130,20 @@ internal static class NativeSelfTest
     [DllImport("kernel32.dll")]static extern nint CreateThread(nint attributes,nuint stack,nint start,nint parameter,uint flags,out uint id);
     sealed class FixtureController : IAppController
     {
-        public AppSettings Settings{get;}=new();public string Status=>"Проверка Windows GUI · игра не используется";public string ConnectionStatus=>"Тестовые данные, не игровой клиент";
+        public AppSettings Settings{get;private set;}=new();public string Status=>"Проверка Windows GUI · игра не используется";public string ConnectionStatus=>"Тестовые данные, не игровой клиент";
         public TargetSnapshot? Target=>new(42,"Alex_Smirnov");public TargetSnapshot? Candidate=>new(17,"Ivan_Petrov");
         public bool GameActive;public bool IsGameActive=>GameActive;
         public IReadOnlyList<NearbyPlayer> Nearby=>[new(42,"Alex_Smirnov",4.3),new(17,"Ivan_Petrov",12.8)];
         public LawLibrary Laws{get;}=new();public event Action? Changed;public int Runs;
         public Task RunAsync(string key){Runs++;return Task.CompletedTask;}public Task RunScenarioAsync(Scenario s){Runs++;return Task.CompletedTask;}
         public void Cancel(){}public void AcceptTarget(){}public void RejectTarget(){}public void SaveSettings(){}
-        public void ApplySettings(AppSettings draft){}public void SetManualTarget(int id){}public void ClearTarget(){}
+        public void ApplySettings(AppSettings draft){Settings=ProfileStore.Copy(draft);Changed?.Invoke();}public void SetManualTarget(int id){}public void ClearTarget(){}
         public void Notify(string t){Changed?.Invoke();}public void ImportLegacy(string p){}
+        public bool IsCapturingHotkey=>captureCallback!=null;
+        Action<string?>? captureCallback;
+        public string? RecordingAction;
+        public void BeginHotkeyCapture(string key,Action<string?> callback){RecordingAction=key;captureCallback=callback;}
+        public void CancelHotkeyCapture(){CompleteCapture(null);}
+        public void CompleteCapture(string? value){var callback=captureCallback;captureCallback=null;callback?.Invoke(value);}
     }
 }

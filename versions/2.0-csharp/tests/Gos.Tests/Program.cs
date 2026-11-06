@@ -17,7 +17,7 @@ internal static class Program
         try
         {
             Directory.CreateDirectory(Root);
-            Settings(); Catalog(); Laws(); Profiles(); Events(); await Runner(); await Assisted();
+            Settings(); Catalog(); Laws(); Profiles(); Events(); HotkeyTests.Run(Check); ChatLogTests.Run(Check); PhysicalKeys(); await Runner(); await Assisted();
             Console.WriteLine($"RESULT: {count} passed, 0 failed; Core only, actual game/OBS/Win32 not exercised.");
             return 0;
         }
@@ -38,6 +38,16 @@ internal static class Program
         gate.Press(true,false);gate.End();gate.Begin(1);
         using var cancel2=new CancellationTokenSource(30);
         await ThrowsAsync<OperationCanceledException>(()=>gate.WaitAsync(cancel2.Token),"Presses cannot leak into next chat message");gate.End();
+    }
+    private static void PhysicalKeys()
+    {
+        var state=new PhysicalKeyState();state.Update(0xA2,true,false);state.Update(0xA3,true,false);state.Update(0xA2,false,false);
+        Check(state.Modifiers==HotkeyModifiers.Control,"Right Ctrl remains held after left Ctrl release");
+        state.Update(0xA3,false,false);state.Update(0xA4,true,true);
+        Check(state.Modifiers==HotkeyModifiers.None,"Injected modifier cannot affect physical hotkeys");
+        state.Update(0xA5,true,false);state.Update(0xA1,true,false);
+        Check(HotkeyChord.Parse("Shift+Alt+1").Matches(0x31,state.Modifiers),"Physical Shift/Alt packets match chord without text conversion");
+        state.Update(0xA5,false,false);state.Update(0xA1,false,false);Check(state.Modifiers==HotkeyModifiers.None,"Modifier releases restore physical state");
     }
     private static void Settings()
     {

@@ -173,12 +173,19 @@ public class ReferenceForm : GosForm
     {
         App = app; Text = title; Size = new Size(700, 600); StartPosition = FormStartPosition.CenterScreen;
         MinimumSize = new Size(380, 300);
-        var heading = new Label { Dock = DockStyle.Top, Height = 56, Text = title, Padding = new Padding(18, 14, 18, 0), Font = Theme.Heading(15), ForeColor = Theme.Accent };
-        body = new RichTextBox { Text = text, Dock = DockStyle.Fill, ReadOnly = true, WordWrap = true, DetectUrls = false, BorderStyle = BorderStyle.None, BackColor = Theme.Panel, ForeColor = Theme.Text, Font = Theme.Body(11) };
+        var heading = new Label { Dock = DockStyle.Top, Height = 56, Text = title, Padding = new Padding(18, 14, 18, 0), Font = Theme.UiHeading(15), ForeColor = Theme.Accent };
+        body = new RichTextBox { Text = text, Dock = DockStyle.Fill, ReadOnly = true, WordWrap = true, DetectUrls = false, BorderStyle = BorderStyle.None, BackColor = Theme.Panel, ForeColor = Theme.Text, Font = Theme.UiBody(11) };
         var close = Theme.Button("Закрыть · Esc", Close); close.Dock = DockStyle.Bottom;
         Controls.Add(body); Controls.Add(heading); Controls.Add(close);
     }
     public void ShowReference() { Configure(App.IsGameActive, App.Settings.HideFromCapture); Show(); }
+    internal void SyncGameMode(bool active)
+    { if(Visible&&Passive!=active)Configure(active,App.Settings.HideFromCapture); }
+    protected override bool ProcessCmdKey(ref Message message, Keys keyData)
+    {
+        if (!Passive && keyData == Keys.Escape) { Close(); return true; }
+        return base.ProcessCmdKey(ref message, keyData);
+    }
     public bool HandleKey(KeyStroke key)
     {
         if (!Visible || !Passive || key.Injected) return false;

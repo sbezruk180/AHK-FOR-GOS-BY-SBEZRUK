@@ -7,7 +7,7 @@ internal static class Program
     {
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         using var singleton=new Mutex(true,@"Local\SBezruk.Gos.CSharp.V2",out bool first);
-        if(!first)return 2;
+        if(!first){MessageBox.Show("GOS 2 уже запущен. Закройте прежнюю копию через значок возле часов и откройте новую версию.","GOS 2",MessageBoxButtons.OK,MessageBoxIcon.Information);return 2;}
         ApplicationConfiguration.Initialize();
         string data=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),"AHK FOR GOS","v2");
         Directory.CreateDirectory(data);
@@ -22,8 +22,9 @@ internal static class Program
             using var hud=new HudForm(controller);
             using var nearby=new NearbyForm(controller);
             controller.Attach(shell,palette,hud,nearby);
-            using var tray=new NotifyIcon {Icon=SystemIcons.Application,Text="GOS 2 · F10 — меню",Visible=true,ContextMenuStrip=new()};
+            using var tray=new NotifyIcon {Icon=SystemIcons.Application,Text="GOS 2 · Меню и команды",Visible=true,ContextMenuStrip=new()};
             tray.ContextMenuStrip.Items.Add("Открыть меню",null,(_,_)=>shell.ShowPassive());
+            tray.ContextMenuStrip.Items.Add("Окно команд",null,(_,_)=>palette.Open());
             tray.ContextMenuStrip.Items.Add("Остановить действия",null,(_,_)=>controller.Cancel());
             tray.ContextMenuStrip.Items.Add("Выход",null,(_,_)=>{controller.Cancel();Application.Exit();});
             tray.DoubleClick+=(_,_)=>shell.ShowPassive();

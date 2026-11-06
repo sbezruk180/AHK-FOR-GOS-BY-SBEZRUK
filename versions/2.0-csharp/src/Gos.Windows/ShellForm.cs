@@ -13,18 +13,21 @@ public sealed class ShellForm : GosForm
     private readonly List<Action> saveFields = new();
     private bool settingsDirty;
     private bool builderDirty;
+    private bool bindingsDirty;
+    private Label? modeLabel, connectionLabel;
+    private readonly ToolTip hints = new() { InitialDelay = 500, ReshowDelay = 100, AutoPopDelay = 8000 };
     private string currentPage = "Действия";
     private Label? targetLabel;
     public bool IsInputOpen => Visible;
 
     public ShellForm(IAppController controller)
     {
-        app = controller; Text = "AHK FOR GOS · 2.0 / C#"; MinimumSize = new Size(760, 540); Size = new Size(1080, 760);
+        app = controller; Text = "GOS · рабочее место"; MinimumSize = new Size(800, 580); Size = new Size(1120, 800);
         StartPosition = FormStartPosition.CenterScreen;
         FormBorderStyle = FormBorderStyle.None; Padding = new Padding(1);
         var titlebar = new Panel { Dock = DockStyle.Top, Height = 40, BackColor = Theme.Panel };
-        var title = new Label { Text = "AHK FOR GOS  /  2.0", AutoSize = false, Dock = DockStyle.Fill,
-            Padding = new Padding(18, 11, 0, 0), ForeColor = Theme.Muted, Font = Theme.Body(9) };
+        var title = new Label { Text = "GOS  /  РАБОЧЕЕ МЕСТО", AutoSize = false, Dock = DockStyle.Fill,
+            Padding = new Padding(18, 11, 0, 0), ForeColor = Theme.Muted, Font = Theme.UiBody(9) };
         Point dragOrigin = Point.Empty, windowOrigin = Point.Empty; bool dragging = false;
         void DragTitle(object? sender, MouseEventArgs e)
         {
@@ -42,20 +45,21 @@ public sealed class ShellForm : GosForm
         var hide = Theme.Button("—", Hide); hide.Dock = DockStyle.Right; hide.Width = 46; hide.Margin = Padding.Empty;
         var close = Theme.Button("×", () => { editing = null; Hide(); }); close.Dock = DockStyle.Right; close.Width = 46; close.Margin = Padding.Empty;
         titlebar.Controls.Add(title); titlebar.Controls.Add(hide); titlebar.Controls.Add(close);
-        var sidebar = new Panel { Dock = DockStyle.Left, Width = 184, BackColor = Theme.Panel, Padding = new Padding(14, 22, 14, 12) };
-        var brand = Theme.Label("GOS", true); brand.Font = Theme.Heading(25); brand.ForeColor = Theme.Accent; brand.Location = new Point(20, 24);
-        var version = Theme.Label("Личное рабочее место"); version.Font = Theme.Body(9); version.Location = new Point(20, 70);
+        var sidebar = new Panel { Dock = DockStyle.Left, Width = 176, BackColor = Theme.Panel, Padding = new Padding(14, 22, 14, 12) };
+        var brand = Theme.Label("GOS", true); brand.Font = Theme.UiHeading(25); brand.ForeColor = Theme.Accent; brand.Location = new Point(20, 24);
+        var version = Theme.Label("AMAZING ONLINE"); version.Font = Theme.UiBody(9); version.Location = new Point(20, 70);
         sidebar.Controls.Add(brand); sidebar.Controls.Add(version);
-        string[] pages = ["Действия", "Конструктор", "Законы", "Настройки", "О приложении"];
+        string[] pages = ["Действия", "Клавиши", "Конструктор", "Законы", "Настройки", "О приложении"];
         for (int i = 0; i < pages.Length; i++)
         {
-            string page = pages[i]; var button = Theme.Button(page, () => Navigate(page)); button.Size = new Size(156, 42); button.Location = new Point(14, 128 + i * 52);
+            string page = pages[i]; var button = Theme.Button(page, () => Navigate(page)); button.Size = new Size(148, 42); button.Location = new Point(14, 124 + i * 49);
             navigation[page] = button; sidebar.Controls.Add(button);
         }
         var stop = Theme.Button("Остановить · Pause", app.Cancel); stop.ForeColor = Theme.Danger; stop.Dock = DockStyle.Bottom; sidebar.Controls.Add(stop);
         Controls.Add(content); Controls.Add(sidebar); Controls.Add(footer); Controls.Add(titlebar);
         FormClosing += (_, e) => { if (e.CloseReason == CloseReason.UserClosing) { e.Cancel = true; editing = null; Hide(); } };
-        app.Changed += StateChanged; Disposed += (_, _) => app.Changed -= StateChanged;
+        app.Changed += StateChanged; Disposed += (_, _) => { app.Changed -= StateChanged; hints.Dispose(); };
+        VisibleChanged += (_, _) => { if (!Visible) { editing = null; app.CancelHotkeyCapture(); } };
         Navigate("Действия");
     }
 
@@ -66,18 +70,27 @@ public sealed class ShellForm : GosForm
         if (!Passive) Activate();
         StateChanged();
     }
+    internal void SyncGameMode(bool active)
+    {
+        if(!Visible||Passive==active)return;
+        editing=null;app.CancelHotkeyCapture();Configure(active,app.Settings.HideFromCapture);
+        StateChanged();
+    }
     private void StateChanged()
     {
         if (IsDisposed || !IsHandleCreated) return;
         if (InvokeRequired) { BeginInvoke((Action)StateChanged); return; }
         string selected = app.Target is { } target ? $"ID {target.Id} · {target.Name}" : "Цель не выбрана";
         if (targetLabel != null) targetLabel.Text = selected;
+        if (modeLabel != null) modeLabel.Text = ModeText(app.Settings.SendMode);
+        if (connectionLabel != null) { connectionLabel.Text = app.ConnectionStatus; hints.SetToolTip(connectionLabel, app.ConnectionStatus); connectionLabel.ForeColor = app.IsGameActive ? Theme.Good : Theme.Muted; }
         footer.Text = editing != null && Passive ? "Ввод в выделенное поле · Ctrl+A — выделить · Esc — закончить ввод" : app.Status;
         WindowPolicy.Apply(this, app.Settings.HideFromCapture, Passive);
     }
     public void ReviewPage(string page) => Navigate(page);
     private void Navigate(string page)
     {
+        if (currentPage == "Клавиши" && bindingsDirty) { app.Notify("Есть несохранённые клавиши. Сохраните их или отмените изменения."); return; }
         if (currentPage == "Настройки" && settingsDirty)
         {
             app.Notify("Есть несохранённые настройки. Нажмите «Сохранить» или «Отменить изменения»."); return;
@@ -86,11 +99,13 @@ public sealed class ShellForm : GosForm
         {
             app.Notify("Есть несохранённый сценарий. Сохраните его или нажмите «Отменить правки»."); return;
         }
-        currentPage = page; editing = null; targetLabel = null; saveFields.Clear();
+        app.CancelHotkeyCapture();
+        currentPage = page; editing = null; targetLabel = null; modeLabel = null; connectionLabel = null; saveFields.Clear();
         foreach (Control c in content.Controls.Cast<Control>().ToArray()) c.Dispose();
         content.Controls.Clear();
         foreach (var pair in navigation) { pair.Value.Primary = pair.Key == page; pair.Value.Invalidate(); }
         if (page == "Действия") BuildActions();
+        else if (page == "Клавиши") BuildBindings();
         else if (page == "Конструктор") BuildBuilder();
         else if (page == "Законы") BuildLaws();
         else if (page == "Настройки") BuildSettings();
@@ -105,25 +120,134 @@ public sealed class ShellForm : GosForm
         var help = Theme.Label(hint); stack.Controls.Add(help);
         return stack;
     }
+    private static string ModeText(SendMode mode) => mode switch { SendMode.Memory => "Через память", SendMode.KeyAssisted => "Клавиша → символ", _ => "Случайная печать" };
+    private static string BindText(string? value) => string.IsNullOrWhiteSpace(value) ? "Не назначено" : HotkeyChord.TryParse(value, out var chord) ? chord.Display : "Назначьте заново";
     private void BuildActions()
     {
-        var stack = Stack("Действия", "Выберите цель через Auto ID, затем выполните нужное действие. F1 — принять, F2 — отклонить.");
-        targetLabel = Theme.Label(""); targetLabel.ForeColor = Theme.Good; stack.Controls.Add(targetLabel);
-        var targetRow = Row();
-        var manual = new TextBox { Width = 100, MaxLength = 4, PlaceholderText = "ID" }; Register(manual); targetRow.Controls.Add(manual);
-        targetRow.Controls.Add(Theme.Button("Выбрать ID", () => { if (int.TryParse(manual.Text, out int id) && id is >= 0 and <= 1003) app.SetManualTarget(id); else app.Notify("ID: число от 0 до 1003."); }));
-        targetRow.Controls.Add(Theme.Button("Сбросить цель", app.ClearTarget)); stack.Controls.Add(targetRow);
-        var cancel = Theme.Button("Отменить всё · Pause", app.Cancel); cancel.Width = 240; stack.Controls.Add(cancel);
+        var stack = Stack("Действия", "Частые команды и выбранная цель — всё под рукой.");
+        var context = new SurfacePanel { Height = 72, Margin = new Padding(0, 0, 0, 12) };
+        Label Cap(string text) => new() { Text = text, AutoSize = false, Font = Theme.UiBody(8), ForeColor = Theme.Muted, Height = 17 };
+        Label Value() => new() { AutoSize = false, Font = Theme.UiHeading(10), ForeColor = Theme.Text, Height = 25, AutoEllipsis = true };
+        var targetCap = Cap("ВЫБРАННАЯ ЦЕЛЬ"); var modeCap = Cap("ОТПРАВКА"); var connectionCap = Cap("СВЯЗЬ С ИГРОЙ");
+        targetLabel = Value(); modeLabel = Value(); connectionLabel = Value();
+        context.Controls.AddRange([targetCap, targetLabel, modeCap, modeLabel, connectionCap, connectionLabel]);
+        context.SizeChanged += (_, _) =>
+        {
+            int P(int value) => (int)Math.Round(value * context.DeviceDpi / 96f);
+            int unit = Math.Max(P(90), (context.ClientSize.Width - P(48)) / 3);
+            var captions = new[] { targetCap, modeCap, connectionCap }; var values = new[] { targetLabel, modeLabel, connectionLabel };
+            for (int i = 0; i < 3; i++) { captions[i].SetBounds(P(14) + i * (unit + P(10)), P(12), unit, P(17)); values[i]!.SetBounds(P(14) + i * (unit + P(10)), P(34), unit, P(25)); }
+        };
+        stack.Controls.Add(context);
+        var toolbar = Row(); toolbar.Margin = new Padding(0, 0, 0, 8);
+        var search = new TextBox { Width = 400, PlaceholderText = "Найти действие или команду…", Name = "action-search", AccessibleName = "Поиск действий", MaxLength = 100 }; Register(search); toolbar.Controls.Add(search);
+        var editTarget = Theme.Button("Выбрать ID", () => { }); editTarget.Width = 120; toolbar.Controls.Add(editTarget);
+        var keys = Theme.Button("Настроить клавиши", () => Navigate("Клавиши")); keys.Width = 160; toolbar.Controls.Add(keys);
+        stack.Controls.Add(toolbar);
+        var manualRow = Row(); manualRow.Visible = false; manualRow.Margin = new Padding(0, 0, 0, 10);
+        var manual = new TextBox { Width = 90, MaxLength = 4, PlaceholderText = "ID: 0–1003", Name = "manual-target" }; Register(manual); manualRow.Controls.Add(manual);
+        manualRow.Controls.Add(Theme.Button("Применить ID", () => { if (int.TryParse(manual.Text, out int id) && id is >= 0 and <= 1003) { app.SetManualTarget(id); manualRow.Visible = false; } else app.Notify("ID: число от 0 до 1003."); }));
+        manualRow.Controls.Add(Theme.Button("Сбросить цель", app.ClearTarget)); stack.Controls.Add(manualRow);
+        editTarget.Click += (_, _) => { manualRow.Visible = !manualRow.Visible; if (manualRow.Visible && !Passive) manual.Focus(); };
+        var grid = new CardGrid(82); stack.Controls.Add(grid);
+        var empty = Theme.Label("Ничего не найдено. Попробуйте название действия или команду."); empty.Visible = false; empty.Name = "actions-empty"; stack.Controls.Add(empty);
+        var cards = new Dictionary<Control, ActionDefinition>();
         foreach (var action in ActionCatalog.All)
         {
-            var card = new Panel { Width = Math.Max(300, content.Width - 48), Height = 88, BackColor = Theme.Panel, Margin = new Padding(0, 0, 0, 10) };
-            var title = Theme.Label(action.Name); title.ForeColor = Theme.Text; title.Font = Theme.Heading(11); title.Location = new Point(16, 10); card.Controls.Add(title);
-            var description = Theme.Label(action.Description);
-            description.AutoSize = false; description.SetBounds(16, 36, Math.Max(140, card.Width - 180), 45); card.Controls.Add(description);
-            var run = Theme.Button(action.Key == "rights-gui" ? "Открыть" : "Выполнить", () => _ = Execute(() => app.RunAsync(action.Key)), true);
-            run.Size = new Size(130, 38); run.Location = new Point(card.Width - 148, 24); run.Anchor = AnchorStyles.Right | AnchorStyles.Top; card.Controls.Add(run);
-            description.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right; stack.Controls.Add(card);
+            var card = new SurfacePanel { Height = 82, Name = "action-" + action.Key };
+            var title = new Label { Text = action.Name, Font = Theme.UiHeading(10.5f), ForeColor = Theme.Text, AutoEllipsis = true };
+            var description = new Label { Text = action.Description, Font = Theme.UiBody(9), ForeColor = Theme.Muted, AutoEllipsis = true };
+            var badge = new Label { Text = BindText(app.Settings.Hotkeys.GetValueOrDefault(action.Key)), Font = Theme.UiBody(9), ForeColor = Theme.Accent, AutoEllipsis = true };
+            var run = Theme.Button(action.Key == "rights-gui" ? "Открыть" : "Выполнить", () => _ = Execute(() => app.RunAsync(action.Key)));
+            run.Name = "action-run-" + action.Key; run.AccessibleName = "Выполнить: " + action.Name; run.Size = new Size(104, 28);
+            hints.SetToolTip(description, action.Description); hints.SetToolTip(run, action.Description);
+            card.Controls.AddRange([title, description, badge, run]);
+            card.SizeChanged += (_, _) =>
+            {
+                int P(int value) => (int)Math.Round(value * card.DeviceDpi / 96f);
+                title.SetBounds(P(14), P(9), Math.Max(P(80), card.Width - P(28)), P(21));
+                description.SetBounds(P(14), P(31), Math.Max(P(80), card.Width - P(28)), P(18));
+                badge.SetBounds(P(14), P(55), Math.Max(P(70), card.Width - P(135)), P(20));
+                run.SetBounds(card.Width - P(116), P(49), P(104), P(28));
+            };
+            cards[card] = action;
         }
+        grid.SetCards(cards.Keys);
+        search.TextChanged += (_, _) =>
+        {
+            var matches = ActionCatalog.Search(search.Text.Trim().TrimStart('!', '/')).Select(a => a.Key).ToHashSet(StringComparer.Ordinal);
+            grid.Filter(card => matches.Contains(cards[card].Key)); empty.Visible = matches.Count == 0;
+        };
+    }
+
+    private void BuildBindings()
+    {
+        bindingsDirty = false;
+        var draft = new Dictionary<string, string>(app.Settings.Hotkeys, StringComparer.OrdinalIgnoreCase);
+        var stack = Stack("Клавиши", "Нажмите «Назначить», затем нужное сочетание. Esc — отменить запись, Delete — снять назначение.");
+        var instructions = Theme.Label("F1/F2 — выбор Auto ID · Pause — остановка действий. Новые назначения начнут работать после сохранения.");
+        instructions.ForeColor = Theme.Accent; stack.Controls.Add(instructions);
+        var conflict = Theme.Label(""); conflict.Name = "bind-conflicts"; stack.Controls.Add(conflict);
+        var grid = new CardGrid(79); stack.Controls.Add(grid);
+        var values = new Dictionary<string, Label>(); var assignButtons = new Dictionary<string, GosButton>();
+        var rows = new List<Control>(); string? pending = null;
+        var entries = new[] { (Key: "menu", Name: "Открыть / закрыть меню"), (Key: "palette", Name: "Окно текстовых команд") }
+            .Concat(ActionCatalog.All.Select(a => (a.Key, a.Name))).ToArray();
+        void RefreshBindings()
+        {
+            var duplicates = entries.Where(e => HotkeyChord.TryParse(draft.GetValueOrDefault(e.Key, ""), out var chord) && !chord.IsEmpty)
+                .GroupBy(e => { HotkeyChord.TryParse(draft.GetValueOrDefault(e.Key, ""), out var chord); return chord.Canonical; }, StringComparer.OrdinalIgnoreCase)
+                .Where(g => g.Count() > 1).SelectMany(g => g.Select(e => e.Key)).ToHashSet();
+            var invalid = entries.Where(e => !HotkeyChord.TryParse(draft.GetValueOrDefault(e.Key, ""), out var parsed) || parsed.IsReserved).Select(e => e.Key).ToHashSet();
+            foreach (var entry in entries)
+            {
+                values[entry.Key].Text = pending == entry.Key ? "Нажмите сочетание…" : BindText(draft.GetValueOrDefault(entry.Key));
+                values[entry.Key].ForeColor = duplicates.Contains(entry.Key) || invalid.Contains(entry.Key) ? Theme.Danger : pending == entry.Key ? Theme.Good : Theme.Accent;
+                assignButtons[entry.Key].Text = pending == entry.Key ? "Отмена" : "Назначить";
+                assignButtons[entry.Key].Primary = pending == entry.Key; assignButtons[entry.Key].Invalidate();
+            }
+            conflict.Text = invalid.Count > 0 ? "Есть некорректные или зарезервированные клавиши. Назначьте их заново." : duplicates.Count == 0 ? "Сочетания не конфликтуют" : "Одно сочетание назначено нескольким действиям. Измените выделенные назначения.";
+            conflict.ForeColor = duplicates.Count == 0 && invalid.Count == 0 ? Theme.Muted : Theme.Danger;
+        }
+        foreach (var entry in entries)
+        {
+            string key = entry.Key; var card = new SurfacePanel { Height = 79 };
+            var title = new Label { Text = entry.Name, Font = Theme.UiHeading(10), ForeColor = Theme.Text, AutoEllipsis = true };
+            var value = new Label { Name = "bind-value-" + key, Font = Theme.UiBody(10), ForeColor = Theme.Accent, AutoEllipsis = true };
+            var assign = Theme.Button("Назначить", () => { }); assign.Name = "bind-capture-" + key; assign.AccessibleName = "Назначить клавишу: " + entry.Name; assign.Size = new Size(100, 30);
+            var clear = Theme.Button("×", () => { app.CancelHotkeyCapture(); draft[key] = ""; bindingsDirty = true; pending = null; RefreshBindings(); });
+            clear.Name = "bind-clear-" + key; clear.AccessibleName = "Снять клавишу: " + entry.Name; clear.Size = new Size(30, 30); hints.SetToolTip(clear, "Снять назначение");
+            assign.Click += (_, _) =>
+            {
+                if (pending == key) { app.CancelHotkeyCapture(); pending = null; RefreshBindings(); return; }
+                app.CancelHotkeyCapture(); editing = null; pending = key; RefreshBindings();
+                app.BeginHotkeyCapture(key, captured =>
+                {
+                    if (IsDisposed || card.IsDisposed) return;
+                    if (captured != null) { draft[key] = captured; bindingsDirty = true; }
+                    pending = null; RefreshBindings();
+                });
+            };
+            card.Controls.AddRange([title, value, assign, clear]);
+            card.SizeChanged += (_, _) =>
+            {
+                int P(int dip) => (int)Math.Round(dip * card.DeviceDpi / 96f);
+                title.SetBounds(P(14), P(9), Math.Max(P(80), card.Width - P(28)), P(22));
+                value.SetBounds(P(14), P(42), Math.Max(P(50), card.Width - P(166)), P(24));
+                assign.SetBounds(card.Width - P(146), P(37), P(100), P(30)); clear.SetBounds(card.Width - P(40), P(37), P(30), P(30));
+            };
+            values[key] = value; assignButtons[key] = assign; rows.Add(card);
+        }
+        grid.SetCards(rows); RefreshBindings();
+        var buttons = Toolbar(); content.Controls.Add(buttons);
+        var save = Theme.Button("Сохранить клавиши", () =>
+        {
+            app.CancelHotkeyCapture();
+            try { var next = ProfileStore.Copy(app.Settings); next.Hotkeys = new(draft, StringComparer.OrdinalIgnoreCase); app.ApplySettings(next); bindingsDirty = false; Navigate("Клавиши"); }
+            catch (Exception ex) { app.Notify("Клавиши: " + ex.Message); }
+        }, true); save.Name = "bind-save";
+        var cancel = Theme.Button("Отменить изменения", () => { app.CancelHotkeyCapture(); bindingsDirty = false; Navigate("Клавиши"); }); cancel.Name = "bind-cancel";
+        buttons.Controls.Add(save); buttons.Controls.Add(cancel);
     }
 
     private void BuildBuilder()
@@ -197,7 +321,8 @@ public sealed class ShellForm : GosForm
             var step = working[steps.SelectedIndex]; text.Text = step.Text; delay.Text = step.DelayMs.ToString(); kind = step.Kind;
             kindButton.Text = "Шаг: " + KindName();
         };
-        var buttons = Row(); stack.Controls.Add(buttons);
+        var buttons = Toolbar(); content.Controls.Add(buttons);
+        var secondary = Row(); stack.Controls.Add(secondary);
         Scenario Draft() => new() { Id = selectedId ?? Guid.NewGuid().ToString("N"), Name = name.Text.Trim(), Steps = working.Select(s => new ScenarioStep { Kind = s.Kind, Text = s.Text, DelayMs = s.DelayMs }).ToList() };
         buttons.Controls.Add(Theme.Button("Сохранить сценарий", () =>
         {
@@ -209,13 +334,13 @@ public sealed class ShellForm : GosForm
         }, true));
         buttons.Controls.Add(Theme.Button("Предпросмотр", () => ShowDocument("Предпросмотр сценария", string.Join(Environment.NewLine, working.Select(s => s.Kind == "wait" ? $"Пауза {s.DelayMs} мс" : s.Kind + ": " + s.Text)))));
         buttons.Controls.Add(Theme.Button("Выполнить", () => _ = Execute(() => app.RunScenarioAsync(Draft()))));
-        buttons.Controls.Add(Theme.Button("Удалить сценарий", () =>
+        secondary.Controls.Add(Theme.Button("Удалить сценарий", () =>
         {
             if (selectedId == null) return;
             try { var settings = ProfileStore.Copy(app.Settings); settings.Scenarios.RemoveAll(s => s.Id == selectedId); app.ApplySettings(settings); FillScenarios(); }
             catch (Exception ex) { app.Notify("Не удалось удалить сценарий: " + ex.Message); }
         }));
-        buttons.Controls.Add(Theme.Button("Отменить правки", () => { builderDirty = false; Navigate("Конструктор"); }));
+        secondary.Controls.Add(Theme.Button("Отменить правки", () => { builderDirty = false; Navigate("Конструктор"); }));
         FillScenarios();
     }
 
@@ -246,72 +371,104 @@ public sealed class ShellForm : GosForm
         search.Disposed += (_, _) => { timer.Stop(); timer.Dispose(); };
     }
 
+    private static FlowLayoutPanel Toolbar() => new() { Dock = DockStyle.Top, Height = 50, AutoSize = false, WrapContents = false, BackColor = Theme.Background, Margin = Padding.Empty };
     private void BuildSettings()
     {
         settingsDirty = false;
         var draft = ProfileStore.Copy(app.Settings);
-        var stack = Stack("Настройки", "Изменения применяются только кнопкой «Сохранить». Прежние INI можно импортировать без изменения исходного файла.");
-        string S(Func<string> get, Action<string> set, string label) { var input = Input(label, stack, get()); input.TextChanged += (_, _) => settingsDirty = true; saveFields.Add(() => set(input.Text.Trim())); return input.Text; }
-        void B(Func<bool> get, Action<bool> set, string label) { var box = new CheckBox { Text = label, Checked = get(), AutoSize = true, ForeColor = Theme.Text, Margin = new Padding(0, 5, 0, 12) }; box.CheckedChanged += (_, _) => settingsDirty = true; stack.Controls.Add(box); saveFields.Add(() => set(box.Checked)); }
-        void N(Func<int> get, Action<int> set, string label, int min, int max) { var field = Input(label, stack, get().ToString()); field.TextChanged += (_, _) => settingsDirty = true; saveFields.Add(() => { if (!int.TryParse(field.Text, out int v) || v < min || v > max) throw new ArgumentException($"{label}: от {min} до {max}."); set(v); }); }
-        S(() => draft.Name, v => draft.Name = v, "Фамилия / имя персонажа");
-        S(() => draft.Rank, v => draft.Rank = v, "Звание для представления и докладов");
-        S(() => draft.Department, v => draft.Department = v, "Организация");
-        S(() => draft.IntroRole, v => draft.IntroRole = v, "Должность в представлении — «являюсь …»");
-        var mode = draft.SendMode;
-        string ModeName() => mode switch { SendMode.Memory => "Через память", SendMode.KeyAssisted => "Одна физическая клавиша — один нужный символ", _ => "Печать со случайной скоростью" };
-        var select = Theme.Button(ModeName(), () => { }); select.Width = 560;
-        select.Click += (_, _) => { mode = mode == SendMode.RandomTyping ? SendMode.KeyAssisted : mode == SendMode.KeyAssisted ? SendMode.Memory : SendMode.RandomTyping; select.Text = ModeName(); settingsDirty = true; };
-        stack.Controls.Add(Theme.Label("Способ отправки — нажмите, чтобы переключить")); stack.Controls.Add(select); saveFields.Add(() => draft.SendMode = mode);
-        N(() => draft.MinCps, v => draft.MinCps = v, "Минимальная скорость, символов/сек", 1, 500);
-        N(() => draft.MaxCps, v => draft.MaxCps = v, "Максимальная скорость, символов/сек", 1, 500);
-        N(() => draft.LineDelayMs, v => draft.LineDelayMs = v, "Пауза между сообщениями, мс", 0, 10000);
-        B(() => draft.HideFromCapture, v => draft.HideFromCapture = v, "Скрывать окна от поддерживаемого захвата OBS");
-        B(() => draft.HudVisible, v => draft.HudVisible = v, "Показывать HUD");
-        B(() => draft.AutoId, v => draft.AutoId = v, "Предлагать ID при наведении — F1 / F2");
-        B(() => draft.AutoRevive, v => draft.AutoRevive = v, "Подставлять предложение ID после события реанимации");
-        B(() => draft.AutoChase, v => draft.AutoChase = v, "Подставлять предложение ID из событий преследования");
-        B(() => draft.NearbyVisible, v => draft.NearbyVisible = v, "Показывать игроков рядом");
-        N(() => draft.NearbyRadius, v => draft.NearbyRadius = v, "Радиус списка окружающих, м", 1, 300);
-        N(() => draft.NearbyRefreshMs, v => draft.NearbyRefreshMs = v, "Обновление списка окружающих, мс", 200, 5000);
-        S(() => draft.ChatLogNickname, v => draft.ChatLogNickname = v, "Свой Nick_Name в chatlog.txt — для фильтрации своих событий");
-        S(() => draft.ChatLogPath, v => draft.ChatLogPath = v, "Путь к chatlog.txt для автоматизаций");
-        S(() => draft.ExpectedModuleHash, v => draft.ExpectedModuleHash = v, "SHA-256 совместимой azmp.dll — необязательно, проверяется строго если задан");
-        stack.Controls.Add(Theme.Label("Горячие клавиши", true));
-        stack.Controls.Add(Theme.Label("Формат: Alt+T, Ctrl+F8, F10. Pause — аварийная отмена. F1/F2 — ответ Auto ID."));
-        S(() => draft.Hotkeys.GetValueOrDefault("menu", "F10"), v => draft.Hotkeys["menu"] = v, "Открыть / закрыть меню");
-        S(() => draft.Hotkeys.GetValueOrDefault("palette", "Alt+T"), v => draft.Hotkeys["palette"] = v, "Открыть окно команд");
-        foreach (var action in ActionCatalog.All)
+        var fieldValues = new Dictionary<string, string>();
+        var apply = new Dictionary<string, Action>();
+        var host = new Panel { Dock = DockStyle.Fill, BackColor = Theme.Background };
+        var sections = Toolbar(); sections.Height = 47;
+        var toolbar = Toolbar();
+        content.Controls.Add(host); content.Controls.Add(sections); content.Controls.Add(toolbar);
+        string currentSection = "Профиль";
+        var sectionButtons = new Dictionary<string, GosButton>();
+        void Render(string section)
         {
-            string key = action.Key;
-            S(() => draft.Hotkeys.TryGetValue(key, out string? value) ? value : "", v => { if (v.Length == 0) draft.Hotkeys.Remove(key); else draft.Hotkeys[key] = v; }, action.Name);
-        }
-        var buttons = Row(); buttons.Dock = DockStyle.Top; buttons.Height = 52; buttons.AutoSize = false;
-        content.Controls.Add(buttons);
-        buttons.Controls.Add(Theme.Button("Сохранить", () =>
-        {
-            try
+            editing = null; currentSection = section;
+            foreach (Control child in host.Controls.Cast<Control>().ToArray()) child.Dispose(); host.Controls.Clear();
+            foreach (var pair in sectionButtons) { pair.Value.Primary = pair.Key == section; pair.Value.Invalidate(); }
+            var stack = new ResponsiveStack(); host.Controls.Add(stack);
+            stack.Controls.Add(Theme.Label("Настройки · " + section, true));
+            stack.Controls.Add(Theme.Label("Изменения применяются после сохранения. Переключение разделов сохраняет черновик."));
+            void S(string label, Func<string> get, Action<string> set)
             {
-                foreach (var save in saveFields) save();
-                if (draft.MinCps > draft.MaxCps) throw new ArgumentException("Минимальная скорость не может превышать максимальную.");
-                app.ApplySettings(draft); settingsDirty = false; editing = null;
+                if (!fieldValues.ContainsKey(label)) fieldValues[label] = get();
+                var input = Input(label, stack, fieldValues[label]);
+                input.TextChanged += (_, _) => { fieldValues[label] = input.Text; settingsDirty = true; };
+                apply[label] = () => set(fieldValues[label].Trim());
             }
-            catch (Exception ex) { app.Notify("Настройки: " + ex.Message); }
-        }, true));
-        buttons.Controls.Add(Theme.Button("Отменить изменения", () => { settingsDirty = false; Navigate("Настройки"); }));
-        buttons.Controls.Add(Theme.Button("Импорт INI", () =>
+            void N(string label, Func<int> get, Action<int> set, int min, int max)
+            {
+                S(label, () => get().ToString(), value => { if (!int.TryParse(value, out int number) || number < min || number > max) throw new ArgumentException($"{label}: от {min} до {max}."); set(number); });
+            }
+            void B(string label, Func<bool> get, Action<bool> set)
+            {
+                var box = new CheckBox { Text = label, Checked = get(), AutoSize = true, Font = Theme.UiBody(10), ForeColor = Theme.Text, Margin = new Padding(0, 8, 0, 12) };
+                box.CheckedChanged += (_, _) => { set(box.Checked); settingsDirty = true; }; stack.Controls.Add(box);
+            }
+            if (section == "Профиль")
+            {
+                S("Фамилия / имя персонажа", () => draft.Name, v => draft.Name = v);
+                S("Звание", () => draft.Rank, v => draft.Rank = v);
+                S("Организация", () => draft.Department, v => draft.Department = v);
+                S("Должность в представлении — «являюсь …»", () => draft.IntroRole, v => draft.IntroRole = v);
+                S("Свой Nick_Name в игре", () => draft.ChatLogNickname, v => draft.ChatLogNickname = v);
+                S("Путь к chatlog.txt", () => draft.ChatLogPath, v => draft.ChatLogPath = v);
+            }
+            else if (section == "Отправка")
+            {
+                stack.Controls.Add(Theme.Label("Способ отправки", true));
+                foreach (var mode in new[] { SendMode.RandomTyping, SendMode.KeyAssisted, SendMode.Memory })
+                {
+                    var pick = Theme.Button(ModeText(mode), () => { draft.SendMode = mode; settingsDirty = true; Render(currentSection); }, draft.SendMode == mode);
+                    pick.Width = 440; stack.Controls.Add(pick);
+                }
+                stack.Controls.Add(Theme.Label("Представление, остановка и права используют память независимо от выбранного режима."));
+                N("Скорость от, символов/сек", () => draft.MinCps, v => draft.MinCps = v, 1, 500);
+                N("Скорость до, символов/сек", () => draft.MaxCps, v => draft.MaxCps = v, 1, 500);
+                N("Пауза между сообщениями, мс", () => draft.LineDelayMs, v => draft.LineDelayMs = v, 0, 10000);
+                S("SHA-256 совместимой azmp.dll — необязательно", () => draft.ExpectedModuleHash, v => draft.ExpectedModuleHash = v);
+            }
+            else
+            {
+                B("Скрывать окна от поддерживаемого захвата OBS", () => draft.HideFromCapture, v => draft.HideFromCapture = v);
+                B("Показывать HUD", () => draft.HudVisible, v => draft.HudVisible = v);
+                B("Предлагать ID при наведении — F1 / F2", () => draft.AutoId, v => draft.AutoId = v);
+                B("Предлагать ID после реанимации", () => draft.AutoRevive, v => draft.AutoRevive = v);
+                B("Предлагать ID из событий преследования", () => draft.AutoChase, v => draft.AutoChase = v);
+                stack.Controls.Add(Theme.Label("Для событий игры укажите путь к chatlog.txt в разделе «Профиль». Свой Nick_Name помогает распознавать сообщения о вашем персонаже."));
+                B("Показывать игроков рядом", () => draft.NearbyVisible, v => draft.NearbyVisible = v);
+                N("Радиус списка окружающих, м", () => draft.NearbyRadius, v => draft.NearbyRadius = v, 1, 300);
+                N("Обновление списка окружающих, мс", () => draft.NearbyRefreshMs, v => draft.NearbyRefreshMs = v, 200, 5000);
+            }
+        }
+        foreach (var section in new[] { "Профиль", "Отправка", "Оверлеи" })
         {
+            var button = Theme.Button(section, () => Render(section)); button.Width = 156; sections.Controls.Add(button); sectionButtons[section] = button;
+        }
+        var save = Theme.Button("Сохранить", () =>
+        {
+            try { foreach (var action in apply.Values) action(); if (draft.MinCps > draft.MaxCps) throw new ArgumentException("Минимальная скорость не может превышать максимальную."); app.ApplySettings(draft); settingsDirty = false; editing = null; }
+            catch (Exception ex) { app.Notify("Настройки: " + ex.Message); }
+        }, true); save.Name = "settings-save"; toolbar.Controls.Add(save);
+        var cancel = Theme.Button("Отменить изменения", () => { settingsDirty = false; Navigate("Настройки"); }); cancel.Name = "settings-cancel"; toolbar.Controls.Add(cancel);
+        toolbar.Controls.Add(Theme.Button("Импорт INI", () =>
+        {
+            if (settingsDirty) { app.Notify("Сохраните или отмените черновик перед импортом."); return; }
             if (Passive) { app.Notify("Для выбора INI откройте меню на рабочем столе: системный диалог забирает фокус игры."); return; }
             using var dialog = new OpenFileDialog { Filter = "Профили AHK (*.ini)|*.ini", Title = "Импорт старого профиля" };
             if (dialog.ShowDialog(this) == DialogResult.OK) { app.ImportLegacy(dialog.FileName); settingsDirty = false; Navigate("Настройки"); }
         }));
+        Render(currentSection);
     }
 
     private void BuildAbout()
     {
-        var stack = Stack("AHK FOR GOS · 2.0", "Самостоятельное приложение на C# / .NET 10. Старая версия AHK остаётся отдельно.");
+        var stack = Stack("AHK FOR GOS · 2.0 preview 2", "Самостоятельное приложение на C# / .NET 10. Старая версия AHK остаётся отдельно.");
         var notes = new TextBox { Width = 680, Height = 380, Multiline = true, ReadOnly = true, ScrollBars = ScrollBars.Vertical,
-            Text = "Быстрый старт\r\nF10 — меню · Alt+T — команды · F1/F2 — Auto ID · Pause — отмена.\r\n\r\nВо время игры окна не активируются: выберите поле мышью и вводите текст. Esc завершает ввод или скрывает меню.\r\n\r\nПолноэкранный режим\r\nВнешние окна работают поверх игры через Windows/DWM. Настоящий эксклюзивный DirectX fullscreen может не показывать такие окна; используйте полноэкранный режим без рамки. Перехват графики игры в приложение не встроен.\r\n\r\nПамять и совместимость\r\nАдреса перенесены из исходников; конкретный клиент Amazing необходимо проверить отдельно. Неопределённая отправка автоматически не повторяется.\r\n\r\nOBS\r\nУспешный флаг Windows не доказывает результат видеозаписи. Проверьте используемый источник OBS.\r\n\r\nПриложение не является официальной программой Amazing. Соблюдайте правила сервера." };
+            Text = "Быстрый старт\r\nF10 — меню · Alt+T — команды · F1/F2 — Auto ID · Pause — отмена.\r\nНазначение сочетаний — раздел «Клавиши»: нажмите «Назначить» и физическое сочетание.\r\n\r\nВо время игры окна не активируются: выберите поле мышью и вводите текст. Esc завершает ввод или скрывает меню.\r\n\r\nПолноэкранный режим\r\nВнешние окна работают поверх игры через Windows/DWM. Настоящий эксклюзивный DirectX fullscreen может не показывать такие окна; используйте полноэкранный режим без рамки. Перехват графики игры в приложение не встроен.\r\n\r\nПамять и совместимость\r\nАдреса перенесены из исходников; конкретный клиент Amazing необходимо проверить отдельно. Неопределённая отправка автоматически не повторяется.\r\n\r\nOBS\r\nУспешный флаг Windows не доказывает результат видеозаписи. Проверьте используемый источник OBS.\r\n\r\nПриложение не является официальной программой Amazing. Соблюдайте правила сервера." };
         Register(notes); stack.Controls.Add(notes);
         stack.Controls.Add(Theme.Label(WindowPolicy.CaptureStatus));
         var status = Theme.Label(app.ConnectionStatus + Environment.NewLine + app.Status); status.MaximumSize = new Size(680, 0); stack.Controls.Add(status);

@@ -22,4 +22,7 @@ public interface IAppController
     void ClearTarget();
     void Notify(string text);
     void ImportLegacy(string path);
+    bool IsCapturingHotkey { get; }
+    void BeginHotkeyCapture(string actionKey,Action<string?> onCaptured);
+    void CancelHotkeyCapture();
 }

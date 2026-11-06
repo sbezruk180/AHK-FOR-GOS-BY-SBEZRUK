@@ -8,8 +8,13 @@ public sealed class AppController : IAppController, IDisposable
     readonly ChatTransport transport;
     readonly AutomationRunner runner;
     readonly ChatLogWatcher log = new();
-    readonly KeyboardHook keyboard;
-    readonly System.Windows.Forms.Timer timer = new() { Interval=35 };
+    readonly KeyboardHook? keyboard;
+    readonly HotkeyCaptureSession capture=new();
+    readonly PhysicalKeyState physicalKeys=new();
+    readonly HotkeyTestContext? hotkeyTest;
+    Action<string?>? capturedCallback;
+    public bool IsCapturingHotkey=>capture.IsCapturing;
+    readonly System.Windows.Forms.Timer timer = new() { Interval=250 };
     readonly SynchronizationContext ui;
     readonly string dataDir;
     readonly int uiThreadId=Environment.CurrentManagedThreadId;
@@ -28,22 +33,39 @@ public sealed class AppController : IAppController, IDisposable
     public TargetSnapshot? Candidate {get;private set;}
     public IReadOnlyList<NearbyPlayer> Nearby {get;private set;}=[];
     public LawLibrary Laws {get;}=new();
-    public bool IsGameActive=>game.IsActive;
+    public bool IsGameActive=>hotkeyTest?.IsOwnWindowActive()??game.IsActive;
     public string ConnectionStatus=>game.Status;
     public event Action? Changed;
-    public AppController(string directory)
+    public AppController(string directory):this(directory,null){}
+    internal AppController(string directory,HotkeyTestContext? testing)
     {
+        hotkeyTest=testing;
         dataDir=directory;store=new(directory);Settings=store.Load();Settings.Normalize();if(store.Warning is {} warning)Status=warning;
         ui=SynchronizationContext.Current??new WindowsFormsSynchronizationContext();
         transport=new(game);runner=new(transport);
         runner.StatusChanged+=Notify; transport.Progress+=Notify;
-        keyboard=new();keyboard.KeyInput+=HandleKey;keyboard.CallbackError+=e=>{runner.Cancel();Notify("Обработчик клавиатуры: "+e.Message);};
+        if(testing==null){keyboard=new();keyboard.KeyInput+=HandleKey;keyboard.CallbackError+=e=>{runner.Cancel();Notify("Обработчик клавиатуры: "+e.Message);};}
+        capture.Completed+=result=>
+        {
+            var callback=capturedCallback;capturedCallback=null;
+            try{callback?.Invoke(result.Cancelled?null:result.Chord?.Canonical??"");}
+            catch(Exception e){Notify("Не удалось обновить назначение: "+e.Message);return;}
+            Notify(result.Cancelled?"Назначение отменено":$"Сочетание записано: {result.Chord?.Display}. Сохраните изменения на странице клавиш.");
+        };
+        capture.Changed+=()=>{if(capture.Error is {} error)Notify(error);else Changed?.Invoke();};
         timer.Tick+=async(_,_)=>await TickAsync();
         game.ExpectedHash=Settings.ExpectedModuleHash;
         game.ChatCallLaunched+=()=>{if(Volatile.Read(ref stopRunning))Interlocked.Exchange(ref lastStop,Environment.TickCount64);};
     }
     public void Attach(ShellForm window,CommandForm palette,HudForm overlay,NearbyForm list)
-    {shell=window;command=palette;hud=overlay;nearby=list;timer.Start();}
+    {shell=window;command=palette;hud=overlay;nearby=list;window.VisibleChanged+=(_,_)=>{if(!window.Visible)CancelHotkeyCapture();};timer.Start();}
+    public void BeginHotkeyCapture(string actionKey,Action<string?> onCaptured)
+    {
+        ArgumentNullException.ThrowIfNull(onCaptured);runner.Cancel();CancelHotkeyCapture();
+        capturedCallback=onCaptured;capture.Begin(actionKey);
+        Notify("Нажмите сочетание клавиш. Esc — отменить, Delete — снять назначение.");
+    }
+    public void CancelHotkeyCapture()=>capture.Cancel();
     public void Notify(string text)
     {
         if(disposed)return;
@@ -69,13 +91,13 @@ public sealed class AppController : IAppController, IDisposable
     }
     static void ValidateHotkeys(AppSettings settings)
     {
-        var combinations=new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var combinations=new HashSet<HotkeyChord>();
         foreach(var pair in settings.Hotkeys)
         {
             if(string.IsNullOrWhiteSpace(pair.Value))continue;
-            var normalized=ParseHotkey(pair.Value).ToString();
+            var normalized=HotkeyChord.Parse(pair.Value);
             if(!combinations.Add(normalized))throw new InvalidOperationException("Одинаковая клавиша назначена дважды: "+pair.Value);
-            if(normalized is "F1" or "F2" or "Pause")throw new InvalidOperationException("F1/F2 и Pause зарезервированы для ID и отмены.");
+            if(normalized.IsReserved)throw new InvalidOperationException("F1/F2 и Pause зарезервированы для ID и отмены.");
         }
     }
     public void ImportLegacy(string path)
@@ -140,9 +162,16 @@ public sealed class AppController : IAppController, IDisposable
                 return(active,aim,players);
             });
             if(disposed)return;
+            // Keep fast aim tracking in the foreground; avoid scheduling 28 workers/sec on the desktop.
+            timer.Interval=snapshot.active?35:250;
+            shell?.SyncGameMode(snapshot.active);
+            foreach(var reference in Application.OpenForms.OfType<ReferenceForm>())
+                if(reference.Visible)reference.SyncGameMode(snapshot.active);
             if(!snapshot.active)
             {
-                if(wasActive){runner.Cancel();Target=null;Candidate=null;Nearby=[];command?.CloseInput();}
+                if(wasActive){runner.Cancel();Target=null;Candidate=null;Nearby=[];command?.CloseInput();Changed?.Invoke();}
+                string inactiveState="inactive/"+game.Status;
+                if(lastPublished!=inactiveState){lastPublished=inactiveState;Changed?.Invoke();}
                 wasActive=false;hud?.Hide();nearby?.Hide();return;
             }
             wasActive=true;
@@ -178,11 +207,15 @@ public sealed class AppController : IAppController, IDisposable
     }
     bool HandleKey(KeyStroke stroke)
     {
-        if(stroke.Injected||disposed)return false;
-        if(!stroke.Down&&consumedKeys.Remove(stroke.VirtualKey))return true;
+        if(disposed)return false;
+        physicalKeys.Update(stroke.VirtualKey,stroke.Down,stroke.Injected);
+        if(stroke.Injected)return false;
         bool ownsFocus=Application.OpenForms.Cast<Form>().Any(f=>f.ContainsFocus);
+        if(capture.IsCapturing&&!IsGameActive&&!ownsFocus)CancelHotkeyCapture();
+        if(capture.Process(stroke.VirtualKey,stroke.Down,stroke.Injected,stroke.Repeat,physicalKeys.Modifiers))return true;
+        if(!stroke.Down&&consumedKeys.Remove(stroke.VirtualKey))return true;
         if(!IsGameActive && !ownsFocus && !runner.IsBusy)return false;
-        if(stroke.Down&&stroke.VirtualKey==0x13&&!stroke.Repeat)
+        if(stroke.Down&&stroke.VirtualKey==0x13&&!stroke.Repeat&&physicalKeys.Modifiers==HotkeyModifiers.None)
         {runner.Cancel();command?.CloseInput();consumedKeys.Add(stroke.VirtualKey);Notify("Отменено клавишей Pause");return true;}
         if(!IsGameActive && !ownsFocus)return false;
         if(stroke.Down&&!stroke.Repeat)
@@ -202,40 +235,29 @@ public sealed class AppController : IAppController, IDisposable
         else if(transport.IsTyping) handled=transport.ConsumeKey(stroke);
         else if(Application.OpenForms.OfType<ReferenceForm>().LastOrDefault(f=>f.Visible&&f.Passive) is {} reference)handled=reference.HandleKey(stroke);
         else if(command?.IsOpen==true) handled=command.HandleKey(stroke);
-        else if(stroke.Down&&!stroke.Repeat&&Candidate!=null&&stroke.VirtualKey is 0x70 or 0x71)
+        else if(stroke.Down&&!stroke.Repeat&&Candidate!=null&&physicalKeys.Modifiers==HotkeyModifiers.None&&stroke.VirtualKey is 0x70 or 0x71)
         {if(stroke.VirtualKey==0x70)AcceptTarget();else RejectTarget();handled=true;}
         else if(shell?.Visible==true && IsGameActive) handled=shell.HandleKey(stroke);
         if(handled){if(stroke.Down)consumedKeys.Add(stroke.VirtualKey);return true;}
         if(!stroke.Down||stroke.Repeat)return consumedKeys.Contains(stroke.VirtualKey);
+        // Desktop text fields never execute gameplay bindings.
+        if(!IsGameActive)return false;
         foreach(var pair in Settings.Hotkeys)
         {
+            if(pair.Key is "menu" or "palette" || !ActionCatalog.All.Any(a=>a.Key==pair.Key))continue;
             if(!Matches(pair.Value,stroke.VirtualKey))continue;
             consumedKeys.Add(stroke.VirtualKey);
-            if(pair.Key=="menu")
-            {
-                if(shell?.Visible==true)shell.Hide();else {runner.Cancel();shell?.ShowPassive();}
-            }
-            else if(pair.Key=="palette"){runner.Cancel();command?.Open();}
+            if(hotkeyTest is {} testing)testing.OnAction(pair.Key);
             else _=RunAsync(pair.Key);
             return true;
         }
         return false;
     }
-    static Keys ParseHotkey(string value)
-    {
-        try {return (Keys)(new KeysConverter().ConvertFromInvariantString(value)??Keys.None);}
-        catch(Exception){throw new InvalidOperationException("Неверная клавиша: "+value+". Пример: Alt+1 или Ctrl+F5.");}
-    }
-    static bool Matches(string value,int vk)
-    {
-        if(string.IsNullOrWhiteSpace(value))return false;
-        Keys expected;try{expected=ParseHotkey(value);}catch(InvalidOperationException){return false;}
-        Keys mods=Keys.None;
-        if(KeyboardHook.IsKeyDown(0x10))mods|=Keys.Shift;
-        if(KeyboardHook.IsKeyDown(0x11))mods|=Keys.Control;
-        if(KeyboardHook.IsKeyDown(0x12))mods|=Keys.Alt;
-        return expected==(mods|(Keys)vk);
-    }
+    bool Matches(string value,int vk)=>HotkeyChord.TryParse(value,out var chord)&&chord.Matches(vk,physicalKeys.Modifiers);
+    // Native tests feed the same handler through a hook on an owned window; no game calls.
+    internal bool ProcessTestKey(KeyStroke stroke)=>HandleKey(stroke);
     public void Dispose()
-    {disposed=true;timer.Stop();timer.Dispose();runner.Dispose();keyboard.Dispose();transport.Dispose();game.Dispose();}
+    {disposed=true;timer.Stop();timer.Dispose();runner.Dispose();CancelHotkeyCapture();keyboard?.Dispose();transport.Dispose();game.Dispose();}
 }
+
+internal sealed record HotkeyTestContext(Func<bool> IsOwnWindowActive,Action<string> OnAction);
