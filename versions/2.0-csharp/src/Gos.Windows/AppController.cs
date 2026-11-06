@@ -148,6 +148,7 @@ public sealed class AppController : IAppController, IDisposable
         try
         {
             long now=Environment.TickCount64;
+            var settings=Settings;
             var snapshot=await Task.Run(()=>
             {
                 if(now>=flushDue)
@@ -156,10 +157,17 @@ public sealed class AppController : IAppController, IDisposable
                     if(logs.Count>0)try{var path=Path.Combine(dataDir,"session.log");if(File.Exists(path)&&new FileInfo(path).Length>262144)File.WriteAllText(path,"");File.AppendAllLines(path,logs);}catch(IOException){}catch(UnauthorizedAccessException){}
                 }
                 game.Refresh();bool active=game.IsActive;
-                var aim=active&&Settings.AutoId&&KeyboardHook.IsKeyDown(0x02)&&game.IsChatOpen==false?game.ReadAimTarget():null;
+                var aim=active&&settings.AutoId&&KeyboardHook.IsKeyDown(0x02)&&game.IsChatOpen==false?game.ReadAimTarget():null;
                 IReadOnlyList<NearbyPlayer>? players=null;
-                if(active&&Settings.NearbyVisible&&now>=nearbyDue) players=game.ReadNearby(Settings.NearbyRadius);
-                return(active,aim,players);
+                if(active&&settings.NearbyVisible&&now>=nearbyDue) players=game.ReadNearby(settings.NearbyRadius);
+                DetectedTarget[] events=[];
+                if(active&&now>=logDue)
+                {
+                    logDue=now+400;
+                    try{events=log.Poll(settings.ChatLogPath,settings.ChatLogNickname).ToArray();}
+                    catch(IOException){}catch(UnauthorizedAccessException){}
+                }
+                return(active,aim,players,events);
             });
             if(disposed)return;
             // Keep fast aim tracking in the foreground; avoid scheduling 28 workers/sec on the desktop.
@@ -183,20 +191,18 @@ public sealed class AppController : IAppController, IDisposable
             }
             else {Candidate=now<eventCandidateUntil?eventCandidate:null;rejected=null;}
             if(snapshot.players is not null){Nearby=snapshot.players;nearbyDue=now+Settings.NearbyRefreshMs;}
-            if(now>=logDue)
+            // File IO runs with polling on the worker, never in a keyboard/UI callback.
+            // Discard events from a profile changed while the read was in flight.
+            if(ReferenceEquals(settings,Settings))
             {
-                logDue=now+400;
-                try
+                foreach(var hit in snapshot.events)
                 {
-                    foreach(var hit in log.Poll(Settings.ChatLogPath,Settings.ChatLogNickname))
-                    {
-                        if(hit.Kind=="chase"&&!Settings.AutoChase||hit.Kind=="revive"&&!Settings.AutoRevive)continue;
-                        var eventKey=hit.Kind+":"+hit.Id;
-                        if(eventTimes.TryGetValue(eventKey,out long last)&&now-last<5000)continue;
-                        if(eventTimes.Count>64)eventTimes.Clear();eventTimes[eventKey]=now;
-                        eventCandidate=Candidate=new(hit.Id,hit.Name);eventCandidateUntil=now+10000;Notify($"{(hit.Kind switch {"revive"=>"Реанимация","chase"=>"Преследование","stun"=>"Оглушение",_=>"Местоположение"})}: ID {hit.Id}. F1 — принять / F2 — отказ. Команда автоматически не отправляется.");
-                    }
-                }catch(IOException){}catch(UnauthorizedAccessException){}
+                    if(hit.Kind=="chase"&&!Settings.AutoChase||hit.Kind=="revive"&&!Settings.AutoRevive)continue;
+                    var eventKey=hit.Kind+":"+hit.Id;
+                    if(eventTimes.TryGetValue(eventKey,out long last)&&now-last<5000)continue;
+                    if(eventTimes.Count>64)eventTimes.Clear();eventTimes[eventKey]=now;
+                    eventCandidate=Candidate=new(hit.Id,hit.Name);eventCandidateUntil=now+10000;Notify($"{(hit.Kind switch {"revive"=>"Реанимация","chase"=>"Преследование","stun"=>"Оглушение",_=>"Местоположение"})}: ID {hit.Id}. F1 — принять / F2 — отказ. Команда автоматически не отправляется.");
+                }
             }
             hud?.RefreshState();nearby?.RefreshState();
             var published=$"{Target?.Id}/{Candidate?.Id}/{Nearby.Count}/{game.Status}";

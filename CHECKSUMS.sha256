@@ -1,6 +1,6 @@
 e80d68e476d7f2d1560f9c7b36997f0959ea5cba3b0f553c6c8296d00fa4aff5  .gitattributes
 37a62c762e39b2b2117cb83fd615f7b04d40ca8bd33b0126f9e17a601b9f9716  .github/REPOSITORY.md
-4035a9b0f739f2dc8e5817de5ce065598c95573df719cb2271fee9e8610623e8  .github/workflows/csharp-v2.yml
+7d5966648b80634d56f5b3a86bd2c95154b4b2e5b3e708069d2e4df865157ba8  .github/workflows/csharp-v2.yml
 4f9d28616c51994c0d7202703499ddf6a1218bf7a33a57a9dc36e3d06b4cd45b  .github/workflows/deep-audit.yml
 b89d134a18b62c127733f89dcfe9357dbe5b91761ff116c57c26974ac38f3187  .github/workflows/gui-diagnostics.yml
 58e9eb28b0c39461eab41e4834d4e1995f53e4f13fa841d269aa1872c3524c89  .github/workflows/gui-profile-update.yml
@@ -830,7 +830,7 @@ c5bac7875c4c5828c808bc42df081a0f69e014c64307252fe1c06bb53c1a224f  versions/2.0-c
 72d9c3f4b4f3bb9c427fc86c2c0fdeeb03a84aba8eb3c1c1202e178635a526b4  versions/2.0-csharp/src/Gos.Core/Models.cs
 fc98eeb35d1a8af5df74977cef4d198f2237017a7a770389bb15ec871fe48636  versions/2.0-csharp/src/Gos.Core/PhysicalKeyState.cs
 c95a6a28e8448edf84d74dea1001e42a4ba12ed42612b524ee2ca9de805e485f  versions/2.0-csharp/src/Gos.Core/ProfileStore.cs
-70276928401b769da419537a92a01ce24d92844c7da27470014371dba6e083e6  versions/2.0-csharp/src/Gos.Windows/AppController.cs
+6e522513c036c04e05dbccd5a5e9adb694c5a3a53d644a020a758102626dec67  versions/2.0-csharp/src/Gos.Windows/AppController.cs
 f01ce8a7274cf0cf8c834aa263070e2ef35f334bb63445e1ed0fc2423eade219  versions/2.0-csharp/src/Gos.Windows/ChatLogWatcher.cs
 5ad60b360ed367e5f7abe1904927e09697d42fbd4a0ae4fd56fcf9195bed30a0  versions/2.0-csharp/src/Gos.Windows/ChatTransport.cs
 be0679a14f02caad7946fb84df92955b25b4230680c44bf0c673c2435631898d  versions/2.0-csharp/src/Gos.Windows/GameMemory.cs
@@ -839,9 +839,9 @@ b8ab70c1e35e0f10d7102464fd765b8545bf97f6a8648679df3ac4a10dae1b52  versions/2.0-c
 17f106a54e7554d0a533a3eb820f5b21ebcd7e841d234d4dc969573cac7f8e87  versions/2.0-csharp/src/Gos.Windows/KeyboardHook.cs
 b751484829cfa9375241f1aa2cf1619edadc1ebeea00c15da099730629e6ee2f  versions/2.0-csharp/src/Gos.Windows/Native.cs
 c9ad8f5e4db0b04de8aa86a63cb6565f36d800144d98290efda5057332274457  versions/2.0-csharp/src/Gos.Windows/NativeHotkeyTests.cs
-24fad15557e7c9005639431a649db028e4bed0bebd515795b2e1f17a3b6e11b4  versions/2.0-csharp/src/Gos.Windows/NativeSelfTest.cs
+16e69e5653e3fabaee00d10589b772e5b72c85454cefca1329f823b10aca80cb  versions/2.0-csharp/src/Gos.Windows/NativeSelfTest.cs
 114613633992d9718bc367e5a04cc46eeae08354f258a2b1e29c93add9ec3bff  versions/2.0-csharp/src/Gos.Windows/OverlayForms.cs
-c4ebc3586f706eaaf664b703e6422df5d510df4d55d19d769f2067834bea121d  versions/2.0-csharp/src/Gos.Windows/Program.cs
+75637458d52bbaef3fa6d3e28a66a53561190579ce5a8d738bc1e469fbeb87dd  versions/2.0-csharp/src/Gos.Windows/Program.cs
 02a5996361b3aed042143fd2de3dfc80d29d857552759ca700cfaeccf54627b3  versions/2.0-csharp/src/Gos.Windows/ShellForm.cs
 686ff8a2d12b0beecaecba3f674da46dd78e4eb79f26d751bb51cdcacc74bab3  versions/2.0-csharp/src/Gos.Windows/Theme.cs
 c5305f317d29a95ebf25294962acdfbb2c2510702ed20c30df0d27421fc00bed  versions/2.0-csharp/src/Gos.Windows/app.manifest

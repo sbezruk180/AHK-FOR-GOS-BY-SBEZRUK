@@ -8,6 +8,7 @@ internal static class Program
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         using var singleton=new Mutex(true,@"Local\SBezruk.Gos.CSharp.V2",out bool first);
         if(!first){MessageBox.Show("GOS 2 уже запущен. Закройте прежнюю копию через значок возле часов и откройте новую версию.","GOS 2",MessageBoxButtons.OK,MessageBoxIcon.Information);return 2;}
+        if(args.Contains("--ui-selftest"))Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
         ApplicationConfiguration.Initialize();
         string data=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),"AHK FOR GOS","v2");
         Directory.CreateDirectory(data);

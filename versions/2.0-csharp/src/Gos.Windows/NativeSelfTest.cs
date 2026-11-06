@@ -8,7 +8,8 @@ internal static class NativeSelfTest
     public static int Run(string output)
     {
         Directory.CreateDirectory(output);var lines=new List<string>();int failures=0;
-        void Check(string name,bool pass){lines.Add($"{(pass?"PASS":"FAIL")} | {name}");if(!pass)failures++;}
+        File.WriteAllText(Path.Combine(output,"native-report.txt"),"START | Native verification\n");
+        void Check(string name,bool pass){var line=$"{(pass?"PASS":"FAIL")} | {name}";lines.Add(line);File.AppendAllText(Path.Combine(output,"native-report.txt"),line+"\n");if(!pass)failures++;}
         try
         {
             Check("Shipping host is x86",IntPtr.Size==4);

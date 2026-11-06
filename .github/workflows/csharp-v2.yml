@@ -31,9 +31,13 @@ jobs:
           $folder = Join-Path $env:RUNNER_TEMP 'gos-v2-native'
           $app = Resolve-Path versions/2.0-csharp/out/win-x86/Gos.exe
           $p = Start-Process $app -ArgumentList @('--ui-selftest',"`"$folder`"") -PassThru
-          if (!$p.WaitForExit(90000)) { $p.Kill(); throw 'Native selftest timeout' }
-          Get-Content (Join-Path $folder 'native-report.txt')
-          Copy-Item $folder native-results -Recurse
+          $finished = $p.WaitForExit(90000)
+          if (!$finished) { $p.Kill(); $p.WaitForExit() }
+          if (Test-Path $folder) {
+            Get-Content (Join-Path $folder 'native-report.txt') -ErrorAction Continue
+            Copy-Item $folder native-results -Recurse
+          }
+          if (!$finished) { throw 'Native selftest timeout; partial report preserved' }
           if ($p.ExitCode) { throw 'Native selftest failed' }
       - uses: actions/upload-artifact@v4
         if: always()
