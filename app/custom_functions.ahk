@@ -698,11 +698,11 @@ OpenCustomFunctionBuilder(selectIndex := 1) {
     Gui, 40:Add, Edit, x284 y236 w620 h240 vCFB_Script hwndhCFBScript WantTab -Wrap Background%controlBg%
 
     Gui, 40:Font, Norm s8 c%text%, Segoe UI
-    Gui, 40:Add, Button, x284 y490 w90 h32 gCustomFunctionAddSendLabel, + SEND
+    Gui, 40:Add, Button, x284 y490 w90 h32 gCustomFunctionAddSendLabel, + Текст
     Gui, 40:Add, Button, x380 y490 w90 h32 gCustomFunctionAddWaitLabel, + Пауза
     Gui, 40:Add, Button, x476 y490 w90 h32 gCustomFunctionAddTimerLabel, + Таймер
     Gui, 40:Add, Button, x572 y490 w106 h32 gCustomFunctionAddNoticeLabel, + Уведомл.
-    Gui, 40:Add, Button, x684 y490 w90 h32 gCustomFunctionAddTypeLabel, + TYPE
+    Gui, 40:Add, Button, x684 y490 w90 h32 gCustomFunctionAddTypeLabel, + Ввод
     Gui, 40:Add, Button, x780 y490 w124 h32 gCustomFunctionAddIDLabel, + ID
 
     Gui, 40:Font, Norm s8 c%muted%, Segoe UI
@@ -813,6 +813,62 @@ CustomBlocks_SelectedScript(model, indices, ByRef errorText) {
     return errorText = "" ? script : ""
 }
 
+; Display labels are deliberately separate from the persisted script language.
+CustomBlocks_TypeLabel(type) {
+    static labels := {SEND: "Сообщение", WAIT: "Пауза (мс)", TIMER: "Таймер (сек)", NOTICE: "Уведомление", TYPE: "Ввод без Enter", STOP: "Остановить", RAW: "Исходная строка"}
+    return labels.HasKey(type) ? labels[type] : type
+}
+
+CustomBlocks_TypeCode(label) {
+    for _, type in ["SEND", "WAIT", "TIMER", "NOTICE", "TYPE", "STOP", "RAW", "Заметка"]
+        if (label = CustomBlocks_TypeLabel(type) || label = type)
+            return type
+    return ""
+}
+
+CustomBlocks_MakeRow(type, value, timerLabel, ByRef raw, ByRef errorText) {
+    raw := "", errorText := ""
+    if (InStr(value, "`n") || InStr(value, "`r") || InStr(timerLabel, "`n") || InStr(timerLabel, "`r")) {
+        errorText := "Один блок должен занимать одну строку."
+        return false
+    }
+    if (type = "Заметка") {
+        raw := "; " . value
+        return true
+    }
+    if (type = "WAIT" || type = "TIMER") {
+        value := Trim(value), maximum := type = "WAIT" ? 300000 : 3600, minimum := type = "WAIT" ? 0 : 1
+        if (!RegExMatch(value, "^\d+$") || value + 0 < minimum || value + 0 > maximum) {
+            errorText := type = "WAIT" ? "Пауза: целое число от 0 до 300000 миллисекунд." : "Таймер: целое число от 1 до 3600 секунд."
+            return false
+        }
+    }
+    if (type = "") {
+        errorText := "Выберите тип блока."
+        return false
+    }
+    raw := type = "RAW" ? value : type . (type = "STOP" ? "" : " " . value)
+    if (type = "TIMER" && timerLabel != "")
+        raw .= "|" . timerLabel
+    CustomFunction_Parse(raw, errorText)
+    return errorText = ""
+}
+
+CustomBlocks_TypeChanged(params*) {
+    global CustomBlocksState
+    if !IsObject(CustomBlocksState)
+        return
+    GuiControlGet, label, CFBBlocks:, % CustomBlocksState.TypeHwnd
+    type := CustomBlocks_TypeCode(label), isTimer := type = "TIMER"
+    caption := type = "WAIT" ? "Длительность в миллисекундах (1000 мс = 1 сек)" : isTimer ? "Секунды" : type = "STOP" ? "Остановка сценария: значение не требуется" : type = "TYPE" ? "Текст в чат без отправки (Enter нажимаете сами)" : type = "RAW" ? "Исходная строка: исправьте команду без добавления SEND" : "Текст сообщения / уведомления / заметки"
+    GuiControl, CFBBlocks:, % CustomBlocksState.ValueLabelHwnd, %caption%
+    GuiControl, CFBBlocks:Move, % CustomBlocksState.ValueHwnd, % isTimer ? "w180" : "w662"
+    GuiControl, CFBBlocks:Move, % CustomBlocksState.ValueLabelHwnd, % isTimer ? "w180" : "w662"
+    GuiControl, % "CFBBlocks:" . (isTimer ? "Show" : "Hide"), % CustomBlocksState.TimerCaptionHwnd
+    GuiControl, % "CFBBlocks:" . (isTimer ? "Show" : "Hide"), % CustomBlocksState.TimerLabelHwnd
+    GuiControl, % "CFBBlocks:" . (type = "STOP" ? "Disable" : "Enable"), % CustomBlocksState.ValueHwnd
+}
+
 CustomBlocks_Open(params*) {
     global CustomBlocksState, hCustomFunctionWnd, hCFBScript, CustomFunctionSelected
     if (IsObject(CustomBlocksState) && DllCall("IsWindow", "Ptr", CustomBlocksState.Hwnd)) {
@@ -832,7 +888,7 @@ CustomBlocks_Open(params*) {
     Gui, CFBBlocks:Font, s9 Norm c%muted%, Segoe UI
     Gui, CFBBlocks:Add, Text, x22 y56 w832 h38 +Wrap BackgroundTrans, Перетащите строку или используйте стрелки. Ctrl / Shift — несколько блоков. Текст, комментарии и пустые строки сохраняются.
     Gui, CFBBlocks:Font, s9 Norm c%inputFg%, Segoe UI
-    Gui, CFBBlocks:Add, ListView, x22 y104 w832 h242 hwndlistHwnd AltSubmit -ReadOnly, №|Состояние|Блок|Текст / значение
+    Gui, CFBBlocks:Add, ListView, x22 y104 w832 h242 hwndlistHwnd AltSubmit, №|Состояние|Блок|Текст / значение
     state.Hwnd := blocksHwnd, state.ListHwnd := listHwnd
     GuiControl, CFBBlocks:+g, %listHwnd%, % Func("CustomBlocks_ListEvent")
     Gui, CFBBlocks:Font, s9 Norm c%fg%, Segoe UI
@@ -844,10 +900,12 @@ CustomBlocks_Open(params*) {
     Gui, CFBBlocks:Add, Button, x690 y358 w164 h32 hwndtestHwnd, Тест выбранных
     Gui, CFBBlocks:Font, s8 Norm c%muted%, Segoe UI
     Gui, CFBBlocks:Add, Text, x22 y404 w160 h18 BackgroundTrans, Тип блока
-    Gui, CFBBlocks:Add, Text, x192 y404 w662 h18 BackgroundTrans, Значение (TIMER: секунды|название). STOP не требует значения.
+    Gui, CFBBlocks:Add, Text, x192 y404 w662 h18 hwndvalueLabelHwnd BackgroundTrans, Текст сообщения / уведомления / заметки
+    Gui, CFBBlocks:Add, Text, x384 y404 w470 h18 hwndtimerCaptionHwnd BackgroundTrans Hidden, Название таймера (необязательно)
     Gui, CFBBlocks:Font, s10 Norm c%inputFg%, Segoe UI
-    Gui, CFBBlocks:Add, DropDownList, x22 y430 w160 hwndtypeHwnd, SEND||WAIT|TIMER|NOTICE|TYPE|STOP|Заметка
+    Gui, CFBBlocks:Add, DropDownList, x22 y430 w160 hwndtypeHwnd, Сообщение||Пауза (мс)|Таймер (сек)|Уведомление|Ввод без Enter|Остановить|Заметка|Исходная строка
     Gui, CFBBlocks:Add, Edit, x192 y430 w662 h32 hwndvalueHwnd -Multi -WantReturn
+    Gui, CFBBlocks:Add, Edit, x384 y430 w470 h32 hwndtimerLabelHwnd -Multi -WantReturn Hidden
     Gui, CFBBlocks:Font, s9 Norm c%fg%, Segoe UI
     Gui, CFBBlocks:Add, Button, x22 y474 w160 h32 hwndinsertHwnd, Добавить после
     Gui, CFBBlocks:Add, Button, x192 y474 w182 h32 hwndupdateHwnd, Изменить выбранный
@@ -857,6 +915,8 @@ CustomBlocks_Open(params*) {
     Gui, CFBBlocks:Add, Button, x536 y570 w176 h36 hwndapplyHwnd, Применить в сценарий
     Gui, CFBBlocks:Add, Button, x724 y570 w130 h36 hwndcloseHwnd, Закрыть
     state.TypeHwnd := typeHwnd, state.ValueHwnd := valueHwnd, state.StatusHwnd := statusHwnd
+    state.TimerLabelHwnd := timerLabelHwnd, state.ValueLabelHwnd := valueLabelHwnd, state.TimerCaptionHwnd := timerCaptionHwnd
+    GuiControl, CFBBlocks:+g, %typeHwnd%, % Func("CustomBlocks_TypeChanged")
     for hwnd, callback in { (upHwnd): "CustomBlocks_Up", (downHwnd): "CustomBlocks_Down", (toggleHwnd): "CustomBlocks_ToggleSelected"
         , (deleteHwnd): "CustomBlocks_Delete", (previewHwnd): "CustomBlocks_Preview", (testHwnd): "CustomBlocks_Test"
         , (insertHwnd): "CustomBlocks_Insert", (updateHwnd): "CustomBlocks_Update", (applyHwnd): "CustomBlocks_Apply", (closeHwnd): "CustomBlocks_CloseButton" }
@@ -864,6 +924,7 @@ CustomBlocks_Open(params*) {
     UIStyle_SetButtonRole(applyHwnd, "primary")
     CustomBlocksState := state
     CustomBlocks_Refresh(1)
+    CustomBlocks_TypeChanged()
     Capture_BeforeShow("CFBBlocks")
     Gui, CFBBlocks:Show, % "w876 h628" . (GameUi_ShouldShowPassive() ? " NoActivate" : ""), AHK FOR GOS - Блочный конструктор
     return true
@@ -895,9 +956,10 @@ CustomBlocks_Refresh(selectIndex := 1) {
     LV_Delete()
     for index, row in CustomBlocksState.Model.Rows {
         info := CustomBlocks_RowInfo(row)
-        LV_Add("", index, row.Executable ? (row.Enabled ? "Вкл." : "Выкл.") : "—", info.Type, info.Value)
+        displayValue := info.Type = "TIMER" ? StrReplace(info.Value, "|", " сек. / ",, 1) : info.Value
+        LV_Add("", index, row.Executable ? (row.Enabled ? "Вкл." : "Выкл.") : "—", CustomBlocks_TypeLabel(info.Type), displayValue)
     }
-    LV_ModifyCol(1, 38), LV_ModifyCol(2, 74), LV_ModifyCol(3, 96), LV_ModifyCol(4, 596)
+    LV_ModifyCol(1, 38), LV_ModifyCol(2, 74), LV_ModifyCol(3, 128), LV_ModifyCol(4, 564)
     if (selectIndex > 0 && selectIndex <= CustomBlocksState.Model.Rows.Length()) {
         LV_Modify(selectIndex, "Select Focus Vis")
         CustomBlocks_LoadRow(selectIndex)
@@ -911,9 +973,17 @@ CustomBlocks_LoadRow(index) {
         return false
     info := CustomBlocks_RowInfo(CustomBlocksState.Model.Rows[index])
     if (info.Type = "Ошибка")
-        info.Type := "SEND", info.Value := CustomBlocksState.Model.Rows[index].Raw
-    GuiControl, CFBBlocks:ChooseString, % CustomBlocksState.TypeHwnd, % info.Type
+        info.Type := "RAW", info.Value := CustomBlocksState.Model.Rows[index].Raw
+    timerLabel := ""
+    if (info.Type = "TIMER") {
+        separator := InStr(info.Value, "|")
+        timerLabel := SubStr(info.Value, separator + 1), info.Value := SubStr(info.Value, 1, separator - 1)
+    } else if (info.Type = "Заметка")
+        info.Value := RegExReplace(info.Value, "^\s*[;#] ?", "")
+    GuiControl, CFBBlocks:ChooseString, % CustomBlocksState.TypeHwnd, % CustomBlocks_TypeLabel(info.Type)
     GuiControl, CFBBlocks:, % CustomBlocksState.ValueHwnd, % info.Value
+    GuiControl, CFBBlocks:, % CustomBlocksState.TimerLabelHwnd, % timerLabel
+    CustomBlocks_TypeChanged()
     return true
 }
 
@@ -1000,19 +1070,10 @@ CustomBlocks_ReadFields(ByRef raw, ByRef errorText) {
     raw := "", errorText := ""
     if !IsObject(CustomBlocksState)
         return false
-    GuiControlGet, type, CFBBlocks:, % CustomBlocksState.TypeHwnd
+    GuiControlGet, label, CFBBlocks:, % CustomBlocksState.TypeHwnd
     GuiControlGet, value, CFBBlocks:, % CustomBlocksState.ValueHwnd
-    if (InStr(value, "`n") || InStr(value, "`r")) {
-        errorText := "Один блок должен занимать одну строку."
-        return false
-    }
-    if (type = "Заметка") {
-        raw := "; " . value
-        return true
-    }
-    raw := type . (type = "STOP" ? "" : " " . value)
-    CustomFunction_Parse(raw, errorText)
-    return errorText = ""
+    GuiControlGet, timerLabel, CFBBlocks:, % CustomBlocksState.TimerLabelHwnd
+    return CustomBlocks_MakeRow(CustomBlocks_TypeCode(label), value, timerLabel, raw, errorText)
 }
 
 CustomBlocks_Insert(params*) {

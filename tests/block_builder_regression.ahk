@@ -24,6 +24,15 @@ BlockBuilder_RunRegression() {
     AuditAssert("Blocks: timer label keeps literal separators", info.Type = "TIMER" && info.Value = "15|Метка|дополнение")
     info := CustomBlocks_RowInfo({Raw: "WAIT no", Executable: true, Enabled: true})
     AuditAssert("Blocks: invalid raw block remains visible for repair", info.Type = "Ошибка" && info.Value = "WAIT no")
+    for _, type in ["SEND", "WAIT", "TIMER", "NOTICE", "TYPE", "STOP", "RAW", "Заметка"]
+        AuditAssert("Blocks: localized type maps to original code " . type, CustomBlocks_TypeCode(CustomBlocks_TypeLabel(type)) = type)
+    AuditAssert("Blocks: separate timer fields preserve literal separators in label", CustomBlocks_MakeRow("TIMER", "15", "Метка|дополнение", raw, errorText) && raw = "TIMER 15|Метка|дополнение")
+    AuditAssert("Blocks: timer without label needs no separator", CustomBlocks_MakeRow("TIMER", "15", "", raw, errorText) && raw = "TIMER 15")
+    AuditAssert("Blocks: invalid pause is refused instead of silently clamped", !CustomBlocks_MakeRow("WAIT", "300001", "", raw, errorText) && errorText != "")
+    AuditAssert("Blocks: timer rejects fractions and zero", !CustomBlocks_MakeRow("TIMER", "1.5", "", raw, errorText) && !CustomBlocks_MakeRow("TIMER", "0", "", raw, errorText))
+    AuditAssert("Blocks: raw repair does not turn invalid command into chat", !CustomBlocks_MakeRow("RAW", "WAIT no", "", raw, errorText) && raw = "WAIT no")
+    AuditAssert("Blocks: raw repair retains valid original spelling", CustomBlocks_MakeRow("RAW", "CHAT /r repaired", "", raw, errorText) && raw = "CHAT /r repaired")
+    AuditAssert("Blocks: text newline cannot create hidden step", !CustomBlocks_MakeRow("TIMER", "5", "label`nSEND /r hidden", raw, errorText))
     snapshot := {Run: CustomFunctionRunState, Mock: MockMode, Input: PhysicalInputBusy, ID: IDCaptureState, Queue: ChatQueueItems
         , Stop: StopTimerActive, Counter: StopTimerCounter, Label: StopTimerLabel, Preview: ChatQueuePreviewText, Lines: ChatQueuePreviewLineCount}
     CustomFunctionRunState := "", PhysicalInputBusy := 0, IDCaptureState := "", MockMode := "Off", ChatQueueItems := []
@@ -52,6 +61,19 @@ BlockBuilder_RunDesktopChecks() {
     GuiControl, 40:, CFB_Script, %original%
     DesktopSmoke_Assert("blocks: native block editor opens from text source", CustomBlocks_Open() && DllCall("IsWindow", "Ptr", CustomBlocksState.Hwnd))
     DesktopSmoke_Assert("blocks: opening alone does not modify source", CustomBlocks_Serialize(CustomBlocksState.Model) = original)
+    CustomBlocks_LoadRow(1)
+    GuiControlGet, noteValue, CFBBlocks:, % CustomBlocksState.ValueHwnd
+    DesktopSmoke_Assert("blocks: note editor removes its marker once", noteValue = "сохранить" && CustomBlocks_ReadFields(noteRaw, noteError) && noteRaw = "; сохранить")
+    GuiControl, CFBBlocks:ChooseString, % CustomBlocksState.TypeHwnd, % CustomBlocks_TypeLabel("TIMER")
+    CustomBlocks_TypeChanged()
+    GuiControl, CFBBlocks:, % CustomBlocksState.ValueHwnd, 25
+    GuiControl, CFBBlocks:, % CustomBlocksState.TimerLabelHwnd, Контроль|два
+    DesktopSmoke_Assert("blocks: native separate timer fields serialize to legacy syntax", CustomBlocks_ReadFields(timerRaw, timerError) && timerRaw = "TIMER 25|Контроль|два")
+    GuiControlGet, timerVisible, CFBBlocks:Visible, % CustomBlocksState.TimerLabelHwnd
+    DesktopSmoke_Assert("blocks: timer name field is shown only for timer", timerVisible)
+    CustomBlocks_LoadRow(2)
+    GuiControlGet, timerVisible, CFBBlocks:Visible, % CustomBlocksState.TimerLabelHwnd
+    DesktopSmoke_Assert("blocks: ordinary message restores one text field", !timerVisible)
     CustomBlocks_SelectList()
     LV_Modify(0, "-Select"), LV_Modify(2, "Select Focus")
     DesktopSmoke_Assert("blocks: selected native row moves down", CustomBlocks_Down() && CustomBlocksState.Model.Rows[3].Raw = "SEND /r один")

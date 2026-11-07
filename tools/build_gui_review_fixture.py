@@ -49,6 +49,7 @@ GuiReviewFixture_Tick() {
     global GuiReviewFixtureLastPhase, hSettingsWnd, UIStyleWindows
     global ThemeMode, CustomMenuColor, CustomTextColor, CustomBorderColor
     global CurrentProfile, AutomationEpoch, current_doc, BindListVisible, HUDVisible
+    global OBSHideWindows, hCFBScript, CustomBlocksState
     FileRead, phase, % "*P65001 " . A_ScriptDir . "\phase.txt"
     if (ErrorLevel)
         return
@@ -57,7 +58,7 @@ GuiReviewFixture_Tick() {
         return
     GuiReviewFixtureLastPhase := phase
     try {
-        if !InStr("|profile|safety|appearance|documents|builder|law|service|idcapture|autoid|bindlist|hud|guide-signals|guide-pdp|guide-svu|exit|", "|" . phase . "|") {
+        if !InStr("|profile|safety|appearance|documents|automation|builder|blocks|law|service|idcapture|autoid|bindlist|hud|guide-signals|guide-pdp|guide-svu|exit|", "|" . phase . "|") {
             GuiReviewFixture_Log("ERROR unknown phase: " . phase)
             return
         }
@@ -65,10 +66,14 @@ GuiReviewFixture_Tick() {
             GuiReviewFixture_Log("PASS exit")
             ExitApp, 0
         }
+        ; Only disposable visual-fixture windows are capturable for the review.
+        OBSHideWindows := "Off"
+        Capture_RefreshWindows()
         GuiReviewFixture_HideWindows()
-        if (phase = "profile" || phase = "safety" || phase = "appearance" || phase = "documents") {
+        if (phase = "profile" || phase = "safety" || phase = "appearance" || phase = "documents" || phase = "automation") {
             Settings_SwitchPage(SettingsPageIndex(phase))
             ShowSettingsWindow()
+            GuiReviewFixture_Log("WINDOW " . phase . " " . hSettingsWnd)
             if (phase = "profile") {
                 GetThemeColors(colorBG, colorPanel, colorText, colorAccent, colorMuted)
                 entry := "ThemeMode=" . ThemeMode . " CustomMenuColor=" . CustomMenuColor
@@ -86,6 +91,12 @@ GuiReviewFixture_Tick() {
             }
         } else if (phase = "builder") {
             OpenCustomFunctionBuilder()
+        } else if (phase = "blocks") {
+            OpenCustomFunctionBuilder()
+            GuiControl, 40:, %hCFBScript%, TIMER 30|Проверка времени
+            CustomBlocks_Open()
+            CustomBlocks_LoadRow(1)
+            GuiReviewFixture_Log("WINDOW " . phase . " " . CustomBlocksState.Hwnd)
         } else if (phase = "law") {
             CloseAllDocs()
             current_doc := 0
@@ -126,7 +137,7 @@ GuiReviewFixture_Tick() {
 
 GuiReviewFixture_HideWindows() {
     global UIStyleWindows
-    for _, name in ["2", "40", "1", "16", "17", "13", "12", "42", "ServiceDetails", "IDCapture", "TerritoryMaps", "TerritoryMapView"]
+    for _, name in ["2", "40", "CFBBlocks", "1", "16", "17", "13", "12", "42", "ServiceDetails", "IDCapture", "TerritoryMaps", "TerritoryMapView"]
         Gui, %name%:Hide
     for hwnd, palette in UIStyleWindows
         if DllCall("IsWindow", "Ptr", hwnd)
@@ -181,7 +192,7 @@ def main() -> None:
     except (OSError, ValueError) as error:
         parser.exit(2, f"error: {error}\n")
     print(target)
-    print("Phases: profile safety appearance documents builder law service idcapture autoid bindlist hud guide-signals guide-pdp guide-svu exit")
+    print("Phases: profile safety appearance documents automation builder blocks law service idcapture autoid bindlist hud guide-signals guide-pdp guide-svu exit")
     print("Run with --ui-preview --data-dir WINDOWS_ABSOLUTE_DISPOSABLE_PATH; write phase.txt to switch.")
 
 

@@ -928,23 +928,23 @@ SettingsActionAllowed,AHK_FOR_GOS_BY_SBEZRUK.ahk:18698,app/ui_settings.ahk:433,�
 ToggleSettings,AHK_FOR_GOS_BY_SBEZRUK.ahk:18711,app/ui_settings.ahk:446,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 RefreshSettingsTabs,AHK_FOR_GOS_BY_SBEZRUK.ahk:18719,app/ui_settings.ahk:454,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 Settings_SwitchPage,AHK_FOR_GOS_BY_SBEZRUK.ahk:18725,app/ui_settings.ahk:460,Адаптирована,Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте
-GetSettingsPageCatalog,AHK_FOR_GOS_BY_SBEZRUK.ahk:18749,app/ui_settings.ahk:496,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-SettingsPageIndex,AHK_FOR_GOS_BY_SBEZRUK.ahk:18767,app/ui_settings.ahk:514,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-SettingsPageIdFromLegacyTab,AHK_FOR_GOS_BY_SBEZRUK.ahk:18775,app/ui_settings.ahk:522,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+GetSettingsPageCatalog,AHK_FOR_GOS_BY_SBEZRUK.ahk:18749,app/ui_settings.ahk:500,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+SettingsPageIndex,AHK_FOR_GOS_BY_SBEZRUK.ahk:18767,app/ui_settings.ahk:518,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+SettingsPageIdFromLegacyTab,AHK_FOR_GOS_BY_SBEZRUK.ahk:18775,app/ui_settings.ahk:526,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 NormalizeSettingsPage,AHK_FOR_GOS_BY_SBEZRUK.ahk:18786,app/core.ahk:580,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-Settings_AddControl,AHK_FOR_GOS_BY_SBEZRUK.ahk:18795,app/ui_settings.ahk:533,Адаптирована,Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте
-Settings_AddGrid,AHK_FOR_GOS_BY_SBEZRUK.ahk:18814,app/ui_settings.ahk:552,Адаптирована,Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте
-Settings_GetCatalogItems,AHK_FOR_GOS_BY_SBEZRUK.ahk:18840,app/ui_settings.ahk:580,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-Settings_AddAssistantCard,AHK_FOR_GOS_BY_SBEZRUK.ahk:18878,app/ui_settings.ahk:618,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-Settings_AddPageFrame,AHK_FOR_GOS_BY_SBEZRUK.ahk:18899,app/ui_settings.ahk:639,Адаптирована,Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте
-BuildSettingsGui,AHK_FOR_GOS_BY_SBEZRUK.ahk:18910,app/ui_settings.ahk:648,Адаптирована,Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте
-SyncConfigOnlyProfileFieldsToCfg,AHK_FOR_GOS_BY_SBEZRUK.ahk:19270,app/ui_settings.ahk:1052,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ApplyCfgConfigOnlyProfileFieldsToGlobals,AHK_FOR_GOS_BY_SBEZRUK.ahk:19304,app/ui_settings.ahk:1086,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ApplyCfgCatalogValuesToGlobals,AHK_FOR_GOS_BY_SBEZRUK.ahk:19329,app/ui_settings.ahk:1111,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+Settings_AddControl,AHK_FOR_GOS_BY_SBEZRUK.ahk:18795,app/ui_settings.ahk:537,Адаптирована,Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте
+Settings_AddGrid,AHK_FOR_GOS_BY_SBEZRUK.ahk:18814,app/ui_settings.ahk:556,Адаптирована,Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте
+Settings_GetCatalogItems,AHK_FOR_GOS_BY_SBEZRUK.ahk:18840,app/ui_settings.ahk:584,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+Settings_AddAssistantCard,AHK_FOR_GOS_BY_SBEZRUK.ahk:18878,app/ui_settings.ahk:622,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+Settings_AddPageFrame,AHK_FOR_GOS_BY_SBEZRUK.ahk:18899,app/ui_settings.ahk:643,Адаптирована,Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте
+BuildSettingsGui,AHK_FOR_GOS_BY_SBEZRUK.ahk:18910,app/ui_settings.ahk:652,Адаптирована,Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте
+SyncConfigOnlyProfileFieldsToCfg,AHK_FOR_GOS_BY_SBEZRUK.ahk:19270,app/ui_settings.ahk:1057,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ApplyCfgConfigOnlyProfileFieldsToGlobals,AHK_FOR_GOS_BY_SBEZRUK.ahk:19304,app/ui_settings.ahk:1091,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ApplyCfgCatalogValuesToGlobals,AHK_FOR_GOS_BY_SBEZRUK.ahk:19329,app/ui_settings.ahk:1116,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 NormalizeCatalogTriggerGlobals,AHK_FOR_GOS_BY_SBEZRUK.ahk:19348,app/profiles.ahk:760,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ApplyCfgUiValuesToGlobals,AHK_FOR_GOS_BY_SBEZRUK.ahk:19363,app/ui_settings.ahk:1130,Адаптирована,Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте
-ApplyCfgProfileIdentityValuesToGlobals,AHK_FOR_GOS_BY_SBEZRUK.ahk:19528,app/ui_settings.ahk:1302,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ApplyCfgTemplateAndRpTextsToGlobals,AHK_FOR_GOS_BY_SBEZRUK.ahk:19544,app/ui_settings.ahk:1318,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ApplyCfgUiValuesToGlobals,AHK_FOR_GOS_BY_SBEZRUK.ahk:19363,app/ui_settings.ahk:1135,Адаптирована,Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте
+ApplyCfgProfileIdentityValuesToGlobals,AHK_FOR_GOS_BY_SBEZRUK.ahk:19528,app/ui_settings.ahk:1307,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ApplyCfgTemplateAndRpTextsToGlobals,AHK_FOR_GOS_BY_SBEZRUK.ahk:19544,app/ui_settings.ahk:1323,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 SaveGuiToGlobals,AHK_FOR_GOS_BY_SBEZRUK.ahk:19584,app/profiles.ahk:775,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 HasUsableConfigFilePath,AHK_FOR_GOS_BY_SBEZRUK.ahk:19613,app/profiles.ahk:804,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 EnsureConfigFilePath,AHK_FOR_GOS_BY_SBEZRUK.ahk:19618,app/profiles.ahk:809,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
@@ -1263,18 +1263,18 @@ ServiceUI_CloseDetails,service_ui.ahk:163,service_ui.ahk:175,Без измене
 ServiceUI_NewInputState,service_ui.ahk:169,service_ui.ahk:181,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 ServiceUI_ContextIsCurrent,service_ui.ahk:180,service_ui.ahk:192,Адаптирована,Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте
 ServiceUI_CreateInputGui,service_ui.ahk:187,service_ui.ahk:199,Адаптирована,"Добавлены владение вводом/паузы клавиш, приватный ввод или пассивное открытие; регрессии и native стенд. GTA/OBS требуют отдельной проверки"
-ServiceUI_InputKeyDown,service_ui.ahk:215,service_ui.ahk:247,Адаптирована,Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте
-ServiceUI_InputChar,service_ui.ahk:232,service_ui.ahk:269,Адаптирована,Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте
-ServiceUI_InputTick,service_ui.ahk:245,service_ui.ahk:286,Адаптирована,Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте
-ServiceUI_ModifierHeld,service_ui.ahk:267,service_ui.ahk:312,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ServiceUI_Request,service_ui.ahk:274,service_ui.ahk:353,Адаптирована,"Добавлены владение вводом/паузы клавиш, приватный ввод или пассивное открытие; регрессии и native стенд. GTA/OBS требуют отдельной проверки"
-ServiceUI_CancelInput,service_ui.ahk:365,service_ui.ahk:461,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ServiceUI_Shutdown,service_ui.ahk:381,service_ui.ahk:477,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ServiceUI_Confirm,service_ui.ahk:388,service_ui.ahk:484,Адаптирована,"Добавлены владение вводом/паузы клавиш, приватный ввод или пассивное открытие; регрессии и native стенд. GTA/OBS требуют отдельной проверки"
-ServiceUI_ResolveConfirm,service_ui.ahk:465,service_ui.ahk:571,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ServiceUI_CancelConfirm,service_ui.ahk:475,service_ui.ahk:581,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ServiceConfirmGuiClose,service_ui.ahk:483,service_ui.ahk:589,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ServiceConfirmGuiEscape,service_ui.ahk:487,service_ui.ahk:593,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ServiceUI_InputKeyDown,service_ui.ahk:215,service_ui.ahk:248,Адаптирована,Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте
+ServiceUI_InputChar,service_ui.ahk:232,service_ui.ahk:270,Адаптирована,Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте
+ServiceUI_InputTick,service_ui.ahk:245,service_ui.ahk:287,Адаптирована,Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте
+ServiceUI_ModifierHeld,service_ui.ahk:267,service_ui.ahk:313,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ServiceUI_Request,service_ui.ahk:274,service_ui.ahk:354,Адаптирована,"Добавлены владение вводом/паузы клавиш, приватный ввод или пассивное открытие; регрессии и native стенд. GTA/OBS требуют отдельной проверки"
+ServiceUI_CancelInput,service_ui.ahk:365,service_ui.ahk:462,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ServiceUI_Shutdown,service_ui.ahk:381,service_ui.ahk:478,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ServiceUI_Confirm,service_ui.ahk:388,service_ui.ahk:485,Адаптирована,"Добавлены владение вводом/паузы клавиш, приватный ввод или пассивное открытие; регрессии и native стенд. GTA/OBS требуют отдельной проверки"
+ServiceUI_ResolveConfirm,service_ui.ahk:465,service_ui.ahk:572,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ServiceUI_CancelConfirm,service_ui.ahk:475,service_ui.ahk:582,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ServiceConfirmGuiClose,service_ui.ahk:483,service_ui.ahk:590,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ServiceConfirmGuiEscape,service_ui.ahk:487,service_ui.ahk:594,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 UIStyle_Install,ui_style.ahk:7,ui_style.ahk:7,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 UIStyle_Brush,ui_style.ahk:17,ui_style.ahk:17,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 UIStyle_Apply,ui_style.ahk:24,ui_style.ahk:24,Адаптирована,Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте

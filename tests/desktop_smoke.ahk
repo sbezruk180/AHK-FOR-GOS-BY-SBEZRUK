@@ -64,6 +64,23 @@ DesktopSmoke_Run() {
             DesktopSmoke_Assert("sidebar button dispatch " . page.Id, clicked && SettingsPage = page.Id)
             DesktopSmoke_Assert("interactive controls do not overlap " . page.Id, DesktopSmoke_NoInputOverlap(hSettingsWnd))
         }
+        GuiControlGet, toolsShortcutHwnd, 2:Hwnd, SettingsToolsShortcut
+        SendMessage, 0xF5, 0, 0,, ahk_id %toolsShortcutHwnd%
+        Sleep, 30
+        DesktopSmoke_Assert("tools shortcut opens automation without scrolling", SettingsPage = "automation" && SettingsScrollY = 0)
+        WinGet, toolsControls, ControlListHwnd, ahk_id %hSettingsWnd%
+        visibleTools := 0
+        Loop, Parse, toolsControls, `n, `r
+        {
+            toolHwnd := A_LoopField + 0
+            ControlGetText, toolCaption,, ahk_id %toolHwnd%
+            if (toolCaption != "Палитра команд" && toolCaption != "Карточка дела" && toolCaption != "Настроить GPS")
+                continue
+            GuiControlGet, toolPos, 2:Pos, %toolHwnd%
+            if (DllCall("IsWindowVisible", "Ptr", toolHwnd) && toolPosY < 260)
+                visibleTools += 1
+        }
+        DesktopSmoke_Assert("frequent tools are visible at the top", visibleTools = 3)
         savedOpenerCfg := CFG_Bind_TextCommandInput
         CFG_Bind_TextCommandInput := ""
         GuiControl, 2:, CFG_Bind_TextCommandInput,

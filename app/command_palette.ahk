@@ -170,6 +170,8 @@ CommandPalette_Update(state) {
         CommandPaletteRows := CommandPalette_Find(state.Value)
         CommandPaletteSelection := 1
         CommandPaletteLastQuery := state.Value
+        if IsObject(CommandPaletteSession)
+            CommandPaletteSession.ExplicitSelection := false
     }
     lines := ""
     for index, row in CommandPaletteRows
@@ -181,9 +183,12 @@ CommandPalette_Update(state) {
 }
 
 CommandPalette_KeyDown(state, hook, vk) {
-    global CommandPaletteRows, CommandPaletteSelection
+    global CommandPaletteRows, CommandPaletteSelection, CommandPaletteLastQuery, CommandPaletteSession
     if (vk != 0x26 && vk != 0x28 && vk != 9)
         return false
+    ; A fast Tab/arrow may arrive before the 30-ms GUI timer sees the new query.
+    if (CommandPaletteLastQuery != state.Value || !IsObject(CommandPaletteRows))
+        CommandPalette_Update(state)
     count := CommandPaletteRows.Length()
     if (!count)
         return true
@@ -195,18 +200,39 @@ CommandPalette_KeyDown(state, hook, vk) {
     }
     CommandPaletteSelection := Mod(CommandPaletteSelection - 1 + (vk = 0x26 ? count - 1 : 1), count) + 1
     CommandPalette_Update(state)
+    if IsObject(CommandPaletteSession)
+        CommandPaletteSession.ExplicitSelection := true
     return true
 }
 
 CommandPalette_Char(state, hook, chars) {
+    global CommandPaletteSession
     if (chars != " " || SubStr(state.Value, 1, 1) != "!")
         return
     exact := PrivateText_Resolve(Trim(state.Value))
     if IsObject(exact) {
         state.Value := Trim(state.Value)
         state.ObserverConfirmed := 1
+        ; Space deliberately executes the exact !bind, unlike Enter on a selected row.
+        if IsObject(CommandPaletteSession)
+            CommandPaletteSession.ExplicitSelection := false
         hook.Stop()
     }
+}
+
+CommandPalette_ResolveSelection(value, session) {
+    global CommandPaletteLastQuery
+    ; A deliberate arrow selection takes precedence over the exact query alias.
+    ; Never reuse it after the query changed but before its next GUI refresh.
+    if (IsObject(session) && session.ExplicitSelection && CommandPaletteLastQuery = value && IsObject(session.Selected))
+        return session.Selected.Action
+    action := PrivateText_Resolve(value)
+    if IsObject(action)
+        return action
+    if (CommandPaletteLastQuery = value && IsObject(session) && IsObject(session.Selected))
+        return session.Selected.Action
+    finalRows := CommandPalette_Find(value)
+    return finalRows.Length() ? finalRows[1].Action : ""
 }
 
 CommandPalette_AllowDesktop() {
@@ -247,15 +273,7 @@ CommandPalette_Open(params*) {
             }
             if (BindMenuEditMode && TryHandleBindMenuLine(value))
                 return true
-            action := PrivateText_Resolve(value)
-            if !IsObject(action) {
-                if (CommandPaletteLastQuery != value || !IsObject(session.Selected)) {
-                    finalRows := CommandPalette_Find(value)
-                    session.Selected := finalRows[1]
-                }
-                if IsObject(session.Selected)
-                    action := session.Selected.Action
-            }
+            action := CommandPalette_ResolveSelection(value, session)
             if (!IsObject(action)) {
                 if ServiceUI_IsTest()
                     return false

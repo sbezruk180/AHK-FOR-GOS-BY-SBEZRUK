@@ -1,8 +1,12 @@
 CommandPalette_RunRegression() {
-    global CustomFunctions, Trig_Intro, UserID
+    global CustomFunctions, Trig_Intro, Trig_Rights, UserID
+    global CommandPaletteRows, CommandPaletteSelection, CommandPaletteLastQuery, CommandPaletteSession
+    savedRows := CommandPaletteRows, savedSelection := CommandPaletteSelection
+    savedQuery := CommandPaletteLastQuery, savedSession := CommandPaletteSession
+    savedRights := Trig_Rights
     saved := CustomFunctions, savedTrigger := Trig_Intro
     try {
-        Trig_Intro := "!предст"
+        Trig_Intro := "!предст", Trig_Rights := "!права"
         CustomFunctions := [{Name: "Особый осмотр", Trigger: "!осмотртест", Hotkey: "^!9", Script: "SEND /me осмотрел"}]
         CustomFunctions.Push({Name: "Свой incident", Trigger: "!incident", Hotkey: "", Script: "NOTICE keep"})
         conflict := PrivateText_Resolve("!incident")
@@ -25,6 +29,30 @@ CommandPalette_RunRegression() {
         AuditAssert("Palette does not invent matches", !results.Length())
         results := CommandPalette_Find("", 3)
         AuditAssert("Palette results bounded", results.Length() = 3)
+        ; No timer tick between typing and Tab: completion must use the latest text.
+        CommandPaletteRows := CommandPalette_Find("!предст"), CommandPaletteLastQuery := "!предст"
+        CommandPaletteSelection := 1, CommandPaletteSession := {}
+        state := {Value: "наручники"}
+        fresh := CommandPalette_Find(state.Value), completion := fresh[1].Trigger != "" ? fresh[1].Trigger : fresh[1].Name
+        CommandPalette_KeyDown(state, "", 9)
+        AuditAssert("Palette fast Tab completes latest query rather than previous results", state.Value = completion && CommandPaletteSession.Selected.Key = "Cuff")
+        ; Exact !alias can also have related results; Enter must respect arrow selection.
+        state.Value := "!права"
+        CommandPalette_KeyDown(state, "", 0x28)
+        selected := CommandPaletteRows[CommandPaletteSelection], chosen := CommandPalette_ResolveSelection(state.Value, CommandPaletteSession)
+        AuditAssert("Palette fast arrow refreshes query before selecting", CommandPaletteLastQuery = "!права" && CommandPaletteSelection = 2 && CommandPaletteRows.Length() > 1)
+        AuditAssert("Palette Enter honors selected related result over exact alias", CommandPaletteSession.ExplicitSelection && CommandPalette_ActionKey(chosen) = CommandPalette_ActionKey(selected.Action) && selected.Key != "Rights")
+        hookProbe := {Stop: Func("CommandPalette_TestHookStop"), Stopped: false}
+        state.Value := "!права "
+        CommandPalette_Char(state, hookProbe, " ")
+        spaceAction := CommandPalette_ResolveSelection(state.Value, CommandPaletteSession)
+        AuditAssert("Palette Space retains exact !bind semantics after arrow selection", hookProbe.Stopped && state.ObserverConfirmed && !CommandPaletteSession.ExplicitSelection && spaceAction.Token = "Rights")
+        CommandPaletteSession.ExplicitSelection := true
+        chosen := CommandPalette_ResolveSelection("!предст", CommandPaletteSession)
+        AuditAssert("Palette final changed query cannot execute stale explicit selection", IsObject(chosen) && chosen.Token = "Intro")
+        state.Value := "!предст"
+        CommandPalette_Update(state)
+        AuditAssert("Palette query edit resets deliberate row selection", !CommandPaletteSession.ExplicitSelection && CommandPaletteSelection = 1)
         configProbe := AppHost_DataDir() . "\palette-profile-probe.ini"
         if FileExist(configProbe)
             FileDelete, %configProbe%
@@ -47,7 +75,9 @@ CommandPalette_RunRegression() {
     } catch e {
         AuditAssert("Palette exception: " . e.Message . " | " . e.What . " | " . e.Extra . " | " . e.Line, false)
     } finally {
-        CustomFunctions := saved, Trig_Intro := savedTrigger
+        CustomFunctions := saved, Trig_Intro := savedTrigger, Trig_Rights := savedRights
+        CommandPaletteRows := savedRows, CommandPaletteSelection := savedSelection
+        CommandPaletteLastQuery := savedQuery, CommandPaletteSession := savedSession
     }
 }
 
@@ -76,4 +106,8 @@ CommandPalette_RunDesktopChecks() {
         Gui, PaletteFixture:Destroy
         CommandPaletteSession := ""
     }
+}
+
+CommandPalette_TestHookStop(hook) {
+    hook.Stopped := true
 }

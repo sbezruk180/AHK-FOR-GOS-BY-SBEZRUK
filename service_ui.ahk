@@ -200,7 +200,7 @@ ServiceUI_CreateInputGui(state) {
     global ServiceUIInputValue, ServiceUIInputCountdown, UIRoundness
     bg := "", panel := "", fg := "", accent := "", muted := ""
     GetThemeColors(bg, panel, fg, accent, muted)
-    width := 540, height := IsObject(state.Observer) ? 480 : 232
+    width := 540, height := IsObject(state.Observer) ? 496 : 232
     Gui, ServiceInput:New, +HwndinputHwnd +AlwaysOnTop -Caption +ToolWindow +E0x08000020 +DPIScale
     state.GuiHwnd := inputHwnd
     Gui, ServiceInput:Color, %panel%
@@ -222,8 +222,9 @@ ServiceUI_CreateInputGui(state) {
         Gui, ServiceInput:Add, Text, x20 y326 w500 h110 +0x80 +Wrap BackgroundTrans vCommandPalettePreview,
     }
     hintY := IsObject(state.Observer) ? 446 : 198
-    hint := IsObject(state.Observer) ? "—трелки Ч выбрать Ј Enter Ч запуск Ј ѕробел Ч точный !бинд Ј Esc Ч отмена" : (state.ConfirmOnSpace ? "ѕробел / Enter" : "Enter") . " Ч подтвердить Ј Backspace Ч стереть Ј Esc Ч отменить"
-    Gui, ServiceInput:Add, Text, x20 y%hintY% w500 h22 +Wrap BackgroundTrans, %hint%
+    hint := IsObject(state.Observer) ? "—трелки Ч выбрать Ј Tab Ч дополнить Ј Enter Ч запуск`nѕробел после !бинда Ч запуск Ј Esc Ч отмена" : (state.ConfirmOnSpace ? "ѕробел / Enter" : "Enter") . " Ч подтвердить Ј Backspace Ч стереть Ј Esc Ч отменить"
+    hintHeight := IsObject(state.Observer) ? 38 : 22
+    Gui, ServiceInput:Add, Text, x20 y%hintY% w500 h%hintHeight% +Wrap BackgroundTrans, %hint%
     scale := A_ScreenDPI / 96.0
     pixelW := Round(width * scale), pixelH := Round(height * scale)
     ServiceUI_Position(pixelW, pixelH, showX, showY)
