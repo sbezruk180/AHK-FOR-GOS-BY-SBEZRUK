@@ -1,0 +1,155 @@
+name: AHK usability build and native verification
+on:
+  push:
+    branches: [ahk-usability-20261106]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+      - name: Build application and installers from these exact sources
+        shell: pwsh
+        run: |
+          python tools/build_exe.py --output release/AHK_FOR_GOS.exe
+          if ($LASTEXITCODE) { throw 'AHK build failed' }
+          python tools/build_installer.py
+          if ($LASTEXITCODE) { throw 'Installer build failed' }
+          python tools/update_checksums.py
+          python tools/validate_package.py
+          if ($LASTEXITCODE) { throw 'Package mismatch' }
+          python tools/verify_installer.py
+          if ($LASTEXITCODE) { throw 'Installer payload mismatch' }
+          python tools/package_release.py
+          if ($LASTEXITCODE) { throw 'Portable package failed' }
+      - uses: actions/upload-artifact@v4
+        with:
+          name: usability-build
+          path: |
+            release/*
+            CHECKSUMS.sha256
+            dist/publish/*
+      - name: Review real GUI windows
+        shell: pwsh
+        run: ./tools/review_usability.ps1 -OutputDirectory "${{ runner.temp }}/usability-visual"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: usability-visual
+          path: ${{ runner.temp }}/usability-visual/*
+  native:
+    needs: build
+    runs-on: windows-latest
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        form: [exe, source]
+        repeat: [1, 2, 3]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: usability-build
+          path: .
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify byte encodings, source graph and embedded shipping resources
+        run: |
+          python tools/validate_package.py
+          if ($LASTEXITCODE) { throw 'Package validation failed' }
+          python tools/verify_installer.py
+          if ($LASTEXITCODE) { throw 'Installer payload differs from current sources' }
+      - name: Run native ANSI x86 source or EXE, GUI and actual keyboard fixtures
+        shell: pwsh
+        run: |
+          $out = Join-Path $env:RUNNER_TEMP 'workbench-results'
+          python tools/deep_audit.py --form ${{ matrix.form }} --repeat ${{ matrix.repeat }} --output $out
+          if ($LASTEXITCODE) { throw 'Native test runner failed' }
+          $summary = Get-Content (Join-Path $out 'summary.json') -Raw | ConvertFrom-Json
+          foreach ($case in $summary.cases) {
+            if ($case.status -eq 'FAIL') {
+              Write-Output "::error title=Native regression::$($case.phase) / $($case.mode) / exit $($case.exit_code)"
+              foreach ($failure in $case.failures) { Write-Output "::error::$failure" }
+              $report = Join-Path $out $case.report
+              if (Test-Path $report) { Get-Content $report -Tail 14 }
+              $console = "$report.console.txt"
+              if (Test-Path $console) { Get-Content $console -Tail 14 }
+            }
+          }
+          if (!$summary.completed -or $summary.original_failures.Count -or $summary.tracing_failures.Count -or $summary.fixture_failures.Count -or $summary.remaining_processes.Count) {
+            throw 'Native regression or leaked owned process; publication blocked'
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: workbench-${{ matrix.form }}-${{ matrix.repeat }}
+          path: ${{ runner.temp }}/workbench-results/*
+          if-no-files-found: error
+  installer:
+    needs: build
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: usability-build
+          path: .
+      - name: Verify actual setup, uninstaller and data preservation
+        shell: pwsh
+        run: |
+          $fixture = Join-Path $env:RUNNER_TEMP 'legacy-fixture'
+          Expand-Archive installer/tests/legacy-6b1a595.zip $fixture
+          foreach ($test in @('core','Setup','Uninstall')) {
+            $file = if ($test -eq 'core') { 'Setup' } else { $test }
+            $report = Join-Path $env:RUNNER_TEMP "workbench-installer-$test.txt"
+            $arguments = if ($test -eq 'core') { @('--self-test',"`"$report`"",'--legacy-fixture',"`"$fixture`"") } else { @('--ui-test',"`"$report`"") }
+            $p = Start-Process (Resolve-Path "release/AHK_FOR_GOS_$file.exe") -ArgumentList $arguments -PassThru
+            if (!$p.WaitForExit(120000)) { $p.Kill(); throw 'Installer test timeout' }
+            Get-Content $report
+            if ($p.ExitCode) { throw "Shipping installer regression: $test" }
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: installer-results
+          path: ${{ runner.temp }}/workbench-installer-*.txt
+  evidence:
+    needs: [build, native, installer]
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      - name: Archive reports and only successful downloads
+        env:
+          BUILD_RESULT: ${{ needs.build.result }}
+          NATIVE_RESULT: ${{ needs.native.result }}
+          INSTALLER_RESULT: ${{ needs.installer.result }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          python tools/archive_usability.py
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git switch -c ahk-usability-build-${{ github.run_id }}
+          git add -f docs/desktop/reports/usability-20261106 downloads/usability-20261106
+          git add release CHECKSUMS.sha256
+          python tools/update_checksums.py
+          git add CHECKSUMS.sha256
+          git commit -m 'Archive AHK usability verification and matched build artifacts'
+          git push origin HEAD

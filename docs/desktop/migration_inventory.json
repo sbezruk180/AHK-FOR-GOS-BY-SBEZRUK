@@ -8618,7 +8618,7 @@
       "sha256": "3c8d8b5d7535e679cee60d8469952575f66a0f45c1a6531f43d2ef6e25286042",
       "new_file": "app/custom_functions.ahk",
       "new_line": 654,
-      "current_sha256": "d2cd4337bdb2f09c957ade01945d73e4d96dd7497a4a286d0b52807f6aa26247",
+      "current_sha256": "d4a5e824736fcdd113a4e568d557c582188c83bc4284e59d6c1146820269f9a4",
       "body_unchanged": false
     },
     {
@@ -9297,7 +9297,7 @@
       "line": 18749,
       "sha256": "fa8104da967b0780f2c26424f0cdc5a4c6d619bcc6c6f35582b891565b0a04d3",
       "new_file": "app/ui_settings.ahk",
-      "new_line": 496,
+      "new_line": 500,
       "current_sha256": "fa8104da967b0780f2c26424f0cdc5a4c6d619bcc6c6f35582b891565b0a04d3",
       "body_unchanged": true
     },
@@ -9307,7 +9307,7 @@
       "line": 18767,
       "sha256": "4519b458533204a7d27baafcb80af5adde4e52af887571e266c8513baf2a6b6c",
       "new_file": "app/ui_settings.ahk",
-      "new_line": 514,
+      "new_line": 518,
       "current_sha256": "4519b458533204a7d27baafcb80af5adde4e52af887571e266c8513baf2a6b6c",
       "body_unchanged": true
     },
@@ -9317,7 +9317,7 @@
       "line": 18775,
       "sha256": "c4bb9d30dbba38d057cf4e637f7433e9bbb9051bcc6c043f2b43c0a86a63b43a",
       "new_file": "app/ui_settings.ahk",
-      "new_line": 522,
+      "new_line": 526,
       "current_sha256": "c4bb9d30dbba38d057cf4e637f7433e9bbb9051bcc6c043f2b43c0a86a63b43a",
       "body_unchanged": true
     },
@@ -9337,7 +9337,7 @@
       "line": 18795,
       "sha256": "0b634eadbc531a4b0e54dd31caa1305975be4601555400c323390cc8c7d4f3ff",
       "new_file": "app/ui_settings.ahk",
-      "new_line": 533,
+      "new_line": 537,
       "current_sha256": "0c0a064850637f6be31cc8c159f7463ac38d45e597208a09077475d0ca9ce96b",
       "body_unchanged": false
     },
@@ -9347,7 +9347,7 @@
       "line": 18814,
       "sha256": "6536102e0d3b841302711b53818ef27c260367b91cda2b199b39c1125d1918f8",
       "new_file": "app/ui_settings.ahk",
-      "new_line": 552,
+      "new_line": 556,
       "current_sha256": "dc518bb07c712c83eb89e4425932bf751db78a0f98160dd9b3b995c30fdbd209",
       "body_unchanged": false
     },
@@ -9357,7 +9357,7 @@
       "line": 18840,
       "sha256": "b7854ac933c822dc5eb19dab0ea2ddc2f736c5899c1ac1edfb3364e746fb04af",
       "new_file": "app/ui_settings.ahk",
-      "new_line": 580,
+      "new_line": 584,
       "current_sha256": "b7854ac933c822dc5eb19dab0ea2ddc2f736c5899c1ac1edfb3364e746fb04af",
       "body_unchanged": true
     },
@@ -9367,7 +9367,7 @@
       "line": 18878,
       "sha256": "85a80ab95ab9485b4c0833e6776d984c011b15166aab9c9b3239b27187287e06",
       "new_file": "app/ui_settings.ahk",
-      "new_line": 618,
+      "new_line": 622,
       "current_sha256": "85a80ab95ab9485b4c0833e6776d984c011b15166aab9c9b3239b27187287e06",
       "body_unchanged": true
     },
@@ -9377,7 +9377,7 @@
       "line": 18899,
       "sha256": "5b7a0c24839988c5443f31378d46a77f3fcc333f45518ef25fa3795067a11b84",
       "new_file": "app/ui_settings.ahk",
-      "new_line": 639,
+      "new_line": 643,
       "current_sha256": "2682504cadf73680ba2e490d8720c8cad786da30aee1dff4dc4dbfaa642e7c0c",
       "body_unchanged": false
     },
@@ -9387,8 +9387,8 @@
       "line": 18910,
       "sha256": "81ba22f6439a206f3e2cb1b38dab10d951d40881b3de75ea6ab5a9192550e68f",
       "new_file": "app/ui_settings.ahk",
-      "new_line": 648,
-      "current_sha256": "f8913dd472aaac654deb51bf413a694a38f0bba91024f0deb7c86019577ce653",
+      "new_line": 652,
+      "current_sha256": "0cbf96115e7af767911765b017ef3332cab1aede0070e74ab7fd7daaec9c9788",
       "body_unchanged": false
     },
     {
@@ -9397,7 +9397,7 @@
       "line": 19270,
       "sha256": "267ab6be64d01e955fb8e4b41c6f999f5bdac7a56f37d8eb2bcd13ef4990b333",
       "new_file": "app/ui_settings.ahk",
-      "new_line": 1052,
+      "new_line": 1057,
       "current_sha256": "267ab6be64d01e955fb8e4b41c6f999f5bdac7a56f37d8eb2bcd13ef4990b333",
       "body_unchanged": true
     },
@@ -9407,7 +9407,7 @@
       "line": 19304,
       "sha256": "799a6a2bdc2066a6b3cfb23469d5f3722e004f6995b497522f9272ea69951f4e",
       "new_file": "app/ui_settings.ahk",
-      "new_line": 1086,
+      "new_line": 1091,
       "current_sha256": "799a6a2bdc2066a6b3cfb23469d5f3722e004f6995b497522f9272ea69951f4e",
       "body_unchanged": true
     },
@@ -9417,7 +9417,7 @@
       "line": 19329,
       "sha256": "33104aaf074aec2f7a4e656ed146404fe694718d916b41d2d895015d40c7958f",
       "new_file": "app/ui_settings.ahk",
-      "new_line": 1111,
+      "new_line": 1116,
       "current_sha256": "33104aaf074aec2f7a4e656ed146404fe694718d916b41d2d895015d40c7958f",
       "body_unchanged": true
     },
@@ -9437,7 +9437,7 @@
       "line": 19363,
       "sha256": "8fd60d844f3be0f83a693aafccd623f7ad6516bdbc22c6226cd8e37e1a2050ce",
       "new_file": "app/ui_settings.ahk",
-      "new_line": 1130,
+      "new_line": 1135,
       "current_sha256": "86fea3b0a20901532c3aef40987e108aae99aa58f4cc595f4a5abcd215743174",
       "body_unchanged": false
     },
@@ -9447,7 +9447,7 @@
       "line": 19528,
       "sha256": "f9326030cf3191bff377d428478c6517f12a0f68da5cb735d33d8ad2b1d1a6bc",
       "new_file": "app/ui_settings.ahk",
-      "new_line": 1302,
+      "new_line": 1307,
       "current_sha256": "f9326030cf3191bff377d428478c6517f12a0f68da5cb735d33d8ad2b1d1a6bc",
       "body_unchanged": true
     },
@@ -9457,7 +9457,7 @@
       "line": 19544,
       "sha256": "00edcd4d45051c04a66e181b0e6bb2ec7ecd72b57e9628a27d3b3d13c9551521",
       "new_file": "app/ui_settings.ahk",
-      "new_line": 1318,
+      "new_line": 1323,
       "current_sha256": "00edcd4d45051c04a66e181b0e6bb2ec7ecd72b57e9628a27d3b3d13c9551521",
       "body_unchanged": true
     },
@@ -12638,7 +12638,7 @@
       "sha256": "a315f08e7fc0db4a029a18058275797d07a8bea3331adacde179a9a87e158761",
       "new_file": "service_ui.ahk",
       "new_line": 199,
-      "current_sha256": "b112902280af17c10526f52e2ec8abcfd62569debf26ba5bd820a051c91cc18e",
+      "current_sha256": "f5ad2cb5e131f76fa9d6a396b99b8538a8ce508bdd9fa05fa4177750a757b235",
       "body_unchanged": false
     },
     {
@@ -12647,7 +12647,7 @@
       "line": 215,
       "sha256": "b58b3d5f8d9feb5f66bb989b3969b49e1896e05a1036e4739ea4de6a5ee2438d",
       "new_file": "service_ui.ahk",
-      "new_line": 247,
+      "new_line": 248,
       "current_sha256": "1575897c8e22bd8dd49db587e8703ac9d2594d5e2d81cc7de0eaf566f735ae20",
       "body_unchanged": false
     },
@@ -12657,7 +12657,7 @@
       "line": 232,
       "sha256": "18533b6990d61553d4ec6df2e3d7ec386b6cf1021ba7fc8dab0dc0ccd0512039",
       "new_file": "service_ui.ahk",
-      "new_line": 269,
+      "new_line": 270,
       "current_sha256": "9909f1c652e820a5287b94c8009ed9e6bbba32b4a1626eb48b42cdc5acab15b2",
       "body_unchanged": false
     },
@@ -12667,7 +12667,7 @@
       "line": 245,
       "sha256": "6dc6875ae109bb84eca353047b9e668d7eae1fc0eb865d89ac80cb5e35bd714e",
       "new_file": "service_ui.ahk",
-      "new_line": 286,
+      "new_line": 287,
       "current_sha256": "d1eb36d6b2429ef55b55136d98394eae0d254ad0de9de9adf12c5d71776e10f2",
       "body_unchanged": false
     },
@@ -12677,7 +12677,7 @@
       "line": 267,
       "sha256": "ec5c519ef6bfb7c4732981ad1fbb3fdcf5a3d65541ff2cc90b1b26a1c255eb5d",
       "new_file": "service_ui.ahk",
-      "new_line": 312,
+      "new_line": 313,
       "current_sha256": "ec5c519ef6bfb7c4732981ad1fbb3fdcf5a3d65541ff2cc90b1b26a1c255eb5d",
       "body_unchanged": true
     },
@@ -12687,7 +12687,7 @@
       "line": 274,
       "sha256": "87635c18296ae6e4e2109fc17e5beced93f2f122394af90ece67ba44e9e1014b",
       "new_file": "service_ui.ahk",
-      "new_line": 353,
+      "new_line": 354,
       "current_sha256": "27cb9a715397f2be89df6b0c6fe8f90329ac98212e53e1775ca0b173db02199e",
       "body_unchanged": false
     },
@@ -12697,7 +12697,7 @@
       "line": 365,
       "sha256": "36d1a83fddc244148e6d8277fe37cbe98fa4ab692c7cadef6a22236ed912073e",
       "new_file": "service_ui.ahk",
-      "new_line": 461,
+      "new_line": 462,
       "current_sha256": "36d1a83fddc244148e6d8277fe37cbe98fa4ab692c7cadef6a22236ed912073e",
       "body_unchanged": true
     },
@@ -12707,7 +12707,7 @@
       "line": 381,
       "sha256": "d5bbf3038f36fcef2a822193ca410b4f36f05c55d1eeaf775d9d51fdef91963a",
       "new_file": "service_ui.ahk",
-      "new_line": 477,
+      "new_line": 478,
       "current_sha256": "d5bbf3038f36fcef2a822193ca410b4f36f05c55d1eeaf775d9d51fdef91963a",
       "body_unchanged": true
     },
@@ -12717,7 +12717,7 @@
       "line": 388,
       "sha256": "1c03675194ce1dd13cc1ad3d12c0d39dedf9edd4de718d92775570b678b50b52",
       "new_file": "service_ui.ahk",
-      "new_line": 484,
+      "new_line": 485,
       "current_sha256": "cd2db3d41fa7842a11b193cec8a3e5fc5c468dcbc52b661f70b7eb7a22965368",
       "body_unchanged": false
     },
@@ -12727,7 +12727,7 @@
       "line": 465,
       "sha256": "e7593b40ba8a7070a757047284711c38afb1b0e67e7233f8a09b88f28fa34485",
       "new_file": "service_ui.ahk",
-      "new_line": 571,
+      "new_line": 572,
       "current_sha256": "e7593b40ba8a7070a757047284711c38afb1b0e67e7233f8a09b88f28fa34485",
       "body_unchanged": true
     },
@@ -12737,7 +12737,7 @@
       "line": 475,
       "sha256": "eb164ef5c2fd1b4db0b7a60bd2c24923315dae4d51bfc73cf091be7745bd5f12",
       "new_file": "service_ui.ahk",
-      "new_line": 581,
+      "new_line": 582,
       "current_sha256": "eb164ef5c2fd1b4db0b7a60bd2c24923315dae4d51bfc73cf091be7745bd5f12",
       "body_unchanged": true
     },
@@ -12747,7 +12747,7 @@
       "line": 483,
       "sha256": "e81d5ecb19a1130779c34fa66e0f1bb6f4177722c19338befd1493621954c89e",
       "new_file": "service_ui.ahk",
-      "new_line": 589,
+      "new_line": 590,
       "current_sha256": "e81d5ecb19a1130779c34fa66e0f1bb6f4177722c19338befd1493621954c89e",
       "body_unchanged": true
     },
@@ -12757,7 +12757,7 @@
       "line": 487,
       "sha256": "7f40630e55f04c819f43b3487cdaa352f19964cd5ef43f789702d0089d141db0",
       "new_file": "service_ui.ahk",
-      "new_line": 593,
+      "new_line": 594,
       "current_sha256": "7f40630e55f04c819f43b3487cdaa352f19964cd5ef43f789702d0089d141db0",
       "body_unchanged": true
     },

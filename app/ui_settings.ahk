@@ -485,6 +485,10 @@ Settings_SwitchPage(pageIndex, syncNavigation := 1) {
     return true
 }
 
+Settings_OpenTools(params*) {
+    return Settings_SwitchPage(SettingsPageIndex("automation"))
+}
+
 Settings_NavClick(controlHwnd, guiEvent := "", eventInfo := "", eventError := "") {
     global SettingsNavigationButtons
     for index, hwnd in SettingsNavigationButtons
@@ -693,7 +697,7 @@ BuildSettingsGui() {
     Gui, 2:Add, Text, x62 y25 w150 h24 BackgroundTrans, AHK FOR GOS
     Gui, 2:Font, Norm s8 c%muted%, Segoe UI
     Gui, 2:Add, Text, x63 y51 w146 h18 BackgroundTrans, AMAZING ONLINE
-    Gui, 2:Add, Text, x24 y106 w170 h20 BackgroundTrans, РАБОЧЕЕ ПРОСТРАНСТВО
+    Gui, 2:Add, Button, x12 y104 w196 h28 vSettingsToolsShortcut gSettings_OpenTools, Инструменты
 
     Gui, 2:Font, Norm s8 c%muted%, Segoe UI
     Gui, 2:Add, Text, x244 y14 w210 h18 BackgroundTrans, АКТИВНЫЙ ПРОФИЛЬ
@@ -739,7 +743,7 @@ BuildSettingsGui() {
 
     SettingsBuildingPage := 1
     Gui, 2:Tab, 1
-    Settings_AddPageFrame("Профиль", "Данные персонажа и экипажей. Изменения сохраняются кнопкой «Сохранить».", cardBg, cardEdge, text, muted)
+    Settings_AddPageFrame("Профиль", "Данные персонажа и экипажей. Сохранение: кнопкой «Сохранить» или при закрытии настроек.", cardBg, cardEdge, text, muted)
     AddOutlinedPanel(2, 240, 166, 904, 72, panel, cardEdge, 1)
     Settings_AddControl("Организация", "CFG_ProfileMode", ProfileMode, 256, 172, 210, "DropDown", "ППС|ГАИ|ФСБ|Спец МВД|ВЧ", text, inputText)
     Gui, 2:Add, Button, x482 y204 w158 h28 gApplyPresetLabel, Применить режим
@@ -787,7 +791,7 @@ BuildSettingsGui() {
     Settings_AddControl("Тест без игры (Mock)", "CFG_MockMode", MockMode, 572, 170, 120, "DropDown", "Off|On", text, inputText)
     Settings_AddControl("Очередь чата", "CFG_ChatQueueEnabled", ChatQueueEnabled, 708, 170, 120, "DropDown", "On|Off", text, inputText)
     Settings_AddControl("Проверка ID", "CFG_IDCheckEnabled", idChoice, 844, 170, 120, "DropDown", "On|Off", text, inputText)
-    Settings_AddControl("SafeMode", "CFG_SafeModeEnabled", SafeModeEnabled, 980, 170, 144, "DropDown", "On|Off", text, inputText)
+    Settings_AddControl("Защитные проверки", "CFG_SafeModeEnabled", SafeModeEnabled, 980, 170, 144, "DropDown", "On|Off", text, inputText)
     Settings_AddControl("Блок при открытом чате", "CFG_SafeBlockWhenChat", SafeBlockWhenChat, 240, 244, 200, "DropDown", "On|Off", text, inputText)
     Settings_AddControl("Требовать чат", "CFG_SafeRequireChatForEditable", SafeRequireChatForEditable, 456, 244, 190, "DropDown", "On|Off", text, inputText)
     Settings_AddControl("Проверка транспорта", "CFG_SafeVehicleChecks", SafeVehicleChecks, 662, 244, 190, "DropDown", "On|Off", text, inputText)
@@ -802,10 +806,10 @@ BuildSettingsGui() {
     Settings_AddControl("Задержка действия", "CFG_ActionCooldownMs", ActionCooldownMs, 240, 396, 150, "Edit", "", text, inputText)
     Settings_AddControl("Задержка строк", "CFG_SequenceLineDelay", SequenceLineDelay, 406, 396, 150, "Edit", "", text, inputText)
     Settings_AddControl("Пауза очереди", "CFG_ChatQueueMinDelay", ChatQueueMinDelay, 572, 396, 150, "Edit", "", text, inputText)
-    Settings_AddControl("GUI fullscreen", "CFG_FullscreenSafeGui", FullscreenSafeGui, 738, 396, 140, "DropDown", "Auto|On|Off", text, inputText)
+    Settings_AddControl("Окна поверх игры", "CFG_FullscreenSafeGui", FullscreenSafeGui, 738, 396, 140, "DropDown", "Auto|On|Off", text, inputText)
     Settings_AddControl("Бэкапы", "CFG_ProfileSaveBackups", ProfileSaveBackups, 894, 396, 120, "DropDown", "On|Off", text, inputText)
     Gui, 2:Font, Norm s9 c%text%, Segoe UI
-    Gui, 2:Add, Text, x240 y476 w880 h18 BackgroundTrans, Приоритет bind-list
+    Gui, 2:Add, Text, x240 y476 w880 h18 BackgroundTrans, Порядок действий в списке биндов
     Gui, 2:Font, Norm s9 c%inputText%, Consolas
     Gui, 2:Add, Edit, x240 y498 w884 h90 vCFG_BindListItems WantTab, %BindListItems%
     Settings_AddControl("Заголовок окна", "CFG_GameWindowTitle", GameWindowTitle, 240, 602, 200, "Edit", "", text, inputText)
@@ -980,49 +984,50 @@ BuildSettingsGui() {
 
     SettingsBuildingPage := 12
     Gui, 2:Tab, 12
-    Settings_AddPageFrame("Автоматизация", "Очередь, задачи, автодоклады и диагностические инструменты.", cardBg, cardEdge, text, muted)
-    AddOutlinedPanel(2, 242, 174, 884, 120, panel, cardEdge, 1)
-    AddOutlinedPanel(2, 242, 312, 884, 112, panel, cardEdge, 1)
-    AddOutlinedPanel(2, 242, 430, 884, 52, panel, cardEdge, 1)
-    Gui, 2:Font, s11 Bold c%text%, Segoe UI
-    Gui, 2:Add, Text, x250 y184 w860 h28 vCFG_AutomationQueueStatus BackgroundTrans, Очередь: --
-    Gui, 2:Add, Text, x250 y224 w860 h28 vCFG_AutomationTaskStatus BackgroundTrans, Задачи: --
-    Gui, 2:Add, Text, x250 y264 w860 h28 vCFG_AutomationSafeStatus BackgroundTrans, SafeMode / MockMode: --
+    Settings_AddPageFrame("Инструменты и автоматизация", "Команды, учебная площадка, GPS и конструктор. Ниже — очередь и автодоклады.", cardBg, cardEdge, text, muted)
     Gui, 2:Font, Norm s10 c%text%, Segoe UI
-    Gui, 2:Add, Button, x250 y324 w190 h34 gCancelAllAutomationLabel, Остановить всё
-    Gui, 2:Add, Button, x454 y324 w190 h34 gClearChatQueueLabel, Очистить очередь
-    Gui, 2:Add, Button, x658 y324 w190 h34 gOpenMockPreviewLabel, Тестовый чат
-    Gui, 2:Add, Button, x862 y324 w190 h34 gRunDiagnosticsFromGuiLabel, Диагностика
-    Gui, 2:Add, Button, x250 y378 w190 h34 gRunSelfTestFromGuiLabel, Запустить self-test
-    Gui, 2:Add, Button, x454 y378 w190 h34 gRunMockQueueDemoLabel, Тест очереди
-    Gui, 2:Add, Button, x658 y378 w190 h34 gRunMemoryLiveTestLabel, Memory live-тест
-    Gui, 2:Add, Button, x862 y378 w190 h34 gCheckAzmpLabel, Проверить azmp.dll
-    Gui, 2:Add, Button, x250 y732 w250 h28 gOpenCustomFunctionBuilderLabel, Конструктор своих функций
+    Gui, 2:Add, Button, x250 y220 w250 h28 gOpenCustomFunctionBuilderLabel, Конструктор своих функций
     Gui, 2:Font, Norm s8 c%muted%, Segoe UI
-    Gui, 2:Add, Text, x514 y736 w596 h20 BackgroundTrans, Свои последовательности, паузы, таймеры, уведомления и TXT/hotkey-запуск.
+    Gui, 2:Add, Text, x514 y224 w596 h20 BackgroundTrans, Свои последовательности, паузы, таймеры, уведомления и TXT/hotkey-запуск.
     Gui, 2:Font, Norm s9 c%text%, Segoe UI
-    Gui, 2:Add, Button, x250 y774 w164 h32 gTools_OpenPalette, Палитра команд
-    Gui, 2:Add, Button, x424 y774 w164 h32 gTools_OpenIncident, Карточка дела
-    Gui, 2:Add, Button, x598 y774 w164 h32 gTools_OpenTrace, Результат действия
-    Gui, 2:Add, Button, x772 y774 w164 h32 gTools_OpenTraining, Учебный режим
-    Gui, 2:Add, Button, x946 y774 w164 h32 gTools_OpenGPS, Настроить GPS
-    Settings_RecordExtent(818)
+    Gui, 2:Add, Button, x250 y174 w164 h32 gTools_OpenPalette, Палитра команд
+    Gui, 2:Add, Button, x424 y174 w164 h32 gTools_OpenIncident, Карточка дела
+    Gui, 2:Add, Button, x598 y174 w164 h32 gTools_OpenTrace, Результат действия
+    Gui, 2:Add, Button, x772 y174 w164 h32 gTools_OpenTraining, Учебная площадка
+    Gui, 2:Add, Button, x946 y174 w164 h32 gTools_OpenGPS, Настроить GPS
+    Settings_RecordExtent(830)
+    AddOutlinedPanel(2, 242, 286, 884, 120, panel, cardEdge, 1)
+    AddOutlinedPanel(2, 242, 424, 884, 112, panel, cardEdge, 1)
+    AddOutlinedPanel(2, 242, 542, 884, 52, panel, cardEdge, 1)
+    Gui, 2:Font, s11 Bold c%text%, Segoe UI
+    Gui, 2:Add, Text, x250 y296 w860 h28 vCFG_AutomationQueueStatus BackgroundTrans, Очередь: --
+    Gui, 2:Add, Text, x250 y336 w860 h28 vCFG_AutomationTaskStatus BackgroundTrans, Задачи: --
+    Gui, 2:Add, Text, x250 y376 w860 h28 vCFG_AutomationSafeStatus BackgroundTrans, SafeMode / MockMode: --
+    Gui, 2:Font, Norm s10 c%text%, Segoe UI
+    Gui, 2:Add, Button, x250 y436 w190 h34 gCancelAllAutomationLabel, Остановить всё
+    Gui, 2:Add, Button, x454 y436 w190 h34 gClearChatQueueLabel, Очистить очередь
+    Gui, 2:Add, Button, x658 y436 w190 h34 gOpenMockPreviewLabel, Тестовый чат
+    Gui, 2:Add, Button, x862 y436 w190 h34 gRunDiagnosticsFromGuiLabel, Диагностика
+    Gui, 2:Add, Button, x250 y490 w190 h34 gRunSelfTestFromGuiLabel, Самопроверка
+    Gui, 2:Add, Button, x454 y490 w190 h34 gRunMockQueueDemoLabel, Тест очереди
+    Gui, 2:Add, Button, x658 y490 w190 h34 gRunMemoryLiveTestLabel, Проверка памяти
+    Gui, 2:Add, Button, x862 y490 w190 h34 gCheckAzmpLabel, Проверить azmp.dll
     chatLogChecked := (ChatLogReaderEnabled = "On") ? " Checked" : ""
     autoTargetChecked := (AutoTargetIDEnabled = "On") ? " Checked" : ""
     Gui, 2:Font, Norm s9 c%text%, Segoe UI
-    Gui, 2:Add, Checkbox, x250 y438 w170 h24 vCFG_ChatLogReaderEnabled%chatLogChecked%, Читать chatlog.txt
-    Gui, 2:Add, Checkbox, x430 y438 w170 h24 vCFG_AutoTargetIDEnabled%autoTargetChecked%, ID по ПКМ
-    Settings_AddControl("Путь chatlog.txt", "CFG_ChatLogPath", ChatLogPath, 610, 418, 500, "Edit", "", text, inputText)
-    AddOutlinedPanel(2, 242, 494, 884, 210, panel, cardEdge, 1)
+    Gui, 2:Add, Checkbox, x250 y550 w170 h24 vCFG_ChatLogReaderEnabled%chatLogChecked%, Читать chatlog.txt
+    Gui, 2:Add, Checkbox, x430 y550 w170 h24 vCFG_AutoTargetIDEnabled%autoTargetChecked%, ID по ПКМ
+    Settings_AddControl("Путь chatlog.txt", "CFG_ChatLogPath", ChatLogPath, 610, 530, 500, "Edit", "", text, inputText)
+    AddOutlinedPanel(2, 242, 606, 884, 210, panel, cardEdge, 1)
     Gui, 2:Font, s11 Bold c%text%, Segoe UI
-    Gui, 2:Add, Text, x258 y510 w850 h24 BackgroundTrans, Автоматический доклад каждые 10 минут
-    Settings_AddControl("Режим", "CFG_AutoReportMode", AutoReportMode, 258, 542, 220, "DropDown", "Патруль|Пост", text, inputText)
-    Settings_AddControl("Продолжительность, минут (10–600)", "CFG_AutoReportDurationMin", AutoReportDurationMin, 496, 542, 250, "Edit", "", text, inputText)
+    Gui, 2:Add, Text, x258 y622 w850 h24 BackgroundTrans, Автоматический доклад каждые 10 минут
+    Settings_AddControl("Режим", "CFG_AutoReportMode", AutoReportMode, 258, 654, 220, "DropDown", "Патруль|Пост", text, inputText)
+    Settings_AddControl("Продолжительность, минут (10–600)", "CFG_AutoReportDurationMin", AutoReportDurationMin, 496, 654, 250, "Edit", "", text, inputText)
     Gui, 2:Font, Norm s10 c%text%, Segoe UI
-    Gui, 2:Add, Button, x770 y574 w150 h32 gAutoReportStartLabel, Запустить
-    Gui, 2:Add, Button, x936 y574 w150 h32 gAutoReportStopLabel, Остановить
+    Gui, 2:Add, Button, x770 y686 w150 h32 gAutoReportStartLabel, Запустить
+    Gui, 2:Add, Button, x936 y686 w150 h32 gAutoReportStopLabel, Остановить
     Gui, 2:Font, Norm s9 c%muted%, Segoe UI
-    Gui, 2:Add, Text, x258 y620 w828 h48 vCFG_AutoReportStatus BackgroundTrans +Wrap, % AutoReport_GetStatusText()
+    Gui, 2:Add, Text, x258 y732 w828 h48 vCFG_AutoReportStatus BackgroundTrans +Wrap, % AutoReport_GetStatusText()
     SettingsBuildingPage := 13
     Gui, 2:Tab, 13
     Settings_AddPageFrame("Автоскриншоты", "Распознавание действий в chatlog.txt. Chatlog читается без изменения файла игры.", cardBg, cardEdge, text, muted)
@@ -1034,7 +1039,7 @@ BuildSettingsGui() {
     Settings_AddControl("Ожидание после представления, сек", "CFG_EvidenceDocumentWaitSec", EvidenceDocumentWaitSec, 258, 274, 250, "Edit", "", text, inputText)
     Settings_AddControl("Радиус документов, ед.", "CFG_EvidenceDocumentDistanceLimit", EvidenceDocumentDistanceLimit, 526, 274, 210, "Edit", "", text, inputText)
     Gui, 2:Font, Norm s9 c%muted%, Segoe UI
-    Gui, 2:Add, Text, x258 y354 w830 h44 BackgroundTrans +Wrap, Укажите Nick_Name сотрудника точно как в chatlog.txt (сейчас: Semen_Lukashenko). Режим «Только радиус» работает постоянно; «После представления» включает ожидание после команды «Представление».
+    Gui, 2:Add, Text, x258 y354 w830 h44 BackgroundTrans +Wrap, Укажите свой Nick_Name точно как в chatlog.txt. Режим «Только радиус» работает постоянно; «После представления» включает ожидание после команды «Представление».
 
     SettingsBuildingPage := 0
     Gui, 2:Tab
