@@ -15,7 +15,8 @@ def main():
  for name,record in meta['artifacts'].items():
   b=(directory/name).read_bytes();assert len(b)==record['bytes'] and sha(b)==record['sha256'],name
   pe=PE(b);assert pe.machine==0x8664 and pe.subsystem==2
- for name,digest in meta['installer_sources'].items():assert sha((ROOT/name).read_bytes())==digest,('stale native build',name)
+ # Windows-built metadata contains backslashes; verify the same payload on Linux.
+ for name,digest in meta['installer_sources'].items():assert sha((ROOT/name.replace('\\','/')).read_bytes())==digest,('stale native build',name)
  pe=PE((directory/'AHK_FOR_GOS_Setup.exe').read_bytes());data=pe.resource(101);assert data[:8]==b'AHKGOS01';count,=struct.unpack_from('<I',data,8);at=12;entries={}
  for _ in range(count):
   mask,n,size=struct.unpack_from('<BHQ',data,at);at+=11;digest=data[at:at+32].hex();at+=32;name=data[at:at+n].decode('utf-8');at+=n;body=data[at:at+size];at+=size
