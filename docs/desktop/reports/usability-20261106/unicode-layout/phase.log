@@ -1,0 +1,29 @@
+﻿107609 | RUNTIME Unicode=1 PtrSize=4 ACP=1252
+107687 | WINDOW profile 0x3005e
+107687 | ThemeMode=Graphite CustomMenuColor= CustomTextColor= CustomBorderColor= OutputBG=0E101A OutputPanel=161A29 OutputText=ECECFA OutputAccent=8060F8 OutputMuted=9DA5BD
+107687 | UIStyleWindows[hSettingsWnd].Accent=8060F8
+107687 | UIStyleWindows[hSettingsWnd].Background=0E101A
+107687 | UIStyleWindows[hSettingsWnd].BG=0E101A
+107687 | UIStyleWindows[hSettingsWnd].Danger=F4829B
+107687 | UIStyleWindows[hSettingsWnd].Edge=2A2E3D
+107687 | UIStyleWindows[hSettingsWnd].InputText=EBF0F7
+107687 | UIStyleWindows[hSettingsWnd].Muted=9DA5BD
+107687 | UIStyleWindows[hSettingsWnd].Name=2
+107687 | UIStyleWindows[hSettingsWnd].NavActive=2A2750
+107687 | UIStyleWindows[hSettingsWnd].NavText=ECECFA
+107687 | UIStyleWindows[hSettingsWnd].Panel=161A29
+107687 | UIStyleWindows[hSettingsWnd].PrimaryDown=7252EA
+107687 | UIStyleWindows[hSettingsWnd].PrimaryHot=8A6AFF
+107687 | UIStyleWindows[hSettingsWnd].PrimaryText=FFFFFF
+107687 | UIStyleWindows[hSettingsWnd].Success=65D7B3
+107687 | UIStyleWindows[hSettingsWnd].Surface=1E2231
+107687 | UIStyleWindows[hSettingsWnd].SurfaceDown=191D2C
+107687 | UIStyleWindows[hSettingsWnd].SurfaceHot=252938
+107687 | UIStyleWindows[hSettingsWnd].Text=ECECFA
+107687 | UIStyleWindows[hSettingsWnd].Warning=F0C67D
+107687 | PASS profile
+108734 | WINDOW automation 0x3005e
+108734 | PASS automation
+109546 | WINDOW blocks 0x108f4
+109546 | PASS blocks
+110125 | PASS exit
