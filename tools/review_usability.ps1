@@ -3,14 +3,21 @@ param(
     [string]$Runtime = ''
 )
 $ErrorActionPreference = 'Stop'
-$root = Split-Path $PSScriptRoot -Parent
-if (!$Runtime) { $Runtime = Join-Path $root '.build/toolchain/1.1.37.02/AutoHotkeyU64.exe' }
-$Runtime = (Resolve-Path $Runtime).Path
 $outputPath = [IO.Path]::GetFullPath($Output)
 New-Item -ItemType Directory -Force $outputPath | Out-Null
 $scratch = Join-Path ([IO.Path]::GetTempPath()) ('gos-usability-visual-' + [guid]::NewGuid().ToString('N'))
 python (Join-Path $PSScriptRoot 'build_gui_review_fixture.py') --output $scratch
 if ($LASTEXITCODE) { throw 'Visual fixture generation failed' }
+$runtimeDescription = 'Explicit runtime override; see phase.log for actual ABI/codepage.'
+if (!$Runtime) {
+    $hostFolder = Join-Path $scratch 'host'
+    $provenanceFile = Join-Path $outputPath 'runtime-provenance.json'
+    $Runtime = & python -c 'import sys,json; from pathlib import Path; sys.path.insert(0,sys.argv[1]); from deep_audit import prepare; host,exe,runtime,provenance=prepare(Path(sys.argv[2])); Path(sys.argv[3]).write_text(json.dumps(provenance,indent=2)); print(host)' $PSScriptRoot $hostFolder $provenanceFile
+    if ($LASTEXITCODE -or !$Runtime) { throw 'Localized ANSI x86 visual host preparation failed' }
+    $Runtime = ([string]$Runtime).Trim()
+    $runtimeDescription = 'Pinned ANSI x86 visual test host; test-only activeCodePage=ru-RU manifest; shipping binary unchanged.'
+}
+$Runtime = (Resolve-Path $Runtime).Path
 Add-Type -AssemblyName System.Drawing
 Add-Type @'
 using System;
@@ -23,7 +30,8 @@ public static class GosUsabilityWindow {
 }
 '@
 $report = Join-Path $outputPath 'visual-report.txt'
-'Unicode visual fixture; production GUI builders, disposable data; not a game/OBS test.' | Set-Content $report
+$runtimeDescription | Set-Content $report
+'Production GUI builders with disposable data; not a game/OBS test.' | Add-Content $report
 $process = $null
 try {
     $script = Join-Path $scratch 'gui_review.ahk'

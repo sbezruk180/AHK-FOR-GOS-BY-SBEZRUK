@@ -217,9 +217,10 @@ ServiceUI_CreateInputGui(state) {
     Gui, ServiceInput:Font, s8 Norm c%muted%, Segoe UI
     if IsObject(state.Observer) {
         Gui, ServiceInput:Font, s9 Norm c%fg%, Segoe UI
-        Gui, ServiceInput:Add, Text, x20 y192 w500 h130 +0x80 +Wrap BackgroundTrans vCommandPaletteResults,
+        Gui, ServiceInput:Add, Text, x20 y192 w500 h130 +0x80 +Wrap BackgroundTrans vCommandPaletteResults hwndpaletteResultsHwnd,
         Gui, ServiceInput:Font, s8 Norm c%muted%, Segoe UI
-        Gui, ServiceInput:Add, Text, x20 y326 w500 h110 +0x80 +Wrap BackgroundTrans vCommandPalettePreview,
+        Gui, ServiceInput:Add, Text, x20 y326 w500 h110 +0x80 +Wrap BackgroundTrans vCommandPalettePreview hwndpalettePreviewHwnd,
+        state.PaletteResultsHwnd := paletteResultsHwnd, state.PalettePreviewHwnd := palettePreviewHwnd
     }
     hintY := IsObject(state.Observer) ? 446 : 198
     hint := IsObject(state.Observer) ? "—трелки Ч выбрать Ј Tab Ч дополнить Ј Enter Ч запуск`nѕробел после !бинда Ч запуск Ј Esc Ч отмена" : (state.ConfirmOnSpace ? "ѕробел / Enter" : "Enter") . " Ч подтвердить Ј Backspace Ч стереть Ј Esc Ч отменить"

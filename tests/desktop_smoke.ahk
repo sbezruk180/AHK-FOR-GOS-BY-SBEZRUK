@@ -92,6 +92,10 @@ DesktopSmoke_Run() {
         DesktopSmoke_Assert("settings catalog keeps all 13 pages", pages.Length() = 13)
         DesktopSmoke_Assert("sidebar has one native button for each page", SettingsNavigationButtons.Length() = pages.Length())
         DesktopSmoke_Assert("legacy navigation is hidden", !DllCall("IsWindowVisible", "Ptr", hSettingsNavLV))
+        ; The explicit native button click above may activate settings on desktop.
+        ; Establish the foreground precondition for the independent HUD/list probe.
+        WinActivate, ahk_id %focusProbeWindow%
+        WinWaitActive, ahk_id %focusProbeWindow%,, 2
         CreateHUD()
         UpdateHUD()
         DesktopSmoke_Assert("native HUD exists", DllCall("IsWindow", "Ptr", hHUDWnd))
