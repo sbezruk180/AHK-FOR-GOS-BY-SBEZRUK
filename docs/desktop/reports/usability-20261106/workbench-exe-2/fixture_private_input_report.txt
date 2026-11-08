@@ -1,0 +1,44 @@
+﻿Private input native fixture
+Game predicate, action sink and decoration are seams; no game/OBS test.
+PASS | state lifetime observer detects a released plain state
+PASS | TXT confirms on Space
+PASS | TXT does not reach foreground chat on Space
+PASS | TXT capture owns no focus on Space
+PASS | TXT releases hook/state on Space
+PASS | TXT confirms on Enter
+PASS | TXT does not reach foreground chat on Enter
+PASS | TXT capture owns no focus on Enter
+PASS | TXT releases hook/state on Enter
+PASS | input states are released after timer and hook cleanup
+PASS | fast GPS number survives prefix cleanup 155
+PASS | fast GPS input releases ownership 155
+PASS | fast GPS number survives prefix cleanup 10000
+PASS | fast GPS input releases ownership 10000
+PASS | prefetched GPS states are released too
+PASS | Escape cancels without action
+PASS | Escape/text are not leaked
+PASS | focus loss cancels without action
+PASS | generation change cancels without action
+PASS | private input asks for capture exclusion
+PASS | privacy refusal cancels before showing text
+PASS | privacy refusal explains why input was blocked
+PASS | paced key accepted
+PASS | paced key has at least 40ms hold
+PASS | paced key restores caller delay
+PASS | real character typing succeeds
+TypingError=
+TypedDigits=12345678901234567890
+PASS | real character typing delivers exact text
+PASS | 20 characters do not inherit menu key delays
+PASS | typing releases input ownership and restores caller delay
+PASS | CPS pacing delivers exact physical text
+PASS | five CPS paces ten characters across nine intervals
+FiveCps10CharsMs=2093
+PASS | slow CPS cancellation is prompt
+PASS | slow CPS cancellation releases input
+PASS | Russian physical typing result=1 error= layout=
+Russian ANSI readback=[/m ????! ID:42]; UTF16=002F006D002004210442043E043F0021002000490044003A00340032
+PASS | Russian exact UTF16 target text
+InputStatesCreated=9 InputStatesDeleted=9
+Typing20CharsMs=562
+Checks=35 Failed=0 KeyHoldMs=50

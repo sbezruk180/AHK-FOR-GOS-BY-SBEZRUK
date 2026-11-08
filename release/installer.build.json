@@ -4,23 +4,23 @@
   "offline": true,
   "framework_runtime_required": false,
   "app_runtime": "AHK 1.1.37.02 ANSI x86",
-  "app_sha256": "392607052d97118be21252f67520ab7a75c65675c9c54e9148bac2aceef561bb",
+  "app_sha256": "06abd64488893ab92fe18f683d07a670cf6c17bc30c5d63bf8e613c61c4d84aa",
   "official_runtime_archive_sha256": "6f3663f7cdd25063c8c8728f5d9b07813ced8780522fd1f124ba539e2854215f",
   "installer_sources": {
-    "installer/native/app.manifest": "4058551a1862d1ffe686358196b6e922ba4e514573cdb70aaac8a0aa19de656c",
-    "installer/native/archive.cpp": "4290a4cd8f0bfe4440d9627d112bf7f284a9040afb67f3d5655790b2c5853d92",
-    "installer/native/core.cpp": "c8cbd4695e78f960c228d4b074caa53aec85f63b5c6fb1219af3c5817fc6bfa9",
-    "installer/native/core.hpp": "4b5d4d5c6d5d5853cacf977af112139b73d0ae698336bf4ae02f7473db74f960",
-    "installer/native/main.cpp": "73b97e78d109be0e93a2074079fe88cc9d163a7ab6d87b29fb75036705436c5c",
-    "installer/native/selftest.cpp": "7d6efe0d6d3425ae32ef85d45c9d3995bcf9b8f53ce24081434aa146fbc8316d",
-    "installer/native/ui.cpp": "69a170bd4308cfc94716205cf3dbb55b7e614d4cb25a1a9abfdd6c31d0a50054"
+    "installer\\native\\app.manifest": "4058551a1862d1ffe686358196b6e922ba4e514573cdb70aaac8a0aa19de656c",
+    "installer\\native\\archive.cpp": "4290a4cd8f0bfe4440d9627d112bf7f284a9040afb67f3d5655790b2c5853d92",
+    "installer\\native\\core.cpp": "c8cbd4695e78f960c228d4b074caa53aec85f63b5c6fb1219af3c5817fc6bfa9",
+    "installer\\native\\core.hpp": "4b5d4d5c6d5d5853cacf977af112139b73d0ae698336bf4ae02f7473db74f960",
+    "installer\\native\\main.cpp": "73b97e78d109be0e93a2074079fe88cc9d163a7ab6d87b29fb75036705436c5c",
+    "installer\\native\\selftest.cpp": "7d6efe0d6d3425ae32ef85d45c9d3995bcf9b8f53ce24081434aa146fbc8316d",
+    "installer\\native\\ui.cpp": "69a170bd4308cfc94716205cf3dbb55b7e614d4cb25a1a9abfdd6c31d0a50054"
   },
   "entries": [
     {
       "path": "AHK_FOR_GOS.exe",
       "modes": 1,
-      "bytes": 5966336,
-      "sha256": "392607052d97118be21252f67520ab7a75c65675c9c54e9148bac2aceef561bb"
+      "bytes": 6006784,
+      "sha256": "06abd64488893ab92fe18f683d07a670cf6c17bc30c5d63bf8e613c61c4d84aa"
     },
     {
       "path": "AHK_FOR_GOS_BY_SBEZRUK.ahk",
@@ -37,8 +37,8 @@
     {
       "path": "Uninstall.exe",
       "modes": 3,
-      "bytes": 1626624,
-      "sha256": "a971ac149bd73696aaa25d415c48d9d916f8a1f3ec6ee4eee218b73be563449e"
+      "bytes": 807424,
+      "sha256": "efd6486cfd90e74b1fbf3c01a4d95c0802b720a80087e6a6c888a01d56e81040"
     },
     {
       "path": "app\\action_trace.ahk",
@@ -91,8 +91,8 @@
     {
       "path": "app\\command_palette.ahk",
       "modes": 2,
-      "bytes": 13602,
-      "sha256": "a4f233a7a190fa2393795d1960264b8e145857af94ca582eef2084044c6f2359"
+      "bytes": 15532,
+      "sha256": "5d366c5869ccaa0b1d16a9bda27feb4cedf65bae444f0b83849f46ff72f363dd"
     },
     {
       "path": "app\\core.ahk",
@@ -103,8 +103,8 @@
     {
       "path": "app\\custom_functions.ahk",
       "modes": 2,
-      "bytes": 47587,
-      "sha256": "e67181fc4c8a696c94cc5da613375522342b9275e19ddc2db74e8ecb83f7f24d"
+      "bytes": 51390,
+      "sha256": "d98155c1497c714fd75860e7eaaad13b9d586c10465b5158a3b7228995a77544"
     },
     {
       "path": "app\\diagnostics.ahk",
@@ -199,8 +199,8 @@
     {
       "path": "app\\ui_settings.ahk",
       "modes": 2,
-      "bytes": 67857,
-      "sha256": "847bf5f4042eb428f0f013e4703f7acf5abd1c9291bd46c5d8835c0557568d1f"
+      "bytes": 68055,
+      "sha256": "9877402687a682ee5b33ee6c9b330658205753b05a10afcba08ef00ccf68ae95"
     },
     {
       "path": "assets\\defaults\\profiles.default.ini",
@@ -403,8 +403,8 @@
     {
       "path": "service_ui.ahk",
       "modes": 2,
-      "bytes": 25897,
-      "sha256": "e53b8ea28dc9050c6f7eb19c82ff0256de20456755a23dbf60445c61d7fd0e7e"
+      "bytes": 26135,
+      "sha256": "ac5fd3a930b4693516d64b24f61d50e0ee9a63f2820a3a514267a2124437750a"
     },
     {
       "path": "tests\\action_trace_regression.ahk",
@@ -427,8 +427,8 @@
     {
       "path": "tests\\block_builder_regression.ahk",
       "modes": 2,
-      "bytes": 7012,
-      "sha256": "5e88ec302c563a931c99f386075367912be9089f4ebb33fd98d833461980d1bf"
+      "bytes": 9508,
+      "sha256": "1c3f5492b56891b0b3462ef731a6c6fbcc06125c5f5ea20bcdec1daaa0042673"
     },
     {
       "path": "tests\\chat_state_regression.ahk",
@@ -445,8 +445,8 @@
     {
       "path": "tests\\command_palette_regression.ahk",
       "modes": 2,
-      "bytes": 5337,
-      "sha256": "b4ee1abbf211ec9485402044c6c568fbb7e837a6e57c4d3e1f47c2b7844202e9"
+      "bytes": 8645,
+      "sha256": "b024e04e56345ad7804eb5e0d3a03db41bd35616effa4e42a8caaf01723bad55"
     },
     {
       "path": "tests\\custom_builder_regression.ahk",
@@ -463,8 +463,8 @@
     {
       "path": "tests\\desktop_smoke.ahk",
       "modes": 2,
-      "bytes": 22395,
-      "sha256": "8309eaa1c9a46ef880e0ecae9bf1e10b803057b941fc66d0eb89685e28eecddc"
+      "bytes": 23622,
+      "sha256": "10503998a730533cf9220b34c3beb7bffb8100f3e7c9a733f455f50bf634fb83"
     },
     {
       "path": "tests\\gps_calibration_regression.ahk",
@@ -547,12 +547,12 @@
   ],
   "artifacts": {
     "AHK_FOR_GOS_Setup.exe": {
-      "bytes": 14275584,
-      "sha256": "73897144aca3a34c61d8bef91c46f9b20b6a17e09cde5fed70883483a372cf0c"
+      "bytes": 12694016,
+      "sha256": "1b4cb469305a97ca4ab41af1b5f0d2b308b5576c673d80bf79911cb9b4e32c99"
     },
     "AHK_FOR_GOS_Uninstall.exe": {
-      "bytes": 1626624,
-      "sha256": "a971ac149bd73696aaa25d415c48d9d916f8a1f3ec6ee4eee218b73be563449e"
+      "bytes": 807424,
+      "sha256": "efd6486cfd90e74b1fbf3c01a4d95c0802b720a80087e6a6c888a01d56e81040"
     }
   }
 }
