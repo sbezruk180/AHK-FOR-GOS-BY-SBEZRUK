@@ -1,0 +1,663 @@
+PASS | F01 bracket chase selects second ID
+PASS | F01 ID fallback advances
+PASS | F01 single ID
+PASS | F01 absent ID
+PASS | F01 nickname skips own name
+PASS | F01 own nickname only terminates
+PASS | F02 -1 is retried, not counted as sent
+PASS | F02 exhausted refusal is failure
+PASS | F29 sent increments at transport completion
+PASS | F14 batch rejects without accepting prefix
+PASS | F14 RP action accepted
+PASS | F14 order includes command, menu, and RP after
+PASS | Typing delay: RP before/after are independent of command printing
+PASS | Typing delay: sequence pause remains a separate setting
+PASS | Typing delay: standalone RP sequence skips per-character interval
+PASS | Stop request: megaphone RP skips configurable character interval
+PASS | Rights: custom RP narration retains its fast override
+PASS | Stop request: unrelated faction commands retain configured typing speed
+PASS | F14 failed batch cancels menu and RP after
+PASS | F13 cancellation preserves active sender ownership
+PASS | F13 StopAll cancels custom runner and evidence
+PASS | F16 mock keyboard sender
+PASS | F16 mock input and screenshot are simulations
+PASS | F16 mock does not touch clipboard
+PASS | F13 cancelled command refuses transport
+PASS | F13 cancelled paste refuses clipboard
+PASS | F13 cancelled epoch blocks input
+PASS | F18 injected write refusal rolls back
+PASS | F18 transaction lock released on failure
+PASS | F18 successful atomic commit
+PASS | F18 unknown keys preserved
+PASS | F20 exact codec roundtrip 1
+PASS | F20 exact codec roundtrip 2
+PASS | F20 exact codec roundtrip 3
+PASS | F20 exact codec roundtrip 4
+PASS | F20 exact codec roundtrip 5
+PASS | F20 exact codec roundtrip 6
+PASS | F20 exact codec roundtrip 7
+PASS | F20 exact codec roundtrip 8
+PASS | F20 exact codec roundtrip 9
+PASS | F20 exact codec roundtrip 10
+PASS | F20 missing key uses default
+PASS | F20 legacy decoder retained
+PASS | F18 newer schema opens read-only
+PASS | F11 partial line retains checkpoint
+PASS | F11 completed fragment dispatched exactly once
+PASS | F11 no duplicate line dispatch
+PASS | F30 replaced file establishes a new generation
+PASS | F30 in-place rewrite resets cursor and pending state
+PASS | F25 CNG SHA-256 known vector
+PASS | F25 missing path never runs a shell
+PASS | F09 legitimate zero float
+PASS | F09 infinity rejected
+PASS | F09 NaN rejected
+PASS | F09 unreadable address rejected
+PASS | F23 deadlines support uptime above 49.7 days
+PASS | F23 monotonic 64-bit clock
+PASS | F24 light override has readable text
+PASS | F24 dark override has readable text
+PASS | F19 hidden templates and flags preserved
+PASS | F28 repeated pattern allowed, new pattern capped
+PASS | F12 preview bounded
+PASS | F07 missing game module refuses memory writes
+PASS | Auto ID: read-only accepts no hash with x86 module
+PASS | Auto ID: read-only rejects x64 module
+PASS | Auto ID: explicit hash mismatch stays blocked
+PASS | Auto ID: explicit verified hash permits read
+PASS | Auto ID: malformed explicit hash cannot bypass
+PASS | Auto ID: explicit hash cannot permit x64 layout
+PASS | Auto ID: valid bounded PE32 DLL accepted
+PASS | Auto ID: PE64 module refused
+PASS | Auto ID: module too small for read offsets refused
+PASS | Auto ID: out-of-range PE header refused
+PASS | OBS exclusion requires 0x11
+PASS | OBS disabled confirmed at zero
+PASS | OBS failed read rejects cached success
+PASS | OBS WDA_MONITOR is not exclusion
+PASS | OBS missing state retries
+PASS | OBS errors throttled before deadline
+PASS | OBS error retry reaches deadline
+PASS | OBS changed option retries immediately
+PASS | Private TXT: catalog command resolves without chat
+PASS | Private TXT: GPS argument remains complete
+PASS | Private TXT: organization GPS argument
+PASS | Private TXT: GPS without ID requests it separately
+PASS | Private TXT: unknown command never dispatches
+PASS | Private TXT: custom functions remain available
+PASS | Private TXT: law search mode resolves
+PASS | Private TXT: game hotstrings are disabled in private mode
+PASS | Private TXT: invalid setting preserves legacy mode
+PASS | Fullscreen input: baton option remains available
+PASS | Fullscreen input: assistant state always closes
+PASS | Menu: ownership acquired atomically
+PASS | Menu: second transaction cannot acquire input
+PASS | Menu: unrelated key sends are blocked
+PASS | Menu: owner can send paced key
+PASS | Menu: cancelled generation stops before next key
+PASS | Menu: ownership released after cancellation
+PASS | Menu: stale completion cannot release another owner
+PASS | GPS: stale callback cannot open GPS
+PASS | GPS: complete production sequence runs in mock
+PASS | GPS: home plus all 15 down steps precede value
+PASS | GPS: all paths release reservation and input
+PASS | Typing speed range 1
+PASS | Typing speed range 2
+PASS | Typing speed range 3
+PASS | Typing speed range 4
+PASS | Typing speed range 5
+PASS | Typing speed range 6
+PASS | Typing speed range 7
+PASS | Typing speed range 8
+PASS | Typing speed range 9
+PASS | Typing speed range 10
+PASS | Typing override uses zero for RP without changing configured delay
+PASS | Typing no override keeps user delay
+PASS | Typing override clamps below zero
+PASS | Typing override clamps above maximum
+PASS | Typing malformed override keeps user delay
+PASS | Typing invalid user delay keeps default without override
+PASS | Faction list canonicalizes separators and removes duplicates
+PASS | Default faction typing includes operational command /frac
+PASS | Default faction typing includes operational command /cuff
+PASS | Default faction typing includes operational command /deject
+PASS | Default faction typing includes operational command /mdc
+PASS | Default faction typing includes operational command /chase
+PASS | Faction typing does not confuse cuff with cuffing
+PASS | Faction command ignores case and leading spaces
+PASS | Faction command with no message
+PASS | Faction command needs token boundary
+PASS | Faction command needs slash at start
+PASS | Faction command punctuation is not delimiter
+PASS | FastTyping types ordinary text
+PASS | FactionTyping types faction text
+PASS | FactionTyping leaves other commands to paste
+PASS | Faction memory mode types operational commands
+PASS | Faction memory mode leaves ordinary text untyped
+PASS | Legacy faction UI label remains compatible
+PASS | Variable speed swaps reversed CPS endpoints
+PASS | Variable speed defaults keep old configuration fixed
+PASS | Variable speed bounds are finite
+PASS | Variable speed counts physical key time
+PASS | Variable speed never adds negative wait
+PASS | Variable speed sampling stays within CPS range
+PASS | Variable speed yields to explicit RP zero override
+PASS | Keyboard never selects typing
+PASS | Typed sender accepts literal keyboard punctuation
+PASS | Typed sender rejects newline with accidental Enter
+PASS | Typed sender rejects tab
+PASS | Chat send mode label roundtrip Auto
+PASS | Chat send mode label roundtrip Memory
+PASS | Chat send mode label roundtrip Keyboard
+PASS | Chat send mode label roundtrip FastTyping
+PASS | Chat send mode label roundtrip FactionTyping
+PASS | Chat send mode label roundtrip FactionTypingMemory
+PASS | Unknown send label selects Auto
+PASS | Typing CP1251 byte decodes to Unicode 1
+PASS | Typing CP1251 byte decodes to Unicode 2
+PASS | Typing CP1251 byte decodes to Unicode 3
+PASS | Typing CP1251 byte decodes to Unicode 4
+PASS | Typing CP1251 byte decodes to Unicode 5
+PASS | Typing CP1251 byte decodes to Unicode 6
+PASS | Typing rejects undefined CP1251 byte
+PASS | Typing loads physical US and RU layouts
+PASS | Typing physical VK/scancode/Shift mapping 1
+PASS | Typing event has explicit VK/scancode, no Unicode packet 1
+PASS | Typing physical VK/scancode/Shift mapping 2
+PASS | Typing event has explicit VK/scancode, no Unicode packet 2
+PASS | Typing physical VK/scancode/Shift mapping 3
+PASS | Typing event has explicit VK/scancode, no Unicode packet 3
+PASS | Typing physical VK/scancode/Shift mapping 4
+PASS | Typing event has explicit VK/scancode, no Unicode packet 4
+PASS | Typing physical VK/scancode/Shift mapping 5
+PASS | Typing event has explicit VK/scancode, no Unicode packet 5
+PASS | Typing physical VK/scancode/Shift mapping 6
+PASS | Typing event has explicit VK/scancode, no Unicode packet 6
+PASS | Typing physical VK/scancode/Shift mapping 7
+PASS | Typing event has explicit VK/scancode, no Unicode packet 7
+PASS | Typing physical VK/scancode/Shift mapping 8
+PASS | Typing event has explicit VK/scancode, no Unicode packet 8
+PASS | Typing physical VK/scancode/Shift mapping 9
+PASS | Typing event has explicit VK/scancode, no Unicode packet 9
+PASS | Typing physical VK/scancode/Shift mapping 10
+PASS | Typing event has explicit VK/scancode, no Unicode packet 10
+PASS | Typing physical VK/scancode/Shift mapping 11
+PASS | Typing event has explicit VK/scancode, no Unicode packet 11
+PASS | Typing physical VK/scancode/Shift mapping 12
+PASS | Typing event has explicit VK/scancode, no Unicode packet 12
+PASS | Typing physical VK/scancode/Shift mapping 13
+PASS | Typing event has explicit VK/scancode, no Unicode packet 13
+PASS | Typing physical VK/scancode/Shift mapping 14
+PASS | Typing event has explicit VK/scancode, no Unicode packet 14
+PASS | Typing physical VK/scancode/Shift mapping 15
+PASS | Typing event has explicit VK/scancode, no Unicode packet 15
+PASS | Typing physical VK/scancode/Shift mapping 16
+PASS | Typing event has explicit VK/scancode, no Unicode packet 16
+PASS | Typing accounts for CapsLock on lower case
+PASS | Typing accounts for CapsLock on upper case
+PASS | Typing refuses packet key plan
+PASS | Typing preflights full physical ASCII command and punctuation
+PASS | Typing preflights full mixed Cyrillic command
+PASS | Typing refuses unmappable char before any prefix plan
+PASS | Typing refuses malformed line before keyboard plan
+PASS | Typing mock does not touch clipboard
+PASS | Typed sender refuses during numeric ID capture
+PASS | Typed sender rejects multiline before transport
+PASS | Chat BOOL completed DWORD 0
+PASS | Chat BOOL completed DWORD 1
+PASS | Chat BOOL completed DWORD 2
+PASS | Chat BOOL completed DWORD 255
+PASS | Chat BOOL completed DWORD 4294967295
+PASS | Chat BOOL failed DWORD stays unknown 0
+PASS | Chat BOOL failed DWORD stays unknown 1
+PASS | Chat BOOL failed DWORD stays unknown 2
+PASS | Chat BOOL failed DWORD stays unknown 255
+PASS | Chat BOOL failed DWORD stays unknown 4294967295
+PASS | Chat BOOL memory error code stays unknown
+PASS | Chat BOOL rejects malformed raw flag 1
+PASS | Chat BOOL rejects malformed raw flag 2
+PASS | Chat BOOL rejects malformed raw flag 3
+PASS | Chat BOOL rejects malformed raw flag 4
+PASS | Chat BOOL rejects malformed raw flag 5
+PASS | Memory legacy: blank SHA permits validated layout
+PASS | Memory legacy: whitespace SHA keeps default compatibility
+PASS | Memory legacy: unreadable/unsupported layout blocks blank SHA
+PASS | Memory legacy: explicit matching SHA needs layout
+PASS | Memory legacy: explicit mismatching SHA blocks
+PASS | Memory legacy: malformed nonempty SHA blocks
+PASS | Memory legacy: case-insensitive explicit SHA
+PASS | Memory attempt: completed launch succeeds
+PASS | Memory attempt: prelaunch failure permits safe fallback
+PASS | Memory attempt: unsuccessful launched call forbids fallback/retry
+PASS | Memory attempt: pending result stays uncertain
+PASS | Memory attempt: zero result after launch stays uncertain
+PASS | Memory attempt: success without new launch stays successful
+PASS | Memory page: executable protection 16
+PASS | Memory page: executable protection 32
+PASS | Memory page: executable protection 64
+PASS | Memory page: executable protection 128
+PASS | Memory page: nonexecutable/guard protection 1
+PASS | Memory page: nonexecutable/guard protection 2
+PASS | Memory page: nonexecutable/guard protection 4
+PASS | Memory page: nonexecutable/guard protection 8
+PASS | Memory page: nonexecutable/guard protection 288
+PASS | Memory page: truncated query rejected
+PASS | Memory page: beginning before region rejected
+PASS | Memory page: read beyond executable region rejected
+PASS | Memory page: foreign allocation rejected
+PASS | Memory page: reserved uncommitted region rejected
+PASS | Memory native: own process and low fixture allocation available
+PASS | Memory native: completed RPM accepts fake PE32 header
+PASS | Memory native: readable PE32 with writable code is refused
+PASS | Memory native: fixture API pages protected executable/readable
+PASS | Memory native: compatible executable PE32 layout accepted
+PASS | Memory ownership: actual PE32 RPM ignores a preexisting global header
+PASS | Memory ownership: PE32 RPM preserves unrelated global header
+PASS | Memory ownership: actual executable query ignores global info
+PASS | Memory ownership: executable query preserves unrelated global info
+PASS | Memory native: actual executable API page 22560
+PASS | Memory native: actual executable API page 430480
+PASS | Memory native: actual executable API page 424304
+PASS | Memory native: actual executable API page 456896
+PASS | Memory native: module ownership mismatch refused
+PASS | Memory native: missing handle/address refused
+PASS | Memory native: oversized executable read refused
+PASS | Memory native: actual guard page refused before RPM
+PASS | Memory native: one nonexecutable chat target blocks layout
+PASS | Memory native: zero executable padding refused
+PASS | Memory native: FF executable padding refused
+PASS | Memory native: PE x64 machine refused
+PASS | Memory native: image smaller than data offsets refused
+PASS | Memory native: default blank SHA permits validated compatibility
+PASS | Memory native: build validation never allocates injection buffers
+PASS | Memory native: malformed explicit SHA remains blocked
+PASS | Memory native: unavailable explicit build file remains blocked
+PASS | Memory native: actual SHA256 fixture available
+PASS | Memory native: explicit matching SHA plus layout accepted
+PASS | Memory native: actual explicit hash mismatch blocked
+PASS | Memory native: read-only hash helper also rejects mismatch
+PASS | Memory native: read-only explicit matching hash accepted
+PASS | Memory launch: failed creation leaves serial unchanged
+PASS | Memory launch: successful own-process no-op increments serial once
+PASS | Memory launch: owned no-op completes within bounded wait
+PASS | Memory launch: owned no-op returns zero
+PASS | Memory launch: failure after cleaned launch is uncertain
+PASS | Memory launch: explicit zero serial is not an omitted argument
+PASS | Service UI arbitrary Russian input preserves punctuation/spaces
+PASS | Service UI audit consumes exactly one input
+PASS | Service UI audit never acquires real input lock
+PASS | Service UI empty audit queue safely refuses
+PASS | Service UI cancellation preserves caller value
+PASS | Service UI overlength result cannot commit
+PASS | Service UI never steals another sender lock
+PASS | Service UI refuses during digit capture
+PASS | Service UI refuses concurrent request
+PASS | Service UI valid zero input is preserved
+PASS | Service UI MockMode accepts scripted native text only
+PASS | Service UI MockMode without script stays noninteractive
+PASS | Service UI unknown severity stays informational
+PASS | Service UI warning severity is case independent
+PASS | Service UI confirmation defaults to false without user choice
+PASS | Service UI confirmation preserves explicit No
+PASS | Service UI confirmation accepts explicit Yes
+PASS | Service UI modal is considered active input
+PASS | Service UI common cancellation cancels modal
+PASS | Service flow: formation minutes come from GUI
+PASS | Service flow: cancelled formation does not start
+PASS | Service flow: invalid formation duration refused
+PASS | Service flow: autoreport duration comes from GUI
+PASS | Service flow: autoreport GUI input keeps duration bounds
+PASS | Service flow: wizard begins without opening game chat
+PASS | Service flow: wizard collects Russian token from GUI
+PASS | Service flow: wizard prompts use own notice
+PASS | Service flow: wizard cancellation remains distinct from empty token
+PASS | Service flow: finishing wizard clears its state
+PASS | Service flow: full GPS value comes from private seeded GUI
+PASS | Service flow: GPS cancel has no partial result
+PASS | Service flow: LAW query uses dynamic GUI ByRef API
+PASS | Service flow: cancelled LAW query preserves caller value
+PASS | Service flow: LAW mode command is not executed as a query
+PASS | Service flow: legacy ID config migrates to own input window
+PASS | Memory config: malformed explicit SHA cannot become blank compatibility
+PASS | Memory config: trimmed valid SHA remains explicit
+PASS | Service flow: no prompt emits physical F6 or paste in audit preview
+PASS | Service flow: service input leaves clipboard intact
+PASS | Native dialogs: local hook installs without changing ErrorLevel
+PASS | Native dialogs: hook is limited to this GUI thread
+PASS | Native dialogs: repeated install reuses hook allocation
+PASS | Native dialogs: existing AHK top-level GUI remains eligible
+PASS | Native dialogs: child controls remain ineligible
+PASS | Native dialogs: own hidden native top-level is eligible
+PASS | Native dialogs: CBT attempts affinity during hidden creation
+PASS | Native dialogs: native child is excluded by root-window guard
+PASS | Native dialogs: unrelated own top-level classes remain excluded
+PASS | Native dialogs: pass-through callback preserves ErrorLevel and Critical
+PASS | Native dialogs: temporary hook and callback allocation are released
+PASS | Auto ID source: found target opens EnterID confirmation
+PASS | Auto ID source: pending target leaves previous selection unchanged
+PASS | Auto ID: new target immediately replaces pending confirmation
+PASS | Auto ID: same target does not rebuild confirmation
+PASS | Auto ID source: rejection preserves previous selection
+PASS | Auto ID: rejected target is not offered again in the same hold
+PASS | Auto ID source: acceptance applies ID and nickname
+PASS | Auto ID: unrelated confirmation is preserved
+PASS | Auto ID: digit capture cannot be interrupted
+PASS | Auto ID: active input cannot be interrupted
+PASS | Auto ID source: mask waits for confirmation without changing ID
+PASS | Auto ID source: acceptance preserves full mask
+PASS | Auto ID source: absent target opens no confirmation
+PASS | Desktop: absolute Windows paths accepted
+PASS | Desktop: relative and drive-relative paths rejected
+PASS | Desktop: data directory write probe leaves no file
+PASS | Desktop: existing INI migrated byte-compatible
+PASS | Desktop: repeated migration never overwrites destination
+PASS | Desktop: migration never modifies source config
+PASS | Desktop: copied read-only config becomes writable
+PASS | Desktop: original read-only config keeps its attributes
+PASS | Desktop: active data root used
+PASS | Desktop: user corpus override has priority
+PASS | Desktop: missing override falls back to full bundled corpus
+PASS | Desktop: corpus path traversal is rejected
+PASS | Desktop: compiled source introspection reads resources
+PASS | Desktop: build manifest embedded
+PASS | Desktop: project and engine licenses embedded
+PASS | Desktop: cancellation is safe with no legacy Input even inside try
+PASS | ID capture timeout defaults to 3 seconds
+PASS | ID capture timeout clamps to 1..15
+PASS | ID capture deadline is fixed from start
+PASS | ID capture accepts digits and preserves leading zero
+PASS | ID capture ignores non-digit text
+PASS | ID capture Backspace removes exactly one digit
+PASS | ID capture Backspace on empty remains empty
+PASS | ID capture caps at 20 digits without numeric rounding
+PASS | ID capture validation preserves large masks
+PASS | ID capture invalid or empty strings cannot commit
+PASS | ID capture cancellation freezes the pending value
+PASS | ID capture top-row and numpad digit decode
+PASS | ID capture modified and non-digit keys decode as empty
+PASS | ID capture plain digit down is suppressed
+PASS | ID capture owned digit up is suppressed and released
+PASS | ID capture other letters pass through
+PASS | ID capture Ctrl+digit shortcut passes without append
+PASS | ID capture modifier release restores plain digits
+PASS | ID capture injected digits are ignored and pass through
+PASS | ID capture Backspace down is suppressed
+PASS | ID capture Enter suppresses and schedules confirmation
+PASS | ID capture pending confirmation blocks further collection
+PASS | ID capture held activation digit repeats pass without append
+PASS | ID capture activation key release clears initial-key guard
+PASS | ID capture fresh activation digit can become input
+PASS | ID capture Escape suppresses and schedules cancellation
+PASS | ID capture deadline ends collection without stealing late digit
+PASS | ID capture chat-open key passes and cancels collection
+PASS | ID capture left/right modifier bits are distinct
+PASS | ID capture resolves Alt+digit binding
+PASS | ID capture resolves multiple modifier F-key binding
+PASS | ID capture resolves wildcard/hook numpad binding
+PASS | ID capture resolves custom combination suffix
+PASS | ID capture resolves combined VK/scan-code binding
+PASS | ID capture resolves qualified modifier and Up suffix
+PASS | ID capture mouse or missing activation cannot leave key guard
+PASS | ID capture held F2 activation blocks premature confirm
+PASS | ID capture held F2 repeat passes without clearing guard
+PASS | ID capture F2 keyup permits intentional second confirmation
+PASS | ID capture unrelated held digit does not block confirmation
+PASS | ID capture modifier-only activation releases its initial guard
+PASS | Chat/ID settings: stable mode roundtrip FastTyping
+PASS | Chat/ID settings: speed and exact commands FastTyping
+PASS | Chat settings: variable CPS range roundtrip FastTyping
+PASS | Chat/ID settings: capture mode and deadline FastTyping
+PASS | Chat/ID settings: stable mode roundtrip FactionTyping
+PASS | Chat/ID settings: speed and exact commands FactionTyping
+PASS | Chat settings: variable CPS range roundtrip FactionTyping
+PASS | Chat/ID settings: capture mode and deadline FactionTyping
+PASS | Chat/ID settings: stable mode roundtrip FactionTypingMemory
+PASS | Chat/ID settings: speed and exact commands FactionTypingMemory
+PASS | Chat settings: variable CPS range roundtrip FactionTypingMemory
+PASS | Chat/ID settings: capture mode and deadline FactionTypingMemory
+PASS | OBS setting survives appearance save On
+PASS | OBS setting survives appearance save Off
+PASS | ID capture pauses queued chat without consuming it
+PASS | ID capture refuses menu input
+PASS | ID capture refuses physical send even in mock
+PASS | Typing ownership pauses queued chat
+PASS | Typing ownership refuses menu input
+PASS | Queue resumes after ID/input ownership release
+PASS | Partial typing is never retried and cancels the batch
+PASS | Memory: closing a law does not load the whole corpus
+PASS | Memory: closing a law still resets navigation
+PASS | Memory: vocabulary counts once per item without merged sets
+PASS | Memory: one multiline append retains the last 500 lines
+PASS | Memory: oversized preview is bounded without a line array
+PASS | Memory: clearing preview resets incremental count
+PASS | Custom TYPE guard accepts its current run
+PASS | Custom TYPE guard stops input after constructor Stop
+PASS | Custom TYPE guard rejects a replaced run
+PASS | Custom TYPE failure does not stop a new run
+PASS | Logic: stale radial step refuses its first key
+PASS | Logic: stale list selection refuses all keys
+PASS | Logic: stale GPS scroll refuses all keys
+PASS | Logic: stale GPS cleanup refuses all backspaces
+PASS | Logic: GPS input accepts its documented upper bound 10000
+PASS | Logic: cancelled wizard cannot resume at its next prompt
+PASS | Logic: excluded words with a common prefix leave no positive token
+PASS | Logic: minus inside a quoted phrase is not an exclusion
+PASS | Logic: reserved TXT cannot replace a saved user command !бинд
+PASS | Logic: reserved TXT cannot replace a saved user command !коды
+PASS | Logic: reserved TXT cannot replace a saved user command !пкас
+PASS | Logic: reserved TXT cannot replace a saved user command !пфсб
+PASS | Logic: reserved TXT cannot replace a saved user command !пгт
+PASS | Logic: exhausted GPS registration reports refusal
+PASS | Logic: custom SEND was actually accepted before Stop
+PASS | Logic: stopping a custom function removes its pending SEND
+PASS | Logic: different 20-digit masks cancel the old custom run
+PASS | Logic: Cuff on a new ID is a new command, not the old follow-up
+PASS | Logic: Deject on a new ID is a new command, not old RP
+PASS | Logic: a full queue never accepts just the mask-call prefix
+PASS | Logic: a rejected stop request cannot start a countdown
+PASS | Logic: queued stop request waits for delivery before countdown
+PASS | Logic: first delivered stop request starts the 15-second countdown
+PASS | Guides: signals and rights without removed scenarios
+PASS | Guides: server timetable and 20-30 minute gathering windows
+PASS | Guides: exactly two supplied department reports
+PASS | Guides: private TXT dispatch GuideSignals
+PASS | Guides: pagination preserves all scenario text 21
+PASS | Guides: private TXT dispatch GuideRights
+PASS | Guides: pagination preserves all scenario text 24
+PASS | Guides: rights viewer follows profile text without stale cache
+PASS | Guides: empty rights show configuration hint
+PASS | Guides: invalid ID has no pages
+PASS | Builder: preview lists actions, pauses and timers
+PASS | Builder: preview shows unreachable steps after STOP
+PASS | Builder: preview reports invalid source line
+PASS | Builder: preview has no runtime or queue effects
+PASS | TXT keyboard mapping !пдп
+PASS | TXT keyboard mapping !сву
+PASS | TXT keyboard mapping !сигналы
+PASS | TXT keyboard mapping !предст
+PASS | TXT keyboard mapping !bind
+PASS | TXT aliases share signals action !signals
+PASS | TXT aliases share signals action !cbuyfks
+PASS | TXT aliases share signals action !СИГНАЛЫ
+PASS | TXT removed guides have no automatic routes
+PASS | TXT English GPS preserves the number
+PASS | TXT keyboard-layout GPS preserves the number
+PASS | TXT English law search preserves mode
+PASS | TXT user command supports the other layout
+PASS | TXT opener remains reserved !бинд
+PASS | TXT opener remains reserved !bind
+PASS | TXT opener remains reserved !,byl
+PASS | TXT opener remains reserved !иштв
+PASS | TXT configured trigger wins over English alias
+PASS | TXT disabled trigger has no layout alias
+PASS | TXT UI mode labels preserve private-only config
+PASS | TXT UI mode labels preserve combined config
+PASS | Palette tool aliases never replace configured custom commands
+PASS | Palette natural-language rights
+PASS | Palette natural-language cuffs
+PASS | Palette one-character typo
+PASS | Palette exact configured command wins
+PASS | Palette wrong keyboard layout resolves
+PASS | Palette retains legacy custom functions without Enabled field
+PASS | Palette exposes working GPS calibration
+PASS | Palette does not invent matches
+PASS | Palette results bounded
+PASS | Palette fast Tab completes latest query rather than previous results
+PASS | Palette fast arrow refreshes query before selecting
+PASS | Palette Enter honors selected related result over exact alias
+PASS | Palette Space retains exact !bind semantics after arrow selection
+PASS | Palette final changed query cannot execute stale explicit selection
+PASS | Palette query edit resets deliberate row selection
+PASS | Diagnostics missing legacy binding keys are not ERROR conflicts
+PASS | Diagnostics compares imported Russian and English physical hotkeys
+PASS | Palette bounded edit distance
+PASS | Palette all tool handlers implemented
+PASS | Palette preview identifies actual profile
+PASS | GPS default navigation and pacing preserved
+PASS | GPS default settings validate
+PASS | GPS settings are a detached snapshot
+PASS | GPS home category uses configured count
+PASS | GPS organization category uses configured count
+PASS | GPS non-category caller count preserved
+PASS | GPS plan starts at Home and has exact down count
+PASS | GPS plan confirms selection before digits
+PASS | GPS plan uses independently configured field pauses
+PASS | GPS zero down count selects first entry
+PASS | GPS invalid values reject before plan execution
+PASS | GPS validates text and identifies invalid field
+PASS | GPS zero key hold rejected
+PASS | GPS invalid persisted values use bounded default
+PASS | GPS preview matches configured route
+PASS | GPS preview does not claim game acknowledgement
+PASS | GPS settings roundtrip through INI
+PASS | GPS settings are isolated by profile
+PASS | GPS old profiles receive original defaults
+PASS | GPS cancelled trial cannot run
+PASS | GPS profile change cancels pending trial
+PASS | GPS test-mode change cancels pending trial
+PASS | GPS old callback cannot consume new trial
+PASS | GPS stop clears delayed trial
+PASS | GPS real runtime mocks configured home sequence
+PASS | GPS runtime releases keyboard ownership
+PASS | GPS public wrapper uses configured organization sequence
+PASS | GPS stale epoch sends no command or keys
+PASS | Trace: long running parent survives completed child history rotation
+PASS | Trace: terminal parent remains the latest whole operation
+PASS | Trace: completed stage survives failure and dependent stage is skipped
+PASS | Trace: post-send exception cannot mark an actual send as unsent
+PASS | Trace: gameplay commands cannot be replayed through generic retry
+PASS | Trace: production queue records both actual successful sends
+PASS | Trace: mock success is clearly distinguished from actual game delivery
+PASS | Trace: known-unsent failure cancels dependent lines and retains exact reason
+PASS | Trace: only failed known-unsent communication line is eligible for retry
+PASS | Trace: replay rejects changed target
+PASS | Trace: replay rejects changed profile
+PASS | Trace: retry refuses a busy or unrelated queue
+PASS | Trace: safe retry queues exactly one immutable selected line
+PASS | Trace: the same failed stage cannot be replayed twice
+PASS | Trace: old cancellation epoch invalidates replay
+PASS | Trace: failed mechanical command stays non-replayable
+PASS | Trace: unknown launched call prohibits replay and stops dependent steps
+PASS | Trace: exception after a real side effect retains sent stage and disables replay
+PASS | Trace: cancelling a batch records a terminal reason
+PASS | Trace: pre-send input rejection replaces stale transport status
+PASS | Trace: pre-action safety rejection is visible and non-replayable
+PASS | Trace: step count and retained text have strict memory bounds
+PASS | Trace: old operation history is bounded and stale ids are safe
+PASS | Incident: player ID zero remains valid
+PASS | Incident: ordinary ID canonicalizes without numeric mask conversion
+PASS | Incident: long mask stays an exact string with hidden nickname
+PASS | Incident: rejects invalid IDs and path-looking targets
+PASS | Incident: same-second cases have distinct safe filenames
+PASS | Incident: legal result captured as a snapshot
+PASS | Incident: same legal result cannot silently duplicate
+PASS | Incident: CP1251 notes and literal markers round-trip
+PASS | Incident: duplicate metadata rejected
+PASS | Incident: incorrect length and NUL payload rejected
+PASS | Incident: wrong record identity rejected
+PASS | Incident: storage traversal rejected
+PASS | Incident: dedicated record writes to disk
+PASS | Incident: actual file reads all fields
+PASS | Incident: locked staging cleanup releases writer and preserves saved data
+PASS | Incident: write recovers after a transient staging lock
+PASS | Incident: oversized notes never replace saved source
+PASS | Incident: stale unnamed index never merges reused IDs
+PASS | Incident: original player retains their saved record
+PASS | Incident: target identity includes profile and mask kind
+PASS | Incident: nickname boundaries prevent similar player matches
+PASS | Incident: ID boundaries prevent suffix and unrelated numeric matches
+PASS | Incident: unknown mask never associates arbitrary numeric chat
+PASS | Incident: incoming chat history is bounded at 80
+PASS | Incident: chat collects only relevant nonduplicate lines
+PASS | Incident: saved chat capped at 24 complete lines
+PASS | Incident: actual readable UTF8 export preserves notes
+PASS | Incident: rapid exports never overwrite an earlier export
+PASS | Incident: separate targets remain separate persisted cases
+PASS | Incident: reentrant writer refuses without changing a saved file
+PASS | Incident: entry metadata never retains note or law buffers
+PASS | Training fresh model owns a distinct ledger
+PASS | Training normal messages preserve Cyrillic in bounded ledger
+PASS | Training /gps opens independent simulated list
+PASS | Training consumes actual SafeSend menu output in order
+PASS | Training completes GPS only after digits and confirmation
+PASS | Training Up cannot create negative menu selection
+PASS | Training GPS rejects empty destination
+PASS | Training GPS rejects zero destination
+PASS | Training GPS caps number length
+PASS | Training GPS supports correction before confirmation
+PASS | Training GPS Escape closes menu safely
+PASS | Training target zero is accepted as a valid ID
+PASS | Training new target immediately replaces pending offer
+PASS | Training accepts only latest offered target
+PASS | Training reject preserves previously accepted target
+PASS | Training rejects malformed/out-of-range IDs
+PASS | Training models never share mutable GPS or ledger state
+PASS | Training history retains at most 240 rows
+PASS | Training history also bounds retained text memory
+PASS | Blocks: unchanged text round-trips exactly, including mixed EOL and comments
+PASS | Blocks: disabled operation is still an editable executable block
+PASS | Blocks: non-executable notes cannot be enabled
+PASS | Blocks: reordering validates both positions
+PASS | Blocks: moving block retains its original CHAT spelling
+PASS | Blocks: serialization preserves all comments and disabled TYPE
+PASS | Blocks: runtime executes moved enabled blocks in order
+PASS | Blocks: selected script excludes notes and disabled actions
+PASS | Blocks: empty selection reports an actionable error
+PASS | Blocks: enabling retained step preserves parameter syntax
+PASS | Blocks: all-disabled draft is recognized but does not execute
+PASS | Blocks: timer label keeps literal separators
+PASS | Blocks: invalid raw block remains visible for repair
+PASS | Blocks: localized type maps to original code SEND
+PASS | Blocks: localized type maps to original code WAIT
+PASS | Blocks: localized type maps to original code TIMER
+PASS | Blocks: localized type maps to original code NOTICE
+PASS | Blocks: localized type maps to original code TYPE
+PASS | Blocks: localized type maps to original code STOP
+PASS | Blocks: localized type maps to original code RAW
+PASS | Blocks: localized type maps to original code Заметка
+PASS | Blocks: separate timer fields preserve literal separators in label
+PASS | Blocks: timer without label needs no separator
+PASS | Blocks: invalid pause is refused instead of silently clamped
+PASS | Blocks: timer rejects fractions and zero
+PASS | Blocks: raw repair does not turn invalid command into chat
+PASS | Blocks: raw repair retains valid original spelling
+PASS | Blocks: text newline cannot create hidden step
+PASS | Blocks: selected sandbox works with global MockMode OFF
+PASS | Blocks: sandbox never inserts a real chat queue item
+PASS | Blocks: sandbox leaves clipboard and real timers unchanged
+PASS | Blocks: STOP prevents later selected actions
+PASS | Blocks: partial test cannot replace a running scenario
+PASS | F10 reader never truncates chatlog
+PASS | F21 official LAW corpus loaded
+PASS | search exact reference TER
+PASS | search compact KOAP reference
+PASS | search natural phrase
+PASS | search typo
+PASS | search nonsense does not invent results
+PASS | search quote and exclusion syntax
+PASS | search quotes required and exclusions enforced
+PASS | F21 missing text is not cached
+PASS | F21 missing pages are not cached
+PASS | F21 newly supplied document loads
+PASS | F21 query index follows corpus generation
+PASS | F24 settings fits work area

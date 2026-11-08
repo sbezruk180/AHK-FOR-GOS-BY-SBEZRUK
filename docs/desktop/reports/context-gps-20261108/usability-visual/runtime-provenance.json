@@ -1,0 +1,5 @@
+{
+  "purpose": "Unicode x86 layout review on English Windows; shipping ANSI runtime tested separately",
+  "runtime_archive_sha256": "6f3663f7cdd25063c8c8728f5d9b07813ced8780522fd1f124ba539e2854215f",
+  "host_sha256": "ba35b8b4346b79b8bb4f97360025cb6befaf501b03149a3b5fef8f07bdf265c7"
+}

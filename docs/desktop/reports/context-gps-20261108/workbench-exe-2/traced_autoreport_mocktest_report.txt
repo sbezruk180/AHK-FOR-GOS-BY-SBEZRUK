@@ -1,0 +1,12 @@
+AHK FOR GOS BY SBEZRUK v1 AutoReport mock test
+PASS | strict duration 10-600
+PASS | start and immediate first report
+PASS | ten-minute tick and reschedule
+PASS | no double send
+PASS | safe replacement
+PASS | manual stop
+PASS | completion at duration
+PASS | CancelAllAutomation
+PASS | profile switch cancellation
+RESULT=PASS
+LIVE GAME: NOT RUN
