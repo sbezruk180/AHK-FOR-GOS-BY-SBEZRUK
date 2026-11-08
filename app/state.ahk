@@ -151,6 +151,7 @@ global ActiveID := 0
 global TargetNickname := ""
 global TargetIsMask := 0
 
+global ContextAssistantGameHwnd := 0
 global ContextAssistantAction := ""
 global ContextAssistantInput := ""
 global ContextAssistantVariant := ""

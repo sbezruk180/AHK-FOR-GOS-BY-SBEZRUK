@@ -607,22 +607,22 @@ ContextAssistant_IsEnabled,AHK_FOR_GOS_BY_SBEZRUK.ahk:10824,app/actions.ahk:118,
 ContextAssistant_GetMeta,AHK_FOR_GOS_BY_SBEZRUK.ahk:10843,app/actions.ahk:137,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 ContextAssistant_ValidateNumber,AHK_FOR_GOS_BY_SBEZRUK.ahk:10901,app/actions.ahk:195,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 ContextAssistant_ShowStatus,AHK_FOR_GOS_BY_SBEZRUK.ahk:10912,app/actions.ahk:206,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ContextAssistant_Close,AHK_FOR_GOS_BY_SBEZRUK.ahk:10919,app/actions.ahk:213,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ContextAssistant_ConfirmHotkeysActive,AHK_FOR_GOS_BY_SBEZRUK.ahk:10942,app/actions.ahk:236,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ContextAssistant_IDHotkeyContext,AHK_FOR_GOS_BY_SBEZRUK.ahk:10947,app/actions.ahk:241,Адаптирована,"Добавлены владение вводом/паузы клавиш, приватный ввод или пассивное открытие; регрессии и native стенд. GTA/OBS требуют отдельной проверки"
-ContextAssistant_GetOverlayPosition,AHK_FOR_GOS_BY_SBEZRUK.ahk:10955,app/actions.ahk:251,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ContextAssistant_MakeWindowPassive,AHK_FOR_GOS_BY_SBEZRUK.ahk:10972,app/actions.ahk:268,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ContextAssistant_ShowConfirmationOverlay,AHK_FOR_GOS_BY_SBEZRUK.ahk:10981,app/actions.ahk:277,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ContextAssistant_GetConfirmationPrompt,AHK_FOR_GOS_BY_SBEZRUK.ahk:11006,app/actions.ahk:302,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ContextAssistant_CloseGameChat,AHK_FOR_GOS_BY_SBEZRUK.ahk:11032,app/actions.ahk:328,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ContextAssistant_Request,AHK_FOR_GOS_BY_SBEZRUK.ahk:11045,app/actions.ahk:341,Адаптирована,"Добавлены владение вводом/паузы клавиш, приватный ввод или пассивное открытие; регрессии и native стенд. GTA/OBS требуют отдельной проверки"
-ContextAssistant_RestoreGame,AHK_FOR_GOS_BY_SBEZRUK.ahk:11150,app/actions.ahk:465,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ContextAssistant_ExpandCommand,AHK_FOR_GOS_BY_SBEZRUK.ahk:11157,app/actions.ahk:472,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ContextAssistant_BuildCommand,AHK_FOR_GOS_BY_SBEZRUK.ahk:11163,app/actions.ahk:478,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-BuildTrainCrashReport,AHK_FOR_GOS_BY_SBEZRUK.ahk:11176,app/actions.ahk:491,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-SuElapsedNotify,AHK_FOR_GOS_BY_SBEZRUK.ahk:11188,app/actions.ahk:503,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ContextAssistant_Execute,AHK_FOR_GOS_BY_SBEZRUK.ahk:11195,app/actions.ahk:510,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ContextAssistant_Submit,AHK_FOR_GOS_BY_SBEZRUK.ahk:11282,app/actions.ahk:597,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ContextAssistant_Close,AHK_FOR_GOS_BY_SBEZRUK.ahk:10919,app/actions.ahk:213,Адаптирована,Адаптирован путь пользовательских данных/отчётов
+ContextAssistant_ConfirmHotkeysActive,AHK_FOR_GOS_BY_SBEZRUK.ahk:10942,app/actions.ahk:237,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ContextAssistant_IDHotkeyContext,AHK_FOR_GOS_BY_SBEZRUK.ahk:10947,app/actions.ahk:242,Адаптирована,"Добавлены владение вводом/паузы клавиш, приватный ввод или пассивное открытие; регрессии и native стенд. GTA/OBS требуют отдельной проверки"
+ContextAssistant_GetOverlayPosition,AHK_FOR_GOS_BY_SBEZRUK.ahk:10955,app/actions.ahk:252,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ContextAssistant_MakeWindowPassive,AHK_FOR_GOS_BY_SBEZRUK.ahk:10972,app/actions.ahk:269,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ContextAssistant_ShowConfirmationOverlay,AHK_FOR_GOS_BY_SBEZRUK.ahk:10981,app/actions.ahk:278,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ContextAssistant_GetConfirmationPrompt,AHK_FOR_GOS_BY_SBEZRUK.ahk:11006,app/actions.ahk:303,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ContextAssistant_CloseGameChat,AHK_FOR_GOS_BY_SBEZRUK.ahk:11032,app/actions.ahk:329,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ContextAssistant_Request,AHK_FOR_GOS_BY_SBEZRUK.ahk:11045,app/actions.ahk:342,Адаптирована,"Добавлены владение вводом/паузы клавиш, приватный ввод или пассивное открытие; регрессии и native стенд. GTA/OBS требуют отдельной проверки"
+ContextAssistant_RestoreGame,AHK_FOR_GOS_BY_SBEZRUK.ahk:11150,app/actions.ahk:468,Адаптирована,Адаптирован путь пользовательских данных/отчётов
+ContextAssistant_ExpandCommand,AHK_FOR_GOS_BY_SBEZRUK.ahk:11157,app/actions.ahk:493,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ContextAssistant_BuildCommand,AHK_FOR_GOS_BY_SBEZRUK.ahk:11163,app/actions.ahk:499,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+BuildTrainCrashReport,AHK_FOR_GOS_BY_SBEZRUK.ahk:11176,app/actions.ahk:512,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+SuElapsedNotify,AHK_FOR_GOS_BY_SBEZRUK.ahk:11188,app/actions.ahk:524,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ContextAssistant_Execute,AHK_FOR_GOS_BY_SBEZRUK.ahk:11195,app/actions.ahk:531,Адаптирована,Адаптирован путь пользовательских данных/отчётов
+ContextAssistant_Submit,AHK_FOR_GOS_BY_SBEZRUK.ahk:11282,app/actions.ahk:618,Адаптирована,Адаптирован путь пользовательских данных/отчётов
 ResolveChatLogPath,AHK_FOR_GOS_BY_SBEZRUK.ahk:11315,app/chatlog.ahk:717,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 ChatLogReader_MaybeCleanup,AHK_FOR_GOS_BY_SBEZRUK.ahk:11335,app/chatlog.ahk:737,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 InitChatLogReader,AHK_FOR_GOS_BY_SBEZRUK.ahk:11341,app/chatlog.ahk:743,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
@@ -706,7 +706,7 @@ MDSFormationInitialText,AHK_FOR_GOS_BY_SBEZRUK.ahk:13246,app/core.ahk:411,Без
 MDSFormationCountdownText,AHK_FOR_GOS_BY_SBEZRUK.ahk:13251,app/core.ahk:416,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 MDSFormationFinishText,AHK_FOR_GOS_BY_SBEZRUK.ahk:13258,app/core.ahk:423,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 CloseEmptyChatAfterMDSInput,AHK_FOR_GOS_BY_SBEZRUK.ahk:13263,app/core.ahk:428,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ReadMDSFormationMinutes,AHK_FOR_GOS_BY_SBEZRUK.ahk:13274,app/actions.ahk:630,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ReadMDSFormationMinutes,AHK_FOR_GOS_BY_SBEZRUK.ahk:13274,app/actions.ahk:656,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 StopMDSFormationCountdown,AHK_FOR_GOS_BY_SBEZRUK.ahk:13292,app/automation.ahk:627,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 StartMDSFormationCountdown,AHK_FOR_GOS_BY_SBEZRUK.ahk:13308,app/automation.ahk:643,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 HandleMDSFormationTimerTick,AHK_FOR_GOS_BY_SBEZRUK.ahk:13323,app/automation.ahk:658,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
@@ -719,31 +719,31 @@ GameTextTriggerAllowed,AHK_FOR_GOS_BY_SBEZRUK.ahk:13419,app/bindings.ahk:376,А�
 RegisterTextTrigger,AHK_FOR_GOS_BY_SBEZRUK.ahk:13430,app/bindings.ahk:389,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 RegisterSearchModeTrigger,AHK_FOR_GOS_BY_SBEZRUK.ahk:13479,app/bindings.ahk:438,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 RegisterGpsInputTextTrigger,AHK_FOR_GOS_BY_SBEZRUK.ahk:13519,app/bindings.ahk:478,Адаптирована,Адаптирован путь пользовательских данных/отчётов
-ReadGpsInputNumber,AHK_FOR_GOS_BY_SBEZRUK.ahk:13594,app/actions.ahk:648,Адаптирована,Адаптирован путь пользовательских данных/отчётов
+ReadGpsInputNumber,AHK_FOR_GOS_BY_SBEZRUK.ahk:13594,app/actions.ahk:674,Адаптирована,Адаптирован путь пользовательских данных/отчётов
 EraseGpsTypedCommand,AHK_FOR_GOS_BY_SBEZRUK.ahk:13602,app/core.ahk:439,Адаптирована,Адаптирован путь пользовательских данных/отчётов
-RunGpsInputTrigger,AHK_FOR_GOS_BY_SBEZRUK.ahk:13616,app/actions.ahk:656,Адаптирована,Адаптирован путь пользовательских данных/отчётов
+RunGpsInputTrigger,AHK_FOR_GOS_BY_SBEZRUK.ahk:13616,app/actions.ahk:682,Адаптирована,Адаптирован путь пользовательских данных/отчётов
 WaitForChatQueueIdle,AHK_FOR_GOS_BY_SBEZRUK.ahk:13640,app/chat.ahk:259,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 SendRadialNumberTwice,AHK_FOR_GOS_BY_SBEZRUK.ahk:13660,app/chat.ahk:279,Адаптирована,"Добавлены владение вводом/паузы клавиш, приватный ввод или пассивное открытие; регрессии и native стенд. GTA/OBS требуют отдельной проверки"
 SendListSelection,AHK_FOR_GOS_BY_SBEZRUK.ahk:13674,app/chat.ahk:300,Адаптирована,"Добавлены владение вводом/паузы клавиш, приватный ввод или пассивное открытие; регрессии и native стенд. GTA/OBS требуют отдельной проверки"
 EnsureEnglishLayout,AHK_FOR_GOS_BY_SBEZRUK.ahk:13693,app/chat.ahk:323,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ChatWizard_Begin,AHK_FOR_GOS_BY_SBEZRUK.ahk:13697,app/actions.ahk:693,Адаптирована,Адаптирован путь пользовательских данных/отчётов
-ChatWizard_ReadToken,AHK_FOR_GOS_BY_SBEZRUK.ahk:13715,app/actions.ahk:717,Адаптирована,Адаптирован путь пользовательских данных/отчётов
-ChatWizard_NormalizeToken,AHK_FOR_GOS_BY_SBEZRUK.ahk:13724,app/actions.ahk:730,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ChatWizard_Finish,AHK_FOR_GOS_BY_SBEZRUK.ahk:13733,app/actions.ahk:739,Адаптирована,Адаптирован путь пользовательских данных/отчётов
-ChatWizard_Cancel,AHK_FOR_GOS_BY_SBEZRUK.ahk:13743,app/actions.ahk:753,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-VehicleLookup_ResolveCountry,AHK_FOR_GOS_BY_SBEZRUK.ahk:13750,app/actions.ahk:760,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-VehicleLookup_ResolveRegion,AHK_FOR_GOS_BY_SBEZRUK.ahk:13789,app/actions.ahk:799,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-VehicleLookup_NormalizePlate,AHK_FOR_GOS_BY_SBEZRUK.ahk:13804,app/actions.ahk:814,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-VehicleLookup_GetRegionListPosition,AHK_FOR_GOS_BY_SBEZRUK.ahk:13816,app/actions.ahk:826,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-VehicleLookup_RunWizard,AHK_FOR_GOS_BY_SBEZRUK.ahk:13828,app/actions.ahk:838,Адаптирована,Адаптирован путь пользовательских данных/отчётов
-VehicleLookup_Execute,AHK_FOR_GOS_BY_SBEZRUK.ahk:13877,app/actions.ahk:888,Адаптирована,Адаптирован путь пользовательских данных/отчётов
-WantedRemoval_GetReason,AHK_FOR_GOS_BY_SBEZRUK.ahk:13904,app/actions.ahk:904,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-WantedRemoval_GetDepartmentTag,AHK_FOR_GOS_BY_SBEZRUK.ahk:13918,app/actions.ahk:918,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-WantedRemoval_RunWizard,AHK_FOR_GOS_BY_SBEZRUK.ahk:13929,app/actions.ahk:929,Адаптирована,Адаптирован путь пользовательских данных/отчётов
-WantedRemoval_Execute,AHK_FOR_GOS_BY_SBEZRUK.ahk:13967,app/actions.ahk:968,Адаптирована,Адаптирован путь пользовательских данных/отчётов
-Fine_ParseArticle,AHK_FOR_GOS_BY_SBEZRUK.ahk:13995,app/actions.ahk:985,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-Fine_RunWizard,AHK_FOR_GOS_BY_SBEZRUK.ahk:14037,app/actions.ahk:1027,Адаптирована,Адаптирован путь пользовательских данных/отчётов
-Fine_ExecuteArticle,AHK_FOR_GOS_BY_SBEZRUK.ahk:14055,app/actions.ahk:1046,Адаптирована,Адаптирован путь пользовательских данных/отчётов
+ChatWizard_Begin,AHK_FOR_GOS_BY_SBEZRUK.ahk:13697,app/actions.ahk:719,Адаптирована,Адаптирован путь пользовательских данных/отчётов
+ChatWizard_ReadToken,AHK_FOR_GOS_BY_SBEZRUK.ahk:13715,app/actions.ahk:743,Адаптирована,Адаптирован путь пользовательских данных/отчётов
+ChatWizard_NormalizeToken,AHK_FOR_GOS_BY_SBEZRUK.ahk:13724,app/actions.ahk:756,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ChatWizard_Finish,AHK_FOR_GOS_BY_SBEZRUK.ahk:13733,app/actions.ahk:765,Адаптирована,Адаптирован путь пользовательских данных/отчётов
+ChatWizard_Cancel,AHK_FOR_GOS_BY_SBEZRUK.ahk:13743,app/actions.ahk:779,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+VehicleLookup_ResolveCountry,AHK_FOR_GOS_BY_SBEZRUK.ahk:13750,app/actions.ahk:786,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+VehicleLookup_ResolveRegion,AHK_FOR_GOS_BY_SBEZRUK.ahk:13789,app/actions.ahk:825,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+VehicleLookup_NormalizePlate,AHK_FOR_GOS_BY_SBEZRUK.ahk:13804,app/actions.ahk:840,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+VehicleLookup_GetRegionListPosition,AHK_FOR_GOS_BY_SBEZRUK.ahk:13816,app/actions.ahk:852,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+VehicleLookup_RunWizard,AHK_FOR_GOS_BY_SBEZRUK.ahk:13828,app/actions.ahk:864,Адаптирована,Адаптирован путь пользовательских данных/отчётов
+VehicleLookup_Execute,AHK_FOR_GOS_BY_SBEZRUK.ahk:13877,app/actions.ahk:914,Адаптирована,Адаптирован путь пользовательских данных/отчётов
+WantedRemoval_GetReason,AHK_FOR_GOS_BY_SBEZRUK.ahk:13904,app/actions.ahk:930,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+WantedRemoval_GetDepartmentTag,AHK_FOR_GOS_BY_SBEZRUK.ahk:13918,app/actions.ahk:944,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+WantedRemoval_RunWizard,AHK_FOR_GOS_BY_SBEZRUK.ahk:13929,app/actions.ahk:955,Адаптирована,Адаптирован путь пользовательских данных/отчётов
+WantedRemoval_Execute,AHK_FOR_GOS_BY_SBEZRUK.ahk:13967,app/actions.ahk:994,Адаптирована,Адаптирован путь пользовательских данных/отчётов
+Fine_ParseArticle,AHK_FOR_GOS_BY_SBEZRUK.ahk:13995,app/actions.ahk:1011,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+Fine_RunWizard,AHK_FOR_GOS_BY_SBEZRUK.ahk:14037,app/actions.ahk:1053,Адаптирована,Адаптирован путь пользовательских данных/отчётов
+Fine_ExecuteArticle,AHK_FOR_GOS_BY_SBEZRUK.ahk:14055,app/actions.ahk:1072,Адаптирована,Адаптирован путь пользовательских данных/отчётов
 BindMenuWarn,AHK_FOR_GOS_BY_SBEZRUK.ahk:14088,app/ui_overlays.ahk:115,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 BindMenuHotkeyBlockedWarn,AHK_FOR_GOS_BY_SBEZRUK.ahk:14096,app/ui_overlays.ahk:123,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 ClearBindMenuChatLine,AHK_FOR_GOS_BY_SBEZRUK.ahk:14106,app/chat.ahk:327,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
@@ -1023,20 +1023,20 @@ ExtractFirstNumber,AHK_FOR_GOS_BY_SBEZRUK.ahk:22077,app/core.ahk:589,Без из
 GetActiveChatText,AHK_FOR_GOS_BY_SBEZRUK.ahk:22084,app/chat.ahk:572,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 LawSearch_CaptureAndCancelChat,AHK_FOR_GOS_BY_SBEZRUK.ahk:22089,app/ui_documents.ahk:203,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 CaptureChatClipboard,AHK_FOR_GOS_BY_SBEZRUK.ahk:22093,app/chat.ahk:577,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-MatchGpsEnterCommand,AHK_FOR_GOS_BY_SBEZRUK.ahk:22148,app/actions.ahk:1073,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-TryHandleGpsEnterCommand,AHK_FOR_GOS_BY_SBEZRUK.ahk:22173,app/actions.ahk:1098,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-SendGpsDialogDown,AHK_FOR_GOS_BY_SBEZRUK.ahk:22211,app/actions.ahk:1136,Адаптирована,Адаптирован путь пользовательских данных/отчётов
-RunGpsDialogAction,AHK_FOR_GOS_BY_SBEZRUK.ahk:22222,app/actions.ahk:1149,Адаптирована,"Добавлены владение вводом/паузы клавиш, приватный ввод или пассивное открытие; регрессии и native стенд. GTA/OBS требуют отдельной проверки"
+MatchGpsEnterCommand,AHK_FOR_GOS_BY_SBEZRUK.ahk:22148,app/actions.ahk:1099,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+TryHandleGpsEnterCommand,AHK_FOR_GOS_BY_SBEZRUK.ahk:22173,app/actions.ahk:1124,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+SendGpsDialogDown,AHK_FOR_GOS_BY_SBEZRUK.ahk:22211,app/actions.ahk:1162,Адаптирована,Адаптирован путь пользовательских данных/отчётов
+RunGpsDialogAction,AHK_FOR_GOS_BY_SBEZRUK.ahk:22222,app/actions.ahk:1175,Адаптирована,"Добавлены владение вводом/паузы клавиш, приватный ввод или пассивное открытие; регрессии и native стенд. GTA/OBS требуют отдельной проверки"
 ServiceCodes_GetText,AHK_FOR_GOS_BY_SBEZRUK.ahk:22255,app/ui_documents.ahk:207,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 ServiceCodes_Show,AHK_FOR_GOS_BY_SBEZRUK.ahk:22298,app/ui_documents.ahk:250,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-InputAction_DoEnterID,AHK_FOR_GOS_BY_SBEZRUK.ahk:22429,app/actions.ahk:1153,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-Action_DoInCar,AHK_FOR_GOS_BY_SBEZRUK.ahk:22562,app/actions.ahk:1171,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-Action_DoDoc,AHK_FOR_GOS_BY_SBEZRUK.ahk:22584,app/actions.ahk:1178,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-Action_DoSearch,AHK_FOR_GOS_BY_SBEZRUK.ahk:22595,app/actions.ahk:1185,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-InputAction_DoSOS,AHK_FOR_GOS_BY_SBEZRUK.ahk:22607,app/actions.ahk:1193,Адаптирована,Адаптирован путь пользовательских данных/отчётов
-InputAction_DoWantedList,AHK_FOR_GOS_BY_SBEZRUK.ahk:22631,app/actions.ahk:1202,Адаптирована,Адаптирован путь пользовательских данных/отчётов
-Action_DoArrest,AHK_FOR_GOS_BY_SBEZRUK.ahk:22861,app/actions.ahk:1219,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ReadAutoReportMinutes,AHK_FOR_GOS_BY_SBEZRUK.ahk:22925,app/actions.ahk:1227,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+InputAction_DoEnterID,AHK_FOR_GOS_BY_SBEZRUK.ahk:22429,app/actions.ahk:1179,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+Action_DoInCar,AHK_FOR_GOS_BY_SBEZRUK.ahk:22562,app/actions.ahk:1197,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+Action_DoDoc,AHK_FOR_GOS_BY_SBEZRUK.ahk:22584,app/actions.ahk:1204,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+Action_DoSearch,AHK_FOR_GOS_BY_SBEZRUK.ahk:22595,app/actions.ahk:1211,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+InputAction_DoSOS,AHK_FOR_GOS_BY_SBEZRUK.ahk:22607,app/actions.ahk:1219,Адаптирована,Адаптирован путь пользовательских данных/отчётов
+InputAction_DoWantedList,AHK_FOR_GOS_BY_SBEZRUK.ahk:22631,app/actions.ahk:1228,Адаптирована,Адаптирован путь пользовательских данных/отчётов
+Action_DoArrest,AHK_FOR_GOS_BY_SBEZRUK.ahk:22861,app/actions.ahk:1245,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ReadAutoReportMinutes,AHK_FOR_GOS_BY_SBEZRUK.ahk:22925,app/actions.ahk:1253,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 ToggleLawDoc,AHK_FOR_GOS_BY_SBEZRUK.ahk:22997,app/ui_documents.ahk:268,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 LawDoc_PrefixById,AHK_FOR_GOS_BY_SBEZRUK.ahk:23027,app/ui_documents.ahk:298,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 ToggleLawDocFromChat,AHK_FOR_GOS_BY_SBEZRUK.ahk:23036,app/ui_documents.ahk:307,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария

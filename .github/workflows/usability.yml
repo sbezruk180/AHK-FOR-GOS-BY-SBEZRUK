@@ -1,7 +1,7 @@
 name: AHK usability build and native verification
 on:
   push:
-    branches: [ahk-usability-20261106]
+    branches: [ahk-usability-20261106, fix-context-gps-20261108]
   workflow_dispatch:
 permissions:
   contents: read
@@ -142,12 +142,13 @@ jobs:
           NATIVE_RESULT: ${{ needs.native.result }}
           INSTALLER_RESULT: ${{ needs.installer.result }}
           RUN_ID: ${{ github.run_id }}
+          RESULT_GROUP: ${{ github.ref_name == 'fix-context-gps-20261108' && 'context-gps-20261108' || 'usability-20261106' }}
         run: |
           python tools/archive_usability.py
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git switch -c ahk-usability-build-${{ github.run_id }}
-          git add -f docs/desktop/reports/usability-20261106 downloads/usability-20261106
+          git add -f "docs/desktop/reports/$RESULT_GROUP" "downloads/$RESULT_GROUP"
           git add release CHECKSUMS.sha256
           python tools/update_checksums.py
           git add CHECKSUMS.sha256

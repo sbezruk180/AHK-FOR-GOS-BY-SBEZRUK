@@ -212,7 +212,7 @@ ContextAssistant_ShowStatus(statusText) {
 
 ContextAssistant_Close(clearState := 1) {
     global ContextAssistantAction, ContextAssistantInput, ContextAssistantVariant, ContextAssistantTargetName
-    global ContextAssistantStatus, ContextAssistantMode, hContextAssistantWnd, AutoTargetPendingKey
+    global ContextAssistantStatus, ContextAssistantMode, hContextAssistantWnd, AutoTargetPendingKey, ContextAssistantGameHwnd
     previousCritical := A_IsCritical
     Critical, On
     try {
@@ -227,6 +227,7 @@ ContextAssistant_Close(clearState := 1) {
             ContextAssistantTargetName := ""
             ContextAssistantStatus := ""
             ContextAssistantMode := ""
+            ContextAssistantGameHwnd := 0
         }
     } finally {
         Critical, %previousCritical%
@@ -343,7 +344,7 @@ ContextAssistant_Request(actionName, presetValue := "", presetVariant := "", tar
         return false
     global ContextAssistantAction, ContextAssistantInput, ContextAssistantVariant, ContextAssistantTargetName
     global ContextAssistantStatus, ContextAssistantMode, hContextAssistantWnd, UserID, MockMode, UIRoundness, TargetIsMask
-    global ContextNotificationMode, ContextNotificationTimeoutSec, Bind_ConfirmID, Bind_RejectID
+    global ContextNotificationMode, ContextNotificationTimeoutSec, Bind_ConfirmID, Bind_RejectID, ContextAssistantGameHwnd
     inputEpoch := AutomationEpoch
 
     if !ContextAssistant_IsEnabled(actionName)
@@ -369,7 +370,9 @@ ContextAssistant_Request(actionName, presetValue := "", presetVariant := "", tar
         presetValue := "__MASK__:" . presetValue
     hasPresetValue := (presetValue != "")
 
+    gameHwnd := (MockMode = "On") ? 0 : WinExist("A")
     ContextAssistant_Close()
+    ContextAssistantGameHwnd := gameHwnd
     ContextAssistantAction := actionName
     ContextAssistantInput := presetValue
     ContextAssistantVariant := presetVariant
@@ -415,7 +418,7 @@ ContextAssistant_Request(actionName, presetValue := "", presetVariant := "", tar
                     return SafeWarn("Выберите 1 (тазер) или 2 (дубинка).")
                 presetVariant := weapon = "2" ? "baton" : "taser"
             }
-            return ContextAssistant_Execute(actionName, value, presetVariant, targetName)
+            return ContextAssistant_Execute(actionName, value, presetVariant, targetName, gameHwnd)
         } finally {
             ContextAssistant_Close()
         }
@@ -462,11 +465,29 @@ ContextAssistant_Request(actionName, presetValue := "", presetVariant := "", tar
     return true
 }
 
-ContextAssistant_RestoreGame() {
+ContextAssistant_RestoreGame(ownerHwnd := 0) {
     global MockMode
     if (MockMode = "On")
         return true
-    return GameLocator_Activate(0.7)
+    ; A passive confirmation never took focus. Do not call WinActivate again:
+    ; activation by PID may select another game window during GUI teardown.
+    if GameLocator_IsActive()
+        return !ownerHwnd || WinActive("ahk_id " . ownerHwnd)
+    if (!ownerHwnd || !DllCall("IsWindow", "Ptr", ownerHwnd))
+        return false
+    WinGet, ownerPID, PID, ahk_id %ownerHwnd%
+    if (!ownerPID || ownerPID != GameLocator_GetPID())
+        return false
+    ; Only return from our own input window, never steal focus after Alt+Tab.
+    foreground := DllCall("GetForegroundWindow", "Ptr")
+    if (foreground) {
+        WinGet, foregroundPID, PID, ahk_id %foreground%
+        if (foregroundPID != DllCall("GetCurrentProcessId", "UInt"))
+            return false
+    }
+    WinActivate, ahk_id %ownerHwnd%
+    WinWaitActive, ahk_id %ownerHwnd%,, 0.7
+    return !ErrorLevel && GameLocator_IsActive() && WinActive("ahk_id " . ownerHwnd)
 }
 
 ContextAssistant_ExpandCommand(templateText, idValue) {
@@ -507,7 +528,7 @@ SuElapsedNotify(payload := "") {
     return true
 }
 
-ContextAssistant_Execute(actionName, rawValue, variant := "", targetName := "") {
+ContextAssistant_Execute(actionName, rawValue, variant := "", targetName := "", ownerHwnd := 0) {
     global MockMode
 
     rawValue := Trim(rawValue)
@@ -538,7 +559,7 @@ ContextAssistant_Execute(actionName, rawValue, variant := "", targetName := "") 
             LogError("ContextAssistant.HouseAlarm", "Mock GPS house: " . value, "INFO")
             return true
         }
-        if !ContextAssistant_RestoreGame()
+        if !ContextAssistant_RestoreGame(ownerHwnd)
             return SafeWarn("Не удалось вернуть фокус в игру для GPS.")
         return RunGpsDialogAction("Сигнализация дома", 15, value)
     }
@@ -548,7 +569,7 @@ ContextAssistant_Execute(actionName, rawValue, variant := "", targetName := "") 
         commandText := BuildTrainCrashReport(value)
         if (commandText = "")
             return false
-        if !ContextAssistant_RestoreGame()
+        if !ContextAssistant_RestoreGame(ownerHwnd)
             return SafeWarn("Не удалось вернуть фокус в игру.")
         return ChatQueue_Enqueue(commandText, "TrainCrash")
     }
@@ -578,7 +599,7 @@ ContextAssistant_Execute(actionName, rawValue, variant := "", targetName := "") 
     if (commandText = "")
         return false
 
-    if !ContextAssistant_RestoreGame()
+    if !ContextAssistant_RestoreGame(ownerHwnd)
         return SafeWarn("Не удалось вернуть фокус в игру.")
 
     requireCloseRange := (MockMode != "On" && (actionName = "Stun" || actionName = "PDPCuff"))
@@ -595,11 +616,16 @@ ContextAssistant_Execute(actionName, rawValue, variant := "", targetName := "") 
 }
 
 ContextAssistant_Submit(variant := "") {
-    global ContextAssistantAction, ContextAssistantInput, ContextAssistantVariant, ContextAssistantTargetName, ContextAssistantMode
+    global ContextAssistantAction, ContextAssistantInput, ContextAssistantVariant, ContextAssistantTargetName, ContextAssistantMode, ContextAssistantGameHwnd
 
     previousCritical := A_IsCritical
     Critical, On
     actionName := ContextAssistantAction
+    ownerHwnd := ContextAssistantGameHwnd
+    if (actionName = "" || (ContextAssistantMode != "confirm" && ContextAssistantMode != "input")) {
+        Critical, %previousCritical%
+        return false
+    }
     rawValue := ContextAssistantInput
     targetName := ContextAssistantTargetName
     confirming := ContextAssistantMode = "confirm"
@@ -609,7 +635,7 @@ ContextAssistant_Submit(variant := "") {
     }
     Critical, %previousCritical%
     if (confirming)
-        return ContextAssistant_Execute(actionName, rawValue, selectedVariant, targetName)
+        return ContextAssistant_Execute(actionName, rawValue, selectedVariant, targetName, ownerHwnd)
 
     Gui, 42:Submit, NoHide
     rawValue := ContextAssistantInput
@@ -624,7 +650,7 @@ ContextAssistant_Submit(variant := "") {
     }
 
     ContextAssistant_Close()
-    return ContextAssistant_Execute(actionName, normalizedValue, variant, targetName)
+    return ContextAssistant_Execute(actionName, normalizedValue, variant, targetName, ownerHwnd)
 }
 
 ReadMDSFormationMinutes(inputEpoch := 0) {
