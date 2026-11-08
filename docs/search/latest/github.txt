@@ -1,12 +1,11 @@
 Skip to content
 Navigation Menu
-Platform
-Solutions
+Products
+Developers
+Businesses
 Resources
-Open Source
-Enterprise
 Pricing
-Search
+ahk for gos
 /
 Sign in
 Sign up
@@ -21,18 +20,18 @@ Repositories
  (2)
 results
 Issues
-9
- (9)
+10
+ (10)
 results
 Pull requests
-3
- (3)
+5
+ (5)
+results
+AI resources
+207
+ (207)
 results
 Discussions
-0
- (0)
-results
-Users
 0
  (0)
 results
@@ -52,7 +51,7 @@ Public
 Private
 Advanced search
 2 results
- (88 ms)
+ (64 ms)
 2 results
 Sort by: Best match
 ValekusVachpekus/AHK-for-GOS
@@ -74,7 +73,7 @@ AutoHotkey
 ·
 0
 ·
-Updated 50 seconds ago
+Updated 25 seconds ago
 Star
 Sponsor open source projects you depend on
 Contributors are working behind the scenes to make open source better for everyone—give them the help and recognition they deserve.

@@ -3,11 +3,11 @@
     "engine": "google",
     "query": "ахк для амазинга",
     "requested_url": "https://www.google.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B0%D0%BC%D0%B0%D0%B7%D0%B8%D0%BD%D0%B3%D0%B0&hl=ru",
-    "checked_at": "2026-10-26T21:57:54.574393+00:00",
+    "checked_at": "2026-11-08T07:19:07.953498+00:00",
     "visible_result_count": 0,
     "status": 200,
-    "final_url": "https://www.google.com/sorry/index?continue=https://www.google.com/search%3Fq%3D%25D0%25B0%25D1%2585%25D0%25BA%2B%25D0%25B4%25D0%25BB%25D1%258F%2B%25D0%25B0%25D0%25BC%25D0%25B0%25D0%25B7%25D0%25B8%25D0%25BD%25D0%25B3%25D0%25B0%26hl%3Dru%26sei%3D4szfap-RK4K6mtkPtq3ouAU&hl=ru&q=EgSCg-9zGOOZ_9YGIjAef92mQAz8kQ_N9Jp907Vh-1noZUaPJlDtZfM3-pQfDlXIr7Q6qPKwrFc4s1KBn_gyAVJaAUNg4Ifc4Iifg_L8AQ",
-    "title": "https://www.google.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B0%D0%BC%D0%B0%D0%B7%D0%B8%D0%BD%D0%B3%D0%B0&hl=ru&sei=4szfap-RK4K6mtkPtq3ouAU",
+    "final_url": "https://www.google.com/sorry/index?continue=https://www.google.com/search%3Fq%3D%25D0%25B0%25D1%2585%25D0%25BA%2B%25D0%25B4%25D0%25BB%25D1%258F%2B%25D0%25B0%25D0%25BC%25D0%25B0%25D0%25B7%25D0%25B8%25D0%25BD%25D0%25B3%25D0%25B0%26hl%3Dru%26sei%3DbCLwasmjCcDc5NoPzc7q8QU&hl=ru&q=EgQw09UlGOzEwNcGIjCBXLJUOcnNjEE16eGJBzRM223QTDwzMhAjbINjBg_PrsOcW81PlO9wdylenHfppx8yAVJaAUNgkorfp7ugzPrKAQ",
+    "title": "https://www.google.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B0%D0%BC%D0%B0%D0%B7%D0%B8%D0%BD%D0%B3%D0%B0&hl=ru&sei=bCLwasmjCcDc5NoPzc7q8QU",
     "results": [],
     "repository_results": [],
     "verdict": "blocked_or_challenged"
@@ -16,23 +16,94 @@
     "engine": "bing",
     "query": "ахк для амазинга",
     "requested_url": "https://www.bing.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B0%D0%BC%D0%B0%D0%B7%D0%B8%D0%BD%D0%B3%D0%B0",
-    "checked_at": "2026-10-26T21:57:54.605536+00:00",
-    "visible_result_count": 0,
+    "checked_at": "2026-11-08T07:19:07.968387+00:00",
+    "visible_result_count": 14,
     "status": 200,
-    "final_url": "https://www.bing.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B0%D0%BC%D0%B0%D0%B7%D0%B8%D0%BD%D0%B3%D0%B0&rdr=1&rdrig=0F51955EDA7C4972A07BDE6701F3146C",
+    "final_url": "https://www.bing.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B0%D0%BC%D0%B0%D0%B7%D0%B8%D0%BD%D0%B3%D0%B0&rdr=1&rdrig=3A227FF7B3AF45A3B3CED887695E36E7",
     "title": "ахк для амазинга - Поиск",
-    "results": [],
+    "results": [
+      {
+        "title": "Resolve a DOI Name",
+        "url": "https://www.bing.com/ck/a?!&&p=de9aa3dab45d740d173782017ea55c1345524cae75d93f347ba45533d64f4626JmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0351ff0c-1f7f-694b-149b-e7071e9668eb&u=a1aHR0cHM6Ly9keC5kb2kub3JnLw&ntb=1",
+        "target_url": "https://dx.doi.org/"
+      },
+      {
+        "title": "DeForm - 2025 Company Profile & Team - Tracxn",
+        "url": "https://www.bing.com/ck/a?!&&p=06daa2f4e80c423916ac50d2a345a24ad6314d652dd072cbe6075b3b69ba0712JmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0351ff0c-1f7f-694b-149b-e7071e9668eb&u=a1aHR0cHM6Ly90cmFjeG4uY29tL2QvY29tcGFuaWVzL2RlZm9ybS9fX1Q5cUxiTUJCMXZpa2tIc2UxSG9WVXUwWXVRZUh5bzdyOGsyNHh0Vm5vQ00&ntb=1",
+        "target_url": "https://tracxn.com/d/companies/deform/__T9qLbMBB1vikkHse1HoVUu0YuQeHyo7r8k24xtVnoCM"
+      },
+      {
+        "title": "CoinDesk: Bitcoin, Ethereum, XRP, Crypto News and Price Data",
+        "url": "https://www.bing.com/ck/a?!&&p=847ce1b9ca8a1ad459262630181dd003cac3cc6ec688dce640ad08b65404f972JmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0351ff0c-1f7f-694b-149b-e7071e9668eb&u=a1aHR0cHM6Ly93d3cuY29pbmRlc2suY29tLw&ntb=1",
+        "target_url": "https://www.coindesk.com/"
+      },
+      {
+        "title": "DEFORM — смотреть онлайн все 219 видео в 2026 | VK Видео",
+        "url": "https://www.bing.com/ck/a?!&&p=34522f3c86f6d4b3008618e91ef514f2ba9c59abee6708cbdfac9acf346d7aecJmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0351ff0c-1f7f-694b-149b-e7071e9668eb&u=a1aHR0cHM6Ly92a3ZpZGVvLnJ1L0BkZWZvcm1fYmFuZA&ntb=1",
+        "target_url": "https://vkvideo.ru/@deform_band"
+      },
+      {
+        "title": "How Bored Ape Yacht Club Broke Ethereum - CNET",
+        "url": "https://www.bing.com/ck/a?!&&p=eef8a2ef0acd8a32280eaffeb76a5454aed322b66e36ba4ccb55990bc107a37fJmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0351ff0c-1f7f-694b-149b-e7071e9668eb&u=a1aHR0cHM6Ly93d3cuY25ldC5jb20vcGVyc29uYWwtZmluYW5jZS9jcnlwdG9jdXJyZW5jeS9ob3ctYm9yZWQtYXBlLXlhY2h0LWNsdWItYnJva2UtZXRoZXJldW0v&ntb=1",
+        "target_url": "https://www.cnet.com/personal-finance/cryptocurrency/how-bored-ape-yacht-club-broke-ethereum/"
+      },
+      {
+        "title": "DEFORM News – Scientific Forming Technologies Corporation",
+        "url": "https://www.bing.com/ck/a?!&&p=61d27811a5d5223aa8dac54eda832acf3f3e6f434793b4f1ef4f2ef6ede97d76JmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0351ff0c-1f7f-694b-149b-e7071e9668eb&u=a1aHR0cHM6Ly93d3cuZGVmb3JtLmNvbS9jYXRlZ29yeS9uZXdzL2RlZm9ybS1uZXdzLw&ntb=1",
+        "target_url": "https://www.deform.com/category/news/deform-news/"
+      },
+      {
+        "title": "The Inside Story of the CryptoKitties Congestion Crisis",
+        "url": "https://www.bing.com/ck/a?!&&p=0a4fccf23dab8446bcf72caa3dbe65fa2e89f85d445547ee118b8248e4fb44f9JmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0351ff0c-1f7f-694b-149b-e7071e9668eb&u=a1aHR0cHM6Ly9jb25zZW5zeXMuY29tL2Jsb2cvdGhlLWluc2lkZS1zdG9yeS1vZi10aGUtY3J5cHRva2l0dGllcy1jb25nZXN0aW9uLWNyaXNpcw&ntb=1",
+        "target_url": "https://consensys.com/blog/the-inside-story-of-the-cryptokitties-congestion-crisis"
+      },
+      {
+        "title": "Crypto Dictionary | Definition & Meaning of 500+ terms",
+        "url": "https://www.bing.com/ck/a?!&&p=1d819866f18b95ceca3e10bfac817f578e6b69d7ba2d36c2ff8bd06e27e4d1f5JmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0351ff0c-1f7f-694b-149b-e7071e9668eb&u=a1aHR0cHM6Ly9ibG9ja3Nwb3QuaW8vY3J5cHRvLWRpY3Rpb25hcnkv&ntb=1",
+        "target_url": "https://blockspot.io/crypto-dictionary/"
+      },
+      {
+        "title": "prompts.chat - Free AI Prompts for ChatGPT, Claude & Gemini",
+        "url": "https://www.bing.com/ck/a?!&&p=9fa09cbd0aff6054d70105eea704119641d8819b356d21bea0471984f8e39974JmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0351ff0c-1f7f-694b-149b-e7071e9668eb&u=a1aHR0cHM6Ly9wcm9tcHRzLmNoYXQv&ntb=1",
+        "target_url": "https://prompts.chat/"
+      },
+      {
+        "title": "Senior Fullstack Engineer (Contract) at DeForm",
+        "url": "https://www.bing.com/ck/a?!&&p=0b7fbabc6e5f772eb2dda71f535ad7277f095c308986ba2d898329a6f6cae830JmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0351ff0c-1f7f-694b-149b-e7071e9668eb&u=a1aHR0cHM6Ly9jcnlwdG9jdXJyZW5jeWpvYnMuY28vZW5naW5lZXJpbmcvZGVmb3JtLXNlbmlvci1mdWxsc3RhY2stZW5naW5lZXItY29udHJhY3Qv&ntb=1",
+        "target_url": "https://cryptocurrencyjobs.co/engineering/deform-senior-fullstack-engineer-contract/"
+      },
+      {
+        "title": "deform verb - Definition, pictures, pronunciation and usage notes ...",
+        "url": "https://www.bing.com/ck/a?!&&p=74d6b89e97e2a1280bb0b41f482d4085aec5f93942b04bb8ed655e56785343d0JmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0351ff0c-1f7f-694b-149b-e7071e9668eb&u=a1aHR0cHM6Ly93d3cub3hmb3JkbGVhcm5lcnNkaWN0aW9uYXJpZXMuY29tL2RlZmluaXRpb24vZW5nbGlzaC9kZWZvcm0&ntb=1",
+        "target_url": "https://www.oxfordlearnersdictionaries.com/definition/english/deform"
+      },
+      {
+        "title": "Modules – Scientific Forming Technologies Corporation",
+        "url": "https://www.bing.com/ck/a?!&&p=e95cf80911d1995cbd8be85cb8e4d5f7aa7630febfe15bc1c02ac9dc7ba0a492JmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0351ff0c-1f7f-694b-149b-e7071e9668eb&u=a1aHR0cHM6Ly93d3cuZGVmb3JtLmNvbS9wcm9kdWN0cy9kZWZvcm0tbW9kdWxlcy8&ntb=1",
+        "target_url": "https://www.deform.com/products/deform-modules/"
+      },
+      {
+        "title": "Gates of Vienna",
+        "url": "https://www.bing.com/ck/a?!&&p=90d4b390ccbc5fe7720641db7f7f6a68bc4a8f74124e1a8d91c3ea295a7b5da6JmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0351ff0c-1f7f-694b-149b-e7071e9668eb&u=a1aHR0cHM6Ly9nYXRlc29mdmllbm5hLmJsb2dzcG90LmNvbS8&ntb=1",
+        "target_url": "https://gatesofvienna.blogspot.com/"
+      },
+      {
+        "title": "LSTM_notebook - Kaggle",
+        "url": "https://www.bing.com/ck/a?!&&p=347869db062437ea52d2064b6774b8683ec9b6dbe47011e93643a7a17a10dff3JmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0351ff0c-1f7f-694b-149b-e7071e9668eb&u=a1aHR0cHM6Ly93d3cua2FnZ2xlLmNvbS9jb2RlL21kdW1haXIxL2xzdG0tbm90ZWJvb2s&ntb=1",
+        "target_url": "https://www.kaggle.com/code/mdumair1/lstm-notebook"
+      }
+    ],
     "repository_results": [],
-    "verdict": "no_results_extracted"
+    "verdict": "not_found_in_visible_results"
   },
   {
     "engine": "yandex",
     "query": "ахк для амазинга",
     "requested_url": "https://yandex.ru/search/?text=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B0%D0%BC%D0%B0%D0%B7%D0%B8%D0%BD%D0%B3%D0%B0",
-    "checked_at": "2026-10-26T21:57:54.610151+00:00",
+    "checked_at": "2026-11-08T07:19:07.994961+00:00",
     "visible_result_count": 0,
     "status": 200,
-    "final_url": "https://yandex.ru/showcaptcha?cc=1&form-fb-hint=2.1&mt=249A5EA3B82D95D07ABF70FC4F521C33B952718CAABA02B26380FF26AC2D2AF576EB1DEC32A3347C8A60D0D6E1316BDB56F739C6372B90B945D4B9D126E771E9950855F018C8A68F6DCBF0122FA86C442859092BB48EB1CF8EB89306799E9AB1BF0BB3A2521F0AC62B7BF618980B5F6371E00D501DA6ABF28E4E44D8E7DD25E5C372B44BEB0AF99711C6&retpath=aHR0cHM6Ly95YW5kZXgucnUvc2VhcmNoP3RleHQ9JUQwJUIwJUQxJTg1JUQwJUJBKyVEMCVCNCVEMCVCQiVEMSU4RislRDAlQjAlRDAlQkMlRDAlQjAlRDAlQjclRDAlQjglRDAlQkQlRDAlQjMlRDAlQjA%2C_1f3b136b32b3574650f4afc1338709e9&t=2%252F1793051875%252F6887aa1869b86125793b4d5f035e8c3e&u=9649210002732378511&s=aea13231b4721e8a789f7f4d3973c898",
+    "final_url": "https://yandex.ru/showcaptcha?cc=1&form-fb-hint=2.1.368d051eb2d1b4db4251a7b641e432c6fd41947093e690d333f7527e6d1f65553e7fb3a831a71adcd6c45410d2c119b78c5f20390a9ecf64da32fbe75877558e90408a133dd6cf&mt=708CEFC0218B6403D4FF62A41A2575375442CEE05745BF3A6CC6DE62F22BB212A8155F5DDCC026A5D4673C51FC4A3C87E0303DCDC14B838D103B2BE5CBF72404745E58F58064F6EEAD9B289C610D92CCACC9E9C21278E2486587FD92FA1454CB5E2D34191F219B148F451B576088F4A410006A28BA1B036B5270DFE2B02A661350625C92F5871298788F970DF01D1923CCA0CEDB671AF23BF745F7CC04C1D80B2FFD68BFE2&retpath=aHR0cHM6Ly95YW5kZXgucnUvc2VhcmNoP3RleHQ9JUQwJUIwJUQxJTg1JUQwJUJBKyVEMCVCNCVEMCVCQiVEMSU4RislRDAlQjAlRDAlQkMlRDAlQjAlRDAlQjclRDAlQjglRDAlQkQlRDAlQjMlRDAlQjA%2C_3ef2f683176355238309b257ef167b0d&t=2%252F1794122348%252Ff724155bb2f43ea9e2c96b428a1fee3c&u=9721048263399313059&s=79cb3b846512e4dec653b48fcf4cf286",
     "title": "Вы не робот?",
     "results": [],
     "repository_results": [],
@@ -42,7 +113,7 @@
     "engine": "duckduckgo",
     "query": "ахк для амазинга",
     "requested_url": "https://html.duckduckgo.com/html/?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B0%D0%BC%D0%B0%D0%B7%D0%B8%D0%BD%D0%B3%D0%B0",
-    "checked_at": "2026-10-26T21:57:54.623248+00:00",
+    "checked_at": "2026-11-08T07:19:08.020290+00:00",
     "visible_result_count": 0,
     "status": 202,
     "final_url": "https://html.duckduckgo.com/html/?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B0%D0%BC%D0%B0%D0%B7%D0%B8%D0%BD%D0%B3%D0%B0",
@@ -55,7 +126,7 @@
     "engine": "github",
     "query": "ахк для амазинга",
     "requested_url": "https://github.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B0%D0%BC%D0%B0%D0%B7%D0%B8%D0%BD%D0%B3%D0%B0&type=repositories",
-    "checked_at": "2026-10-26T21:57:54.650475+00:00",
+    "checked_at": "2026-11-08T07:19:08.021767+00:00",
     "visible_result_count": 0,
     "status": 200,
     "final_url": "https://github.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B0%D0%BC%D0%B0%D0%B7%D0%B8%D0%BD%D0%B3%D0%B0&type=repositories",
