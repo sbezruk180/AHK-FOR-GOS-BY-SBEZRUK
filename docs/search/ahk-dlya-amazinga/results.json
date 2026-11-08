@@ -3,11 +3,11 @@
     "engine": "google",
     "query": "ахк для амазинга",
     "requested_url": "https://www.google.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B0%D0%BC%D0%B0%D0%B7%D0%B8%D0%BD%D0%B3%D0%B0&hl=ru",
-    "checked_at": "2026-11-08T07:19:07.953498+00:00",
+    "checked_at": "2026-11-08T15:29:04.144854+00:00",
     "visible_result_count": 0,
     "status": 200,
-    "final_url": "https://www.google.com/sorry/index?continue=https://www.google.com/search%3Fq%3D%25D0%25B0%25D1%2585%25D0%25BA%2B%25D0%25B4%25D0%25BB%25D1%258F%2B%25D0%25B0%25D0%25BC%25D0%25B0%25D0%25B7%25D0%25B8%25D0%25BD%25D0%25B3%25D0%25B0%26hl%3Dru%26sei%3DbCLwasmjCcDc5NoPzc7q8QU&hl=ru&q=EgQw09UlGOzEwNcGIjCBXLJUOcnNjEE16eGJBzRM223QTDwzMhAjbINjBg_PrsOcW81PlO9wdylenHfppx8yAVJaAUNgkorfp7ugzPrKAQ",
-    "title": "https://www.google.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B0%D0%BC%D0%B0%D0%B7%D0%B8%D0%BD%D0%B3%D0%B0&hl=ru&sei=bCLwasmjCcDc5NoPzc7q8QU",
+    "final_url": "https://www.google.com/sorry/index?continue=https://www.google.com/search%3Fq%3D%25D0%25B0%25D1%2585%25D0%25BA%2B%25D0%25B4%25D0%25BB%25D1%258F%2B%25D0%25B0%25D0%25BC%25D0%25B0%25D0%25B7%25D0%25B8%25D0%25BD%25D0%25B3%25D0%25B0%26hl%3Dru%26sei%3DQJXwatH-FZaIwbkPm7iRgAU&hl=ru&q=EgQzOZObGMCqwtcGIjAQZM_7BVJy9lBEjuoyCOMalR09JEkcoVgKmio2pUkAxWf0kt-U77vQCSErIFH1WIkyAVJaAUNg7pfLhIWK7fvJAQ",
+    "title": "https://www.google.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B0%D0%BC%D0%B0%D0%B7%D0%B8%D0%BD%D0%B3%D0%B0&hl=ru&sei=QJXwatH-FZaIwbkPm7iRgAU",
     "results": [],
     "repository_results": [],
     "verdict": "blocked_or_challenged"
@@ -16,94 +16,80 @@
     "engine": "bing",
     "query": "ахк для амазинга",
     "requested_url": "https://www.bing.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B0%D0%BC%D0%B0%D0%B7%D0%B8%D0%BD%D0%B3%D0%B0",
-    "checked_at": "2026-11-08T07:19:07.968387+00:00",
-    "visible_result_count": 14,
+    "checked_at": "2026-11-08T15:29:04.167098+00:00",
+    "visible_result_count": 10,
     "status": 200,
-    "final_url": "https://www.bing.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B0%D0%BC%D0%B0%D0%B7%D0%B8%D0%BD%D0%B3%D0%B0&rdr=1&rdrig=3A227FF7B3AF45A3B3CED887695E36E7",
+    "final_url": "https://www.bing.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B0%D0%BC%D0%B0%D0%B7%D0%B8%D0%BD%D0%B3%D0%B0&rdr=1&rdrig=357E839F12C24693AA27C44761991C6F",
     "title": "ахк для амазинга - Поиск",
     "results": [
       {
-        "title": "Resolve a DOI Name",
-        "url": "https://www.bing.com/ck/a?!&&p=de9aa3dab45d740d173782017ea55c1345524cae75d93f347ba45533d64f4626JmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0351ff0c-1f7f-694b-149b-e7071e9668eb&u=a1aHR0cHM6Ly9keC5kb2kub3JnLw&ntb=1",
-        "target_url": "https://dx.doi.org/"
+        "title": "AHK-скрипт с подсказкой для государственных структур: ФСБ, …",
+        "url": "https://www.bing.com/ck/a?!&&p=b74139a5c6103323750073e77e365d4205385badc92bbc0c05af2edbf3526e46JmltdHM9MTc5NDA5NjAwMA&ptn=3&ver=2&hsh=4&fclid=2cc82f20-6e6d-62da-1ed8-372b6fb36345&u=a1aHR0cHM6Ly9mb3J1bS5hbWF6aW5nLW9ubGluZS5jb20vdGhyZWFkcy9haGstc2tyaXB0LXMtcG9kc2themtvai1kbGphLWdvc3VkYXJzdHZlbm55eC1zdHJ1a3R1ci1mc2ItbXZkLWRwcy4xMDU4NDkxLw&ntb=1",
+        "target_url": "https://forum.amazing-online.com/threads/ahk-skript-s-podskazkoj-dlja-gosudarstvennyx-struktur-fsb-mvd-dps.1058491/"
       },
       {
-        "title": "DeForm - 2025 Company Profile & Team - Tracxn",
-        "url": "https://www.bing.com/ck/a?!&&p=06daa2f4e80c423916ac50d2a345a24ad6314d652dd072cbe6075b3b69ba0712JmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0351ff0c-1f7f-694b-149b-e7071e9668eb&u=a1aHR0cHM6Ly90cmFjeG4uY29tL2QvY29tcGFuaWVzL2RlZm9ybS9fX1Q5cUxiTUJCMXZpa2tIc2UxSG9WVXUwWXVRZUh5bzdyOGsyNHh0Vm5vQ00&ntb=1",
-        "target_url": "https://tracxn.com/d/companies/deform/__T9qLbMBB1vikkHse1HoVUu0YuQeHyo7r8k24xtVnoCM"
+        "title": "GitHub - ValekusVachpekus/AHK-by-Valekus: Удобный биндер для …",
+        "url": "https://www.bing.com/ck/a?!&&p=0bfec9fb2556701b484fa6c7a9e03c1ea22731ffb16ec177f964db385c2d4b05JmltdHM9MTc5NDA5NjAwMA&ptn=3&ver=2&hsh=4&fclid=2cc82f20-6e6d-62da-1ed8-372b6fb36345&u=a1aHR0cHM6Ly9naXRodWIuY29tL1ZhbGVrdXNWYWNocGVrdXMvQUhLLWJ5LVZhbGVrdXM&ntb=1",
+        "target_url": "https://github.com/ValekusVachpekus/AHK-by-Valekus"
       },
       {
-        "title": "CoinDesk: Bitcoin, Ethereum, XRP, Crypto News and Price Data",
-        "url": "https://www.bing.com/ck/a?!&&p=847ce1b9ca8a1ad459262630181dd003cac3cc6ec688dce640ad08b65404f972JmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0351ff0c-1f7f-694b-149b-e7071e9668eb&u=a1aHR0cHM6Ly93d3cuY29pbmRlc2suY29tLw&ntb=1",
-        "target_url": "https://www.coindesk.com/"
+        "title": "Готовый AutoHotKey для ППС | АМАЗИНГ РП - Rutube",
+        "url": "https://www.bing.com/ck/a?!&&p=bcdc9c5a5a51474ca79de3a5980baec8baf063aa2008c6fece02821202977fe8JmltdHM9MTc5NDA5NjAwMA&ptn=3&ver=2&hsh=4&fclid=2cc82f20-6e6d-62da-1ed8-372b6fb36345&u=a1aHR0cHM6Ly9ydXR1YmUucnUvdmlkZW8vODY4ZTFmZTBjZTM4NGUwN2M4YWVhNzg2OGE0NmMwMTMv&ntb=1",
+        "target_url": "https://rutube.ru/video/868e1fe0ce384e07c8aea7868a46c013/"
       },
       {
-        "title": "DEFORM — смотреть онлайн все 219 видео в 2026 | VK Видео",
-        "url": "https://www.bing.com/ck/a?!&&p=34522f3c86f6d4b3008618e91ef514f2ba9c59abee6708cbdfac9acf346d7aecJmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0351ff0c-1f7f-694b-149b-e7071e9668eb&u=a1aHR0cHM6Ly92a3ZpZGVvLnJ1L0BkZWZvcm1fYmFuZA&ntb=1",
-        "target_url": "https://vkvideo.ru/@deform_band"
+        "title": "AutoHotKey (AHK) - подробно для чайников. | Форум онлайн-игры …",
+        "url": "https://www.bing.com/ck/a?!&&p=9ecad7f26347394ae1413b3ba34e0acf505cced6b8540851e8eb0e5b308eedbfJmltdHM9MTc5NDA5NjAwMA&ptn=3&ver=2&hsh=4&fclid=2cc82f20-6e6d-62da-1ed8-372b6fb36345&u=a1aHR0cHM6Ly9mb3J1bS5hbWF6aW5nLW9ubGluZS5jb20vdGhyZWFkcy9hdXRvaG90a2V5LWFoay1wb2Ryb2Juby1kbGphLWNoYWpuaWtvdi40OTQzNjMv&ntb=1",
+        "target_url": "https://forum.amazing-online.com/threads/autohotkey-ahk-podrobno-dlja-chajnikov.494363/"
       },
       {
-        "title": "How Bored Ape Yacht Club Broke Ethereum - CNET",
-        "url": "https://www.bing.com/ck/a?!&&p=eef8a2ef0acd8a32280eaffeb76a5454aed322b66e36ba4ccb55990bc107a37fJmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0351ff0c-1f7f-694b-149b-e7071e9668eb&u=a1aHR0cHM6Ly93d3cuY25ldC5jb20vcGVyc29uYWwtZmluYW5jZS9jcnlwdG9jdXJyZW5jeS9ob3ctYm9yZWQtYXBlLXlhY2h0LWNsdWItYnJva2UtZXRoZXJldW0v&ntb=1",
-        "target_url": "https://www.cnet.com/personal-finance/cryptocurrency/how-bored-ape-yacht-club-broke-ethereum/"
+        "title": "AHK FOR GOS — АХК для госструктур Amazing Online",
+        "url": "https://www.bing.com/ck/a?!&&p=921914081ef2f9305e2a1ac72da581635eb7112c7b1076772c3bb9772f62ddd6JmltdHM9MTc5NDA5NjAwMA&ptn=3&ver=2&hsh=4&fclid=2cc82f20-6e6d-62da-1ed8-372b6fb36345&u=a1aHR0cHM6Ly9naXRodWIuY29tL3NiZXpydWsxODAvQUhLLUZPUi1HT1MtQlktU0JFWlJVSw&ntb=1",
+        "target_url": "https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK"
       },
       {
-        "title": "DEFORM News – Scientific Forming Technologies Corporation",
-        "url": "https://www.bing.com/ck/a?!&&p=61d27811a5d5223aa8dac54eda832acf3f3e6f434793b4f1ef4f2ef6ede97d76JmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0351ff0c-1f7f-694b-149b-e7071e9668eb&u=a1aHR0cHM6Ly93d3cuZGVmb3JtLmNvbS9jYXRlZ29yeS9uZXdzL2RlZm9ybS1uZXdzLw&ntb=1",
-        "target_url": "https://www.deform.com/category/news/deform-news/"
+        "title": "СДЕЛАЛ АХК ДЛЯ ТРК \"АМАЗИНГ\" НА СЕРВЕРЕ AMAZING RP!",
+        "url": "https://www.bing.com/ck/a?!&&p=016cc3f3745c67242c9b9fcf7ee39b2739a10795e4f0e6c954127c71d57f57e7JmltdHM9MTc5NDA5NjAwMA&ptn=3&ver=2&hsh=4&fclid=2cc82f20-6e6d-62da-1ed8-372b6fb36345&u=a1aHR0cHM6Ly9ydXR1YmUucnUvdmlkZW8vN2UwMmViNmZhZDM5M2Q3YjBiYjVhYzIyNDU5NzJkMDEv&ntb=1",
+        "target_url": "https://rutube.ru/video/7e02eb6fad393d7b0bb5ac2245972d01/"
       },
       {
-        "title": "The Inside Story of the CryptoKitties Congestion Crisis",
-        "url": "https://www.bing.com/ck/a?!&&p=0a4fccf23dab8446bcf72caa3dbe65fa2e89f85d445547ee118b8248e4fb44f9JmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0351ff0c-1f7f-694b-149b-e7071e9668eb&u=a1aHR0cHM6Ly9jb25zZW5zeXMuY29tL2Jsb2cvdGhlLWluc2lkZS1zdG9yeS1vZi10aGUtY3J5cHRva2l0dGllcy1jb25nZXN0aW9uLWNyaXNpcw&ntb=1",
-        "target_url": "https://consensys.com/blog/the-inside-story-of-the-cryptokitties-congestion-crisis"
+        "title": "Amazing Online +c ahk (ахк на амазинг +с)\\RADMIRPR +c",
+        "url": "https://www.bing.com/ck/a?!&&p=d8d527e0742224af72b81f86f27f7503cfa61b5437e25cbec0fa1346366b0377JmltdHM9MTc5NDA5NjAwMA&ptn=3&ver=2&hsh=4&fclid=2cc82f20-6e6d-62da-1ed8-372b6fb36345&u=a1aHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g_dj1FUTF4QmdnNTdfNA&ntb=1",
+        "target_url": "https://www.youtube.com/watch?v=EQ1xBgg57_4"
       },
       {
-        "title": "Crypto Dictionary | Definition & Meaning of 500+ terms",
-        "url": "https://www.bing.com/ck/a?!&&p=1d819866f18b95ceca3e10bfac817f578e6b69d7ba2d36c2ff8bd06e27e4d1f5JmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0351ff0c-1f7f-694b-149b-e7071e9668eb&u=a1aHR0cHM6Ly9ibG9ja3Nwb3QuaW8vY3J5cHRvLWRpY3Rpb25hcnkv&ntb=1",
-        "target_url": "https://blockspot.io/crypto-dictionary/"
+        "title": "ахк на амазинг для ловли павиков - BLAST",
+        "url": "https://www.bing.com/ck/a?!&&p=b8ca5a217aa3d1a5aeedf9f53262a6a61ef20ee7ba9d873e5aefbf1804810dc6JmltdHM9MTc5NDA5NjAwMA&ptn=3&ver=2&hsh=4&fclid=2cc82f20-6e6d-62da-1ed8-372b6fb36345&u=a1aHR0cHM6Ly93d3cuYmxhc3QuaGsvdGhyZWFkcy8yMTQ0Mjgv&ntb=1",
+        "target_url": "https://www.blast.hk/threads/214428/"
       },
       {
-        "title": "prompts.chat - Free AI Prompts for ChatGPT, Claude & Gemini",
-        "url": "https://www.bing.com/ck/a?!&&p=9fa09cbd0aff6054d70105eea704119641d8819b356d21bea0471984f8e39974JmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0351ff0c-1f7f-694b-149b-e7071e9668eb&u=a1aHR0cHM6Ly9wcm9tcHRzLmNoYXQv&ntb=1",
-        "target_url": "https://prompts.chat/"
+        "title": "КАК НАСТРОИТЬ AHK НА AMAZING ONLINE? ОТВЕТ ТУТ",
+        "url": "https://www.bing.com/ck/a?!&&p=b4298863aabf269d5969fc29e922bf717a9ada598d6e98748ed0c6dda4962b7cJmltdHM9MTc5NDA5NjAwMA&ptn=3&ver=2&hsh=4&fclid=2cc82f20-6e6d-62da-1ed8-372b6fb36345&u=a1aHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g_dj1FbHZBYU5LeG5HOA&ntb=1",
+        "target_url": "https://www.youtube.com/watch?v=ElvAaNKxnG8"
       },
       {
-        "title": "Senior Fullstack Engineer (Contract) at DeForm",
-        "url": "https://www.bing.com/ck/a?!&&p=0b7fbabc6e5f772eb2dda71f535ad7277f095c308986ba2d898329a6f6cae830JmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0351ff0c-1f7f-694b-149b-e7071e9668eb&u=a1aHR0cHM6Ly9jcnlwdG9jdXJyZW5jeWpvYnMuY28vZW5naW5lZXJpbmcvZGVmb3JtLXNlbmlvci1mdWxsc3RhY2stZW5naW5lZXItY29udHJhY3Qv&ntb=1",
-        "target_url": "https://cryptocurrencyjobs.co/engineering/deform-senior-fullstack-engineer-contract/"
-      },
-      {
-        "title": "deform verb - Definition, pictures, pronunciation and usage notes ...",
-        "url": "https://www.bing.com/ck/a?!&&p=74d6b89e97e2a1280bb0b41f482d4085aec5f93942b04bb8ed655e56785343d0JmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0351ff0c-1f7f-694b-149b-e7071e9668eb&u=a1aHR0cHM6Ly93d3cub3hmb3JkbGVhcm5lcnNkaWN0aW9uYXJpZXMuY29tL2RlZmluaXRpb24vZW5nbGlzaC9kZWZvcm0&ntb=1",
-        "target_url": "https://www.oxfordlearnersdictionaries.com/definition/english/deform"
-      },
-      {
-        "title": "Modules – Scientific Forming Technologies Corporation",
-        "url": "https://www.bing.com/ck/a?!&&p=e95cf80911d1995cbd8be85cb8e4d5f7aa7630febfe15bc1c02ac9dc7ba0a492JmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0351ff0c-1f7f-694b-149b-e7071e9668eb&u=a1aHR0cHM6Ly93d3cuZGVmb3JtLmNvbS9wcm9kdWN0cy9kZWZvcm0tbW9kdWxlcy8&ntb=1",
-        "target_url": "https://www.deform.com/products/deform-modules/"
-      },
-      {
-        "title": "Gates of Vienna",
-        "url": "https://www.bing.com/ck/a?!&&p=90d4b390ccbc5fe7720641db7f7f6a68bc4a8f74124e1a8d91c3ea295a7b5da6JmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0351ff0c-1f7f-694b-149b-e7071e9668eb&u=a1aHR0cHM6Ly9nYXRlc29mdmllbm5hLmJsb2dzcG90LmNvbS8&ntb=1",
-        "target_url": "https://gatesofvienna.blogspot.com/"
-      },
-      {
-        "title": "LSTM_notebook - Kaggle",
-        "url": "https://www.bing.com/ck/a?!&&p=347869db062437ea52d2064b6774b8683ec9b6dbe47011e93643a7a17a10dff3JmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0351ff0c-1f7f-694b-149b-e7071e9668eb&u=a1aHR0cHM6Ly93d3cua2FnZ2xlLmNvbS9jb2RlL21kdW1haXIxL2xzdG0tbm90ZWJvb2s&ntb=1",
-        "target_url": "https://www.kaggle.com/code/mdumair1/lstm-notebook"
+        "title": "АХК не работает при открытом окне амазинга",
+        "url": "https://www.bing.com/ck/a?!&&p=6e512136d3c8ad07df8a0ecbcfe10fa679a78080067e62aec82ed8495b427668JmltdHM9MTc5NDA5NjAwMA&ptn=3&ver=2&hsh=4&fclid=2cc82f20-6e6d-62da-1ed8-372b6fb36345&u=a1aHR0cHM6Ly93d3cuYmxhc3QuaGsvdGhyZWFkcy8yMjM4MzAv&ntb=1",
+        "target_url": "https://www.blast.hk/threads/223830/"
       }
     ],
-    "repository_results": [],
-    "verdict": "not_found_in_visible_results"
+    "repository_results": [
+      {
+        "title": "AHK FOR GOS — АХК для госструктур Amazing Online",
+        "url": "https://www.bing.com/ck/a?!&&p=921914081ef2f9305e2a1ac72da581635eb7112c7b1076772c3bb9772f62ddd6JmltdHM9MTc5NDA5NjAwMA&ptn=3&ver=2&hsh=4&fclid=2cc82f20-6e6d-62da-1ed8-372b6fb36345&u=a1aHR0cHM6Ly9naXRodWIuY29tL3NiZXpydWsxODAvQUhLLUZPUi1HT1MtQlktU0JFWlJVSw&ntb=1",
+        "target_url": "https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK"
+      }
+    ],
+    "verdict": "found"
   },
   {
     "engine": "yandex",
     "query": "ахк для амазинга",
     "requested_url": "https://yandex.ru/search/?text=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B0%D0%BC%D0%B0%D0%B7%D0%B8%D0%BD%D0%B3%D0%B0",
-    "checked_at": "2026-11-08T07:19:07.994961+00:00",
+    "checked_at": "2026-11-08T15:29:04.168849+00:00",
     "visible_result_count": 0,
     "status": 200,
-    "final_url": "https://yandex.ru/showcaptcha?cc=1&form-fb-hint=2.1.368d051eb2d1b4db4251a7b641e432c6fd41947093e690d333f7527e6d1f65553e7fb3a831a71adcd6c45410d2c119b78c5f20390a9ecf64da32fbe75877558e90408a133dd6cf&mt=708CEFC0218B6403D4FF62A41A2575375442CEE05745BF3A6CC6DE62F22BB212A8155F5DDCC026A5D4673C51FC4A3C87E0303DCDC14B838D103B2BE5CBF72404745E58F58064F6EEAD9B289C610D92CCACC9E9C21278E2486587FD92FA1454CB5E2D34191F219B148F451B576088F4A410006A28BA1B036B5270DFE2B02A661350625C92F5871298788F970DF01D1923CCA0CEDB671AF23BF745F7CC04C1D80B2FFD68BFE2&retpath=aHR0cHM6Ly95YW5kZXgucnUvc2VhcmNoP3RleHQ9JUQwJUIwJUQxJTg1JUQwJUJBKyVEMCVCNCVEMCVCQiVEMSU4RislRDAlQjAlRDAlQkMlRDAlQjAlRDAlQjclRDAlQjglRDAlQkQlRDAlQjMlRDAlQjA%2C_3ef2f683176355238309b257ef167b0d&t=2%252F1794122348%252Ff724155bb2f43ea9e2c96b428a1fee3c&u=9721048263399313059&s=79cb3b846512e4dec653b48fcf4cf286",
+    "final_url": "https://yandex.ru/showcaptcha?cc=1&form-fb-hint=2.1.35e596a249077ba67a529994b3b579d0d301d5377637931cf4b8291e7d3585d14b9db3fab44ca2e7388e47477a183ab9e4d7ecd79a7c233ae3630d8d81923f3c013ac92e4909e2&mt=9B470ACE0E7DD1711AF6EB1786E6C1F97406C48C69CCEB72D91057245C567F08ACD022B733A7EB2911FB392B6215AD7D2303E3D2570AEBA0A0FD427900DA934E3C6441AEC70455B380C43C64C5FB5B1FB0D8625DCFD9C79B5268CA3DB10127DB07CDF0FAD54F11931F6053D747B2B62BED03107033A7B1765633781BBD148A334ADA28913659233E979B5598E7D317024CE3795879BDE54F7AD38BAC31915E91EB2015101D&retpath=aHR0cHM6Ly95YW5kZXgucnUvc2VhcmNoP3RleHQ9JUQwJUIwJUQxJTg1JUQwJUJBKyVEMCVCNCVEMCVCQiVEMSU4RislRDAlQjAlRDAlQkMlRDAlQjAlRDAlQjclRDAlQjglRDAlQkQlRDAlQjMlRDAlQjA%2C_3ef2f683176355238309b257ef167b0d&t=2%252F1794151745%252F253bc72115f9be2395036b84a699b515&u=9723021009121446270&s=741805cb99128d95b711ce20930b8c04",
     "title": "Вы не робот?",
     "results": [],
     "repository_results": [],
@@ -113,7 +99,7 @@
     "engine": "duckduckgo",
     "query": "ахк для амазинга",
     "requested_url": "https://html.duckduckgo.com/html/?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B0%D0%BC%D0%B0%D0%B7%D0%B8%D0%BD%D0%B3%D0%B0",
-    "checked_at": "2026-11-08T07:19:08.020290+00:00",
+    "checked_at": "2026-11-08T15:29:04.179551+00:00",
     "visible_result_count": 0,
     "status": 202,
     "final_url": "https://html.duckduckgo.com/html/?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B0%D0%BC%D0%B0%D0%B7%D0%B8%D0%BD%D0%B3%D0%B0",
@@ -126,7 +112,7 @@
     "engine": "github",
     "query": "ахк для амазинга",
     "requested_url": "https://github.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B0%D0%BC%D0%B0%D0%B7%D0%B8%D0%BD%D0%B3%D0%B0&type=repositories",
-    "checked_at": "2026-11-08T07:19:08.021767+00:00",
+    "checked_at": "2026-11-08T15:29:04.230415+00:00",
     "visible_result_count": 0,
     "status": 200,
     "final_url": "https://github.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B0%D0%BC%D0%B0%D0%B7%D0%B8%D0%BD%D0%B3%D0%B0&type=repositories",

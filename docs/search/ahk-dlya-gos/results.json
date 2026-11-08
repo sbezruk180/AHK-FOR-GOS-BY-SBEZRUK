@@ -3,11 +3,11 @@
     "engine": "google",
     "query": "ахк для гос",
     "requested_url": "https://www.google.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81&hl=ru",
-    "checked_at": "2026-11-08T07:19:01.987408+00:00",
+    "checked_at": "2026-11-08T15:28:58.097463+00:00",
     "visible_result_count": 0,
     "status": 200,
-    "final_url": "https://www.google.com/sorry/index?continue=https://www.google.com/search%3Fq%3D%25D0%25B0%25D1%2585%25D0%25BA%2B%25D0%25B4%25D0%25BB%25D1%258F%2B%25D0%25B3%25D0%25BE%25D1%2581%26hl%3Dru%26sei%3DZiLwasPNCqKp5NoP6_eSqAE&hl=ru&q=EgQw09UlGObEwNcGIjCsOzQYmdOafuu3OXitaiSev2d2wqBm_C9GA6PQW_IXur5RVFZLMQbupILXLSX4KugyAVJaAUNgk_jhiNyRrtd1",
-    "title": "https://www.google.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81&hl=ru&sei=ZiLwasPNCqKp5NoP6_eSqAE",
+    "final_url": "https://www.google.com/sorry/index?continue=https://www.google.com/search%3Fq%3D%25D0%25B0%25D1%2585%25D0%25BA%2B%25D0%25B4%25D0%25BB%25D1%258F%2B%25D0%25B3%25D0%25BE%25D1%2581%26hl%3Dru%26sei%3DOpXwat_NEeqrwbkPoer94AI&hl=ru&q=EgQzOZObGLqqwtcGIjDzr8ClLN4M7QUzdpOYKYAjk9wWcpSIiKedjBSaLdCFCvJJGATJqEudFeTD1HqBdJgyAVJaAUNgjIDh_KS4g6LCAQ",
+    "title": "https://www.google.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81&hl=ru&sei=OpXwat_NEeqrwbkPoer94AI",
     "results": [],
     "repository_results": [],
     "verdict": "blocked_or_challenged"
@@ -16,94 +16,80 @@
     "engine": "bing",
     "query": "ахк для гос",
     "requested_url": "https://www.bing.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81",
-    "checked_at": "2026-11-08T07:19:01.999088+00:00",
-    "visible_result_count": 14,
+    "checked_at": "2026-11-08T15:28:58.135629+00:00",
+    "visible_result_count": 10,
     "status": 200,
-    "final_url": "https://www.bing.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81&rdr=1&rdrig=3F2D219686884C329BE478A393078B20",
+    "final_url": "https://www.bing.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81&rdr=1&rdrig=68CE6CFABE6147F2985D25EA780960BE",
     "title": "ахк для гос - Поиск",
     "results": [
       {
-        "title": "OASIS - web",
-        "url": "https://www.bing.com/ck/a?!&&p=34850b57a3a26cf32d69a8ace62cf17fdb1d8962cd0b72d126113ddd68fed54aJmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0e63c7fb-751a-6a2d-3f81-dff0741b6bbf&u=a1aHR0cHM6Ly9hcHBzLnNjaG9vbHMubnljL25nc2lzL2xvZ2lu&ntb=1",
-        "target_url": "https://apps.schools.nyc/ngsis/login"
+        "title": "AHK FOR GOS — АХК для госструктур Amazing Online",
+        "url": "https://www.bing.com/ck/a?!&&p=1d2c56fe99be51064460aa47749025246878f26f4b695adcc9a3cb5b5cf1ba97JmltdHM9MTc5NDA5NjAwMA&ptn=3&ver=2&hsh=4&fclid=0bc44078-fb5c-6439-22e2-5873fa24655e&u=a1aHR0cHM6Ly9naXRodWIuY29tL3NiZXpydWsxODAvQUhLLUZPUi1HT1MtQlktU0JFWlJVSw&ntb=1",
+        "target_url": "https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK"
       },
       {
-        "title": "Contact Us | Oasis",
-        "url": "https://www.bing.com/ck/a?!&&p=418b2b8f952156950eb47022b6af57a5ebc5ad192eb50746bd741cd9e2a4a61eJmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0e63c7fb-751a-6a2d-3f81-dff0741b6bbf&u=a1aHR0cHM6Ly93d3cub2FzaXNoZWFsdGguYXBwL2NvbnRhY3Q&ntb=1",
-        "target_url": "https://www.oasishealth.app/contact"
+        "title": "ahk-for-amazing/src at main · xantarose/ahk-for-amazing · GitHub",
+        "url": "https://www.bing.com/ck/a?!&&p=d53f98b195968f3b049edd8dddfde571b063b001bdd30a68ba9a11108e39f415JmltdHM9MTc5NDA5NjAwMA&ptn=3&ver=2&hsh=4&fclid=0bc44078-fb5c-6439-22e2-5873fa24655e&u=a1aHR0cHM6Ly9naXRodWIuY29tL3hhbnRhcm9zZS9haGstZm9yLWFtYXppbmcvdHJlZS9tYWluL3NyYw&ntb=1",
+        "target_url": "https://github.com/xantarose/ahk-for-amazing/tree/main/src"
       },
       {
-        "title": "OasisCom Software ERP | Soluciones Especializadas para Empresas",
-        "url": "https://www.bing.com/ck/a?!&&p=e70d99e3ac10e85afba14c6e1bebb5aa0f27233ef7a3341112abf0c0e6024931JmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0e63c7fb-751a-6a2d-3f81-dff0741b6bbf&u=a1aHR0cHM6Ly93d3cub2FzaXNjb20uY29tLw&ntb=1",
-        "target_url": "https://www.oasiscom.com/"
+        "title": "AHK-скрипт с подсказкой для государственных структур: ФСБ, …",
+        "url": "https://www.bing.com/ck/a?!&&p=5fe892715e48b9aa4df66a948b003851b67ef547dceb06d638332dcf42ba8b53JmltdHM9MTc5NDA5NjAwMA&ptn=3&ver=2&hsh=4&fclid=0bc44078-fb5c-6439-22e2-5873fa24655e&u=a1aHR0cHM6Ly9mb3J1bS5hbWF6aW5nLW9ubGluZS5jb20vdGhyZWFkcy9haGstc2tyaXB0LXMtcG9kc2themtvai1kbGphLWdvc3VkYXJzdHZlbm55eC1zdHJ1a3R1ci1mc2ItbXZkLWRwcy4xMDU4NDkxLw&ntb=1",
+        "target_url": "https://forum.amazing-online.com/threads/ahk-skript-s-podskazkoj-dlja-gosudarstvennyx-struktur-fsb-mvd-dps.1058491/"
       },
       {
-        "title": "Sound Therapy Apps for Sleep & Tinnitus | Sound Oasis",
-        "url": "https://www.bing.com/ck/a?!&&p=ba2b96d06530b6c992a15c588ab96e4f78eea5d79dd566a28e89edec5cb9695dJmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0e63c7fb-751a-6a2d-3f81-dff0741b6bbf&u=a1aHR0cHM6Ly93d3cuc291bmRvYXNpcy5jb20vcGFnZXMvYXBwLXN0b3Jl&ntb=1",
-        "target_url": "https://www.soundoasis.com/pages/app-store"
+        "title": "[Обнова 13.09.2026] Удобный биндер для гос. служащих. Карта …",
+        "url": "https://www.bing.com/ck/a?!&&p=5485ff748a6cbcf9c764ef8ecd1be89928f6090661c85e6ed16f2f2370ca3b2cJmltdHM9MTc5NDA5NjAwMA&ptn=3&ver=2&hsh=4&fclid=0bc44078-fb5c-6439-22e2-5873fa24655e&u=a1aHR0cHM6Ly9mb3J1bS5ybXJwLnJ1L3RocmVhZHMvb2Jub3ZhLTEzLTA5LTIwMjYtdWRvYm55ai1iaW5kZXItZGxqYS1nb3Mtc2x1emhhc2NoaXgta2FydGEtb2dyYWJsZW5pai16YWtvbmthLjE0MTg1NS8&ntb=1",
+        "target_url": "https://forum.rmrp.ru/threads/obnova-13-09-2026-udobnyj-binder-dlja-gos-sluzhaschix-karta-ograblenij-zakonka.141855/"
       },
       {
-        "title": "Oasis - Apps on Google Play",
-        "url": "https://www.bing.com/ck/a?!&&p=8e77300bef6e4123d9abb1056b11ed958e15e0910630c9aef921afc767fa8717JmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0e63c7fb-751a-6a2d-3f81-dff0741b6bbf&u=a1aHR0cHM6Ly9wbGF5Lmdvb2dsZS5jb20vc3RvcmUvYXBwcy9kZXRhaWxzP2lkPWFwcC5taWRpYWNvZGUub2FzaXMmaGw9ZW4tVVM&ntb=1",
-        "target_url": "https://play.google.com/store/apps/details?id=app.midiacode.oasis&hl=en-US"
+        "title": "Скрипты \"АХК\" для всех организаций | GTA RolePlay - Форум",
+        "url": "https://www.bing.com/ck/a?!&&p=a68e01377c7b8d9e9e78ed2880de1d89bf6dda0150f826136f60477b904d1063JmltdHM9MTc5NDA5NjAwMA&ptn=3&ver=2&hsh=4&fclid=0bc44078-fb5c-6439-22e2-5873fa24655e&u=a1aHR0cHM6Ly9mb3J1bS5ndGFycC5ydS90aHJlYWRzL3NrcmlwdHktYXhrLWRsamEtdnNleC1vcmdhbml6YWNpai4xMDgzNTIv&ntb=1",
+        "target_url": "https://forum.gtarp.ru/threads/skripty-axk-dlja-vsex-organizacij.108352/"
       },
       {
-        "title": "Oasis | Login",
-        "url": "https://www.bing.com/ck/a?!&&p=72143d539d3822cc301f94fbe7b82990624b91ad258d568e84b685d4c1d7eb74JmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0e63c7fb-751a-6a2d-3f81-dff0741b6bbf&u=a1aHR0cHM6Ly9tLm9hc2lzd29ya3NwYWNlLmNvbS9vYXNpcy9sb2dpbi5qc3A&ntb=1",
-        "target_url": "https://m.oasisworkspace.com/oasis/login.jsp"
+        "title": "СЛИВ ЛУЧШЕГО АХК для ГОСС СТРУКТУР на AMAZING RP!",
+        "url": "https://www.bing.com/ck/a?!&&p=a810493448ecdd1d71e0a33845b8e72c1d27bfb39f051d1b12dcfa6a9dd8bb6fJmltdHM9MTc5NDA5NjAwMA&ptn=3&ver=2&hsh=4&fclid=0bc44078-fb5c-6439-22e2-5873fa24655e&u=a1aHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g_dj1PMFQ2b3M1bk8xRQ&ntb=1",
+        "target_url": "https://www.youtube.com/watch?v=O0T6os5nO1E"
       },
       {
-        "title": "Oasis Technologies Group, LLC",
-        "url": "https://www.bing.com/ck/a?!&&p=7ff83d055d3c0dde333e64f223d1fd56b61da282d425452f05338abc06282e3aJmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0e63c7fb-751a-6a2d-3f81-dff0741b6bbf&u=a1aHR0cDovL29hc2lzdGVjaGdyb3VwLmNvbS9ldnY&ntb=1",
-        "target_url": "http://oasistechgroup.com/evv"
+        "title": "Министерство внутренних дел | АХК для сотрудников",
+        "url": "https://www.bing.com/ck/a?!&&p=962efa6328457759b4b0c8b43f6922cb261373c48c25c7e2b7cb6cc18591c7c5JmltdHM9MTc5NDA5NjAwMA&ptn=3&ver=2&hsh=4&fclid=0bc44078-fb5c-6439-22e2-5873fa24655e&u=a1aHR0cHM6Ly9mb3J1bS5ndGFycC5ydS90aHJlYWRzL21pbmlzdGVyc3R2by12bnV0cmVubml4LWRlbC1heGstZGxqYS1zb3RydWRuaWtvdi4xMDIwMzYzLw&ntb=1",
+        "target_url": "https://forum.gtarp.ru/threads/ministerstvo-vnutrennix-del-axk-dlja-sotrudnikov.1020363/"
       },
       {
-        "title": "Oasis App",
-        "url": "https://www.bing.com/ck/a?!&&p=750550a5b7aafcc23af83b9a876d130d1e73aa1b85a5d2e57ecb8d97a376471eJmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0e63c7fb-751a-6a2d-3f81-dff0741b6bbf&u=a1aHR0cHM6Ly93d3cub2FzaXNhcHAubXgv&ntb=1",
-        "target_url": "https://www.oasisapp.mx/"
+        "title": "НОВЫЙ АХК ДЛЯ ГОСНИКОВ С ЛУЧШИМИ ФУНКЦИЯМИ на …",
+        "url": "https://www.bing.com/ck/a?!&&p=62c54918fe0de286e8c79d8f957280f10eb9dba1ed325e43249dbd4c3e4df155JmltdHM9MTc5NDA5NjAwMA&ptn=3&ver=2&hsh=4&fclid=0bc44078-fb5c-6439-22e2-5873fa24655e&u=a1aHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g_dj05dDROeDAxR0pqNA&ntb=1",
+        "target_url": "https://www.youtube.com/watch?v=9t4Nx01GJj4"
       },
       {
-        "title": "Oasis - Science-backed Water & Filter Ratings",
-        "url": "https://www.bing.com/ck/a?!&&p=6adacd4f57c9ff4a8de59156f6681359d56d92c0c4f0a8b69a73aad191637ffcJmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0e63c7fb-751a-6a2d-3f81-dff0741b6bbf&u=a1aHR0cHM6Ly93d3cub2FzaXNoZWFsdGguYXBwL29hc2lzLW1lbWJlcg&ntb=1",
-        "target_url": "https://www.oasishealth.app/oasis-member"
+        "title": "АХК для Лидеров Гос Фракций | ФСБ|Radant RolePlay | ВКонтакте",
+        "url": "https://www.bing.com/ck/a?!&&p=4b48e28daa4a7f43cc4567f9c6e852f63838c4e87a086eabf6487ea52852c3f3JmltdHM9MTc5NDA5NjAwMA&ptn=3&ver=2&hsh=4&fclid=0bc44078-fb5c-6439-22e2-5873fa24655e&u=a1aHR0cHM6Ly92ay5jb20vdG9waWMtMTQ3NzUxMTUzXzM1ODczNTU1&ntb=1",
+        "target_url": "https://vk.com/topic-147751153_35873555"
       },
       {
-        "title": "Oasis - Online Scholarship in studies | Scholarship for SC,ST,OBC",
-        "url": "https://www.bing.com/ck/a?!&&p=bef893d43e924abf4106d3fd97a2303d56e6cc00de5a8c1c006a0a049049faf0JmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0e63c7fb-751a-6a2d-3f81-dff0741b6bbf&u=a1aHR0cHM6Ly9vYXNpcy53Yi5nb3YuaW4v&ntb=1",
-        "target_url": "https://oasis.wb.gov.in/"
-      },
-      {
-        "title": "Oasis LMS Mobile App | Learning on the Go",
-        "url": "https://www.bing.com/ck/a?!&&p=bd353c26aca86dc0f73611bfc78ce5ba282d0d5f596a73d03b5cb7da0b6e5ea2JmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0e63c7fb-751a-6a2d-3f81-dff0741b6bbf&u=a1aHR0cHM6Ly9vYXNpcy1sbXMuY29tL21vYmlsZS1hcHA&ntb=1",
-        "target_url": "https://oasis-lms.com/mobile-app"
-      },
-      {
-        "title": "Lab Tests for Food, Water and Supplements | Oasis",
-        "url": "https://www.bing.com/ck/a?!&&p=4d38e5e06592b83557acf4125071c06b438383cdd83a893b0f848a34158b0ddcJmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0e63c7fb-751a-6a2d-3f81-dff0741b6bbf&u=a1aHR0cHM6Ly93d3cub2FzaXNoZWFsdGguYXBwL3Rlc3Qta2l0cw&ntb=1",
-        "target_url": "https://www.oasishealth.app/test-kits"
-      },
-      {
-        "title": "Oasis - Minimal App Launcher - Apps on Google Play",
-        "url": "https://www.bing.com/ck/a?!&&p=373cd1317e83ded96ff693a72595b53094a598c051354a4f1164ff065cbab179JmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0e63c7fb-751a-6a2d-3f81-dff0741b6bbf&u=a1aHR0cHM6Ly9wbGF5Lmdvb2dsZS5jb20vc3RvcmUvYXBwcy9kZXRhaWxzP2lkPWNvbS5jcmltc29uLm9hc2lzbGF1bmNoZXImaGw9ZW4tVVM&ntb=1",
-        "target_url": "https://play.google.com/store/apps/details?id=com.crimson.oasislauncher&hl=en-US"
-      },
-      {
-        "title": "Oasis",
-        "url": "https://www.bing.com/ck/a?!&&p=267cf5282e02853fbf9be66230537160fe63bfa2b1bca150fbbbff62afd5330dJmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0e63c7fb-751a-6a2d-3f81-dff0741b6bbf&u=a1aHR0cDovL2NsaWVudC5vYXNpc2Fzc2lzdGFudC5jb20v&ntb=1",
-        "target_url": "http://client.oasisassistant.com/"
+        "title": "Ahk For Гос. Организации | Полезные ахк для Vekas RP | ВКонтакте",
+        "url": "https://www.bing.com/ck/a?!&&p=d03390224363a4d7431645d731575f2d8da549181e430c592fd5f38d7f4c9146JmltdHM9MTc5NDA5NjAwMA&ptn=3&ver=2&hsh=4&fclid=0bc44078-fb5c-6439-22e2-5873fa24655e&u=a1aHR0cHM6Ly92ay5jb20vdG9waWMtMjE2NDk4MTY1XzQ5MDg4MzM1&ntb=1",
+        "target_url": "https://vk.com/topic-216498165_49088335"
       }
     ],
-    "repository_results": [],
-    "verdict": "not_found_in_visible_results"
+    "repository_results": [
+      {
+        "title": "AHK FOR GOS — АХК для госструктур Amazing Online",
+        "url": "https://www.bing.com/ck/a?!&&p=1d2c56fe99be51064460aa47749025246878f26f4b695adcc9a3cb5b5cf1ba97JmltdHM9MTc5NDA5NjAwMA&ptn=3&ver=2&hsh=4&fclid=0bc44078-fb5c-6439-22e2-5873fa24655e&u=a1aHR0cHM6Ly9naXRodWIuY29tL3NiZXpydWsxODAvQUhLLUZPUi1HT1MtQlktU0JFWlJVSw&ntb=1",
+        "target_url": "https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK"
+      }
+    ],
+    "verdict": "found"
   },
   {
     "engine": "yandex",
     "query": "ахк для гос",
     "requested_url": "https://yandex.ru/search/?text=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81",
-    "checked_at": "2026-11-08T07:19:02.010179+00:00",
+    "checked_at": "2026-11-08T15:28:58.167147+00:00",
     "visible_result_count": 0,
     "status": 200,
-    "final_url": "https://yandex.ru/showcaptcha?cc=1&form-fb-hint=2.1.797f66aa6fe4edbf9573583602c8c02f7813da3e3060dcb4f9a79873671e7c4bc73a83da7211a5b160ce065a4c3455092669593fc45f1fba1745d6ec98bf1a6535925132c3d8a1&mt=2E6DF9FD5509C6A7CDE89F1D1A14D2F2821F5F83F2AA44B2EB89223B4FE9685FE564F5DED46A2C456AFC2AE26F99C5B2F986FB8C51AAB51C170CDE496880C22D000901AB863743DBE4EA75E31F8180B6BB75F4289756E28F59EAE5D8941B0D4D47DC9F4F9E1AE701C92028A021482CE25080541CA49E903F7E1A0B499216734AAA8C0EAFA66140CD0F26A92D2449F8EA8FF98E19FCDCCD2E5B1FA66AAEB5B71F3C6A32A890&retpath=aHR0cHM6Ly95YW5kZXgucnUvc2VhcmNoP3RleHQ9JUQwJUIwJUQxJTg1JUQwJUJBKyVEMCVCNCVEMCVCQiVEMSU4RislRDAlQjMlRDAlQkUlRDElODE%2C_61f450058dcc6e878974e6474c8d2c71&t=2%252F1794122342%252Fa841a4efe85026402efae6abcb6c079c&u=9721047862423850608&s=8c2918ddbbba68b367caa20283c7893d",
+    "final_url": "https://yandex.ru/showcaptcha?cc=1&form-fb-hint=2.1.57c58f0afed265f4059cfb6e2fa102f602df44f0cf5f6103abea7e8616f8a50b7caab943c917c75995ef8b42ef45f8ac3b7b493aa8682e46b0c566e166ea6afa386cd36587c888bf037390fa7a97a0388d5976db61a80483a4668693a0b8695e15e9a1834a8f01c150c4d9&mt=8EED03151A8C6616F429DE217631389BCD94977EF8651B17D22481F7EEFAA5C92951483025F5AC139908FFC539E5A918CF648A6429858CD218251B89666812563430110755FA9C2091A2FA541B74AF06B4F34FB93E425F588DFB76E5F94A1267F988D5409A1C6C1EFC307BA9804FEDB3062FA1D988355BEFA9A7167F8E9D85C1F5240C4379BCD11CBE10EF50EF8C74A1724FDDC29AC9B2E03DBEA996304C23D81D5A528C3A3638BD44AC747B9D1A1618C7F304E846FAFDE8601E1914FF60154E5D5D518F17322FD09D&retpath=aHR0cHM6Ly95YW5kZXgucnUvc2VhcmNoP3RleHQ9JUQwJUIwJUQxJTg1JUQwJUJBKyVEMCVCNCVEMCVCQiVEMSU4RislRDAlQjMlRDAlQkUlRDElODE%2C_1c49e65634597b075e4f65390364e3f9&t=2%252F1794151739%252F1139f9ca822512d74d8fec99b8686534&u=9723020619683136980&s=f65b4e2fabae565f96f231406319cae7",
     "title": "Вы не робот?",
     "results": [],
     "repository_results": [],
@@ -113,7 +99,7 @@
     "engine": "duckduckgo",
     "query": "ахк для гос",
     "requested_url": "https://html.duckduckgo.com/html/?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81",
-    "checked_at": "2026-11-08T07:19:02.026276+00:00",
+    "checked_at": "2026-11-08T15:28:58.186785+00:00",
     "visible_result_count": 0,
     "status": 202,
     "final_url": "https://html.duckduckgo.com/html/?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81",
@@ -126,7 +112,7 @@
     "engine": "github",
     "query": "ахк для гос",
     "requested_url": "https://github.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81&type=repositories",
-    "checked_at": "2026-11-08T07:19:02.124654+00:00",
+    "checked_at": "2026-11-08T15:28:58.202739+00:00",
     "visible_result_count": 0,
     "status": 200,
     "final_url": "https://github.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81&type=repositories",
