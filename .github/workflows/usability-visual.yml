@@ -1,0 +1,50 @@
+name: AHK usability layout review
+on:
+  push:
+    branches: [ahk-usability-visual-20261108]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  visual:
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Capture production GUI builders with Unicode x86 layout host
+        shell: pwsh
+        run: ./tools/review_usability.ps1 -OutputDirectory "${{ runner.temp }}/usability-layout"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: usability-layout
+          path: ${{ runner.temp }}/usability-layout/*
+  evidence:
+    needs: visual
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: usability-layout
+          path: docs/desktop/reports/usability-20261106/unicode-layout
+      - name: Preserve layout evidence separately from ANSI runtime evidence
+        env:
+          VISUAL_RESULT: ${{ needs.visual.result }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          python -c 'import json,os,pathlib; pathlib.Path("docs/desktop/reports/usability-20261106/unicode-layout/result.json").write_text(json.dumps({"result":os.environ["VISUAL_RESULT"],"run":os.environ["RUN_ID"]},indent=2))'
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git switch -c ahk-usability-layout-${{ github.run_id }}
+          git add -f docs/desktop/reports/usability-20261106/unicode-layout
+          python tools/update_checksums.py
+          git add CHECKSUMS.sha256
+          git commit -m 'Record separate Unicode layout review evidence'
+          git push origin HEAD

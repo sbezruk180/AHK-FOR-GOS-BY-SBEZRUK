@@ -10,12 +10,11 @@ python (Join-Path $PSScriptRoot 'build_gui_review_fixture.py') --output $scratch
 if ($LASTEXITCODE) { throw 'Visual fixture generation failed' }
 $runtimeDescription = 'Explicit runtime override; see phase.log for actual ABI/codepage.'
 if (!$Runtime) {
-    $hostFolder = Join-Path $scratch 'host'
     $provenanceFile = Join-Path $outputPath 'runtime-provenance.json'
-    $Runtime = & python -c 'import sys,json; from pathlib import Path; sys.path.insert(0,sys.argv[1]); from deep_audit import prepare; host,exe,runtime,provenance=prepare(Path(sys.argv[2])); Path(sys.argv[3]).write_text(json.dumps(provenance,indent=2)); print(host)' $PSScriptRoot $hostFolder $provenanceFile
-    if ($LASTEXITCODE -or !$Runtime) { throw 'Localized ANSI x86 visual host preparation failed' }
+    $Runtime = & python -c 'import sys,json,zipfile,hashlib; from pathlib import Path; sys.path.insert(0,sys.argv[1]); from build_exe import verified_runtime,ROOT,LOCK; verified_runtime(None,ROOT/".build/toolchain"); archive=ROOT/".build/toolchain"/("AutoHotkey_"+LOCK["version"]+".zip"); host=Path(sys.argv[2])/"AutoHotkeyU32_visual_only.exe"; host.write_bytes(zipfile.ZipFile(archive).read("AutoHotkeyU32.exe")); Path(sys.argv[3]).write_text(json.dumps({"purpose":"Unicode x86 layout review on English Windows; shipping ANSI runtime tested separately", "runtime_archive_sha256":LOCK["sha256"],"host_sha256":hashlib.sha256(host.read_bytes()).hexdigest()},indent=2)); print(host)' $PSScriptRoot $scratch $provenanceFile
+    if ($LASTEXITCODE -or !$Runtime) { throw 'Unicode x86 visual host preparation failed' }
     $Runtime = ([string]$Runtime).Trim()
-    $runtimeDescription = 'Pinned ANSI x86 visual test host; test-only activeCodePage=ru-RU manifest; shipping binary unchanged.'
+    $runtimeDescription = 'Pinned Unicode x86 layout-only test host on English Windows. Shipping ANSI x86 runtime is tested separately; shipping binary unchanged.'
 }
 $Runtime = (Resolve-Path $Runtime).Path
 Add-Type -AssemblyName System.Drawing
@@ -27,6 +26,7 @@ public static class GosUsabilityWindow {
     [DllImport("user32.dll")] public static extern bool GetWindowRect(IntPtr hwnd, out Rect rect);
     [DllImport("user32.dll")] public static extern uint GetWindowThreadProcessId(IntPtr hwnd, out uint pid);
     [DllImport("user32.dll")] public static extern bool PrintWindow(IntPtr hwnd, IntPtr dc, uint flags);
+    [DllImport("user32.dll", CharSet=CharSet.Unicode)] public static extern int GetWindowTextW(IntPtr hwnd, System.Text.StringBuilder text, int capacity);
 }
 '@
 $report = Join-Path $outputPath 'visual-report.txt'
@@ -58,6 +58,9 @@ try {
         [uint32]$owner = 0
         [GosUsabilityWindow]::GetWindowThreadProcessId($window, [ref]$owner) | Out-Null
         if ($owner -ne $process.Id) { throw 'Refusing to capture a window outside the fixture process' }
+        $caption = [Text.StringBuilder]::new(512)
+        [GosUsabilityWindow]::GetWindowTextW($window, $caption, $caption.Capacity) | Out-Null
+        if ($caption.ToString() -notmatch '[\u0400-\u04ff]') { throw "Window caption lost Cyrillic: $phase" }
         Start-Sleep -Milliseconds 350
         $rect = [GosUsabilityWindow+Rect]::new()
         if (![GosUsabilityWindow]::GetWindowRect($window, [ref]$rect)) { throw "Cannot read bounds: $phase" }
