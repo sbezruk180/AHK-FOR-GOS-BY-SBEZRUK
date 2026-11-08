@@ -9,7 +9,7 @@ for folder in art.iterdir():
  if folder.name=='usability-build':continue
  target=out/folder.name;target.mkdir(exist_ok=True)
  for p in folder.rglob('*'):
-  if p.is_file() and (p.name=='summary.json' or p.suffix=='.png' or (p.suffix=='.txt' and 'coverage' not in p.name)):
+  if p.is_file() and (p.name in {'summary.json','runtime-provenance.json','phase.log'} or p.suffix=='.png' or (p.suffix=='.txt' and 'coverage' not in p.name)):
    shutil.copyfile(p,target/p.name)
 (out/'result.json').write_text(json.dumps({'passed':passed,'run':os.environ['RUN_ID'],'real_game':'NOT_TESTED','actual_OBS_recording':'NOT_TESTED'},indent=2)+'\n')
 download=root/'downloads/usability-20261106';download.mkdir(parents=True,exist_ok=True)

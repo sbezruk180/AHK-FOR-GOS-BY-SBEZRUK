@@ -4,7 +4,8 @@
 Build: python tools/build_gui_review_fixture.py --output /tmp/ahk-gui-review
 Run gui_review.ahk with AutoHotkey v1 using --ui-preview and an explicit
 Windows --data-dir pointing to disposable data. The review_usability.ps1 wrapper
-defaults to a pinned ANSI x86 test host with a ru-RU active-codepage manifest.
+defaults to a pinned Unicode x86 host for layout review on English Windows.
+The shipping ANSI x86 runtime is exercised by the separate native audit.
 Write a supported phase name to
 phase.txt; phase.log records completion, errors and the settings palette.
 
@@ -78,6 +79,8 @@ GuiReviewFixture_Tick() {
             ShowSettingsWindow()
             GuiReviewFixture_Log("WINDOW " . phase . " " . hSettingsWnd)
             if (phase = "profile") {
+                if InStr(CurrentProfile, "?")
+                    throw Exception("Default profile lost Cyrillic in visual fixture")
                 GetThemeColors(colorBG, colorPanel, colorText, colorAccent, colorMuted)
                 entry := "ThemeMode=" . ThemeMode . " CustomMenuColor=" . CustomMenuColor
                     . " CustomTextColor=" . CustomTextColor . " CustomBorderColor=" . CustomBorderColor
@@ -178,6 +181,11 @@ def build(output: Path) -> Path:
     law_output.mkdir(exist_ok=True)
     for path in laws:
         shutil.copyfile(path, law_output / path.name)
+    # Preserve real default-profile initialization. Without this asset the
+    # fixture falls back to creating a fresh ANSI INI on English Windows.
+    defaults = output / "assets" / "defaults"
+    defaults.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(ROOT / "assets/defaults/profiles.default.ini", defaults / "profiles.default.ini")
     target = output / "gui_review.ahk"
     target.write_bytes(source.replace("\n", "\r\n").encode("utf-8-sig"))
     phase_file = output / "phase.txt"
