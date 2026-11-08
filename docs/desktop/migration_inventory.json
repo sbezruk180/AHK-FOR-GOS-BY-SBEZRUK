@@ -6088,8 +6088,8 @@
       "sha256": "57236bf8afa8ea3cb83b990430f60f34bfa6a10d37269a18ba347c1ed20c8c36",
       "new_file": "app/actions.ahk",
       "new_line": 213,
-      "current_sha256": "57236bf8afa8ea3cb83b990430f60f34bfa6a10d37269a18ba347c1ed20c8c36",
-      "body_unchanged": true
+      "current_sha256": "0be3189b13cf8531c5f0de774e746c1a88072d1ddc9bc1486a6c4fbcd0443ca6",
+      "body_unchanged": false
     },
     {
       "name": "ContextAssistant_ConfirmHotkeysActive",
@@ -6097,7 +6097,7 @@
       "line": 10942,
       "sha256": "34dfa1919ef059d9caf23b5af4c11d68f5dccf687732939f4ba138d125b416bc",
       "new_file": "app/actions.ahk",
-      "new_line": 236,
+      "new_line": 237,
       "current_sha256": "34dfa1919ef059d9caf23b5af4c11d68f5dccf687732939f4ba138d125b416bc",
       "body_unchanged": true
     },
@@ -6107,7 +6107,7 @@
       "line": 10947,
       "sha256": "bccd8c8de71889b8d13eccfd2e1ef71efaa87312296bedf57c344a6e38565ded",
       "new_file": "app/actions.ahk",
-      "new_line": 241,
+      "new_line": 242,
       "current_sha256": "22f1a1f5a15f513a2a4221b7386cb70e3488dde4b4135aba3b17173bd111aa30",
       "body_unchanged": false
     },
@@ -6117,7 +6117,7 @@
       "line": 10955,
       "sha256": "0645d03e65f7234061a63026ad1001ca30474f869a5f89bf925c3b5ff24bc73e",
       "new_file": "app/actions.ahk",
-      "new_line": 251,
+      "new_line": 252,
       "current_sha256": "0645d03e65f7234061a63026ad1001ca30474f869a5f89bf925c3b5ff24bc73e",
       "body_unchanged": true
     },
@@ -6127,7 +6127,7 @@
       "line": 10972,
       "sha256": "f341c30c454cf253c93ca5ec9d7f67cefe99abe600d582fdc9e1fa41deb894ef",
       "new_file": "app/actions.ahk",
-      "new_line": 268,
+      "new_line": 269,
       "current_sha256": "f341c30c454cf253c93ca5ec9d7f67cefe99abe600d582fdc9e1fa41deb894ef",
       "body_unchanged": true
     },
@@ -6137,7 +6137,7 @@
       "line": 10981,
       "sha256": "6b5e14b2a26a27f04774c37d40dee57ef88a53286ebb06bdc11a6b9f0507d9a4",
       "new_file": "app/actions.ahk",
-      "new_line": 277,
+      "new_line": 278,
       "current_sha256": "6b5e14b2a26a27f04774c37d40dee57ef88a53286ebb06bdc11a6b9f0507d9a4",
       "body_unchanged": true
     },
@@ -6147,7 +6147,7 @@
       "line": 11006,
       "sha256": "9cf5a7248b2a5e1c3969dde38928f10028e8cffc8b53f6d92d4d17b01f5d43e7",
       "new_file": "app/actions.ahk",
-      "new_line": 302,
+      "new_line": 303,
       "current_sha256": "9cf5a7248b2a5e1c3969dde38928f10028e8cffc8b53f6d92d4d17b01f5d43e7",
       "body_unchanged": true
     },
@@ -6157,7 +6157,7 @@
       "line": 11032,
       "sha256": "873ae3030dd95d43d2174a31f1d51cd416fd993e13f78fbab0a210563e05c6c4",
       "new_file": "app/actions.ahk",
-      "new_line": 328,
+      "new_line": 329,
       "current_sha256": "873ae3030dd95d43d2174a31f1d51cd416fd993e13f78fbab0a210563e05c6c4",
       "body_unchanged": true
     },
@@ -6167,8 +6167,8 @@
       "line": 11045,
       "sha256": "91b9f3ce8ba8b33138c85643a25979c108fd62d1f6d559c8324df91417fe9d97",
       "new_file": "app/actions.ahk",
-      "new_line": 341,
-      "current_sha256": "3e9257afbf79bed62558f07d177338fcb058937eadc4221cf58790613d6fd07e",
+      "new_line": 342,
+      "current_sha256": "4ec69f045b9b2bb65325a49924a45cee5fd08e402ea1633041cab434d318c7fa",
       "body_unchanged": false
     },
     {
@@ -6177,9 +6177,9 @@
       "line": 11150,
       "sha256": "132436e061b25e53305c0e438ba7fdc5326044a787a90b03427df2e0a941f191",
       "new_file": "app/actions.ahk",
-      "new_line": 465,
-      "current_sha256": "132436e061b25e53305c0e438ba7fdc5326044a787a90b03427df2e0a941f191",
-      "body_unchanged": true
+      "new_line": 468,
+      "current_sha256": "d6e6943fef289b0568344fed48021877d9d5231665053f898d36beab76026bf9",
+      "body_unchanged": false
     },
     {
       "name": "ContextAssistant_ExpandCommand",
@@ -6187,7 +6187,7 @@
       "line": 11157,
       "sha256": "43157ba191de64837dcc0b87b07d4e0ab4b38272e3cd2aaa4980754603fa30ca",
       "new_file": "app/actions.ahk",
-      "new_line": 472,
+      "new_line": 493,
       "current_sha256": "43157ba191de64837dcc0b87b07d4e0ab4b38272e3cd2aaa4980754603fa30ca",
       "body_unchanged": true
     },
@@ -6197,7 +6197,7 @@
       "line": 11163,
       "sha256": "9a14de945285584dcf2feac43f39f1e56b770770427ff8145d0d84e7a91d23d8",
       "new_file": "app/actions.ahk",
-      "new_line": 478,
+      "new_line": 499,
       "current_sha256": "9a14de945285584dcf2feac43f39f1e56b770770427ff8145d0d84e7a91d23d8",
       "body_unchanged": true
     },
@@ -6207,7 +6207,7 @@
       "line": 11176,
       "sha256": "6c2919bf596debb8d179424ff32d87b621036a4f945a0cccc52873b4a283f7ef",
       "new_file": "app/actions.ahk",
-      "new_line": 491,
+      "new_line": 512,
       "current_sha256": "6c2919bf596debb8d179424ff32d87b621036a4f945a0cccc52873b4a283f7ef",
       "body_unchanged": true
     },
@@ -6217,7 +6217,7 @@
       "line": 11188,
       "sha256": "7132b9b4511ef910f111c8c58c4785c16df42962f432a0911650ed3ac7caece1",
       "new_file": "app/actions.ahk",
-      "new_line": 503,
+      "new_line": 524,
       "current_sha256": "7132b9b4511ef910f111c8c58c4785c16df42962f432a0911650ed3ac7caece1",
       "body_unchanged": true
     },
@@ -6227,9 +6227,9 @@
       "line": 11195,
       "sha256": "b90945b286f169404a54b982f58b3aa4c9662a85d8f2d94cb6e4757ce50acde4",
       "new_file": "app/actions.ahk",
-      "new_line": 510,
-      "current_sha256": "b90945b286f169404a54b982f58b3aa4c9662a85d8f2d94cb6e4757ce50acde4",
-      "body_unchanged": true
+      "new_line": 531,
+      "current_sha256": "96ab08d2c22d0e568d6c29fe9cbdbb77280d19ee79ee2a4f6428d156b73388aa",
+      "body_unchanged": false
     },
     {
       "name": "ContextAssistant_Submit",
@@ -6237,9 +6237,9 @@
       "line": 11282,
       "sha256": "2a454c6913d4b13ed38975c566c89a3daab404061e3529119435ec8c552bc18b",
       "new_file": "app/actions.ahk",
-      "new_line": 597,
-      "current_sha256": "2a454c6913d4b13ed38975c566c89a3daab404061e3529119435ec8c552bc18b",
-      "body_unchanged": true
+      "new_line": 618,
+      "current_sha256": "0787d87e1856507feec6c370927306b98886791b4c77c8c7fbf8df59084ba667",
+      "body_unchanged": false
     },
     {
       "name": "ResolveChatLogPath",
@@ -7077,7 +7077,7 @@
       "line": 13274,
       "sha256": "e0cca9647734ee041598073fce42d0e5abb11df98802aa6c4b3c91322749cf05",
       "new_file": "app/actions.ahk",
-      "new_line": 630,
+      "new_line": 656,
       "current_sha256": "e0cca9647734ee041598073fce42d0e5abb11df98802aa6c4b3c91322749cf05",
       "body_unchanged": true
     },
@@ -7207,7 +7207,7 @@
       "line": 13594,
       "sha256": "3323d732baacb772ad4f3df03447ae79f55d0fb779a067f47efb11e77859c693",
       "new_file": "app/actions.ahk",
-      "new_line": 648,
+      "new_line": 674,
       "current_sha256": "cdedc4055fe077b403c6149bc01895b71a216addb21daa8f3d72ea850eb00d17",
       "body_unchanged": false
     },
@@ -7227,7 +7227,7 @@
       "line": 13616,
       "sha256": "4edaf9adac665382450a7627103436e0d50e53a636d16f22d9f8dcb87c2d4dbe",
       "new_file": "app/actions.ahk",
-      "new_line": 656,
+      "new_line": 682,
       "current_sha256": "e1e954fcd6b118042c9e0be82e5d2d48009fc24b740f50931370bb35fe8f5eae",
       "body_unchanged": false
     },
@@ -7277,7 +7277,7 @@
       "line": 13697,
       "sha256": "ad5e899ec1717fff15d8efb132f128b5b8850e6bf8b6515c8f4ddd1c734b874d",
       "new_file": "app/actions.ahk",
-      "new_line": 693,
+      "new_line": 719,
       "current_sha256": "699b3622b8e5767313a98c2138037efcd8f6200ef475cc37bb8dcb6f36f0adc8",
       "body_unchanged": false
     },
@@ -7287,7 +7287,7 @@
       "line": 13715,
       "sha256": "ecdc26528b364274a43fa7be5569965ececded44351bed7ba27579461b93a659",
       "new_file": "app/actions.ahk",
-      "new_line": 717,
+      "new_line": 743,
       "current_sha256": "36253e83bd1bfe0ee99d74b627907dfab217380732ef7e0aab3d262fdfaf4f40",
       "body_unchanged": false
     },
@@ -7297,7 +7297,7 @@
       "line": 13724,
       "sha256": "4eabd0d7e2a320deddd4907ac77052d9a7dcb430b5e133f2bc50a7306aed531e",
       "new_file": "app/actions.ahk",
-      "new_line": 730,
+      "new_line": 756,
       "current_sha256": "4eabd0d7e2a320deddd4907ac77052d9a7dcb430b5e133f2bc50a7306aed531e",
       "body_unchanged": true
     },
@@ -7307,7 +7307,7 @@
       "line": 13733,
       "sha256": "638f124379fc27f81792cfa5741374acd623902fc2fd806f9a7a155880857f83",
       "new_file": "app/actions.ahk",
-      "new_line": 739,
+      "new_line": 765,
       "current_sha256": "22f03be74ace062261bcdfa67bf5b77d8f001e7158cf739dce893257ee6a49c7",
       "body_unchanged": false
     },
@@ -7317,7 +7317,7 @@
       "line": 13743,
       "sha256": "6b6fe7e0e4b94426cbbdc0f920a709bca9e108046eef3e432ed258dae15fcb33",
       "new_file": "app/actions.ahk",
-      "new_line": 753,
+      "new_line": 779,
       "current_sha256": "6b6fe7e0e4b94426cbbdc0f920a709bca9e108046eef3e432ed258dae15fcb33",
       "body_unchanged": true
     },
@@ -7327,7 +7327,7 @@
       "line": 13750,
       "sha256": "5bcf6f3fc0f49807c116dbfe5bc1a1b0da59660c863cf6fa788d710ff9af5cb4",
       "new_file": "app/actions.ahk",
-      "new_line": 760,
+      "new_line": 786,
       "current_sha256": "5bcf6f3fc0f49807c116dbfe5bc1a1b0da59660c863cf6fa788d710ff9af5cb4",
       "body_unchanged": true
     },
@@ -7337,7 +7337,7 @@
       "line": 13789,
       "sha256": "3d837c272b06b428db57d43592371a3ecb7a290dfb81031dd5438eeadbccdd09",
       "new_file": "app/actions.ahk",
-      "new_line": 799,
+      "new_line": 825,
       "current_sha256": "3d837c272b06b428db57d43592371a3ecb7a290dfb81031dd5438eeadbccdd09",
       "body_unchanged": true
     },
@@ -7347,7 +7347,7 @@
       "line": 13804,
       "sha256": "a57dec03973eff897d1a1f389cba6394796d358b21ba0b092e053a0da28e6b34",
       "new_file": "app/actions.ahk",
-      "new_line": 814,
+      "new_line": 840,
       "current_sha256": "a57dec03973eff897d1a1f389cba6394796d358b21ba0b092e053a0da28e6b34",
       "body_unchanged": true
     },
@@ -7357,7 +7357,7 @@
       "line": 13816,
       "sha256": "45072eca4f8eb176910c3297823bbf6459c9e61077ac9a41d710ec090306ade9",
       "new_file": "app/actions.ahk",
-      "new_line": 826,
+      "new_line": 852,
       "current_sha256": "45072eca4f8eb176910c3297823bbf6459c9e61077ac9a41d710ec090306ade9",
       "body_unchanged": true
     },
@@ -7367,7 +7367,7 @@
       "line": 13828,
       "sha256": "0147e0241829337a5428b224e9e55a93a8134c0c3828dc57a1600fedf0c2df5d",
       "new_file": "app/actions.ahk",
-      "new_line": 838,
+      "new_line": 864,
       "current_sha256": "fd20aa85175d605937ef94b1b994a60d50f27deb939ed511efe2fb9dc88487ec",
       "body_unchanged": false
     },
@@ -7377,7 +7377,7 @@
       "line": 13877,
       "sha256": "4b5acef49dec38188a0de725a5716128d78b88a2c7ce857d03c21adb03e7b97d",
       "new_file": "app/actions.ahk",
-      "new_line": 888,
+      "new_line": 914,
       "current_sha256": "7a245540db0e833ca89bad281ee372ddeb9d61bf5715897ce1071d715c877629",
       "body_unchanged": false
     },
@@ -7387,7 +7387,7 @@
       "line": 13904,
       "sha256": "cd14f168048185a273e421956b8c4db764b68ef51dd00e4a7c2132f42320de4c",
       "new_file": "app/actions.ahk",
-      "new_line": 904,
+      "new_line": 930,
       "current_sha256": "cd14f168048185a273e421956b8c4db764b68ef51dd00e4a7c2132f42320de4c",
       "body_unchanged": true
     },
@@ -7397,7 +7397,7 @@
       "line": 13918,
       "sha256": "e128144fcc35577cb7acf932759d7d1d33a2861fb4dd3c3354715a0c61df3fa8",
       "new_file": "app/actions.ahk",
-      "new_line": 918,
+      "new_line": 944,
       "current_sha256": "e128144fcc35577cb7acf932759d7d1d33a2861fb4dd3c3354715a0c61df3fa8",
       "body_unchanged": true
     },
@@ -7407,7 +7407,7 @@
       "line": 13929,
       "sha256": "71bf174f91498e50f01037fd749b191493279073c1368d28409f13e5fffe072d",
       "new_file": "app/actions.ahk",
-      "new_line": 929,
+      "new_line": 955,
       "current_sha256": "c75654aff828d825bed80cbe56fb050cbc3b3a03108dc69109b80c93efb37b42",
       "body_unchanged": false
     },
@@ -7417,7 +7417,7 @@
       "line": 13967,
       "sha256": "a93a67752d3e8a9df991325fce23524b637d021ea8f9ce00eb740b86afc0b8a8",
       "new_file": "app/actions.ahk",
-      "new_line": 968,
+      "new_line": 994,
       "current_sha256": "2410054a09c8c701969cb415ed163b2b9949fb395e6386fa265c9522b0e66c1a",
       "body_unchanged": false
     },
@@ -7427,7 +7427,7 @@
       "line": 13995,
       "sha256": "fafb7a191a64cdb077b334e52b7f6b6e7336387ed9748ca3130133d6d78a3496",
       "new_file": "app/actions.ahk",
-      "new_line": 985,
+      "new_line": 1011,
       "current_sha256": "fafb7a191a64cdb077b334e52b7f6b6e7336387ed9748ca3130133d6d78a3496",
       "body_unchanged": true
     },
@@ -7437,7 +7437,7 @@
       "line": 14037,
       "sha256": "74d8c396e12c293e49c79c2bd8f2e60f97fcdd96cdf5074b59c7b57f43865b77",
       "new_file": "app/actions.ahk",
-      "new_line": 1027,
+      "new_line": 1053,
       "current_sha256": "5b509476759d341ec80f6c4c9235cb72f82a35e9f19e09dadd18e7d997192b91",
       "body_unchanged": false
     },
@@ -7447,7 +7447,7 @@
       "line": 14055,
       "sha256": "20c28585a356d70070928831de527237bf3c6d9bd17da65b3c87bf0c01816f6b",
       "new_file": "app/actions.ahk",
-      "new_line": 1046,
+      "new_line": 1072,
       "current_sha256": "4c3fbec3e9f088ab6fc6235d398e35ef306bf022dd1fb722cd014585cec0cbab",
       "body_unchanged": false
     },
@@ -10247,7 +10247,7 @@
       "line": 22148,
       "sha256": "a8d3891c0d025e917d5f7ad9657b6398ae2ed60e4e5ef19fe5a2fec2bba05fe3",
       "new_file": "app/actions.ahk",
-      "new_line": 1073,
+      "new_line": 1099,
       "current_sha256": "a8d3891c0d025e917d5f7ad9657b6398ae2ed60e4e5ef19fe5a2fec2bba05fe3",
       "body_unchanged": true
     },
@@ -10257,7 +10257,7 @@
       "line": 22173,
       "sha256": "1b757ebc55424c279d1d8e6878fe7c28bdd87ac15b7be1aaa2da5bef1446fb29",
       "new_file": "app/actions.ahk",
-      "new_line": 1098,
+      "new_line": 1124,
       "current_sha256": "1b757ebc55424c279d1d8e6878fe7c28bdd87ac15b7be1aaa2da5bef1446fb29",
       "body_unchanged": true
     },
@@ -10267,7 +10267,7 @@
       "line": 22211,
       "sha256": "8c7f2d021dea7ff92bcd05efbc46d26a66707fd290bbbefaa6cca6c089e7e44b",
       "new_file": "app/actions.ahk",
-      "new_line": 1136,
+      "new_line": 1162,
       "current_sha256": "4bbe70bad2d029ea6c046e522739ee430a5451b6930670c632d6ca84a5834657",
       "body_unchanged": false
     },
@@ -10277,7 +10277,7 @@
       "line": 22222,
       "sha256": "95d765e1e6baeb77c88f1907e197ed573db9982553c9dd7662d3f9e46ce74a2e",
       "new_file": "app/actions.ahk",
-      "new_line": 1149,
+      "new_line": 1175,
       "current_sha256": "a3aa56c2848b98d588b3aa4c8b129591d29961ad4eb5db2bd898476b41f036fc",
       "body_unchanged": false
     },
@@ -10307,7 +10307,7 @@
       "line": 22429,
       "sha256": "165c3a2fb65eb08da5067b3baba752e04c129d2c5c6c469067780ed7b1868d00",
       "new_file": "app/actions.ahk",
-      "new_line": 1153,
+      "new_line": 1179,
       "current_sha256": "165c3a2fb65eb08da5067b3baba752e04c129d2c5c6c469067780ed7b1868d00",
       "body_unchanged": true
     },
@@ -10317,7 +10317,7 @@
       "line": 22562,
       "sha256": "127b6370dd543a265d74dabeced50b585bde308a264c350b6f9dd096917fdeeb",
       "new_file": "app/actions.ahk",
-      "new_line": 1171,
+      "new_line": 1197,
       "current_sha256": "127b6370dd543a265d74dabeced50b585bde308a264c350b6f9dd096917fdeeb",
       "body_unchanged": true
     },
@@ -10327,7 +10327,7 @@
       "line": 22584,
       "sha256": "7574f7d9bf46fb7d701c7b123eb43655502c654bff2c058990c67d4a7abd8744",
       "new_file": "app/actions.ahk",
-      "new_line": 1178,
+      "new_line": 1204,
       "current_sha256": "7574f7d9bf46fb7d701c7b123eb43655502c654bff2c058990c67d4a7abd8744",
       "body_unchanged": true
     },
@@ -10337,7 +10337,7 @@
       "line": 22595,
       "sha256": "a511883496f395f30a5a516de4ed1dd591af63682c872fa378c4e38517559d86",
       "new_file": "app/actions.ahk",
-      "new_line": 1185,
+      "new_line": 1211,
       "current_sha256": "a511883496f395f30a5a516de4ed1dd591af63682c872fa378c4e38517559d86",
       "body_unchanged": true
     },
@@ -10347,7 +10347,7 @@
       "line": 22607,
       "sha256": "edc0902cf36612440c222268842b0a3ef307ab6347930c57a6c1e01566dcccce",
       "new_file": "app/actions.ahk",
-      "new_line": 1193,
+      "new_line": 1219,
       "current_sha256": "c8fd4e8fef98de401856b09d4e3eb634313409d7a781e79c327a83b089384051",
       "body_unchanged": false
     },
@@ -10357,7 +10357,7 @@
       "line": 22631,
       "sha256": "26f278f8d5bf69e4e9c076fe19afb4f366d322b24f439184334b7f216297222d",
       "new_file": "app/actions.ahk",
-      "new_line": 1202,
+      "new_line": 1228,
       "current_sha256": "65a3dd24b0545d9aca3f74a2efa7d23d28f105fe9cc1764e7440bfe9a9b903ab",
       "body_unchanged": false
     },
@@ -10367,7 +10367,7 @@
       "line": 22861,
       "sha256": "102f08cea78be2eac4cad1693e8f8ce75c3a66c2e94378d03267dfae9462ea1c",
       "new_file": "app/actions.ahk",
-      "new_line": 1219,
+      "new_line": 1245,
       "current_sha256": "102f08cea78be2eac4cad1693e8f8ce75c3a66c2e94378d03267dfae9462ea1c",
       "body_unchanged": true
     },
@@ -10377,7 +10377,7 @@
       "line": 22925,
       "sha256": "e7dee03fc05d12748de984a7c619ede70a1601d5ad656ad745abe0740b23cd9a",
       "new_file": "app/actions.ahk",
-      "new_line": 1227,
+      "new_line": 1253,
       "current_sha256": "e7dee03fc05d12748de984a7c619ede70a1601d5ad656ad745abe0740b23cd9a",
       "body_unchanged": true
     },
@@ -13037,8 +13037,8 @@
   ],
   "current_summary": {
     "original_functions": 1284,
-    "unchanged_bodies": 1108,
-    "adapted_bodies": 176,
+    "unchanged_bodies": 1104,
+    "adapted_bodies": 180,
     "retained_event_labels": 191
   }
 }

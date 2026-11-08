@@ -14,7 +14,7 @@ sys.path.insert(0, str(ROOT / 'tools/build'))
 from ahk_symbols import functions
 
 NAMES = {
-    'app/actions.ahk': ['RunGpsDialogAction', 'CanRunAction', 'InputAction_DoSOS', 'VehicleLookup_Execute', 'VehicleLookup_GetRegionListPosition'],
+    'app/actions.ahk': ['RunGpsDialogAction', 'CanRunAction', 'InputAction_DoSOS', 'VehicleLookup_Execute', 'VehicleLookup_GetRegionListPosition', 'ContextAssistant_Request', 'ContextAssistant_IsEnabled', 'ContextAssistant_GetMeta', 'ContextAssistant_GetConfirmationPrompt', 'ContextAssistant_ShowConfirmationOverlay', 'ContextAssistant_GetOverlayPosition', 'ContextAssistant_MakeWindowPassive', 'ContextAssistant_CloseGameChat', 'ContextAssistant_Close', 'ContextAssistant_Submit', 'ContextAssistant_RestoreGame', 'ContextAssistant_Execute', 'ContextAssistant_ValidateNumber', 'ContextAssistant_BuildCommand', 'ContextAssistant_ExpandCommand', 'ContextAssistant_ShowStatus'],
     'app/game_input.ahk': None,
     'app/gps_calibration.ahk': ['GPS_Defaults', 'GPS_FieldCatalog', 'GPS_GetSettings', 'GPS_ResolveDownCount', 'GPS_BuildPlan', 'GPS_Run'],
     'app/chat.ahk': ['SendChat', 'ChatTransport_Send', 'ChatTransport_SendCore', 'PasteOnly', 'SendRadialNumberTwice', 'SendListSelection', 'EnsureEnglishLayout', 'EnsureRussianLayout'],
@@ -29,6 +29,11 @@ START = r'''#NoEnv
 SetBatchLines, -1
 SetWinDelay, -1
 SetControlDelay, -1
+global ContextAssistantGameHwnd := 0, ContextAssistantAction := "", ContextAssistantInput := "", ContextAssistantVariant := ""
+global ContextAssistantTargetName := "", ContextAssistantMode := "", ContextAssistantStatus := "", hContextAssistantWnd := 0
+global ContextNotificationMode := "Плашка", ContextNotificationTimeoutSec := 8, Bind_ConfirmID := "F1", Bind_RejectID := "F2"
+global AssistHouseEnabled := "On", FullscreenSafeGui := "On", UserID := "", TargetIsMask := 0, UIRoundness := 0
+global LoseFocusAfterOpen := 0, OtherWindow := 0, FocusLostAt := 0
 global MockMode := "Off", AuditTestMode := 0, AutomationEpoch := 10, CurrentProfile := "Fixture"
 global PhysicalInputBusy := 0, IDCaptureState := "", GameMenuStarting := "", GameMenuLease := ""
 global TextSendMode := "Memory", g_RemoteOperation := "", ChatQueueBusy := 0
@@ -63,10 +68,37 @@ ListProc := DllCall(setter, "Ptr", ListWindow, "Int", -4, "Ptr", ListCallback, "
 EditProc := DllCall(setter, "Ptr", EditWindow, "Int", -4, "Ptr", EditCallback, "Ptr")
 global ChatProc := DllCall(setter, "Ptr", ChatWindow, "Int", -4, "Ptr", ChatCallback, "Ptr")
 WinActivate, ahk_id %MainWindow%
+OtherWindow := DllCall("CreateWindowExW", "UInt", 0, "WStr", "STATIC", "WStr", "Unrelated fixture window"
+    , "UInt", 0x00CF0000, "Int", 20, "Int", 20, "Int", 200, "Int", 100
+    , "Ptr", 0, "Ptr", 0, "Ptr", 0, "Ptr", 0, "Ptr")
 SetTimer, RunFixture, -200
 return
 
 RunFixture:
+FixtureReset(0)
+Check("house alarm opens passive confirmation on the original game window", ContextAssistant_Request("HouseAlarm", "155") && ContextAssistantGameHwnd = MainWindow && WinActive("ahk_id " . MainWindow))
+Check("house alarm confirmation completes real GPS key sequence", ContextAssistant_Submit() && Selected = 15 && Applied == "155" && DownCalls = 15 && OpenCalls = 1)
+Check("confirmed plaque is closed and menu ownership released", !hContextAssistantWnd && !ContextAssistantGameHwnd && !PhysicalInputBusy && !IsObject(GameMenuStarting) && !IsObject(GameMenuLease))
+Check("late or repeated confirmation cannot reopen GPS", !ContextAssistant_Submit() && OpenCalls = 1)
+FixtureReset(0)
+Check("ID confirmation still stores the offered target", ContextAssistant_Request("EnterID", "42") && ContextAssistant_Submit() && UserID = 42 && OpenCalls = 0)
+FixtureReset(0)
+ContextAssistant_Request("HouseAlarm", "155")
+ContextAssistant_Close()
+Check("rejected house suggestion sends nothing", !ContextAssistant_Submit() && OpenCalls = 0 && !ContextAssistantGameHwnd)
+FixtureReset(0)
+FullscreenSafeGui := "Off"
+ContextAssistant_Request("HouseAlarm")
+GuiControl, 42:, ContextAssistantInput, 155
+Check("number-entry GUI returns to its captured game HWND and completes GPS", ContextAssistant_Submit() && Selected = 15 && Applied == "155" && OpenCalls = 1)
+FullscreenSafeGui := "On"
+FixtureReset(0)
+Check("stale captured window cannot launch GPS into another window", !ContextAssistant_Execute("HouseAlarm", "155", "", "", OtherWindow) && OpenCalls = 0)
+FixtureReset(0)
+ContextAssistant_Request("HouseAlarm", "155")
+LoseFocusAfterOpen := 1
+Check("focus loss after contextual gps cancels instead of typing elsewhere", !ContextAssistant_Submit() && OpenCalls = 1 && FocusLostAt > 0 && DownCalls = 0 && Applied = "" && WinActive("ahk_id " . OtherWindow))
+Check("focus-loss cancellation releases the menu owner", !PhysicalInputBusy && !IsObject(GameMenuStarting) && !IsObject(GameMenuLease))
 FixtureReset(0)
 Check("stale GPS never opens a command", !RunGpsDialogAction("GPS", 15, "155", AutomationEpoch - 1) && OpenCalls = 0)
 started := TickNow()
@@ -116,6 +148,20 @@ FileDelete, %A_ScriptDir%\game_menu_report.txt
 FileAppend, %Report%, %A_ScriptDir%\game_menu_report.txt, UTF-8
 ExitApp, %Failures%
 
+ContextAssistantTimeoutLabel:
+ContextAssistantCancelLabel:
+ContextAssistant_Close()
+return
+ContextAssistantConfirmLabel:
+ContextAssistantTaserLabel:
+ContextAssistantBatonLabel:
+ContextAssistant_Submit()
+return
+LoseGameFocus:
+FocusLostAt := TickNow()
+DllCall("ShowWindow", "Ptr", OtherWindow, "Int", 5)
+WinActivate, ahk_id %OtherWindow%
+return
 TryForeignSend:
 ForeignResult := ChatTransport_Send("/r unrelated", "fixture-foreign")
 return
@@ -142,6 +188,9 @@ FixtureReset(chat) {
     Selected := -1, Applied := "", OpenCalls := 0, Escapes := 0, DownCalls := 0, CancelAtDown := 0
     ForeignMemoryCalls := 0, ForeignResult := "", CancelAfterOpen := 0, CancelledAt := 0, KeysAfterCancel := 0
     DialogDelay := 0, DialogReads := 0, DialogWaits := 0, CancelAtSelect := 0
+    SetTimer, LoseGameFocus, Off
+    LoseFocusAfterOpen := 0, FocusLostAt := 0
+    DllCall("ShowWindow", "Ptr", OtherWindow, "Int", 0)
     FixtureChatOpen := chat
     DllCall("ShowWindow", "Ptr", EditWindow, "Int", 0)
     DllCall("ShowWindow", "Ptr", ListWindow, "Int", 0)
@@ -211,6 +260,8 @@ SendChatMemory(text) {
         return 1
     }
     OpenCalls++
+    if (LoseFocusAfterOpen)
+        SetTimer, LoseGameFocus, -80
     if (text = "/sos")
         DllCall("SendMessageW", "Ptr", ListWindow, "UInt", 0x186, "Ptr", 0, "Ptr", 0)
     if (CancelAfterOpen)
@@ -224,9 +275,43 @@ SendChatMemory(text) {
     }
     return 1
 }
+GameLocator_GetPID() {
+    return DllCall("GetCurrentProcessId", "UInt")
+}
 GameLocator_IsActive() {
     global MainWindow
     return WinActive("ahk_id " . MainWindow)
+}
+IsGameActive() {
+    return GameLocator_IsActive()
+}
+GetThemeColors(ByRef bg, ByRef panel, ByRef fg, ByRef accent, ByRef muted) {
+    bg := "101018", panel := "181820", fg := "FFFFFF", accent := "8060F8", muted := "AAAAAA"
+}
+GetControlSurfaceColors(ByRef surface, ByRef fg, ByRef card, ByRef edge, args*) {
+    surface := "202028", fg := "FFFFFF", card := "202028", edge := "505058"
+}
+IsBindFieldFilled(value) {
+    return value != ""
+}
+Capture_BeforeShow(args*) {
+}
+ApplyRoundedCorners(args*) {
+}
+ShowIDGui(value, args*) {
+    global UserID
+    UserID := value
+}
+GameNotify(args*) {
+}
+ChatQueue_Enqueue(args*) {
+    return false
+}
+BuildTrainCrashReport(args*) {
+    return ""
+}
+ServiceUI_Request(args*) {
+    return false
 }
 EnsureGameActive() {
     return GameLocator_IsActive()
@@ -336,7 +421,7 @@ def main():
     for path, wanted in NAMES.items():
         source = (args.source_root / path).read_text(encoding='cp1251')
         for name, _, _, body in functions(source):
-            if name in wanted if wanted is not None else name.startswith('GameMenu_'):
+            if name in wanted if wanted is not None else (name.startswith('GameMenu_') or name == 'GameUi_ShouldShowPassive'):
                 pieces.append(body)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_bytes('\n\n'.join(pieces).replace('\n', '\r\n').encode('utf-8-sig'))

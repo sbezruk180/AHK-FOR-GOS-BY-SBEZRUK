@@ -27,6 +27,7 @@ FileEncoding, UTF-8-RAW
 global AutoTargetIDEnabled := "On", MockMode := "Off", AutoTargetOfferedKey := "", AutoTargetPendingKey := ""
 global AutoTargetCandidateID := -1, AutoTargetCandidateReads := 0, AutoTargetCandidatePed := 0, AutoTargetCandidateMatchType := 0
 global AutoTargetLastScanTick := 0, UserID := 75, ActiveID := 1, TargetIsMask := 0
+global ContextAssistantGameHwnd := 0
 global ContextAssistantMode := "", ContextAssistantAction := "", ContextAssistantInput := "", ContextAssistantVariant := "", ContextAssistantTargetName := "", ContextAssistantStatus := ""
 global hContextAssistantWnd := 0, AutoTargetConfirmationPrompt := "", UIRoundness := 10
 global ContextNotificationMode := "Плашка", ContextNotificationTimeoutSec := 8
@@ -229,7 +230,7 @@ ContextAssistant_Request(action,value,variant,name) {
  ContextAssistantAction:=action,ContextAssistantInput:=value,ContextAssistantVariant:=variant,ContextAssistantTargetName:=name,ContextAssistantMode:="confirm",ContextAssistantStatus:="F1 - Да    F2 - Нет"
  return ContextAssistant_ShowConfirmationOverlay("",ContextAssistant_GetConfirmationPrompt(action,value,variant,name),ContextAssistantStatus)
 }
-ContextAssistant_Execute(action,value,variant,name) {
+ContextAssistant_Execute(action,value,variant,name,ownerHwnd := 0) {
  global UserID,AppliedName,TargetIsMask
  if RegExMatch(value,"^__MASK__:([0-9]{5,20})$",m)
   UserID:=m1,TargetIsMask:=1
