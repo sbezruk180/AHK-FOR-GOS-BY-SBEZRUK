@@ -1,0 +1,18 @@
+﻿Rights queue and owned process call-stub fixture
+PointerSize=4; real game and server NOT tested
+NATIVE A32: production injection stub targets owned current process only.
+PASS | rights action queues all five original lines
+PASS | rights preserves the sequence pause
+PASS | all five rights lines are sent in order
+TRACE first sequence: sent=5; state=sent; calls=5
+PASS | rights batch completes and releases its sender
+PASS | memory rights never invokes clipboard
+PASS | pre-existing memory operation does not consume a line or retry
+PASS | rights resumes after existing operation completes
+PASS | stop after first line suppresses all remaining rights
+PASS | uncertain actual attempt is never retried
+PASS | rights transport failure is visible in own notification
+PASS | custom rights lines remain supported
+PASS | custom rights keeps exact text and order
+PASS | abnormal thread exit still returns uncertain
+Checks=13 Failed=0
