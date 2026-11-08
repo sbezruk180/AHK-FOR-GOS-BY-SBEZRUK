@@ -1,0 +1,32 @@
+AHK FOR GOS BY SBEZRUK context assistant MockMode test
+Time: 2026-11-08 15:23:15
+
+[PASS] /find 41
+[PASS] /tazer 42
+[PASS] /baton 43
+[PASS] /chase 44
+[PASS] /chase 1002
+[PASS] [GPS] Отметить дом №155 по сигнализации
+[PASS] [ID] Наркотики рядом — сохранён ID 46
+[PASS] /cuff 47
+[PASS] /id Test_Player
+[PASS] ChatLog ID parser
+[PASS] Chase parser selects second ID
+[PASS] Chase parser keeps single ID
+[PASS] ChatLog nickname parser
+[PASS] ChatLog /id through ChatQueue
+
+Status: PASS
+Final ID: 47
+
+Preview:
+[15:23:15] /find 41
+[15:23:15] /tazer 42
+[15:23:15] /baton 43
+[15:23:15] /chase 44
+[15:23:15] /chase 1002
+[15:23:15] [GPS] Отметить дом №155 по сигнализации
+[15:23:15] [ID] Наркотики рядом — сохранён ID 46
+[15:23:15] [AHK INFO] Сохранён ID 46 (наркотики рядом).
+[15:23:15] /cuff 47
+[15:23:15] /id Test_Player

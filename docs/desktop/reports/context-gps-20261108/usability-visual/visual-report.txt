@@ -1,0 +1,6 @@
+Pinned Unicode x86 layout-only test host on English Windows. Shipping ANSI x86 runtime is tested separately; shipping binary unchanged.
+Production GUI builders with disposable data; not a game/OBS test.
+PASS | profile | 1023x695
+PASS | automation | 1023x695
+PASS | blocks | 882x657
+PASS | owned process exited
