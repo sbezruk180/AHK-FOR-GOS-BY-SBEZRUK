@@ -173,13 +173,32 @@ CommandPalette_Update(state) {
         if IsObject(CommandPaletteSession)
             CommandPaletteSession.ExplicitSelection := false
     }
-    lines := ""
-    for index, row in CommandPaletteRows
-        lines .= (index = CommandPaletteSelection ? ">  " : "    ") . row.Name . "  ·  " . row.Category . "`n"
-    GuiControl, ServiceInput:, CommandPaletteResults, % lines = "" ? "Ничего не найдено" : RTrim(lines, "`n")
-    GuiControl, ServiceInput:, CommandPalettePreview, % CommandPalette_Describe(CommandPaletteRows[CommandPaletteSelection])
     if IsObject(CommandPaletteSession)
         CommandPaletteSession.Selected := CommandPaletteRows[CommandPaletteSelection]
+    CommandPalette_Render(state)
+}
+
+CommandPalette_Render(state) {
+    global CommandPaletteRows, CommandPaletteSelection
+    ; Search and selection also work without a window. An expired callback must not
+    ; address a newly created ServiceInput GUI that happens to have the same name.
+    previousCritical := A_IsCritical
+    Critical, On
+    try {
+        if (!IsObject(state) || !state.GuiHwnd || !state.PaletteResultsHwnd || !state.PalettePreviewHwnd
+            || !DllCall("IsWindow", "Ptr", state.GuiHwnd, "Int")
+            || DllCall("GetParent", "Ptr", state.PaletteResultsHwnd, "Ptr") != state.GuiHwnd
+            || DllCall("GetParent", "Ptr", state.PalettePreviewHwnd, "Ptr") != state.GuiHwnd)
+            return false
+        lines := ""
+        for index, row in CommandPaletteRows
+            lines .= (index = CommandPaletteSelection ? ">  " : "    ") . row.Name . "  ·  " . row.Category . "`n"
+        GuiControl, ServiceInput:, % state.PaletteResultsHwnd, % lines = "" ? "Ничего не найдено" : RTrim(lines, "`n")
+        GuiControl, ServiceInput:, % state.PalettePreviewHwnd, % CommandPalette_Describe(CommandPaletteRows[CommandPaletteSelection])
+        return true
+    } finally {
+        Critical, %previousCritical%
+    }
 }
 
 CommandPalette_KeyDown(state, hook, vk) {

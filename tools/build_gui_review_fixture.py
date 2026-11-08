@@ -2,8 +2,10 @@
 """Generate a disposable native GUI review fixture from production AHK sources.
 
 Build: python tools/build_gui_review_fixture.py --output /tmp/ahk-gui-review
-Run gui_review.ahk with AutoHotkey v1 Unicode using --ui-preview and an explicit
-Windows --data-dir pointing to disposable data. Write a supported phase name to
+Run gui_review.ahk with AutoHotkey v1 using --ui-preview and an explicit
+Windows --data-dir pointing to disposable data. The review_usability.ps1 wrapper
+defaults to a pinned ANSI x86 test host with a ru-RU active-codepage manifest.
+Write a supported phase name to
 phase.txt; phase.log records completion, errors and the settings palette.
 
 Only the generated scratch source loses the ANSI x86 startup guard. All actual
@@ -39,6 +41,7 @@ STARTUP = r'''
 global GuiReviewFixtureLastPhase := ""
 global GuiReviewFixtureTimer := Func("GuiReviewFixture_Tick")
 FileDelete, % A_ScriptDir . "\phase.log"
+GuiReviewFixture_Log("RUNTIME Unicode=" . A_IsUnicode . " PtrSize=" . A_PtrSize . " ACP=" . DllCall("GetACP", "UInt"))
 SetTimer, % GuiReviewFixtureTimer, 250
 GuiReviewFixture_Tick()
 '''

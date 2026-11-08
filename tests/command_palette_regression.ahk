@@ -101,6 +101,11 @@ CommandPalette_RunDesktopChecks() {
         ; The observer is also callable before a request timer acquires the state.
         CommandPalette_Update(state)
         DesktopSmoke_Assert("palette updates preview after changed query", CommandPaletteRows.Length() > 0)
+        DesktopSmoke_Assert("palette renderer accepts its live controls", CommandPalette_Render(state))
+        Gui, ServiceInput:Destroy
+        state.Value := "наручники"
+        CommandPalette_Update(state)
+        DesktopSmoke_Assert("palette closed window still permits state-only search", CommandPaletteSession.Selected.Key = "Cuff" && !CommandPalette_Render(state))
     } finally {
         Gui, ServiceInput:Destroy
         Gui, PaletteFixture:Destroy

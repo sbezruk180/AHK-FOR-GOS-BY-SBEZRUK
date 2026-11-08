@@ -1263,18 +1263,18 @@ ServiceUI_CloseDetails,service_ui.ahk:163,service_ui.ahk:175,Без измене
 ServiceUI_NewInputState,service_ui.ahk:169,service_ui.ahk:181,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 ServiceUI_ContextIsCurrent,service_ui.ahk:180,service_ui.ahk:192,Адаптирована,Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте
 ServiceUI_CreateInputGui,service_ui.ahk:187,service_ui.ahk:199,Адаптирована,"Добавлены владение вводом/паузы клавиш, приватный ввод или пассивное открытие; регрессии и native стенд. GTA/OBS требуют отдельной проверки"
-ServiceUI_InputKeyDown,service_ui.ahk:215,service_ui.ahk:248,Адаптирована,Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте
-ServiceUI_InputChar,service_ui.ahk:232,service_ui.ahk:270,Адаптирована,Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте
-ServiceUI_InputTick,service_ui.ahk:245,service_ui.ahk:287,Адаптирована,Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте
-ServiceUI_ModifierHeld,service_ui.ahk:267,service_ui.ahk:313,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ServiceUI_Request,service_ui.ahk:274,service_ui.ahk:354,Адаптирована,"Добавлены владение вводом/паузы клавиш, приватный ввод или пассивное открытие; регрессии и native стенд. GTA/OBS требуют отдельной проверки"
-ServiceUI_CancelInput,service_ui.ahk:365,service_ui.ahk:462,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ServiceUI_Shutdown,service_ui.ahk:381,service_ui.ahk:478,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ServiceUI_Confirm,service_ui.ahk:388,service_ui.ahk:485,Адаптирована,"Добавлены владение вводом/паузы клавиш, приватный ввод или пассивное открытие; регрессии и native стенд. GTA/OBS требуют отдельной проверки"
-ServiceUI_ResolveConfirm,service_ui.ahk:465,service_ui.ahk:572,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ServiceUI_CancelConfirm,service_ui.ahk:475,service_ui.ahk:582,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ServiceConfirmGuiClose,service_ui.ahk:483,service_ui.ahk:590,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
-ServiceConfirmGuiEscape,service_ui.ahk:487,service_ui.ahk:594,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ServiceUI_InputKeyDown,service_ui.ahk:215,service_ui.ahk:249,Адаптирована,Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте
+ServiceUI_InputChar,service_ui.ahk:232,service_ui.ahk:271,Адаптирована,Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте
+ServiceUI_InputTick,service_ui.ahk:245,service_ui.ahk:288,Адаптирована,Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте
+ServiceUI_ModifierHeld,service_ui.ahk:267,service_ui.ahk:314,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ServiceUI_Request,service_ui.ahk:274,service_ui.ahk:355,Адаптирована,"Добавлены владение вводом/паузы клавиш, приватный ввод или пассивное открытие; регрессии и native стенд. GTA/OBS требуют отдельной проверки"
+ServiceUI_CancelInput,service_ui.ahk:365,service_ui.ahk:463,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ServiceUI_Shutdown,service_ui.ahk:381,service_ui.ahk:479,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ServiceUI_Confirm,service_ui.ahk:388,service_ui.ahk:486,Адаптирована,"Добавлены владение вводом/паузы клавиш, приватный ввод или пассивное открытие; регрессии и native стенд. GTA/OBS требуют отдельной проверки"
+ServiceUI_ResolveConfirm,service_ui.ahk:465,service_ui.ahk:573,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ServiceUI_CancelConfirm,service_ui.ahk:475,service_ui.ahk:583,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ServiceConfirmGuiClose,service_ui.ahk:483,service_ui.ahk:591,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
+ServiceConfirmGuiEscape,service_ui.ahk:487,service_ui.ahk:595,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 UIStyle_Install,ui_style.ahk:7,ui_style.ahk:7,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 UIStyle_Brush,ui_style.ahk:17,ui_style.ahk:17,Без изменений,Тело совпадает с исходником; это не отдельное подтверждение игрового сценария
 UIStyle_Apply,ui_style.ahk:24,ui_style.ahk:24,Адаптирована,Обновлены тема и геометрия native GUI; действия/перехват сохранены. Игровой сценарий требует проверки в клиенте

@@ -986,15 +986,15 @@ BuildSettingsGui() {
     Gui, 2:Tab, 12
     Settings_AddPageFrame("Инструменты и автоматизация", "Команды, учебная площадка, GPS и конструктор. Ниже — очередь и автодоклады.", cardBg, cardEdge, text, muted)
     Gui, 2:Font, Norm s10 c%text%, Segoe UI
-    Gui, 2:Add, Button, x250 y220 w250 h28 gOpenCustomFunctionBuilderLabel, Конструктор своих функций
+    Gui, 2:Add, Button, x710 y220 w220 h32 gOpenCustomFunctionBuilderLabel, Конструктор своих функций
     Gui, 2:Font, Norm s8 c%muted%, Segoe UI
-    Gui, 2:Add, Text, x514 y224 w596 h20 BackgroundTrans, Свои последовательности, паузы, таймеры, уведомления и TXT/hotkey-запуск.
+    Gui, 2:Add, Text, x250 y260 w680 h20 BackgroundTrans, Свои последовательности, паузы, таймеры, уведомления и TXT/hotkey-запуск.
     Gui, 2:Font, Norm s9 c%text%, Segoe UI
-    Gui, 2:Add, Button, x250 y174 w164 h32 gTools_OpenPalette, Палитра команд
-    Gui, 2:Add, Button, x424 y174 w164 h32 gTools_OpenIncident, Карточка дела
-    Gui, 2:Add, Button, x598 y174 w164 h32 gTools_OpenTrace, Результат действия
-    Gui, 2:Add, Button, x772 y174 w164 h32 gTools_OpenTraining, Учебная площадка
-    Gui, 2:Add, Button, x946 y174 w164 h32 gTools_OpenGPS, Настроить GPS
+    Gui, 2:Add, Button, x250 y174 w220 h32 gTools_OpenPalette, Палитра команд
+    Gui, 2:Add, Button, x480 y174 w220 h32 gTools_OpenIncident, Карточка дела
+    Gui, 2:Add, Button, x710 y174 w220 h32 gTools_OpenTrace, Результат действия
+    Gui, 2:Add, Button, x250 y220 w220 h32 gTools_OpenTraining, Учебная площадка
+    Gui, 2:Add, Button, x480 y220 w220 h32 gTools_OpenGPS, Настроить GPS
     Settings_RecordExtent(830)
     AddOutlinedPanel(2, 242, 286, 884, 120, panel, cardEdge, 1)
     AddOutlinedPanel(2, 242, 424, 884, 112, panel, cardEdge, 1)
