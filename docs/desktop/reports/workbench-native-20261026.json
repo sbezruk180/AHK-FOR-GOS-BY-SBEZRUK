@@ -1,14 +1,14 @@
 {
-  "commit": "81e1c167b0f77b14ea59a09590ee906b3564cfb1",
-  "run": "https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK/actions/runs/40407226554",
+  "commit": "b473d4b4d892d27f85d09accc420088d826209c9",
+  "run": "https://github.com/sbezruk180/AHK-FOR-GOS-BY-SBEZRUK/actions/runs/42458252711",
   "real_game": "NOT_TESTED",
   "real_OBS": "NOT_TESTED",
   "results": [
     {
       "form": "exe",
       "repeat": 1,
-      "commit": "81e1c167b0f77b14ea59a09590ee906b3564cfb1",
-      "release_sha256": "392607052d97118be21252f67520ab7a75c65675c9c54e9148bac2aceef561bb",
+      "commit": "b473d4b4d892d27f85d09accc420088d826209c9",
+      "release_sha256": "06abd64488893ab92fe18f683d07a670cf6c17bc30c5d63bf8e613c61c4d84aa",
       "provenance": {
         "source_runtime": {
           "original_sha256": "6a98b438b67da7316e9251eb1a92cd5384a8349d239a77903f7282fa076a77c3",
@@ -17,8 +17,8 @@
           "activeCodePage": "ru-RU"
         },
         "compiled_host": {
-          "original_sha256": "392607052d97118be21252f67520ab7a75c65675c9c54e9148bac2aceef561bb",
-          "test_host_sha256": "48007b58620bbd555998e840da8dc88f41bc7fc4a31e23d31b5b01d4fc03901c",
+          "original_sha256": "06abd64488893ab92fe18f683d07a670cf6c17bc30c5d63bf8e613c61c4d84aa",
+          "test_host_sha256": "43bc9b83a811f199a2aa72c45fb81f0188bbe31e1ae115e23b6d97792fd9118e",
           "only_resource_type_changed": 24,
           "activeCodePage": "ru-RU"
         },
@@ -41,7 +41,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 0.22,
+          "seconds": 0.17,
           "report": "original_runtime_info_report.txt",
           "failures": [],
           "status": "PASS",
@@ -50,7 +50,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 33.38,
+          "seconds": 21.12,
           "report": "original_selftest_report.txt",
           "failures": [],
           "status": "PASS",
@@ -59,7 +59,286 @@
         },
         {
           "exit_code": 0,
-          "seconds": 51.69,
+          "seconds": 35.97,
+          "report": "original_audit_selftest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "audit-selftest",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.16,
+          "report": "original_context_assistant_test.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "context-mocktest",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.17,
+          "report": "original_autoreport_mocktest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "autoreport-mocktest",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 18.17,
+          "report": "original_law_search_test_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "law-search-test",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.19,
+          "report": "original_v1_mocktest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "v1-mocktest",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 14.72,
+          "report": "original_desktop_smoke_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "desktop-smoke",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 9.81,
+          "report": "original_diagnostics_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "diagnostics",
+          "phase": "original"
+        },
+        {
+          "started": true,
+          "singleton": true,
+          "clean_exit": true,
+          "second_instance_warning": true,
+          "second_instance_gui_count": 0,
+          "warning_acknowledged": true,
+          "exit_code": 0,
+          "status": "PASS",
+          "mode": "startup-singleton-exit",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.16,
+          "report": "traced_runtime_info_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "runtime-info",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 33.34,
+          "report": "traced_selftest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "selftest",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 52.12,
+          "report": "traced_audit_selftest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "audit-selftest",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.17,
+          "report": "traced_context_assistant_test.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "context-mocktest",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.2,
+          "report": "traced_autoreport_mocktest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "autoreport-mocktest",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 27.38,
+          "report": "traced_law_search_test_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "law-search-test",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.17,
+          "report": "traced_v1_mocktest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "v1-mocktest",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 19.06,
+          "report": "traced_desktop_smoke_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "desktop-smoke",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 13.62,
+          "report": "traced_diagnostics_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "diagnostics",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 6.25,
+          "report": "fixture_private_input_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "private_input",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.03,
+          "report": "fixture_chat_route_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "chat_route",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.3,
+          "report": "fixture_memory_sequence_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "memory_sequence",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 10.28,
+          "report": "fixture_game_menu_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "game_menu",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 22.44,
+          "report": "fixture_text_bind_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "text_bind",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.81,
+          "report": "fixture_autoid_tracking_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "autoid_tracking",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 7.7,
+          "report": "fixture_law_windows_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "law_windows",
+          "phase": "fixture"
+        }
+      ],
+      "remaining_processes": [],
+      "completed": true,
+      "original_failures": [],
+      "tracing_failures": [],
+      "fixture_failures": []
+    },
+    {
+      "form": "exe",
+      "repeat": 2,
+      "commit": "b473d4b4d892d27f85d09accc420088d826209c9",
+      "release_sha256": "06abd64488893ab92fe18f683d07a670cf6c17bc30c5d63bf8e613c61c4d84aa",
+      "provenance": {
+        "source_runtime": {
+          "original_sha256": "6a98b438b67da7316e9251eb1a92cd5384a8349d239a77903f7282fa076a77c3",
+          "test_host_sha256": "da91a152e05d4803c2313bf488d832ef1ce7705bf73ade6f89379d945ebf9391",
+          "only_resource_type_changed": 24,
+          "activeCodePage": "ru-RU"
+        },
+        "compiled_host": {
+          "original_sha256": "06abd64488893ab92fe18f683d07a670cf6c17bc30c5d63bf8e613c61c4d84aa",
+          "test_host_sha256": "43bc9b83a811f199a2aa72c45fb81f0188bbe31e1ae115e23b6d97792fd9118e",
+          "only_resource_type_changed": 24,
+          "activeCodePage": "ru-RU"
+        },
+        "runtime_archive_sha256": "6f3663f7cdd25063c8c8728f5d9b07813ced8780522fd1f124ba539e2854215f"
+      },
+      "real_game": "NOT_TESTED",
+      "real_OBS": "NOT_TESTED",
+      "cases": [
+        {
+          "started": true,
+          "singleton": true,
+          "clean_exit": true,
+          "second_instance_warning": true,
+          "second_instance_gui_count": 0,
+          "warning_acknowledged": true,
+          "exit_code": 0,
+          "status": "PASS",
+          "mode": "startup-singleton-exit",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.19,
+          "report": "original_runtime_info_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "runtime-info",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 28.76,
+          "report": "original_selftest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "selftest",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 46.97,
           "report": "original_audit_selftest_report.txt",
           "failures": [],
           "status": "PASS",
@@ -86,7 +365,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 27.97,
+          "seconds": 24.51,
           "report": "original_law_search_test_report.txt",
           "failures": [],
           "status": "PASS",
@@ -95,7 +374,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 0.23,
+          "seconds": 0.24,
           "report": "original_v1_mocktest_report.txt",
           "failures": [],
           "status": "PASS",
@@ -104,7 +383,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 21.05,
+          "seconds": 18.62,
           "report": "original_desktop_smoke_report.txt",
           "failures": [],
           "status": "PASS",
@@ -113,7 +392,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 14.88,
+          "seconds": 13.49,
           "report": "original_diagnostics_report.txt",
           "failures": [],
           "status": "PASS",
@@ -134,7 +413,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 0.23,
+          "seconds": 0.24,
           "report": "traced_runtime_info_report.txt",
           "failures": [],
           "status": "PASS",
@@ -143,7 +422,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 49.84,
+          "seconds": 44.78,
           "report": "traced_selftest_report.txt",
           "failures": [],
           "status": "PASS",
@@ -152,7 +431,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 79.09,
+          "seconds": 71.48,
           "report": "traced_audit_selftest_report.txt",
           "failures": [],
           "status": "PASS",
@@ -161,7 +440,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 0.23,
+          "seconds": 0.22,
           "report": "traced_context_assistant_test.txt",
           "failures": [],
           "status": "PASS",
@@ -170,7 +449,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 0.27,
+          "seconds": 0.25,
           "report": "traced_autoreport_mocktest_report.txt",
           "failures": [],
           "status": "PASS",
@@ -179,7 +458,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 42.94,
+          "seconds": 38.49,
           "report": "traced_law_search_test_report.txt",
           "failures": [],
           "status": "PASS",
@@ -188,7 +467,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 0.23,
+          "seconds": 0.25,
           "report": "traced_v1_mocktest_report.txt",
           "failures": [],
           "status": "PASS",
@@ -197,7 +476,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 28.55,
+          "seconds": 25.34,
           "report": "traced_desktop_smoke_report.txt",
           "failures": [],
           "status": "PASS",
@@ -206,7 +485,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 21.02,
+          "seconds": 18.97,
           "report": "traced_diagnostics_report.txt",
           "failures": [],
           "status": "PASS",
@@ -215,7 +494,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 6.31,
+          "seconds": 6.33,
           "report": "fixture_private_input_report.txt",
           "failures": [],
           "status": "PASS",
@@ -242,7 +521,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 10.42,
+          "seconds": 9.94,
           "report": "fixture_game_menu_report.txt",
           "failures": [],
           "status": "PASS",
@@ -260,7 +539,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 0.81,
+          "seconds": 0.86,
           "report": "fixture_autoid_tracking_report.txt",
           "failures": [],
           "status": "PASS",
@@ -269,7 +548,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 11.03,
+          "seconds": 10.03,
           "report": "fixture_law_windows_report.txt",
           "failures": [],
           "status": "PASS",
@@ -285,9 +564,9 @@
     },
     {
       "form": "exe",
-      "repeat": 2,
-      "commit": "81e1c167b0f77b14ea59a09590ee906b3564cfb1",
-      "release_sha256": "392607052d97118be21252f67520ab7a75c65675c9c54e9148bac2aceef561bb",
+      "repeat": 3,
+      "commit": "b473d4b4d892d27f85d09accc420088d826209c9",
+      "release_sha256": "06abd64488893ab92fe18f683d07a670cf6c17bc30c5d63bf8e613c61c4d84aa",
       "provenance": {
         "source_runtime": {
           "original_sha256": "6a98b438b67da7316e9251eb1a92cd5384a8349d239a77903f7282fa076a77c3",
@@ -296,8 +575,8 @@
           "activeCodePage": "ru-RU"
         },
         "compiled_host": {
-          "original_sha256": "392607052d97118be21252f67520ab7a75c65675c9c54e9148bac2aceef561bb",
-          "test_host_sha256": "48007b58620bbd555998e840da8dc88f41bc7fc4a31e23d31b5b01d4fc03901c",
+          "original_sha256": "06abd64488893ab92fe18f683d07a670cf6c17bc30c5d63bf8e613c61c4d84aa",
+          "test_host_sha256": "43bc9b83a811f199a2aa72c45fb81f0188bbe31e1ae115e23b6d97792fd9118e",
           "only_resource_type_changed": 24,
           "activeCodePage": "ru-RU"
         },
@@ -320,7 +599,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 0.14,
+          "seconds": 0.2,
           "report": "original_runtime_info_report.txt",
           "failures": [],
           "status": "PASS",
@@ -329,7 +608,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 17.64,
+          "seconds": 30.89,
           "report": "original_selftest_report.txt",
           "failures": [],
           "status": "PASS",
@@ -338,7 +617,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 30.38,
+          "seconds": 49.38,
           "report": "original_audit_selftest_report.txt",
           "failures": [],
           "status": "PASS",
@@ -347,7 +626,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 0.14,
+          "seconds": 0.22,
           "report": "original_context_assistant_test.txt",
           "failures": [],
           "status": "PASS",
@@ -356,7 +635,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 0.14,
+          "seconds": 0.27,
           "report": "original_autoreport_mocktest_report.txt",
           "failures": [],
           "status": "PASS",
@@ -365,7 +644,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 15.01,
+          "seconds": 27.03,
           "report": "original_law_search_test_report.txt",
           "failures": [],
           "status": "PASS",
@@ -374,7 +653,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 0.16,
+          "seconds": 0.25,
           "report": "original_v1_mocktest_report.txt",
           "failures": [],
           "status": "PASS",
@@ -383,7 +662,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 12.48,
+          "seconds": 20.94,
           "report": "original_desktop_smoke_report.txt",
           "failures": [],
           "status": "PASS",
@@ -392,7 +671,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 8.23,
+          "seconds": 14.78,
           "report": "original_diagnostics_report.txt",
           "failures": [],
           "status": "PASS",
@@ -413,7 +692,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 0.16,
+          "seconds": 0.27,
           "report": "traced_runtime_info_report.txt",
           "failures": [],
           "status": "PASS",
@@ -422,7 +701,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 27.77,
+          "seconds": 49.5,
           "report": "traced_selftest_report.txt",
           "failures": [],
           "status": "PASS",
@@ -431,7 +710,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 46.02,
+          "seconds": 75.16,
           "report": "traced_audit_selftest_report.txt",
           "failures": [],
           "status": "PASS",
@@ -440,7 +719,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 0.16,
+          "seconds": 0.27,
           "report": "traced_context_assistant_test.txt",
           "failures": [],
           "status": "PASS",
@@ -449,7 +728,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 0.16,
+          "seconds": 0.25,
           "report": "traced_autoreport_mocktest_report.txt",
           "failures": [],
           "status": "PASS",
@@ -458,7 +737,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 23.7,
+          "seconds": 40.08,
           "report": "traced_law_search_test_report.txt",
           "failures": [],
           "status": "PASS",
@@ -467,7 +746,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 0.16,
+          "seconds": 0.26,
           "report": "traced_v1_mocktest_report.txt",
           "failures": [],
           "status": "PASS",
@@ -476,7 +755,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 16.55,
+          "seconds": 26.62,
           "report": "traced_desktop_smoke_report.txt",
           "failures": [],
           "status": "PASS",
@@ -485,7 +764,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 11.36,
+          "seconds": 19.7,
           "report": "traced_diagnostics_report.txt",
           "failures": [],
           "status": "PASS",
@@ -494,7 +773,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 6.16,
+          "seconds": 6.38,
           "report": "fixture_private_input_report.txt",
           "failures": [],
           "status": "PASS",
@@ -503,7 +782,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 0.03,
+          "seconds": 0.05,
           "report": "fixture_chat_route_report.txt",
           "failures": [],
           "status": "PASS",
@@ -512,7 +791,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 0.33,
+          "seconds": 0.3,
           "report": "fixture_memory_sequence_report.txt",
           "failures": [],
           "status": "PASS",
@@ -521,7 +800,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 10.42,
+          "seconds": 10.39,
           "report": "fixture_game_menu_report.txt",
           "failures": [],
           "status": "PASS",
@@ -530,7 +809,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 22.77,
+          "seconds": 23.11,
           "report": "fixture_text_bind_report.txt",
           "failures": [],
           "status": "PASS",
@@ -548,286 +827,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 6.06,
-          "report": "fixture_law_windows_report.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "law_windows",
-          "phase": "fixture"
-        }
-      ],
-      "remaining_processes": [],
-      "completed": true,
-      "original_failures": [],
-      "tracing_failures": [],
-      "fixture_failures": []
-    },
-    {
-      "form": "exe",
-      "repeat": 3,
-      "commit": "81e1c167b0f77b14ea59a09590ee906b3564cfb1",
-      "release_sha256": "392607052d97118be21252f67520ab7a75c65675c9c54e9148bac2aceef561bb",
-      "provenance": {
-        "source_runtime": {
-          "original_sha256": "6a98b438b67da7316e9251eb1a92cd5384a8349d239a77903f7282fa076a77c3",
-          "test_host_sha256": "da91a152e05d4803c2313bf488d832ef1ce7705bf73ade6f89379d945ebf9391",
-          "only_resource_type_changed": 24,
-          "activeCodePage": "ru-RU"
-        },
-        "compiled_host": {
-          "original_sha256": "392607052d97118be21252f67520ab7a75c65675c9c54e9148bac2aceef561bb",
-          "test_host_sha256": "48007b58620bbd555998e840da8dc88f41bc7fc4a31e23d31b5b01d4fc03901c",
-          "only_resource_type_changed": 24,
-          "activeCodePage": "ru-RU"
-        },
-        "runtime_archive_sha256": "6f3663f7cdd25063c8c8728f5d9b07813ced8780522fd1f124ba539e2854215f"
-      },
-      "real_game": "NOT_TESTED",
-      "real_OBS": "NOT_TESTED",
-      "cases": [
-        {
-          "started": true,
-          "singleton": true,
-          "clean_exit": true,
-          "second_instance_warning": true,
-          "second_instance_gui_count": 0,
-          "warning_acknowledged": true,
-          "exit_code": 0,
-          "status": "PASS",
-          "mode": "startup-singleton-exit",
-          "phase": "original"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 0.19,
-          "report": "original_runtime_info_report.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "runtime-info",
-          "phase": "original"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 25.28,
-          "report": "original_selftest_report.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "selftest",
-          "phase": "original"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 41.56,
-          "report": "original_audit_selftest_report.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "audit-selftest",
-          "phase": "original"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 0.19,
-          "report": "original_context_assistant_test.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "context-mocktest",
-          "phase": "original"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 0.2,
-          "report": "original_autoreport_mocktest_report.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "autoreport-mocktest",
-          "phase": "original"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 21.52,
-          "report": "original_law_search_test_report.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "law-search-test",
-          "phase": "original"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 0.2,
-          "report": "original_v1_mocktest_report.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "v1-mocktest",
-          "phase": "original"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 16.67,
-          "report": "original_desktop_smoke_report.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "desktop-smoke",
-          "phase": "original"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 11.76,
-          "report": "original_diagnostics_report.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "diagnostics",
-          "phase": "original"
-        },
-        {
-          "started": true,
-          "singleton": true,
-          "clean_exit": true,
-          "second_instance_warning": true,
-          "second_instance_gui_count": 0,
-          "warning_acknowledged": true,
-          "exit_code": 0,
-          "status": "PASS",
-          "mode": "startup-singleton-exit",
-          "phase": "traced"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 0.23,
-          "report": "traced_runtime_info_report.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "runtime-info",
-          "phase": "traced"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 39.17,
-          "report": "traced_selftest_report.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "selftest",
-          "phase": "traced"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 62.92,
-          "report": "traced_audit_selftest_report.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "audit-selftest",
-          "phase": "traced"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 0.25,
-          "report": "traced_context_assistant_test.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "context-mocktest",
-          "phase": "traced"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 0.2,
-          "report": "traced_autoreport_mocktest_report.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "autoreport-mocktest",
-          "phase": "traced"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 33.89,
-          "report": "traced_law_search_test_report.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "law-search-test",
-          "phase": "traced"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 0.23,
-          "report": "traced_v1_mocktest_report.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "v1-mocktest",
-          "phase": "traced"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 22.67,
-          "report": "traced_desktop_smoke_report.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "desktop-smoke",
-          "phase": "traced"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 16.66,
-          "report": "traced_diagnostics_report.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "diagnostics",
-          "phase": "traced"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 6.25,
-          "report": "fixture_private_input_report.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "private_input",
-          "phase": "fixture"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 0.03,
-          "report": "fixture_chat_route_report.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "chat_route",
-          "phase": "fixture"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 0.3,
-          "report": "fixture_memory_sequence_report.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "memory_sequence",
-          "phase": "fixture"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 10.45,
-          "report": "fixture_game_menu_report.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "game_menu",
-          "phase": "fixture"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 22.77,
-          "report": "fixture_text_bind_report.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "text_bind",
-          "phase": "fixture"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 0.81,
-          "report": "fixture_autoid_tracking_report.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "autoid_tracking",
-          "phase": "fixture"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 8.48,
+          "seconds": 10.11,
           "report": "fixture_law_windows_report.txt",
           "failures": [],
           "status": "PASS",
@@ -844,8 +844,8 @@
     {
       "form": "source",
       "repeat": 1,
-      "commit": "81e1c167b0f77b14ea59a09590ee906b3564cfb1",
-      "release_sha256": "392607052d97118be21252f67520ab7a75c65675c9c54e9148bac2aceef561bb",
+      "commit": "b473d4b4d892d27f85d09accc420088d826209c9",
+      "release_sha256": "06abd64488893ab92fe18f683d07a670cf6c17bc30c5d63bf8e613c61c4d84aa",
       "provenance": {
         "source_runtime": {
           "original_sha256": "6a98b438b67da7316e9251eb1a92cd5384a8349d239a77903f7282fa076a77c3",
@@ -854,8 +854,8 @@
           "activeCodePage": "ru-RU"
         },
         "compiled_host": {
-          "original_sha256": "392607052d97118be21252f67520ab7a75c65675c9c54e9148bac2aceef561bb",
-          "test_host_sha256": "48007b58620bbd555998e840da8dc88f41bc7fc4a31e23d31b5b01d4fc03901c",
+          "original_sha256": "06abd64488893ab92fe18f683d07a670cf6c17bc30c5d63bf8e613c61c4d84aa",
+          "test_host_sha256": "43bc9b83a811f199a2aa72c45fb81f0188bbe31e1ae115e23b6d97792fd9118e",
           "only_resource_type_changed": 24,
           "activeCodePage": "ru-RU"
         },
@@ -878,7 +878,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 0.2,
+          "seconds": 0.26,
           "report": "original_runtime_info_report.txt",
           "failures": [],
           "status": "PASS",
@@ -887,7 +887,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 24.95,
+          "seconds": 32.92,
           "report": "original_selftest_report.txt",
           "failures": [],
           "status": "PASS",
@@ -896,7 +896,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 40.91,
+          "seconds": 53.16,
           "report": "original_audit_selftest_report.txt",
           "failures": [],
           "status": "PASS",
@@ -905,7 +905,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 0.19,
+          "seconds": 0.24,
           "report": "original_context_assistant_test.txt",
           "failures": [],
           "status": "PASS",
@@ -914,7 +914,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 0.23,
+          "seconds": 0.28,
           "report": "original_autoreport_mocktest_report.txt",
           "failures": [],
           "status": "PASS",
@@ -923,7 +923,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 21.17,
+          "seconds": 28.08,
           "report": "original_law_search_test_report.txt",
           "failures": [],
           "status": "PASS",
@@ -932,7 +932,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 0.23,
+          "seconds": 0.31,
           "report": "original_v1_mocktest_report.txt",
           "failures": [],
           "status": "PASS",
@@ -941,7 +941,7 @@
         },
         {
           "exit_code": 2,
-          "seconds": 16.41,
+          "seconds": 21.34,
           "report": "original_desktop_smoke_report.txt",
           "failures": [
             "FAIL | compiled standalone host\r",
@@ -953,292 +953,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 11.7,
-          "report": "original_diagnostics_report.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "diagnostics",
-          "phase": "original"
-        },
-        {
-          "started": true,
-          "singleton": true,
-          "clean_exit": true,
-          "second_instance_warning": true,
-          "second_instance_gui_count": 0,
-          "warning_acknowledged": true,
-          "exit_code": 0,
-          "status": "PASS",
-          "mode": "startup-singleton-exit",
-          "phase": "traced"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 0.23,
-          "report": "traced_runtime_info_report.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "runtime-info",
-          "phase": "traced"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 36.8,
-          "report": "traced_selftest_report.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "selftest",
-          "phase": "traced"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 59.44,
-          "report": "traced_audit_selftest_report.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "audit-selftest",
-          "phase": "traced"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 0.2,
-          "report": "traced_context_assistant_test.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "context-mocktest",
-          "phase": "traced"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 0.27,
-          "report": "traced_autoreport_mocktest_report.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "autoreport-mocktest",
-          "phase": "traced"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 32.67,
-          "report": "traced_law_search_test_report.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "law-search-test",
-          "phase": "traced"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 0.3,
-          "report": "traced_v1_mocktest_report.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "v1-mocktest",
-          "phase": "traced"
-        },
-        {
-          "exit_code": 2,
-          "seconds": 21.56,
-          "report": "traced_desktop_smoke_report.txt",
-          "failures": [
-            "FAIL | compiled standalone host\r",
-            "FAIL | 20 documents available without external laws folder\r"
-          ],
-          "status": "EXPECTED_EXE_ONLY_ASSERTIONS",
-          "mode": "desktop-smoke",
-          "phase": "traced"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 15.78,
-          "report": "traced_diagnostics_report.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "diagnostics",
-          "phase": "traced"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 6.25,
-          "report": "fixture_private_input_report.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "private_input",
-          "phase": "fixture"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 0.02,
-          "report": "fixture_chat_route_report.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "chat_route",
-          "phase": "fixture"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 0.28,
-          "report": "fixture_memory_sequence_report.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "memory_sequence",
-          "phase": "fixture"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 10.3,
-          "report": "fixture_game_menu_report.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "game_menu",
-          "phase": "fixture"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 29.8,
-          "report": "fixture_text_bind_report.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "text_bind",
-          "phase": "fixture"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 0.78,
-          "report": "fixture_autoid_tracking_report.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "autoid_tracking",
-          "phase": "fixture"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 7.94,
-          "report": "fixture_law_windows_report.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "law_windows",
-          "phase": "fixture"
-        }
-      ],
-      "remaining_processes": [],
-      "completed": true,
-      "original_failures": [],
-      "tracing_failures": [],
-      "fixture_failures": []
-    },
-    {
-      "form": "source",
-      "repeat": 2,
-      "commit": "81e1c167b0f77b14ea59a09590ee906b3564cfb1",
-      "release_sha256": "392607052d97118be21252f67520ab7a75c65675c9c54e9148bac2aceef561bb",
-      "provenance": {
-        "source_runtime": {
-          "original_sha256": "6a98b438b67da7316e9251eb1a92cd5384a8349d239a77903f7282fa076a77c3",
-          "test_host_sha256": "da91a152e05d4803c2313bf488d832ef1ce7705bf73ade6f89379d945ebf9391",
-          "only_resource_type_changed": 24,
-          "activeCodePage": "ru-RU"
-        },
-        "compiled_host": {
-          "original_sha256": "392607052d97118be21252f67520ab7a75c65675c9c54e9148bac2aceef561bb",
-          "test_host_sha256": "48007b58620bbd555998e840da8dc88f41bc7fc4a31e23d31b5b01d4fc03901c",
-          "only_resource_type_changed": 24,
-          "activeCodePage": "ru-RU"
-        },
-        "runtime_archive_sha256": "6f3663f7cdd25063c8c8728f5d9b07813ced8780522fd1f124ba539e2854215f"
-      },
-      "real_game": "NOT_TESTED",
-      "real_OBS": "NOT_TESTED",
-      "cases": [
-        {
-          "started": true,
-          "singleton": true,
-          "clean_exit": true,
-          "second_instance_warning": true,
-          "second_instance_gui_count": 0,
-          "warning_acknowledged": true,
-          "exit_code": 0,
-          "status": "PASS",
-          "mode": "startup-singleton-exit",
-          "phase": "original"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 0.25,
-          "report": "original_runtime_info_report.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "runtime-info",
-          "phase": "original"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 33.41,
-          "report": "original_selftest_report.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "selftest",
-          "phase": "original"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 52.53,
-          "report": "original_audit_selftest_report.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "audit-selftest",
-          "phase": "original"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 0.22,
-          "report": "original_context_assistant_test.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "context-mocktest",
-          "phase": "original"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 0.3,
-          "report": "original_autoreport_mocktest_report.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "autoreport-mocktest",
-          "phase": "original"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 27.84,
-          "report": "original_law_search_test_report.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "law-search-test",
-          "phase": "original"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 0.28,
-          "report": "original_v1_mocktest_report.txt",
-          "failures": [],
-          "status": "PASS",
-          "mode": "v1-mocktest",
-          "phase": "original"
-        },
-        {
-          "exit_code": 2,
-          "seconds": 20.91,
-          "report": "original_desktop_smoke_report.txt",
-          "failures": [
-            "FAIL | compiled standalone host\r",
-            "FAIL | 20 documents available without external laws folder\r"
-          ],
-          "status": "EXPECTED_EXE_ONLY_ASSERTIONS",
-          "mode": "desktop-smoke",
-          "phase": "original"
-        },
-        {
-          "exit_code": 0,
-          "seconds": 14.95,
+          "seconds": 15.19,
           "report": "original_diagnostics_report.txt",
           "failures": [],
           "status": "PASS",
@@ -1268,7 +983,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 48.78,
+          "seconds": 48.11,
           "report": "traced_selftest_report.txt",
           "failures": [],
           "status": "PASS",
@@ -1277,7 +992,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 77.38,
+          "seconds": 77.31,
           "report": "traced_audit_selftest_report.txt",
           "failures": [],
           "status": "PASS",
@@ -1295,7 +1010,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 0.33,
+          "seconds": 0.31,
           "report": "traced_autoreport_mocktest_report.txt",
           "failures": [],
           "status": "PASS",
@@ -1304,7 +1019,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 43.31,
+          "seconds": 42.09,
           "report": "traced_law_search_test_report.txt",
           "failures": [],
           "status": "PASS",
@@ -1313,7 +1028,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 0.33,
+          "seconds": 0.3,
           "report": "traced_v1_mocktest_report.txt",
           "failures": [],
           "status": "PASS",
@@ -1322,7 +1037,7 @@
         },
         {
           "exit_code": 2,
-          "seconds": 27.64,
+          "seconds": 28.72,
           "report": "traced_desktop_smoke_report.txt",
           "failures": [
             "FAIL | compiled standalone host\r",
@@ -1334,7 +1049,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 20.59,
+          "seconds": 21.53,
           "report": "traced_diagnostics_report.txt",
           "failures": [],
           "status": "PASS",
@@ -1343,7 +1058,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 6.25,
+          "seconds": 6.36,
           "report": "fixture_private_input_report.txt",
           "failures": [],
           "status": "PASS",
@@ -1361,7 +1076,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 0.31,
+          "seconds": 0.36,
           "report": "fixture_memory_sequence_report.txt",
           "failures": [],
           "status": "PASS",
@@ -1370,7 +1085,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 10.53,
+          "seconds": 10.41,
           "report": "fixture_game_menu_report.txt",
           "failures": [],
           "status": "PASS",
@@ -1379,7 +1094,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 27.63,
+          "seconds": 28.09,
           "report": "fixture_text_bind_report.txt",
           "failures": [],
           "status": "PASS",
@@ -1388,7 +1103,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 0.81,
+          "seconds": 0.84,
           "report": "fixture_autoid_tracking_report.txt",
           "failures": [],
           "status": "PASS",
@@ -1397,7 +1112,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 10.26,
+          "seconds": 11.95,
           "report": "fixture_law_windows_report.txt",
           "failures": [],
           "status": "PASS",
@@ -1413,9 +1128,9 @@
     },
     {
       "form": "source",
-      "repeat": 3,
-      "commit": "81e1c167b0f77b14ea59a09590ee906b3564cfb1",
-      "release_sha256": "392607052d97118be21252f67520ab7a75c65675c9c54e9148bac2aceef561bb",
+      "repeat": 2,
+      "commit": "b473d4b4d892d27f85d09accc420088d826209c9",
+      "release_sha256": "06abd64488893ab92fe18f683d07a670cf6c17bc30c5d63bf8e613c61c4d84aa",
       "provenance": {
         "source_runtime": {
           "original_sha256": "6a98b438b67da7316e9251eb1a92cd5384a8349d239a77903f7282fa076a77c3",
@@ -1424,8 +1139,8 @@
           "activeCodePage": "ru-RU"
         },
         "compiled_host": {
-          "original_sha256": "392607052d97118be21252f67520ab7a75c65675c9c54e9148bac2aceef561bb",
-          "test_host_sha256": "48007b58620bbd555998e840da8dc88f41bc7fc4a31e23d31b5b01d4fc03901c",
+          "original_sha256": "06abd64488893ab92fe18f683d07a670cf6c17bc30c5d63bf8e613c61c4d84aa",
+          "test_host_sha256": "43bc9b83a811f199a2aa72c45fb81f0188bbe31e1ae115e23b6d97792fd9118e",
           "only_resource_type_changed": 24,
           "activeCodePage": "ru-RU"
         },
@@ -1457,7 +1172,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 25,
+          "seconds": 25.08,
           "report": "original_selftest_report.txt",
           "failures": [],
           "status": "PASS",
@@ -1466,7 +1181,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 41.39,
+          "seconds": 41.5,
           "report": "original_audit_selftest_report.txt",
           "failures": [],
           "status": "PASS",
@@ -1475,7 +1190,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 0.17,
+          "seconds": 0.19,
           "report": "original_context_assistant_test.txt",
           "failures": [],
           "status": "PASS",
@@ -1484,7 +1199,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 0.23,
+          "seconds": 0.24,
           "report": "original_autoreport_mocktest_report.txt",
           "failures": [],
           "status": "PASS",
@@ -1493,7 +1208,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 21.28,
+          "seconds": 21.56,
           "report": "original_law_search_test_report.txt",
           "failures": [],
           "status": "PASS",
@@ -1502,7 +1217,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 0.22,
+          "seconds": 0.27,
           "report": "original_v1_mocktest_report.txt",
           "failures": [],
           "status": "PASS",
@@ -1511,7 +1226,7 @@
         },
         {
           "exit_code": 2,
-          "seconds": 16.77,
+          "seconds": 16.89,
           "report": "original_desktop_smoke_report.txt",
           "failures": [
             "FAIL | compiled standalone host\r",
@@ -1523,7 +1238,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 11.91,
+          "seconds": 11.78,
           "report": "original_diagnostics_report.txt",
           "failures": [],
           "status": "PASS",
@@ -1544,7 +1259,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 0.22,
+          "seconds": 0.23,
           "report": "traced_runtime_info_report.txt",
           "failures": [],
           "status": "PASS",
@@ -1553,7 +1268,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 37.17,
+          "seconds": 36.36,
           "report": "traced_selftest_report.txt",
           "failures": [],
           "status": "PASS",
@@ -1562,7 +1277,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 64.86,
+          "seconds": 59.34,
           "report": "traced_audit_selftest_report.txt",
           "failures": [],
           "status": "PASS",
@@ -1580,7 +1295,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 0.26,
+          "seconds": 0.28,
           "report": "traced_autoreport_mocktest_report.txt",
           "failures": [],
           "status": "PASS",
@@ -1589,7 +1304,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 31.81,
+          "seconds": 31.78,
           "report": "traced_law_search_test_report.txt",
           "failures": [],
           "status": "PASS",
@@ -1598,7 +1313,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 0.25,
+          "seconds": 0.27,
           "report": "traced_v1_mocktest_report.txt",
           "failures": [],
           "status": "PASS",
@@ -1607,7 +1322,7 @@
         },
         {
           "exit_code": 2,
-          "seconds": 21.55,
+          "seconds": 21.61,
           "report": "traced_desktop_smoke_report.txt",
           "failures": [
             "FAIL | compiled standalone host\r",
@@ -1619,7 +1334,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 15.84,
+          "seconds": 15.88,
           "report": "traced_diagnostics_report.txt",
           "failures": [],
           "status": "PASS",
@@ -1628,7 +1343,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 6.17,
+          "seconds": 6.19,
           "report": "fixture_private_input_report.txt",
           "failures": [],
           "status": "PASS",
@@ -1637,7 +1352,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 0.02,
+          "seconds": 0.03,
           "report": "fixture_chat_route_report.txt",
           "failures": [],
           "status": "PASS",
@@ -1646,7 +1361,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 0.28,
+          "seconds": 0.3,
           "report": "fixture_memory_sequence_report.txt",
           "failures": [],
           "status": "PASS",
@@ -1655,7 +1370,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 10.42,
+          "seconds": 10.39,
           "report": "fixture_game_menu_report.txt",
           "failures": [],
           "status": "PASS",
@@ -1664,7 +1379,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 28.03,
+          "seconds": 27.78,
           "report": "fixture_text_bind_report.txt",
           "failures": [],
           "status": "PASS",
@@ -1673,7 +1388,7 @@
         },
         {
           "exit_code": 0,
-          "seconds": 0.75,
+          "seconds": 0.78,
           "report": "fixture_autoid_tracking_report.txt",
           "failures": [],
           "status": "PASS",
@@ -1682,7 +1397,292 @@
         },
         {
           "exit_code": 0,
-          "seconds": 7.69,
+          "seconds": 7.99,
+          "report": "fixture_law_windows_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "law_windows",
+          "phase": "fixture"
+        }
+      ],
+      "remaining_processes": [],
+      "completed": true,
+      "original_failures": [],
+      "tracing_failures": [],
+      "fixture_failures": []
+    },
+    {
+      "form": "source",
+      "repeat": 3,
+      "commit": "b473d4b4d892d27f85d09accc420088d826209c9",
+      "release_sha256": "06abd64488893ab92fe18f683d07a670cf6c17bc30c5d63bf8e613c61c4d84aa",
+      "provenance": {
+        "source_runtime": {
+          "original_sha256": "6a98b438b67da7316e9251eb1a92cd5384a8349d239a77903f7282fa076a77c3",
+          "test_host_sha256": "da91a152e05d4803c2313bf488d832ef1ce7705bf73ade6f89379d945ebf9391",
+          "only_resource_type_changed": 24,
+          "activeCodePage": "ru-RU"
+        },
+        "compiled_host": {
+          "original_sha256": "06abd64488893ab92fe18f683d07a670cf6c17bc30c5d63bf8e613c61c4d84aa",
+          "test_host_sha256": "43bc9b83a811f199a2aa72c45fb81f0188bbe31e1ae115e23b6d97792fd9118e",
+          "only_resource_type_changed": 24,
+          "activeCodePage": "ru-RU"
+        },
+        "runtime_archive_sha256": "6f3663f7cdd25063c8c8728f5d9b07813ced8780522fd1f124ba539e2854215f"
+      },
+      "real_game": "NOT_TESTED",
+      "real_OBS": "NOT_TESTED",
+      "cases": [
+        {
+          "started": true,
+          "singleton": true,
+          "clean_exit": true,
+          "second_instance_warning": true,
+          "second_instance_gui_count": 0,
+          "warning_acknowledged": true,
+          "exit_code": 0,
+          "status": "PASS",
+          "mode": "startup-singleton-exit",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.27,
+          "report": "original_runtime_info_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "runtime-info",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 32.88,
+          "report": "original_selftest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "selftest",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 53.11,
+          "report": "original_audit_selftest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "audit-selftest",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.22,
+          "report": "original_context_assistant_test.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "context-mocktest",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.28,
+          "report": "original_autoreport_mocktest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "autoreport-mocktest",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 28.17,
+          "report": "original_law_search_test_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "law-search-test",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.3,
+          "report": "original_v1_mocktest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "v1-mocktest",
+          "phase": "original"
+        },
+        {
+          "exit_code": 2,
+          "seconds": 21.44,
+          "report": "original_desktop_smoke_report.txt",
+          "failures": [
+            "FAIL | compiled standalone host\r",
+            "FAIL | 20 documents available without external laws folder\r"
+          ],
+          "status": "EXPECTED_EXE_ONLY_ASSERTIONS",
+          "mode": "desktop-smoke",
+          "phase": "original"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 15.16,
+          "report": "original_diagnostics_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "diagnostics",
+          "phase": "original"
+        },
+        {
+          "started": true,
+          "singleton": true,
+          "clean_exit": true,
+          "second_instance_warning": true,
+          "second_instance_gui_count": 0,
+          "warning_acknowledged": true,
+          "exit_code": 0,
+          "status": "PASS",
+          "mode": "startup-singleton-exit",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.3,
+          "report": "traced_runtime_info_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "runtime-info",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 47.88,
+          "report": "traced_selftest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "selftest",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 79.26,
+          "report": "traced_audit_selftest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "audit-selftest",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.24,
+          "report": "traced_context_assistant_test.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "context-mocktest",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.31,
+          "report": "traced_autoreport_mocktest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "autoreport-mocktest",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 43.55,
+          "report": "traced_law_search_test_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "law-search-test",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.31,
+          "report": "traced_v1_mocktest_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "v1-mocktest",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 2,
+          "seconds": 29.66,
+          "report": "traced_desktop_smoke_report.txt",
+          "failures": [
+            "FAIL | compiled standalone host\r",
+            "FAIL | 20 documents available without external laws folder\r"
+          ],
+          "status": "EXPECTED_EXE_ONLY_ASSERTIONS",
+          "mode": "desktop-smoke",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 23.28,
+          "report": "traced_diagnostics_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "diagnostics",
+          "phase": "traced"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 6.39,
+          "report": "fixture_private_input_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "private_input",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.03,
+          "report": "fixture_chat_route_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "chat_route",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.34,
+          "report": "fixture_memory_sequence_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "memory_sequence",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 10.36,
+          "report": "fixture_game_menu_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "game_menu",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 27.64,
+          "report": "fixture_text_bind_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "text_bind",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 0.83,
+          "report": "fixture_autoid_tracking_report.txt",
+          "failures": [],
+          "status": "PASS",
+          "mode": "autoid_tracking",
+          "phase": "fixture"
+        },
+        {
+          "exit_code": 0,
+          "seconds": 10.8,
           "report": "fixture_law_windows_report.txt",
           "failures": [],
           "status": "PASS",
