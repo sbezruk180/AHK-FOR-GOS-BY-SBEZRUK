@@ -3,11 +3,11 @@
     "engine": "google",
     "query": "ахк для гос",
     "requested_url": "https://www.google.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81&hl=ru",
-    "checked_at": "2026-10-26T21:57:40.355825+00:00",
+    "checked_at": "2026-11-08T07:19:01.987408+00:00",
     "visible_result_count": 0,
     "status": 200,
-    "final_url": "https://www.google.com/sorry/index?continue=https://www.google.com/search%3Fq%3D%25D0%25B0%25D1%2585%25D0%25BA%2B%25D0%25B4%25D0%25BB%25D1%258F%2B%25D0%25B3%25D0%25BE%25D1%2581%26hl%3Dru%26sei%3D1MzfaoTgHoaBqtsP2u2V6Ak&hl=ru&q=EgSCg-9zGNWZ_9YGIjAETDgvN_NqT8LZOX0FY8biZ04RHLap1HIoKWQSX8mLZLCZTnkxT6MkZNY0pjNVBKwyAVJaAUNgv72N9OqZu8mgAQ",
-    "title": "https://www.google.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81&hl=ru&sei=1MzfaoTgHoaBqtsP2u2V6Ak",
+    "final_url": "https://www.google.com/sorry/index?continue=https://www.google.com/search%3Fq%3D%25D0%25B0%25D1%2585%25D0%25BA%2B%25D0%25B4%25D0%25BB%25D1%258F%2B%25D0%25B3%25D0%25BE%25D1%2581%26hl%3Dru%26sei%3DZiLwasPNCqKp5NoP6_eSqAE&hl=ru&q=EgQw09UlGObEwNcGIjCsOzQYmdOafuu3OXitaiSev2d2wqBm_C9GA6PQW_IXur5RVFZLMQbupILXLSX4KugyAVJaAUNgk_jhiNyRrtd1",
+    "title": "https://www.google.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81&hl=ru&sei=ZiLwasPNCqKp5NoP6_eSqAE",
     "results": [],
     "repository_results": [],
     "verdict": "blocked_or_challenged"
@@ -16,23 +16,94 @@
     "engine": "bing",
     "query": "ахк для гос",
     "requested_url": "https://www.bing.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81",
-    "checked_at": "2026-10-26T21:57:40.370377+00:00",
-    "visible_result_count": 0,
+    "checked_at": "2026-11-08T07:19:01.999088+00:00",
+    "visible_result_count": 14,
     "status": 200,
-    "final_url": "https://www.bing.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81&rdr=1&rdrig=9D80342D0167451B908B485A28ECE0ED",
+    "final_url": "https://www.bing.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81&rdr=1&rdrig=3F2D219686884C329BE478A393078B20",
     "title": "ахк для гос - Поиск",
-    "results": [],
+    "results": [
+      {
+        "title": "OASIS - web",
+        "url": "https://www.bing.com/ck/a?!&&p=34850b57a3a26cf32d69a8ace62cf17fdb1d8962cd0b72d126113ddd68fed54aJmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0e63c7fb-751a-6a2d-3f81-dff0741b6bbf&u=a1aHR0cHM6Ly9hcHBzLnNjaG9vbHMubnljL25nc2lzL2xvZ2lu&ntb=1",
+        "target_url": "https://apps.schools.nyc/ngsis/login"
+      },
+      {
+        "title": "Contact Us | Oasis",
+        "url": "https://www.bing.com/ck/a?!&&p=418b2b8f952156950eb47022b6af57a5ebc5ad192eb50746bd741cd9e2a4a61eJmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0e63c7fb-751a-6a2d-3f81-dff0741b6bbf&u=a1aHR0cHM6Ly93d3cub2FzaXNoZWFsdGguYXBwL2NvbnRhY3Q&ntb=1",
+        "target_url": "https://www.oasishealth.app/contact"
+      },
+      {
+        "title": "OasisCom Software ERP | Soluciones Especializadas para Empresas",
+        "url": "https://www.bing.com/ck/a?!&&p=e70d99e3ac10e85afba14c6e1bebb5aa0f27233ef7a3341112abf0c0e6024931JmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0e63c7fb-751a-6a2d-3f81-dff0741b6bbf&u=a1aHR0cHM6Ly93d3cub2FzaXNjb20uY29tLw&ntb=1",
+        "target_url": "https://www.oasiscom.com/"
+      },
+      {
+        "title": "Sound Therapy Apps for Sleep & Tinnitus | Sound Oasis",
+        "url": "https://www.bing.com/ck/a?!&&p=ba2b96d06530b6c992a15c588ab96e4f78eea5d79dd566a28e89edec5cb9695dJmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0e63c7fb-751a-6a2d-3f81-dff0741b6bbf&u=a1aHR0cHM6Ly93d3cuc291bmRvYXNpcy5jb20vcGFnZXMvYXBwLXN0b3Jl&ntb=1",
+        "target_url": "https://www.soundoasis.com/pages/app-store"
+      },
+      {
+        "title": "Oasis - Apps on Google Play",
+        "url": "https://www.bing.com/ck/a?!&&p=8e77300bef6e4123d9abb1056b11ed958e15e0910630c9aef921afc767fa8717JmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0e63c7fb-751a-6a2d-3f81-dff0741b6bbf&u=a1aHR0cHM6Ly9wbGF5Lmdvb2dsZS5jb20vc3RvcmUvYXBwcy9kZXRhaWxzP2lkPWFwcC5taWRpYWNvZGUub2FzaXMmaGw9ZW4tVVM&ntb=1",
+        "target_url": "https://play.google.com/store/apps/details?id=app.midiacode.oasis&hl=en-US"
+      },
+      {
+        "title": "Oasis | Login",
+        "url": "https://www.bing.com/ck/a?!&&p=72143d539d3822cc301f94fbe7b82990624b91ad258d568e84b685d4c1d7eb74JmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0e63c7fb-751a-6a2d-3f81-dff0741b6bbf&u=a1aHR0cHM6Ly9tLm9hc2lzd29ya3NwYWNlLmNvbS9vYXNpcy9sb2dpbi5qc3A&ntb=1",
+        "target_url": "https://m.oasisworkspace.com/oasis/login.jsp"
+      },
+      {
+        "title": "Oasis Technologies Group, LLC",
+        "url": "https://www.bing.com/ck/a?!&&p=7ff83d055d3c0dde333e64f223d1fd56b61da282d425452f05338abc06282e3aJmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0e63c7fb-751a-6a2d-3f81-dff0741b6bbf&u=a1aHR0cDovL29hc2lzdGVjaGdyb3VwLmNvbS9ldnY&ntb=1",
+        "target_url": "http://oasistechgroup.com/evv"
+      },
+      {
+        "title": "Oasis App",
+        "url": "https://www.bing.com/ck/a?!&&p=750550a5b7aafcc23af83b9a876d130d1e73aa1b85a5d2e57ecb8d97a376471eJmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0e63c7fb-751a-6a2d-3f81-dff0741b6bbf&u=a1aHR0cHM6Ly93d3cub2FzaXNhcHAubXgv&ntb=1",
+        "target_url": "https://www.oasisapp.mx/"
+      },
+      {
+        "title": "Oasis - Science-backed Water & Filter Ratings",
+        "url": "https://www.bing.com/ck/a?!&&p=6adacd4f57c9ff4a8de59156f6681359d56d92c0c4f0a8b69a73aad191637ffcJmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0e63c7fb-751a-6a2d-3f81-dff0741b6bbf&u=a1aHR0cHM6Ly93d3cub2FzaXNoZWFsdGguYXBwL29hc2lzLW1lbWJlcg&ntb=1",
+        "target_url": "https://www.oasishealth.app/oasis-member"
+      },
+      {
+        "title": "Oasis - Online Scholarship in studies | Scholarship for SC,ST,OBC",
+        "url": "https://www.bing.com/ck/a?!&&p=bef893d43e924abf4106d3fd97a2303d56e6cc00de5a8c1c006a0a049049faf0JmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0e63c7fb-751a-6a2d-3f81-dff0741b6bbf&u=a1aHR0cHM6Ly9vYXNpcy53Yi5nb3YuaW4v&ntb=1",
+        "target_url": "https://oasis.wb.gov.in/"
+      },
+      {
+        "title": "Oasis LMS Mobile App | Learning on the Go",
+        "url": "https://www.bing.com/ck/a?!&&p=bd353c26aca86dc0f73611bfc78ce5ba282d0d5f596a73d03b5cb7da0b6e5ea2JmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0e63c7fb-751a-6a2d-3f81-dff0741b6bbf&u=a1aHR0cHM6Ly9vYXNpcy1sbXMuY29tL21vYmlsZS1hcHA&ntb=1",
+        "target_url": "https://oasis-lms.com/mobile-app"
+      },
+      {
+        "title": "Lab Tests for Food, Water and Supplements | Oasis",
+        "url": "https://www.bing.com/ck/a?!&&p=4d38e5e06592b83557acf4125071c06b438383cdd83a893b0f848a34158b0ddcJmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0e63c7fb-751a-6a2d-3f81-dff0741b6bbf&u=a1aHR0cHM6Ly93d3cub2FzaXNoZWFsdGguYXBwL3Rlc3Qta2l0cw&ntb=1",
+        "target_url": "https://www.oasishealth.app/test-kits"
+      },
+      {
+        "title": "Oasis - Minimal App Launcher - Apps on Google Play",
+        "url": "https://www.bing.com/ck/a?!&&p=373cd1317e83ded96ff693a72595b53094a598c051354a4f1164ff065cbab179JmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0e63c7fb-751a-6a2d-3f81-dff0741b6bbf&u=a1aHR0cHM6Ly9wbGF5Lmdvb2dsZS5jb20vc3RvcmUvYXBwcy9kZXRhaWxzP2lkPWNvbS5jcmltc29uLm9hc2lzbGF1bmNoZXImaGw9ZW4tVVM&ntb=1",
+        "target_url": "https://play.google.com/store/apps/details?id=com.crimson.oasislauncher&hl=en-US"
+      },
+      {
+        "title": "Oasis",
+        "url": "https://www.bing.com/ck/a?!&&p=267cf5282e02853fbf9be66230537160fe63bfa2b1bca150fbbbff62afd5330dJmltdHM9MTc5NDAwOTYwMA&ptn=3&ver=2&hsh=4&fclid=0e63c7fb-751a-6a2d-3f81-dff0741b6bbf&u=a1aHR0cDovL2NsaWVudC5vYXNpc2Fzc2lzdGFudC5jb20v&ntb=1",
+        "target_url": "http://client.oasisassistant.com/"
+      }
+    ],
     "repository_results": [],
-    "verdict": "no_results_extracted"
+    "verdict": "not_found_in_visible_results"
   },
   {
     "engine": "yandex",
     "query": "ахк для гос",
     "requested_url": "https://yandex.ru/search/?text=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81",
-    "checked_at": "2026-10-26T21:57:40.388670+00:00",
+    "checked_at": "2026-11-08T07:19:02.010179+00:00",
     "visible_result_count": 0,
     "status": 200,
-    "final_url": "https://yandex.ru/showcaptcha?cc=1&form-fb-hint=2.1&mt=41AEDB9A936CC56581E0CBD37E8D8DD88883E12811E83891109FB80AEB740C4997AE285C7B14268A385718CB995597210D276B1692ED907EAD57EC7B97E19E20DD3B3D738493930834A8A8B1219ECAB76DC7B3C2AEB20D31F11A33E9A97477EDC4CEAD589F2276B99B32042FBC3055F32F8A29EA3B9F5B513195698CDF1D35583BBB896D340F56E9FE58&retpath=aHR0cHM6Ly95YW5kZXgucnUvc2VhcmNoP3RleHQ9JUQwJUIwJUQxJTg1JUQwJUJBKyVEMCVCNCVEMCVCQiVEMSU4RislRDAlQjMlRDAlQkUlRDElODE%2C_5289b4e9a7cd882d862932ab5ab0c090&t=2%252F1793051861%252Ff58d0ee6e1a1ee643364daae79829dfa&u=9649209056296144788&s=8583a8c4fa4bec11ec3f175790931baf",
+    "final_url": "https://yandex.ru/showcaptcha?cc=1&form-fb-hint=2.1.797f66aa6fe4edbf9573583602c8c02f7813da3e3060dcb4f9a79873671e7c4bc73a83da7211a5b160ce065a4c3455092669593fc45f1fba1745d6ec98bf1a6535925132c3d8a1&mt=2E6DF9FD5509C6A7CDE89F1D1A14D2F2821F5F83F2AA44B2EB89223B4FE9685FE564F5DED46A2C456AFC2AE26F99C5B2F986FB8C51AAB51C170CDE496880C22D000901AB863743DBE4EA75E31F8180B6BB75F4289756E28F59EAE5D8941B0D4D47DC9F4F9E1AE701C92028A021482CE25080541CA49E903F7E1A0B499216734AAA8C0EAFA66140CD0F26A92D2449F8EA8FF98E19FCDCCD2E5B1FA66AAEB5B71F3C6A32A890&retpath=aHR0cHM6Ly95YW5kZXgucnUvc2VhcmNoP3RleHQ9JUQwJUIwJUQxJTg1JUQwJUJBKyVEMCVCNCVEMCVCQiVEMSU4RislRDAlQjMlRDAlQkUlRDElODE%2C_61f450058dcc6e878974e6474c8d2c71&t=2%252F1794122342%252Fa841a4efe85026402efae6abcb6c079c&u=9721047862423850608&s=8c2918ddbbba68b367caa20283c7893d",
     "title": "Вы не робот?",
     "results": [],
     "repository_results": [],
@@ -42,7 +113,7 @@
     "engine": "duckduckgo",
     "query": "ахк для гос",
     "requested_url": "https://html.duckduckgo.com/html/?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81",
-    "checked_at": "2026-10-26T21:57:40.390409+00:00",
+    "checked_at": "2026-11-08T07:19:02.026276+00:00",
     "visible_result_count": 0,
     "status": 202,
     "final_url": "https://html.duckduckgo.com/html/?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81",
@@ -55,7 +126,7 @@
     "engine": "github",
     "query": "ахк для гос",
     "requested_url": "https://github.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81&type=repositories",
-    "checked_at": "2026-10-26T21:57:40.420064+00:00",
+    "checked_at": "2026-11-08T07:19:02.124654+00:00",
     "visible_result_count": 0,
     "status": 200,
     "final_url": "https://github.com/search?q=%D0%B0%D1%85%D0%BA+%D0%B4%D0%BB%D1%8F+%D0%B3%D0%BE%D1%81&type=repositories",

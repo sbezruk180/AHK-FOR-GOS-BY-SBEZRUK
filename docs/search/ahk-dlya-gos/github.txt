@@ -1,12 +1,11 @@
 Skip to content
 Navigation Menu
-Platform
-Solutions
+Products
+Developers
+Businesses
 Resources
-Open Source
-Enterprise
 Pricing
-Search
+ахк для гос
 /
 Sign in
 Sign up
@@ -28,11 +27,11 @@ Pull requests
 0
  (0)
 results
-Discussions
-0
- (0)
+AI resources
+65
+ (65)
 results
-Users
+Discussions
 0
  (0)
 results
@@ -52,7 +51,7 @@ Public
 Private
 Advanced search
 1 result
- (71 ms)
+ (45 ms)
 1 result
 Sort by: Best match
 xantarose/ahk-for-amazing

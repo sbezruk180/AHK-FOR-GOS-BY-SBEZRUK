@@ -1,12 +1,11 @@
 Skip to content
 Navigation Menu
-Platform
-Solutions
+Products
+Developers
+Businesses
 Resources
-Open Source
-Enterprise
 Pricing
-Search
+ахк для амазинга
 /
 Sign in
 Sign up
@@ -27,6 +26,10 @@ results
 Pull requests
 0
  (0)
+results
+AI resources
+118
+ (118)
 results
 Discussions
 0
@@ -58,12 +61,12 @@ Marketplace
 results
 Advanced search
 0 results
- (66 ms)
+ (31 ms)
 0 results
 Sort by: Best match
 Your search did not match any repositories
 
-You could try one of the tips below.
+However we found 118 ai resources that matched your search query. Alternatively try one of the tips below.
 
 Search across an organization
 Saved searches
